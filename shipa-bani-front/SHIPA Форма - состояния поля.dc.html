@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>html,body{margin:0;background:#EFE4D6;color:#0A2F4F;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}*{box-sizing:border-box;}a{color:#0A2F4F;}a:hover{color:#C15C22;}</style>
+</helmet>
+<div style="padding:56px;display:flex;flex-direction:column;gap:56px;width:max-content;">
+  <div>
+    <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;letter-spacing:.06em;">ФОРМА КОНТАКТОВ — СОСТОЯНИЯ ПОЛЯ</div>
+    <div style="font-size:15px;color:#3B2F2A;margin-top:6px;">Шаг 4 бронирования и «Просто позвоните мне». Кирпичный #C15C22 — ошибки и звёздочки, тёмно-синий #0A2F4F — фокус и галочка.</div>
+  </div>
+
+  <section style="display:flex;flex-direction:column;gap:20px;">
+    <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#3B2F2A;">Мобильная · 360 px · поле 56 px, текст 17 px</div>
+    <div style="display:flex;gap:24px;align-items:flex-start;">
+      <div style="width:360px;background:#F9EFE3;border-radius:20px;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">1 · Пустое</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;display:flex;align-items:center;font-size:17px;color:rgba(10,47,79,.45);background:#F9EFE3;">+7 (___) ___-__-__</div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:12px;line-height:1.45;">Рамка 1 px, 30% синего. Маска видна как подсказка.</div>
+      </div>
+      <div style="width:360px;background:#F9EFE3;border-radius:20px;padding:20px 20px 0;overflow:hidden;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">2 · В фокусе</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:2px solid #0A2F4F;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;background:#FFFFFF;"><span>+7 (700) 12</span><span style="width:1.5px;height:22px;background:#0A2F4F;margin-left:1px;"></span></div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:12px;line-height:1.45;">Рамка 2 px тёмно-синяя, фон белый. Открыта цифровая клавиатура.</div>
+        <div style="margin:16px -20px 0;background:#D8D2CA;padding:8px 6px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">1</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">2</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">3</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">4</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">5</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">6</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">7</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">8</div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">9</div>
+          <div style="height:40px;"></div>
+          <div style="height:40px;background:#FFFFFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;">0</div>
+          <div style="height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;">⌫</div>
+        </div>
+      </div>
+      <div style="width:360px;background:#F9EFE3;border-radius:20px;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">3 · Заполнено верно</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;font-size:17px;background:#F9EFE3;"><span>+7 (700) 123-45-67</span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"></path></svg></div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:12px;line-height:1.45;">10 цифр после +7 — справа тёмно-синяя галочка.</div>
+      </div>
+      <div style="width:360px;background:#F9EFE3;border-radius:20px;padding:20px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">4 · Ошибка</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:2px solid #C15C22;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;background:rgba(193,92,34,.08);">+7 (700) 123-4</div>
+        <div style="margin-top:6px;font-size:13px;color:#C15C22;">Введите номер телефона полностью</div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:12px;line-height:1.45;">Рамка 2 px, фон кирпичный 8%, вздрагивание 300 мс. Исчезает с первым исправлением.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:20px;">
+    <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#3B2F2A;">Десктоп · колонка 520 px · поле 56 px, текст 17 px, курсор мыши</div>
+    <div style="display:flex;gap:24px;align-items:flex-start;">
+      <div style="width:520px;background:#F9EFE3;border-radius:20px;padding:28px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">1 · Пустое</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;display:flex;align-items:center;font-size:17px;color:rgba(10,47,79,.45);">Как к вам обращаться</div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:12px;">При наведении рамка темнеет до 50%.</div>
+      </div>
+      <div style="width:520px;background:#F9EFE3;border-radius:20px;padding:28px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">2 · В фокусе</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:2px solid #0A2F4F;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;background:#FFFFFF;"><span>Айгер</span><span style="width:1.5px;height:22px;background:#0A2F4F;margin-left:1px;"></span></div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:12px;">Tab переводит фокус: Имя → Телефон → Согласие → Кнопка.</div>
+      </div>
+      <div style="width:520px;background:#F9EFE3;border-radius:20px;padding:28px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">3 · Заполнено верно</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;font-size:17px;"><span>+7 (700) 123-45-67</span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"></path></svg></div>
+      </div>
+      <div style="width:520px;background:#F9EFE3;border-radius:20px;padding:28px;">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:rgba(10,47,79,.55);margin-bottom:14px;">4 · Ошибка</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></div>
+        <div style="height:56px;border:2px solid #C15C22;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;color:rgba(10,47,79,.45);background:rgba(193,92,34,.08);">Как к вам обращаться</div>
+        <div style="margin-top:6px;font-size:13px;color:#C15C22;">Укажите имя</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:20px;">
+    <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#3B2F2A;">Форма после нажатия «Отправить заявку» с пустыми полями</div>
+    <div style="display:flex;gap:24px;align-items:flex-start;">
+      <div style="width:360px;background:#F9EFE3;border-radius:20px;padding:24px 20px 16px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;">Как с вами связаться?</div>
+        <div style="font-size:12px;color:#3B2F2A;margin:6px 0 20px;">* — обязательные поля</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></div>
+            <div style="height:56px;border:2px solid #C15C22;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;background:rgba(193,92,34,.08);"><span style="width:1.5px;height:22px;background:#0A2F4F;"></span></div>
+            <div style="margin-top:6px;font-size:13px;color:#C15C22;">Укажите имя</div>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+            <div style="height:56px;border:2px solid #C15C22;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;background:rgba(193,92,34,.08);">+7 (700) 12</div>
+            <div style="margin-top:6px;font-size:13px;color:#C15C22;">Введите номер телефона полностью</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45;">
+          <span style="flex:0 0 24px;height:24px;border:2px solid #C15C22;border-radius:6px;background:rgba(193,92,34,.08);"></span>
+          <span>Согласен с <span style="border-bottom:1px solid rgba(10,47,79,.4);">правилами бронирования</span> <span style="color:#C15C22;">*</span></span>
+        </div>
+        <div style="margin:2px 0 0 36px;font-size:13px;color:#C15C22;">Подтвердите согласие с правилами</div>
+        <div style="margin:20px -20px 0;border-top:1px solid rgba(10,47,79,.15);padding:10px 20px 0;">
+          <div style="font-size:13px;color:#C15C22;text-align:center;margin-bottom:8px;">Заполните отмеченные поля</div>
+          <div style="height:56px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;letter-spacing:.04em;">Отправить заявку</div>
+        </div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:14px;line-height:1.45;">Экран прокручен к «Имя», курсор в поле, клавиатура открыта. Кнопка остаётся активной.</div>
+      </div>
+      <div style="width:520px;background:#F9EFE3;border-radius:20px;padding:32px 28px 20px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;">Как с вами связаться?</div>
+        <div style="font-size:12px;color:#3B2F2A;margin:6px 0 20px;">* — обязательные поля</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></div>
+            <div style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;display:flex;align-items:center;font-size:17px;">Айгерим</div>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></div>
+            <div style="height:56px;border:2px solid #C15C22;border-radius:12px;padding:0 15px;display:flex;align-items:center;font-size:17px;background:rgba(193,92,34,.08);"><span>+7 (700) 123-4</span><span style="width:1.5px;height:22px;background:#0A2F4F;margin-left:1px;"></span></div>
+            <div style="margin-top:6px;font-size:13px;color:#C15C22;">Введите номер телефона полностью</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.45;">
+          <span style="flex:0 0 24px;height:24px;border-radius:6px;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#F9EFE3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"></path></svg></span>
+          <span>Согласен с <span style="border-bottom:1px solid rgba(10,47,79,.4);">правилами бронирования</span> <span style="color:#C15C22;">*</span></span>
+        </div>
+        <div style="margin:20px -28px 0;border-top:1px solid rgba(10,47,79,.15);padding:10px 28px 0;">
+          <div style="font-size:13px;color:#C15C22;text-align:center;margin-bottom:8px;">Заполните отмеченные поля</div>
+          <div style="height:56px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;letter-spacing:.04em;">Отправить заявку</div>
+        </div>
+        <div style="font-size:12px;color:#3B2F2A;margin-top:14px;">Ошибка только у телефона — фокус сразу в нём, имя и согласие не подсвечены.</div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+</body>
+</html>

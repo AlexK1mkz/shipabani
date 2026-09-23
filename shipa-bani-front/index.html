@@ -34,6 +34,13 @@
     @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
     @keyframes waPulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.5);opacity:0}}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes shakeA{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+    @keyframes shakeB{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+    @media (prefers-reduced-motion:reduce){input[data-field]{animation:none !important;}}
+    input[data-field]:focus,input[data-field]:focus-visible{outline:none;border-color:#0A2F4F !important;box-shadow:inset 0 0 0 1px #0A2F4F !important;background:#FFFFFF !important;}
+    input[data-field][data-err="1"]:focus,input[data-field][data-err="1"]:focus-visible{border-color:#C15C22 !important;box-shadow:inset 0 0 0 1px #C15C22 !important;background:rgba(193,92,34,.08) !important;}
+    input[data-field]:hover:not(:focus):not([data-err="1"]){border-color:rgba(10,47,79,.5) !important;}
+    input[data-agree]:focus-visible + span{outline:2px solid #C15C22;outline-offset:2px;}
     @keyframes shimmer{0%{opacity:.45}50%{opacity:.9}100%{opacity:.45}}
     input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0;}
     input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(10,47,79,.25);}
@@ -909,11 +916,24 @@
   </sc-if>
   <sc-if value="{{ callNotSent }}" hint-placeholder-val="{{ true }}">
     <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;letter-spacing:.06em;line-height:1;">ПРОСТО ПОЗВОНИТЕ МНЕ</div>
-    <p style="margin:8px 0 20px;font-size:15px;color:rgba(10,47,79,.75);">Подберём дом и время за вас.</p>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <input value="{{ form.name }}" onChange="{{ setName }}" placeholder="Имя" autoComplete="name" style="height:52px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;">
-      <input value="{{ form.phone }}" onChange="{{ setPhone }}" placeholder="+7 ___ ___ __ __" type="tel" inputMode="tel" autoComplete="tel" style="height:52px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;">
-    </div>
+    <p style="margin:8px 0 6px;font-size:15px;color:rgba(10,47,79,.75);">Подберём дом и время за вас.</p>
+    <div style="font-family:Inter,system-ui,sans-serif;font-size:12px;color:#3B2F2A;margin-bottom:16px;">* — обязательные поля</div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label for="call-name" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></label>
+          <input id="call-name" data-field="name" data-err="{{ fcall.nameAttr }}" value="{{ form.name }}" onChange="{{ fcall.setName }}" placeholder="Как к вам обращаться" autoComplete="name" aria-invalid="{{ fcall.nameErr }}" style="{{ fcall.nameStyle }}">
+          <sc-if value="{{ fcall.nameErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">Укажите имя</div></sc-if>
+        </div>
+        <div>
+          <label for="call-phone" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></label>
+          <div style="position:relative;">
+            <input id="call-phone" data-field="phone" data-err="{{ fcall.phoneAttr }}" value="{{ phoneShown }}" onChange="{{ fcall.setPhone }}" placeholder="+7 (___) ___-__-__" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fcall.phoneErr }}" style="{{ fcall.phoneStyle }}">
+            <sc-if value="{{ phoneOk }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Номер введён" style="position:absolute;right:16px;top:50%;margin-top:-10px;pointer-events:none;"><path d="M4 10.5l4 4 8-9"/></svg></sc-if>
+          </div>
+          <sc-if value="{{ fcall.phoneErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">Введите номер телефона полностью</div></sc-if>
+        </div>
+      </div>
+    <sc-if value="{{ callFillMsg }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-top:16px;font-size:13px;color:#C15C22;text-align:center;">Заполните отмеченные поля</div></sc-if>
     <button onClick="{{ sendCall }}" disabled="{{ callDisabled }}" style="{{ callBtnStyle }}">Позвоните мне</button>
   </sc-if>
 </div>
@@ -1174,10 +1194,22 @@
     <sc-if value="{{ showContacts }}" hint-placeholder-val="{{ false }}">
       <div data-screen-label="Контакты">
       <button onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 24px;">Как с вами связаться?</h2>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <input value="{{ form.name }}" onChange="{{ setName }}" placeholder="Имя" autoComplete="name" style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;font-size:17px;background:#F9EFE3;color:#0A2F4F;">
-        <input value="{{ form.phone }}" onChange="{{ setPhone }}" placeholder="+7 ___ ___ __ __" type="tel" inputMode="tel" autoComplete="tel" style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;font-size:17px;background:#F9EFE3;color:#0A2F4F;">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 6px;">Как с вами связаться?</h2>
+      <div style="font-family:Inter,system-ui,sans-serif;font-size:12px;color:#3B2F2A;margin-bottom:20px;">* — обязательные поля</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label for="bk-name" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></label>
+          <input id="bk-name" data-field="name" data-err="{{ fbk.nameAttr }}" value="{{ form.name }}" onChange="{{ fbk.setName }}" placeholder="Как к вам обращаться" autoComplete="name" aria-invalid="{{ fbk.nameErr }}" style="{{ fbk.nameStyle }}">
+          <sc-if value="{{ fbk.nameErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">Укажите имя</div></sc-if>
+        </div>
+        <div>
+          <label for="bk-phone" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></label>
+          <div style="position:relative;">
+            <input id="bk-phone" data-field="phone" data-err="{{ fbk.phoneAttr }}" value="{{ phoneShown }}" onChange="{{ fbk.setPhone }}" placeholder="+7 (___) ___-__-__" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fbk.phoneErr }}" style="{{ fbk.phoneStyle }}">
+            <sc-if value="{{ phoneOk }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Номер введён" style="position:absolute;right:16px;top:50%;margin-top:-10px;pointer-events:none;"><path d="M4 10.5l4 4 8-9"/></svg></sc-if>
+          </div>
+          <sc-if value="{{ fbk.phoneErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">Введите номер телефона полностью</div></sc-if>
+        </div>
       </div>
       <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
       <div style="margin-top:20px;border:1px solid rgba(10,47,79,.2);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.6;color:rgba(10,47,79,.85);">
@@ -1199,7 +1231,20 @@
         <div style="color:rgba(10,47,79,.7);">{{ cLine2 }}</div>
         <sc-for list="{{ cLines }}" as="l" hint-placeholder-count="0"><div style="color:rgba(10,47,79,.7);">{{ l.t }}</div></sc-for>
       </div>
-      <div style="margin-top:16px;font-size:12px;line-height:1.5;color:rgba(10,47,79,.6);">Нажимая «{{ bookingCtaLabel }}», вы соглашаетесь с <a href="#" style="border-bottom:1px solid rgba(10,47,79,.4);">правилами бронирования</a> и обработкой персональных данных.</div>
+      <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:20px;">
+          <label style="position:relative;display:flex;gap:12px;align-items:flex-start;min-height:44px;padding-top:2px;cursor:pointer;font-size:15px;line-height:1.45;">
+            <input id="bk-agree" data-agree="1" type="checkbox" checked="{{ form.agree }}" onChange="{{ setAgree }}" aria-invalid="{{ fbk.agreeErr }}" style="position:absolute;left:0;top:0;width:24px;height:24px;margin:0;opacity:0;cursor:pointer;">
+            <span style="{{ agreeBoxStyle }}"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="#F9EFE3" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="{{ agreeTickStyle }}"><path d="M4 10.5l4 4 8-9"/></svg></span>
+            <span>Согласен с <a href="#" style="border-bottom:1px solid rgba(10,47,79,.4);">правилами бронирования</a> <span style="color:#C15C22;">*</span></span>
+          </label>
+          <sc-if value="{{ fbk.agreeErr }}" hint-placeholder-val="{{ false }}"><div style="margin:2px 0 0 36px;font-size:13px;line-height:1.35;color:#C15C22;">Подтвердите согласие с правилами</div></sc-if>
+          <div style="margin-top:10px;font-size:12px;line-height:1.5;color:rgba(10,47,79,.6);">Нажимая «{{ bookingCtaLabel }}», вы даёте согласие на обработку персональных данных.</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pre }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:16px;font-size:12px;line-height:1.5;color:rgba(10,47,79,.6);">Нажимая «{{ bookingCtaLabel }}», вы соглашаетесь с обработкой персональных данных.</div>
+      </sc-if>
       </div>
     </sc-if>
 
@@ -1238,6 +1283,7 @@
     <sc-if value="{{ showSummary }}" hint-placeholder-val="{{ false }}">
       <div style="max-width:520px;margin:0 auto 8px;font-size:15px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;">{{ summaryText }}</div>
     </sc-if>
+    <sc-if value="{{ bkFillMsg }}" hint-placeholder-val="{{ false }}"><div role="alert" style="max-width:520px;margin:0 auto 8px;font-size:13px;color:#C15C22;text-align:center;">Заполните отмеченные поля</div></sc-if>
     <button onClick="{{ bookingNext }}" disabled="{{ bookingNextDisabled }}" style="{{ bookingCtaStyle }}">{{ bookingCtaLabel }}</button>
   </div>
   </sc-if>
@@ -1311,9 +1357,12 @@ const HERO_SLIDES=[{video:true,img:'img/h1_int.png'},{img:'img/h2_int.png'},{img
 const RATING=['4,9','4,9','5,0','4,8','4,9','4,8','5,0','4,7'];
 const EMPTY_RF={open:false,sent:false,name:'',stars:5,text:''};
 
+const FE0={scope:null,name:false,phone:false,agree:false,n:0};
+const phoneDigits=v=>{v=String(v||'');let d=v.replace(/\D/g,'');if(v.trim().startsWith('+7'))d=d.slice(1);else if(d.length===11&&/^[78]/.test(d))d=d.slice(1);else if(d[0]==='8')d=d.slice(1);return d.slice(0,10);};
+const phoneFmt=d=>{if(!d)return '';let s='+7 ('+d.slice(0,3);if(d.length>3)s+=') '+d.slice(3,6);if(d.length>6)s+='-'+d.slice(6,8);if(d.length>8)s+='-'+d.slice(8,10);return s;};
 class Component extends DCLogic {
   state={screen:'home',houseId:null,history:[],isWide:false,menuOpen:false,callOpen:false,callSent:false,
-    form:{name:'',phone:'',agree:false},faqOpen:-1,catalogFilter:'Все',kitchenTab:'Чайная карта',reviewFilter:-1,
+    form:{name:'',phone:'',agree:false},fe:FE0,faqOpen:-1,catalogFilter:'Все',kitchenTab:'Чайная карта',reviewFilter:-1,
     galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:6},bk:null,savedBk:null,sendError:false,loadingSlots:false,hero:0,lang:'RU',hw:0,rf:EMPTY_RF};
   headerRef=React.createRef();
   videoRef=React.createRef();
@@ -1376,6 +1425,7 @@ class Component extends DCLogic {
 
   openBooking(houseId,date,guests,step){
     const h=houseId?HOUSES.find(x=>x.id===houseId):null;if(h&&h.soon)return;
+    this.setState({fe:FE0});
     const g=guests||this.state.quick.guests||6;
     if(this.props.preorderMode){this.setState({menuOpen:false,sendError:false,bk:{pre:true,step:h?2:1,houseId:h?h.id:null,date:null,guests:g,month:5,fromHouse:!!h}});return;}
     const di=date??0;if(step==null)step=h?3:1;
@@ -1394,10 +1444,10 @@ class Component extends DCLogic {
   next(){
     const {bk,form}=this.state;
     const save=()=>{try{localStorage.setItem('shipa_user',JSON.stringify({name:form.name,phone:form.phone,lastHouse:bk.houseId}));}catch(e){}};
-    if(bk.pre){if(bk.step===2){this.setBk({step:3});return;}if(bk.step===3){save();this.setBk({step:5});}return;}
+    if(bk.pre){if(bk.step===2){this.setBk({step:3});return;}if(bk.step===3){if(!this.validate('bk'))return;save();this.setBk({step:5});}return;}
     if(bk.step===1){if(bk.houseId){this.pickHouse(bk.houseId);return;}this.setState({loadingSlots:true});this.setBk({step:2});setTimeout(()=>this.setState({loadingSlots:false}),700);return;}
     if(bk.step===3){this.setBk({step:4});return;}
-    if(bk.step===4){if(form.phone.replace(/\D/g,'').endsWith('000')){this.setState({sendError:true});return;}save();this.setState({sendError:false});this.setBk({step:5});}
+    if(bk.step===4){if(!this.validate('bk'))return;if(form.phone.replace(/\D/g,'').endsWith('000')){this.setState({sendError:true});return;}save();this.setState({sendError:false});this.setBk({step:5});}
   }
 
   // G1/G2: активное — BRICK; вторичное — кремовое с рамкой NAVY
@@ -1415,6 +1465,25 @@ class Component extends DCLogic {
     if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.3) 0 3px,rgba(59,47,42,.08) 3px 6px);`;
     if(c==='past')return b+'background:rgba(10,47,79,.07);';
     return b+`background:${CREAM};box-shadow:inset 0 0 0 1px rgba(10,47,79,.3);`;}
+  validate(scope){
+    const s=this.state;const needAgree=scope==='bk'&&!(s.bk&&s.bk.pre);
+    const e={name:!s.form.name.trim(),phone:phoneDigits(s.form.phone).length<10,agree:needAgree&&!s.form.agree};
+    if(!e.name&&!e.phone&&!e.agree){this.setState({fe:FE0});return true;}
+    this.setState({fe:{scope,...e,n:s.fe.n+1}});
+    const el=document.getElementById(scope+'-'+(e.name?'name':e.phone?'phone':'agree'));
+    if(el){el.focus({preventScroll:true});
+      let p=el.parentElement;while(p&&p!==document.body){const cs=getComputedStyle(p);if(/(auto|scroll)/.test(cs.overflowY)&&p.scrollHeight>p.clientHeight)break;p=p.parentElement;}
+      const r=el.getBoundingClientRect();
+      if(p&&p!==document.body){const pr=p.getBoundingClientRect();p.scrollBy({top:r.top-pr.top-pr.height*.25,behavior:'smooth'});}
+      else window.scrollBy({top:r.top-window.innerHeight*.25,behavior:'smooth'});}
+    return false;}
+  fieldVals(scope,h,fs){
+    const s=this.state;const fe=s.fe.scope===scope?s.fe:FE0;const anim=s.fe.n%2?'shakeA':'shakeB';
+    const st=(err,pr)=>`width:100%;height:${h}px;border:1px solid ${err?BRICK:'rgba(10,47,79,.3)'};box-shadow:${err?'inset 0 0 0 1px '+BRICK:'none'};border-radius:12px;padding:0 ${pr}px 0 ${h>52?16:14}px;font-size:${fs}px;background:${err?'rgba(193,92,34,.08)':CREAM};color:${NAVY};transition:border-color 150ms,background 150ms;${err?`animation:${anim} 300ms ease-out 1;`:''}`;
+    return {nameErr:fe.name,phoneErr:fe.phone,agreeErr:fe.agree,nameAttr:fe.name?'1':'0',phoneAttr:fe.phone?'1':'0',
+      nameStyle:st(fe.name,h>52?16:14),phoneStyle:st(fe.phone,46),
+      setName:e=>this.setState({form:{...this.state.form,name:e.target.value},fe:{...this.state.fe,name:false}}),
+      setPhone:e=>{const v=e.target.value;const cur=this.state;const old=phoneDigits(cur.form.phone);let d=phoneDigits(v);if(d===old&&v.length<phoneFmt(old).length)d=d.slice(0,-1);this.setState({form:{...cur.form,phone:phoneFmt(d)},fe:{...cur.fe,phone:false}});}};}
   cta(ok,label){return {bookingNext:()=>this.next(),bookingNextDisabled:!ok,bookingCtaLabel:label,bookingCtaStyle:`width:100%;max-width:520px;margin:0 auto;display:block;height:56px;border-radius:999px;background:${ok?BRICK:'rgba(10,47,79,.15)'};color:${ok?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.04em;`};}
   calendar(bk,pre){
     const mo=bk.month||0;const first=new Date(this.today.getFullYear(),this.today.getMonth()+mo,1);
@@ -1497,7 +1566,7 @@ class Component extends DCLogic {
         calHouse:bk.houseId==='any'?'ЛЮБОЙ ДОМ':hSel?'ДОМ '+hSel.name:'',calTitle:'Когда хотели бы приехать?',calSub:'Точные дату и время подтвердим, когда откроем бронирование',calNote:'Комплекс открывается в феврале 2027. Более ранние даты недоступны.',
         preHouses,cName:houseName,cLine1:dateText,cLine2:guestsTxt(bk.guests),cLines:[],sendError:false,
         canBack:bk.step>=2&&bk.step<=3,noBack:!(bk.step>=2&&bk.step<=3),bookingBack:()=>this.back(),backLabel:bk.step===3?'К дате':'К выбору дома',
-        bookingCta:bk.step===2||bk.step===3,...this.cta(canNext,bk.step===2?'Продолжить':'Записаться на открытие'),hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false,
+        bookingCta:bk.step===2||bk.step===3,...this.cta(bk.step===3||canNext,bk.step===2?'Продолжить':'Записаться на открытие'),hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false,
         bk:{...bk,houseName}};
     } else if(bk){
       const hSel=HOUSES.find(x=>x.id===bk.houseId);
@@ -1556,7 +1625,7 @@ class Component extends DCLogic {
       const extrasNames=bk.extras.map(id=>EXTRAS.find(e=>e.id===id)).map(e=>e.name.split(/[:—]/)[0].trim().toLowerCase()+' (от '+fmt(e.price)+')');
       const tubLine=tubOn?`Горячий чан · ${fmt(CFG.tubPrice)}`:h0.tubIncl?'Горячий чан на дровах — входит в стоимость':'';
       const cLines=[...(tubLine?[{t:tubLine}]:[]),...(bk.extras.length?[{t:'Пожелания, подтвердит администратор: '+extrasNames.join(', ')}]:[])];
-      const canNext=bk.step===1?true:bk.step===3?(end!=null&&dur<=maxEff):bk.step===4?okC:false;
+      const canNext=bk.step===1?true:bk.step===3?(end!=null&&dur<=maxEff):bk.step===4?true:false;
       const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Отправить заявку';
       const waText=`Здравствуйте! Заявка в SHIPA: дом ${h0.name}, ${whenText}, ${guestsTxt(bk.guests)}${tubOn?', горячий чан':''}. Итого ${fmt(total)}.`;
       B={...this.calendar(bk,false),stepSegs,
@@ -1591,9 +1660,15 @@ class Component extends DCLogic {
       goServices:()=>this.go('services'),goKitchen:()=>this.go('kitchen'),goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
       openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,
       startBooking:()=>this.openBooking(null),startBookingFromMenu:()=>this.openBooking(null),
-      openCall:()=>this.setState({callOpen:true,callSent:false}),openCallFromMenu:()=>this.setState({callOpen:true,callSent:false,menuOpen:false}),closeCall:()=>this.setState({callOpen:false}),callOpen:s.callOpen,callSent:s.callSent,callNotSent:!s.callSent,
-      sendCall:()=>{try{localStorage.setItem('shipa_user',JSON.stringify({name:s.form.name,phone:s.form.phone}));}catch(e){}this.setState({callSent:true});},callDisabled:!callOk,
-      callBtnStyle:`width:100%;height:52px;margin-top:12px;border-radius:999px;background:${callOk?BRICK:'rgba(10,47,79,.15)'};color:${callOk?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:15px;letter-spacing:.04em;`,
+      openCall:()=>this.setState({callOpen:true,callSent:false}),openCallFromMenu:()=>this.setState({callOpen:true,callSent:false,menuOpen:false}),closeCall:()=>this.setState({callOpen:false,fe:FE0}),callOpen:s.callOpen,callSent:s.callSent,callNotSent:!s.callSent,
+      sendCall:()=>{if(!this.validate('call'))return;try{localStorage.setItem('shipa_user',JSON.stringify({name:s.form.name,phone:s.form.phone}));}catch(e){}this.setState({callSent:true});},callDisabled:false,
+      callBtnStyle:`width:100%;height:52px;margin-top:12px;border-radius:999px;background:${BRICK};color:${CREAM};font-weight:600;font-size:15px;letter-spacing:.04em;`,
+      fbk:this.fieldVals('bk',56,17),fcall:this.fieldVals('call',52,16),
+      phoneShown:phoneFmt(phoneDigits(s.form.phone)),phoneOk:phoneDigits(s.form.phone).length===10,
+      bkFillMsg:!!(bk&&s.fe.scope==='bk'&&(s.fe.name||s.fe.phone||s.fe.agree)),callFillMsg:s.fe.scope==='call'&&(s.fe.name||s.fe.phone),
+      setAgree:e=>this.setState({form:{...this.state.form,agree:e.target.checked},fe:{...this.state.fe,agree:false}}),
+      agreeBoxStyle:`flex:0 0 24px;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:${s.fe.scope==='bk'&&s.fe.agree?'2px solid '+BRICK:'1px solid rgba(10,47,79,.45)'};background:${s.form.agree?NAVY:(s.fe.scope==='bk'&&s.fe.agree?'rgba(193,92,34,.08)':CREAM)};transition:background 150ms;${s.fe.scope==='bk'&&s.fe.agree?`animation:${s.fe.n%2?'shakeA':'shakeB'} 300ms ease-out 1;`:''}`,
+      agreeTickStyle:`opacity:${s.form.agree?1:0};transition:opacity 120ms;`,
       form:s.form,setName:e=>this.setState({form:{...s.form,name:e.target.value}}),setPhone:e=>{let v=e.target.value.replace(/[^\d+]/g,'');if(v&&!v.startsWith('+'))v='+'+v;this.setState({form:{...s.form,phone:v}});},
       quickDays,quickGuests:s.quick.guests,quickGuestsMinus:()=>this.setState({quick:{...s.quick,guests:Math.max(1,s.quick.guests-1)}}),quickGuestsPlus:()=>this.setState({quick:{...s.quick,guests:Math.min(20,s.quick.guests+1)}}),quickGo:()=>this.openBooking(null,s.quick.date,s.quick.guests,2),
       heroSlides,heroDots,heroIsVideo:!!HERO_SLIDES[s.hero].video,
