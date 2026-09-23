@@ -64,7 +64,7 @@
     </sc-if>
     <div style="display:flex;align-items:center;gap:4px;">
       <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ startBooking }}" style="height:44px;padding:0 22px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.04em;margin-right:12px;">Забронировать</button>
+        <button onClick="{{ startBooking }}" style="height:44px;padding:0 22px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.04em;margin-right:12px;">{{ bookLabel }}</button>
       </sc-if>
       <a href="https://wa.me/77000000000" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>
@@ -93,6 +93,9 @@
     </sc-if>
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,47,79,.35) 0%,rgba(10,47,79,.2) 35%,rgba(10,47,79,.7) 100%);"></div>
     <div style="position:relative;min-height:min(74svh,640px);max-width:1200px;margin:0 auto;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:84px 20px 28px;color:#F9EFE3;">
+      <sc-if value="{{ pre }}" hint-placeholder-val="{{ false }}">
+        <div style="display:inline-flex;align-items:center;gap:10px;min-height:36px;padding:6px 16px;border-radius:999px;background:#F9EFE3;color:#0A2F4F;font-size:13px;font-weight:600;margin-bottom:16px;"><span style="width:8px;height:8px;border-radius:50%;background:#C15C22;flex:0 0 auto;"></span>Открытие в феврале 2027 · открыта предзапись</div>
+      </sc-if>
       <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;opacity:.85;margin-bottom:12px;">Пространство для тела и души · Караганда</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(34px,8.5vw,64px);letter-spacing:.08em;line-height:1.02;margin:0 0 12px;max-width:760px;text-wrap:balance;">ВЫБЕРИ СВОЁ СОСТОЯНИЕ</h1>
       <p style="margin:0 0 20px;font-size:16px;opacity:.92;max-width:520px;">Восемь домов с парными и чанами. Свой дом, своя терраса, никого рядом.</p>
@@ -105,7 +108,7 @@
         </sc-for>
       </div>
       <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
-        <button onClick="{{ startBooking }}" style="height:52px;padding:0 28px;flex:1 1 200px;max-width:320px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.04em;">Забронировать</button>
+        <button onClick="{{ startBooking }}" style="height:52px;padding:0 28px;flex:1 1 200px;max-width:320px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.04em;">{{ bookLabel }}</button>
         <button onClick="{{ scrollToVideo }}" style="display:flex;align-items:center;gap:12px;height:52px;text-align:left;">
           <span style="width:48px;height:48px;border-radius:50%;border:1px solid rgba(249,239,227,.7);display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><svg width="14" height="14" viewBox="0 0 22 22" fill="#F9EFE3"><path d="M7 3l12 8-12 8z"/></svg></span>
           <span style="line-height:1.25;"><span style="display:block;font-weight:600;font-size:14px;">Атмосфера</span><span style="display:block;font-size:12px;opacity:.75;">ролики комплекса</span></span>
@@ -122,6 +125,7 @@
   <section style="max-width:1200px;margin:0 auto;padding:12px 20px 0;">
     <div style="font-size:13px;color:rgba(10,47,79,.7);text-align:center;">Ответим в WhatsApp за 15 минут. Цены и свободные дома — сразу, без звонков.</div>
   </section>
+  <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
   <section style="max-width:1200px;margin:0 auto;padding:28px 20px 0;">
     <div style="border:2px solid #C15C22;border-radius:20px;padding:16px 20px 20px;max-width:720px;margin:0 auto;">
       <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:14px;text-align:center;">Найти свободный дом</div>
@@ -144,6 +148,7 @@
       <button onClick="{{ quickGo }}" style="width:100%;height:52px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.04em;">Показать свободные дома</button>
     </div>
   </section>
+  </sc-if>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 20px 0;">
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIPA — это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
@@ -161,6 +166,39 @@
       </sc-for>
     </div>
   </section>
+
+  <sc-if value="{{ showMeaning }}" hint-placeholder-val="{{ true }}">
+  <section data-reveal data-screen-label="Что значит SHIPA" style="max-width:1200px;margin:0 auto;padding:64px 20px 0;">
+    <div style="max-width:1000px;margin:0 auto;">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;text-align:center;">ЧТО ЗНАЧИТ <span style="color:#C15C22;">SHIPA</span></h2>
+      <p style="margin:14px auto 0;font-size:17px;line-height:1.55;max-width:560px;text-align:center;color:rgba(10,47,79,.8);text-wrap:pretty;">«Шипа» по-казахски — восстановление, оздоровление. Слово легко звучит на казахском, русском и английском.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px 48px;align-items:center;margin-top:36px;">
+        <div style="padding:48px 28px 40px;border-radius:20px;background:rgba(10,47,79,.05);">
+          <div style="position:relative;">
+            <img src="brand/logo-navy.png" alt="SHIPA — банный комплекс" style="width:100%;height:auto;display:block;">
+            <span style="position:absolute;left:1%;top:70%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#C15C22;color:#F9EFE3;border:2px solid #F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</span>
+            <span style="position:absolute;left:19%;top:4%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#C15C22;color:#F9EFE3;border:2px solid #F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">2</span>
+            <span style="position:absolute;left:97%;top:4%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#C15C22;color:#F9EFE3;border:2px solid #F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">3</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;border-top:1px solid #0A2F4F;">
+          <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;padding:18px 0;border-bottom:1px solid rgba(10,47,79,.2);">
+            <span style="width:28px;height:28px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">1</span>
+            <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.04em;line-height:1.1;">Буква S</div><div style="font-size:15px;color:rgba(10,47,79,.8);margin-top:4px;">Линия пара</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;padding:18px 0;border-bottom:1px solid rgba(10,47,79,.2);">
+            <span style="width:28px;height:28px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">2</span>
+            <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.04em;line-height:1.1;">Два дубовых листа</div><div style="font-size:15px;color:rgba(10,47,79,.8);margin-top:4px;">Банный веник</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;padding:18px 0;border-bottom:1px solid rgba(10,47,79,.2);">
+            <span style="width:28px;height:28px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">3</span>
+            <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.04em;line-height:1.1;">Завиток над A</div><div style="font-size:15px;color:rgba(10,47,79,.8);margin-top:4px;">Тепло</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 0 0;">
     <div style="padding:0 20px;">
@@ -291,6 +329,27 @@
       <button onClick="{{ startBooking }}" style="height:48px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;font-weight:600;font-size:14px;">Заказать стол к брони</button>
     </div>
   </section>
+
+  <sc-if value="{{ showMerch }}" hint-placeholder-val="{{ false }}">
+  <section data-reveal data-screen-label="С собой из SHIPA" style="max-width:1200px;margin:0 auto;padding:64px 0 0;">
+    <div style="padding:0 20px;text-align:center;">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">С СОБОЙ <span style="color:#C15C22;">ИЗ SHIPA</span></h2>
+      <p style="margin:12px auto 0;font-size:16px;color:rgba(10,47,79,.7);max-width:520px;">Полотенца, шапки, масла и веники, которыми пользуетесь в доме</p>
+    </div>
+    <div class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
+      <sc-for list="{{ merch }}" as="m" hint-placeholder-count="4">
+        <div style="flex:0 0 58%;max-width:260px;scroll-snap-align:start;display:flex;flex-direction:column;">
+          <div style="aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:rgba(10,47,79,.08);"><image-slot id="{{ m.slot }}" src="{{ m.img }}" shape="rect" placeholder="{{ m.name }}"></image-slot></div>
+          <div style="font-weight:600;font-size:16px;margin-top:12px;">{{ m.name }}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;">
+            <div style="font-weight:600;">{{ m.priceText }}</div>
+            <a href="{{ m.link }}" target="_blank" rel="noopener" style="height:40px;padding:0 16px;border-radius:999px;border:1px solid #0A2F4F;display:flex;align-items:center;font-size:13px;font-weight:600;">Заказать</a>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:64px 0 0;">
     <div style="padding:0 20px;text-align:center;">
@@ -472,7 +531,7 @@
         </button>
         <div style="display:flex;gap:6px;margin-top:16px;">
           <button onClick="{{ h.open }}" style="flex:1;height:48px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;">Подробнее</button>
-          <button onClick="{{ h.book }}" style="flex:1;height:48px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;">Забронировать</button>
+          <button onClick="{{ h.book }}" style="flex:1;height:48px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;">{{ bookLabel }}</button>
         </div>
       </div>
     </sc-for>
@@ -526,6 +585,11 @@
       </sc-for>
     </div>
 
+    <sc-if value="{{ house.hasTubExtra }}" hint-placeholder-val="{{ false }}">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ДОПОЛНИТЕЛЬНО</h3>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 0;border-top:1px solid rgba(10,47,79,.2);border-bottom:1px solid rgba(10,47,79,.15);font-size:16px;"><span style="font-weight:600;">Горячий чан</span><span style="font-size:14px;color:rgba(10,47,79,.75);text-align:right;">{{ house.tubExtraText }}</span></div>
+    </sc-if>
+
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ЦЕНЫ</h3>
     <div style="font-size:15px;border-top:1px solid #0A2F4F;">
       <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;padding:10px 0;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;border-bottom:1px solid rgba(10,47,79,.2);"><div></div><div>Будни</div><div>Выходные и праздники</div></div>
@@ -539,6 +603,7 @@
     </div>
     <p style="margin:12px 0 0;font-size:13px;color:rgba(10,47,79,.7);line-height:1.5;">Минимум {{ house.min }} часа. Цена за час. Свыше 10 гостей — +3 000 ₸ за человека. Дети до 7 лет — бесплатно.</p>
 
+    <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 14px;gap:8px;">
       <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ЗАНЯТОСТЬ</h3>
       <div style="display:flex;gap:2px;">
@@ -558,6 +623,7 @@
         </button>
       </sc-for>
     </div>
+    </sc-if>
 
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">РЕКОМЕНДУЕМ ПАРЕНИЕ</h3>
     <button onClick="{{ goServices }}" style="{{ house.program.cardStyle }}">
@@ -631,6 +697,17 @@
     <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;">Парение</div>
     <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:44px;letter-spacing:.1em;margin:0 0 10px;line-height:1;">ПАРЕНИЕ И УХОД</h1>
     <p style="margin:0 0 24px;font-size:16px;color:rgba(10,47,79,.7);line-height:1.5;">Программу добавляете к брони как пожелание — администратор подтвердит её в WhatsApp. Всё, что нужно, — уже в парной.</p>
+  </div>
+  <div style="max-width:720px;margin:0 auto;padding:0 20px 24px;">
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+      <sc-for list="{{ serviceCats }}" as="c" hint-placeholder-count="4">
+        <div style="{{ c.style }}">
+          <sc-if value="{{ c.hasImg }}" hint-placeholder-val="{{ true }}"><div style="aspect-ratio:4/3;overflow:hidden;"><image-slot id="{{ c.slot }}" src="{{ c.img }}" shape="rect" placeholder="{{ c.name }}"></image-slot></div></sc-if>
+          <sc-if value="{{ c.soon }}" hint-placeholder-val="{{ false }}"><div style="aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;"><span style="padding:8px 14px;border-radius:999px;border:1px solid #C15C22;color:#C15C22;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;">Скоро</span></div></sc-if>
+          <div style="padding:12px 14px 14px;"><div style="font-weight:600;font-size:16px;line-height:1.25;">{{ c.name }}</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;line-height:1.4;">{{ c.desc }}</div></div>
+        </div>
+      </sc-for>
+    </div>
   </div>
   <div style="aspect-ratio:4/3;max-height:70vh;overflow:hidden;border-radius:20px;margin:0 20px;"><image-slot id="services-master" src="img/h2_acc.png" shape="rect" placeholder="Парная перед сеансом"></image-slot></div>
   <div style="max-width:720px;margin:0 auto;padding:0 20px;">
@@ -808,7 +885,7 @@
     </sc-for>
   </nav>
   <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:32px;">
-    <button onClick="{{ startBookingFromMenu }}" style="height:52px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.04em;">Забронировать</button>
+    <button onClick="{{ startBookingFromMenu }}" style="height:52px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.04em;">{{ bookLabel }}</button>
     <button onClick="{{ openCallFromMenu }}" style="height:48px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;">Просто позвоните мне</button>
     <a href="tel:+77000000000" style="text-align:center;margin-top:10px;font-weight:500;">+7 700 000 00 00</a>
     <div style="display:flex;justify-content:center;gap:4px;margin-top:8px;">
@@ -860,16 +937,40 @@
     <button onClick="{{ closeBooking }}" aria-label="Закрыть" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#0A2F4F" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
   </div>
 
-  <div style="flex:1;overflow-y:auto;padding:8px 20px 120px;">
+  <div style="flex:1;overflow-y:auto;padding:8px 20px 150px;">
   <div style="max-width:560px;margin:0 auto;">
 
-    <sc-if value="{{ step1 }}" hint-placeholder-val="{{ true }}">
-      <div data-screen-label="Шаг 1 — Когда">
-      <sc-if value="{{ bk.houseName }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;text-align:center;">ДОМ {{ bk.houseName }}</div>
+    <sc-if value="{{ preStep1 }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Предзапись — дом">
+        <div style="display:flex;justify-content:center;"><span style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:999px;border:1px solid #C15C22;color:#C15C22;font-size:12px;font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:#C15C22;"></span>Открытие в феврале 2027 · открыта предзапись</span></div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:16px 0 6px;text-align:center;">Какой дом хотите?</h2>
+        <p style="margin:0 0 20px;text-align:center;font-size:15px;color:rgba(10,47,79,.7);">Запишем вас в список и напишем первыми, когда откроем бронирование</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <sc-for list="{{ preHouses }}" as="h" hint-placeholder-count="6">
+            <button onClick="{{ h.select }}" style="{{ h.style }}">
+              <div style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:0 0 auto;"><div style="{{ h.bgStyle }}"></div></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:10px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ h.kicker }}</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.1em;line-height:1;margin-top:4px;">{{ h.name }}</div>
+                <div style="font-size:13px;color:rgba(10,47,79,.65);margin-top:4px;">{{ h.sub }}</div>
+              </div>
+              <span style="font-size:18px;">→</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showCal }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Шаг 1 — Дата и гости">
+      <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
       </sc-if>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 6px;text-align:center;">Когда планируете приехать?</h2>
-      <p style="margin:0 0 20px;text-align:center;font-size:15px;color:rgba(10,47,79,.7);">Покажем свободные дома и цену за час</p>
+      <sc-if value="{{ calHouse }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;text-align:center;">{{ calHouse }}</div>
+      </sc-if>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 6px;text-align:center;">{{ calTitle }}</h2>
+      <p style="margin:0 0 20px;text-align:center;font-size:15px;color:rgba(10,47,79,.7);">{{ calSub }}</p>
       <div style="border:2px solid #C15C22;border-radius:20px;padding:14px 14px 4px;">
       <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.6);font-weight:600;margin-bottom:8px;">Дата</div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -889,7 +990,7 @@
           <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" style="{{ d.style }}">{{ d.day }}</button>
         </sc-for>
       </div>
-      <div style="font-size:12px;color:rgba(10,47,79,.6);margin:8px 0 14px;">Бронь открыта на год вперёд. Зачёркнутые дни заняты полностью.</div>
+      <div style="font-size:12px;color:rgba(10,47,79,.6);margin:8px 0 14px;">{{ calNote }}</div>
       <div style="border-top:1px solid rgba(10,47,79,.15);margin:0 -14px;"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 10px;">
         <div><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.6);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.6);margin-top:4px;">Дети до 7 лет не считаются</div></div>
@@ -942,8 +1043,8 @@
         <div style="display:flex;flex-direction:column;gap:12px;">
           <sc-for list="{{ step2Houses }}" as="h" hint-placeholder-count="4">
             <div style="{{ h.style }}">
-              <div style="display:flex;gap:14px;">
-                <button onClick="{{ h.select }}" disabled="{{ h.disabled }}" style="width:112px;height:128px;overflow:hidden;flex:0 0 auto;border-radius:14px;"><div style="{{ h.bgStyle }}"></div></button>
+              <button onClick="{{ h.select }}" disabled="{{ h.disabled }}" style="display:flex;gap:14px;width:100%;text-align:left;">
+                <div style="width:96px;height:112px;overflow:hidden;flex:0 0 auto;border-radius:14px;"><div style="{{ h.bgStyle }}"></div></div>
                 <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
                   <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;">
                     <div style="font-size:11px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
@@ -951,18 +1052,19 @@
                   </div>
                   <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;line-height:1;margin-top:4px;">{{ h.name }}</div>
                   <div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:6px;line-height:1.4;">{{ h.facts }}</div>
-                  <div style="font-size:12px;color:{{ h.noteColor }};font-weight:600;margin-top:auto;padding-top:8px;">{{ h.note }}</div>
+                  <div style="margin-top:auto;padding-top:8px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.priceText }}</div>
                 </div>
+              </button>
+              <div style="margin-top:14px;">
+                <div style="display:flex;gap:2px;">
+                  <sc-for list="{{ h.segs }}" as="g" hint-placeholder-count="24"><div style="{{ g.style }}"></div></sc-for>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(10,47,79,.55);margin-top:4px;font-variant-numeric:tabular-nums;"><span>{{ scaleA }}</span><span>{{ scaleB }}</span><span>{{ scaleA }}</span></div>
+                <div style="font-size:13px;font-weight:600;color:{{ h.noteColor }};margin-top:6px;">{{ h.note }}</div>
               </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(10,47,79,.12);flex-wrap:wrap;">
-                <div>
-                  <div style="font-size:12px;color:rgba(10,47,79,.6);">{{ h.priceLabel }}</div>
-                  <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;margin-top:2px;">{{ h.priceText }}</div>
-                </div>
-                <div style="display:flex;gap:6px;">
-                  <button onClick="{{ h.view }}" style="height:44px;padding:0 16px;border-radius:999px;border:1px solid #0A2F4F;background:#F9EFE3;font-weight:600;font-size:14px;">Посмотреть дом</button>
-                  <button onClick="{{ h.select }}" disabled="{{ h.disabled }}" style="{{ h.btnStyle }}">{{ h.btnLabel }}</button>
-                </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(10,47,79,.12);flex-wrap:wrap;">
+                <button onClick="{{ h.view }}" style="height:44px;padding:0 4px;font-weight:600;font-size:14px;border-bottom:1px solid rgba(10,47,79,.4);">Посмотреть дом</button>
+                <button onClick="{{ h.select }}" disabled="{{ h.disabled }}" style="{{ h.btnStyle }}">{{ h.btnLabel }}</button>
               </div>
             </div>
           </sc-for>
@@ -972,44 +1074,76 @@
     </sc-if>
 
     <sc-if value="{{ step3 }}" hint-placeholder-val="{{ false }}">
-      <div data-screen-label="Шаг 3 — Время и дополнительно">
+      <div data-screen-label="Шаг 3 — Время и опции">
       <button onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
-      <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;">ДОМ {{ bk.houseName }} · {{ searchDate }}</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 16px;">Во сколько начнём?</h2>
-      <sc-if value="{{ hasBusy }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:12px;">Занято в этот день: {{ busyText }}. Нужно 3 часа до следующей брони.</div></sc-if>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
-        <sc-for list="{{ timeSlots }}" as="t" hint-placeholder-count="48">
-          <button onClick="{{ t.select }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button>
+      <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;">{{ h3Kicker }}</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:36px;letter-spacing:.1em;line-height:1;margin:8px 0 16px;">{{ bk.houseName }}</h2>
+      <div class="noscroll" style="display:flex;gap:6px;overflow-x:auto;margin:0 -20px 16px;padding:0 20px 2px;scroll-snap-type:x proximity;">
+        <sc-for list="{{ dayStrip }}" as="d" hint-placeholder-count="14">
+          <button onClick="{{ d.select }}" style="{{ d.style }}">
+            <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1;">{{ d.day }}</span>
+          </button>
         </sc-for>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;border:1px solid #0A2F4F;border-radius:999px;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
+          <button onClick="{{ t.select }}" style="{{ t.style }}"><span style="font-weight:600;font-size:15px;">{{ t.label }}</span><span style="font-size:12px;opacity:.75;font-variant-numeric:tabular-nums;">{{ t.range }}</span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ startedDay }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toDay }}" style="height:36px;margin-top:8px;font-size:13px;font-weight:600;">← {{ startedDayText }}</button>
+      </sc-if>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px;">
+        <sc-for list="{{ hourCells }}" as="c" hint-placeholder-count="12">
+          <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">
+            <span style="font-size:20px;font-weight:600;line-height:1;">{{ c.label }}</span>
+            <sc-if value="{{ c.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;letter-spacing:.06em;">{{ c.sub }}</span></sc-if>
+            <sc-if value="{{ c.cont }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:8px;top:5px;font-size:15px;">→</span></sc-if>
+          </button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:11px;color:rgba(10,47,79,.75);">
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:#F9EFE3;border:1px solid rgba(10,47,79,.4);"></span>Свободно</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:#0A2F4F;"></span>Выбрано</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:#C15C22;"></span>Занято</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;border:1px solid rgba(59,47,42,.22);background:repeating-linear-gradient(135deg,rgba(59,47,42,.3) 0 3px,transparent 3px 6px);"></span>Подготовка дома</span>
+      </div>
+      <sc-if value="{{ contNight }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toNight }}" style="height:40px;margin-top:12px;padding:0 16px;border-radius:999px;border:1px solid #0A2F4F;font-size:13px;font-weight:600;">Продолжение ночью →</button>
+      </sc-if>
+      <sc-if value="{{ contNext }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;font-size:13px;font-weight:600;">→ {{ contNextText }}</div>
+      </sc-if>
 
-      <div style="font-weight:600;margin:28px 0 4px;font-size:15px;">Длительность</div>
-      <div style="font-size:13px;color:rgba(10,47,79,.65);margin-bottom:10px;line-height:1.45;">Минимум 3 часа, максимум 72 часа — можно взять дом на несколько дней. Цена считается по часам каждого тарифа.</div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
-        <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="5">
-          <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
-        </sc-for>
-      </div>
-      <sc-if value="{{ durMore }}" hint-placeholder-val="{{ false }}">
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px;">
-          <sc-for list="{{ durChips2 }}" as="c" hint-placeholder-count="5">
-            <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
+      <sc-if value="{{ noStart }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:24px;font-size:14px;color:rgba(10,47,79,.7);">Нажмите на час начала — покажем, на сколько можно остаться.</div>
+      </sc-if>
+      <sc-if value="{{ hasStart }}" hint-placeholder-val="{{ false }}">
+        <div style="font-weight:600;margin:24px 0 2px;font-size:15px;">Сколько часов?</div>
+        <div style="font-size:13px;color:rgba(10,47,79,.65);margin-bottom:10px;">{{ durNote }}</div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 6px;align-items:start;">
+          <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="8">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
+              <sc-if value="{{ c.hasReason }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;line-height:1.25;color:#C15C22;text-align:center;">{{ c.reason }}</span></sc-if>
+            </div>
           </sc-for>
         </div>
+        <a href="{{ longLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:44px;margin-top:4px;font-size:14px;font-weight:600;">Нужно дольше? Напишите нам →</a>
       </sc-if>
-      <sc-if value="{{ durCustom }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 14px;border:1px solid rgba(10,47,79,.25);border-radius:16px;">
-          <div style="font-size:14px;">Часов</div>
-          <div style="display:flex;align-items:center;gap:4px;">
-            <button onClick="{{ durMinus }}" aria-label="Меньше" style="width:44px;height:44px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:20px;">−</button>
-            <input value="{{ bk.dur }}" onChange="{{ setDurInput }}" inputMode="numeric" style="width:64px;height:44px;text-align:center;border:1px solid rgba(10,47,79,.3);border-radius:12px;font-size:18px;font-weight:600;background:#F9EFE3;color:#0A2F4F;">
-            <button onClick="{{ durPlus }}" aria-label="Больше" style="width:44px;height:44px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:20px;">+</button>
-          </div>
-        </div>
-      </sc-if>
-      <sc-if value="{{ durHint }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#C15C22;margin-top:10px;">{{ durHint }}</div></sc-if>
 
-      <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.08em;margin:36px 0 8px;">ДОБАВИТЬ К БРОНИ</h3>
+      <sc-if value="{{ tubOpt }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleTub }}" style="display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin-top:16px;border:1px solid rgba(10,47,79,.25);border-radius:16px;text-align:left;">
+          <div style="flex:1;"><div style="font-weight:600;font-size:16px;">Горячий чан</div><div style="font-size:13px;color:rgba(10,47,79,.65);margin-top:2px;">{{ tubPriceText }} · готовим к вашему приезду</div></div>
+          <div style="{{ tubSwitch }}"><div style="{{ tubKnob }}"></div></div>
+        </button>
+      </sc-if>
+      <sc-if value="{{ tubIncl }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:16px;padding:14px 16px;border-radius:16px;background:rgba(10,47,79,.06);font-size:14px;line-height:1.45;"><span style="font-weight:600;">Горячий чан на дровах</span> — входит в стоимость дома</div>
+      </sc-if>
+
+      <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.08em;margin:32px 0 6px;">ДОБАВИТЬ К БРОНИ</h3>
       <div style="display:flex;flex-direction:column;border-top:1px solid #0A2F4F;">
         <sc-for list="{{ extraRows }}" as="e" hint-placeholder-count="3">
           <button onClick="{{ e.toggle }}" style="{{ e.style }}">
@@ -1022,49 +1156,63 @@
         </sc-for>
       </div>
 
-      <div style="margin-top:32px;background:#0A2F4F;color:#F9EFE3;padding:20px;border-radius:20px;">
-        <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;">Итог</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;letter-spacing:.1em;margin-top:8px;line-height:1;">{{ bk.houseName }}</div>
-        <div style="font-size:15px;opacity:.9;margin-top:10px;line-height:1.5;">{{ summaryLine1 }}<br>{{ summaryLine2 }}</div>
-        <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;font-size:14px;opacity:.9;">
-          <sc-for list="{{ priceBreak }}" as="pb" hint-placeholder-count="1"><div style="display:flex;justify-content:space-between;gap:12px;"><span>{{ pb.l }}</span><span>{{ pb.v }}</span></div></sc-for>
+      <sc-if value="{{ hasTotal }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:28px;background:#0A2F4F;color:#F9EFE3;padding:20px;border-radius:20px;">
+        <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;">Расчёт</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:14px;">
+          <sc-for list="{{ priceBreak }}" as="pb" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;gap:12px;"><span style="opacity:.85;">{{ pb.l }}</span><span>{{ pb.v }}</span></div></sc-for>
         </div>
-        <sc-if value="{{ hasExtras }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;opacity:.8;margin-top:8px;padding-top:8px;border-top:1px solid rgba(249,239,227,.15);">{{ extrasLine }}</div></sc-if>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:14px;border-top:1px solid rgba(249,239,227,.25);">
-          <span style="font-size:14px;opacity:.85;">Аренда дома</span>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;padding-top:12px;border-top:1px solid rgba(249,239,227,.25);">
+          <span style="font-size:14px;opacity:.85;">Итого</span>
           <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1;">{{ totalText }}</span>
         </div>
       </div>
+      </sc-if>
       </div>
     </sc-if>
 
-    <sc-if value="{{ step4 }}" hint-placeholder-val="{{ false }}">
-      <div data-screen-label="Шаг 4 — Контакты">
+    <sc-if value="{{ showContacts }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Контакты">
       <button onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 24px;">Как с вами связаться?</h2>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <input value="{{ form.name }}" onChange="{{ setName }}" placeholder="Имя" autoComplete="name" style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;font-size:17px;background:#F9EFE3;color:#0A2F4F;">
         <input value="{{ form.phone }}" onChange="{{ setPhone }}" placeholder="+7 ___ ___ __ __" type="tel" inputMode="tel" autoComplete="tel" style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;font-size:17px;background:#F9EFE3;color:#0A2F4F;">
       </div>
-      <button onClick="{{ toggleAgree }}" style="display:flex;align-items:center;gap:12px;margin-top:20px;min-height:44px;text-align:left;font-size:15px;">
-        <span style="{{ agreeBoxStyle }}"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#F9EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l3.5 3.5L12 4"/></svg></span>
-        <span>Согласен с <a href="#" style="border-bottom:1px solid rgba(10,47,79,.5);">правилами бронирования</a></span>
-      </button>
+      <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
       <div style="margin-top:20px;border:1px solid rgba(10,47,79,.2);border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.6;color:rgba(10,47,79,.85);">
         <div>Бронь подтверждается предоплатой</div>
         <div>Без предоплаты бронь держится 6 часов</div>
         <div>Время опоздания не продлевается</div>
         <a href="#" style="display:inline-block;margin-top:6px;font-weight:600;color:#C15C22;">Полные условия</a>
       </div>
+      </sc-if>
+      <sc-if value="{{ pre }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:20px;font-size:14px;line-height:1.55;color:rgba(10,47,79,.8);">Без предоплаты и обязательств. Когда откроем бронирование, напишем в WhatsApp и предложим время.</div>
+      </sc-if>
       <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:20px;border:1px solid #C15C22;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.5;">Не получилось отправить. Позвоните нам: <a href="tel:+77000000000" style="font-weight:600;color:#C15C22;">+7 700 000 00 00</a></div>
       </sc-if>
       <div style="margin-top:28px;border-top:1px solid #0A2F4F;padding-top:14px;font-size:15px;line-height:1.5;">
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.1em;line-height:1;margin-bottom:8px;">{{ bk.houseName }}</div>
-        <div>{{ summaryLine1 }}</div>
-        <div style="color:rgba(10,47,79,.7);">{{ summaryLine2 }} · {{ totalText }}</div>
-        <sc-if value="{{ hasExtras }}" hint-placeholder-val="{{ false }}"><div style="color:rgba(10,47,79,.7);">{{ extrasLine }}</div></sc-if>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.1em;line-height:1;margin-bottom:8px;">{{ cName }}</div>
+        <div>{{ cLine1 }}</div>
+        <div style="color:rgba(10,47,79,.7);">{{ cLine2 }}</div>
+        <sc-for list="{{ cLines }}" as="l" hint-placeholder-count="0"><div style="color:rgba(10,47,79,.7);">{{ l.t }}</div></sc-for>
       </div>
+      <div style="margin-top:16px;font-size:12px;line-height:1.5;color:rgba(10,47,79,.6);">Нажимая «{{ bookingCtaLabel }}», вы соглашаетесь с <a href="#" style="border-bottom:1px solid rgba(10,47,79,.4);">правилами бронирования</a> и обработкой персональных данных.</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ preDone }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Предзапись — успех" style="text-align:center;padding-top:48px;">
+        <svg width="96" height="96" viewBox="0 0 96 96" fill="none" style="animation:popIn 400ms ease-out;">
+          <circle cx="48" cy="48" r="46" stroke="#C15C22" stroke-width="1.5"/>
+          <path d="M28 49l14 14 26-30" stroke="#C15C22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="70" stroke-dashoffset="70" style="animation:drawCheck 600ms ease-out 200ms forwards;"/>
+        </svg>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:38px;letter-spacing:.06em;margin:28px 0 12px;line-height:1;">Вы в списке</h2>
+        <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(10,47,79,.85);">Напишем первыми, когда откроется бронирование.</p>
+        <p style="margin:14px 0 0;font-size:14px;color:rgba(10,47,79,.65);">{{ cName }} · {{ cLine1 }}</p>
+        <button onClick="{{ closeBooking }}" style="width:100%;height:52px;margin-top:36px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">На главную</button>
       </div>
     </sc-if>
 
@@ -1087,6 +1235,9 @@
 
   <sc-if value="{{ bookingCta }}" hint-placeholder-val="{{ true }}">
   <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 20px calc(12px + env(safe-area-inset-bottom));background:#F9EFE3;border-top:1px solid rgba(10,47,79,.15);">
+    <sc-if value="{{ showSummary }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:520px;margin:0 auto 8px;font-size:15px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;">{{ summaryText }}</div>
+    </sc-if>
     <button onClick="{{ bookingNext }}" disabled="{{ bookingNextDisabled }}" style="{{ bookingCtaStyle }}">{{ bookingCtaLabel }}</button>
   </div>
   </sc-if>
@@ -1095,7 +1246,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
 const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22';
 const WD=['вс','пн','вт','ср','чт','пт','сб'];
 const WD_ACC=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
@@ -1105,9 +1256,10 @@ const MON_NOM=['Январь','Февраль','Март','Апрель','Май
 const fmt=n=>n.toLocaleString('ru-RU').replace(/\u00a0/g,' ')+' ₸';
 const hh=h=>{const m=h%1?'30':'00';return String(Math.floor(h)%24).padStart(2,'0')+':'+m;};
 const plural=(n,a,b,c)=>{const m=n%10,k=n%100;return k>=11&&k<=14?c:m===1?a:m>=2&&m<=4?b:c;};
-// B6: два тарифа × будни/выходные. День 08–17, Вечер-ночь 17–08
+// Настройки из админки. Значения — заглушки до ответа заказчика (п.12 правок 22.09).
+// tabFrom — граница вкладок День/Ночь; tariff* — границы тарифов; prep — подготовка дома после гостя, ч.
+const CFG={tabFrom:8,tariffDayFrom:8,tariffNightFrom:20,minH:{VIP:4,STANDARD:3},maxH:48,prep:{base:1,tub:2,VIP:2},tubPrice:15000,durs:[3,4,5,6,8,12,24,48],nowHour:11,tubHouses:['energiya']};
 const PRICES={VIP:{dayWd:30000,dayWe:40000,eveWd:38000,eveWe:45000},STANDARD:{dayWd:17000,dayWe:25000,eveWd:23000,eveWe:30000}};
-const DAY_FROM=8,DAY_TO=17,MIN_H=3;
 const HOUSES=[
  {id:'dyhanie',n:'01',tier:'VIP',name:'ДЫХАНИЕ',slogan:'Вдохни глубже',area:120,guests:14,min:3,img:1,mat:'Светлый дуб, лён и матовый камень',art:'туманный хвойный лес',aroma:'эвкалипт и мята',ritual:'Парение здесь свежее и лёгкое, с травяным чаем после.',prog:1},
  {id:'sila',n:'02',tier:'VIP',name:'СИЛА',slogan:'Верни свою энергию',area:110,guests:12,min:3,img:2,mat:'Тёмный дуб, сланец и чёрный металл',art:'скала',aroma:'кедр и можжевельник',ritual:'Хвойное парение и контрастное охлаждение в чане.',prog:2},
@@ -1118,7 +1270,10 @@ const HOUSES=[
  {id:'stihiya',n:'07',tier:'STANDARD',name:'СТИХИЯ',slogan:'Почувствуй стихию',area:90,guests:10,min:3,img:7,soon:true,mat:'Сланец, термодерево и тёмная керамика',art:'вода и скалы',aroma:'хвоя и древесные ноты',ritual:'Чередование жара и прохлады.',prog:2},
  {id:'impuls',n:'08',tier:'STANDARD',name:'ИМПУЛЬС',slogan:'Переключись на отдых',area:80,guests:8,min:3,img:8,soon:true,mat:'Графит, тёмное дерево и дымчатое стекло',art:'волна',aroma:'грейпфрут и имбирь',ritual:'Активное парение и тонизирующий чай.',prog:0},
 ];
+HOUSES.forEach(h=>{h.min=CFG.minH[h.tier];h.tubIncl=h.tier==='VIP';h.tub=h.tubIncl||CFG.tubHouses.includes(h.id);});
 const OPEN_HOUSES=HOUSES.filter(h=>!h.soon);
+const SERVICE_CATS=[{name:'Парение с пармастером',desc:'От классики до контраста в чане',img:'img/h2_acc.png'},{name:'Массаж',desc:'Тёплое масло, в комнате отдыха',img:'img/h6_acc.png'},{name:'Пилинг',desc:'Скраб на соли и мёде',img:'img/h3_acc.png'},{name:'Авторские программы',desc:'Готовим новую категорию',soon:true}];
+const MERCH=[{name:'Полотенце SHIPA',price:12000},{name:'Банная шапка',price:6000},{name:'Тюрбан',price:7000},{name:'Кружка',price:5000},{name:'Масло для парения',price:4500},{name:'Дубовый веник',price:3500}];
 const PROGRAMS=[
  {name:'Классическое парение',dur:'1,5 часа',who:'для тех, кто впервые',price:25000,desc:'Прогрев, два захода с веником, отдых с чаем. Темп — по самочувствию.'},
  {name:'Травяное парение',dur:'1,5 часа',who:'для спокойного вечера',price:28000,desc:'Настой степных трав, мягкий пар, медленный ритм. После — чай из тех же трав.'},
@@ -1191,62 +1346,92 @@ class Component extends DCLogic {
 
   dateAt(i){const d=new Date(this.today);d.setDate(d.getDate()+i);return d;}
   isWeekend(i){const w=this.dateAt(i).getDay();return w===0||w===6;}
-  isDayHour(hr){const x=((hr%24)+24)%24;return x>=DAY_FROM&&x<DAY_TO;}
-  rateAt(h,di,hour){const p=PRICES[h.tier];const we=this.isWeekend(di);return this.isDayHour(hour)?(we?p.dayWe:p.dayWd):(we?p.eveWe:p.eveWd);}
+  isDayHour(hr){const x=((hr%24)+24)%24;return x>=CFG.tariffDayFrom&&x<CFG.tariffNightFrom;}
+  rateAt(h,di,hour){const p=PRICES[h.tier];const we=this.isWeekend(di+Math.floor(hour/24));return this.isDayHour(hour)?(we?p.dayWe:p.dayWd):(we?p.eveWe:p.eveWd);}
   fromPrice(h){return PRICES[h.tier].dayWd;}
-  // B3: занятые интервалы [start,end] в часах; буфер уборки уже включён. 0–2 на дом/дату.
+  // Брони гостей [start,end] в целых часах, без подготовки дома. 0–2 на дом/дату.
   busy(hi,di){
     const sc=this.props.availabilityScenario||'normal';
     if(sc==='none')return [[0,24]];
     if(sc==='one')return hi===2?[]:[[0,24]];
     if(FULL_DAYS.includes(di))return [[0,24]];
     const v=(hi*7+di*3)%9;
-    if(v===0)return [[15,20]];
-    if(v===1)return [[10,13],[18,23]];
-    if(v===2)return [[19,24]];
+    if(v===0)return [[15,19]];
+    if(v===1)return [[10,13],[18,22]];
+    if(v===2)return [[21,24]];
     if(v===3)return [[8,12]];
     return [];
   }
-  // до ближайшей брони, включая следующие дни; потолок 72 ч
-  nextBusy(hi,di,start){for(let k=0;k<4;k++){const nxt=this.busy(hi,di+k).map(b=>b[0]+k*24).filter(s=>s>=start).sort((a,b)=>a-b)[0];if(nxt!==undefined)return nxt;}return undefined;}
-  maxDur(hi,di,start){const nxt=this.nextBusy(hi,di,start);return Math.min(72,(nxt??(start+72))-start);}
-  slotFree(hi,di,t){return !this.busy(hi,di).some(([s,e])=>t>=s&&t<e)&&this.maxDur(hi,di,t)>=MIN_H;}
-  anyFree(hi,di){for(let k=0;k<48;k++)if(this.slotFree(hi,di,k/2))return true;return false;}
-  cost(h,di,start,dur){const parts={};for(let k=0;k<dur;k++){const hr=start+k;const key=this.isDayHour(hr)?'day':'eve';const r=this.rateAt(h,di,hr);parts[key]=parts[key]||{h:0,r};parts[key].h++;}return parts;}
-  firstFreeStart(hi,di){for(let t=DAY_FROM;t<24;t+=0.5)if(this.slotFree(hi,di,t))return t;for(let t=0;t<DAY_FROM;t+=0.5)if(this.slotFree(hi,di,t))return t;return null;}
+  // H — абсолютный час от 00:00 сегодняшнего дня
+  abs(hi,d0,d1){const r=[];for(let d=Math.max(0,d0);d<=d1;d++)this.busy(hi,d).forEach(([s,e])=>r.push([d*24+s,d*24+e]));return r;}
+  prepOf(h,tub){return h.tier==='VIP'?CFG.prep.VIP:tub?CFG.prep.tub:CFG.prep.base;}
+  cell(hi,H){if(H<CFG.nowHour)return 'past';const d=Math.floor(H/24);const bs=this.abs(hi,d-1,d);if(bs.some(([s,e])=>H>=s&&H<e))return 'busy';const p=this.prepOf(HOUSES[hi],false);if(bs.some(([s,e])=>H>=e&&H<e+p))return 'prep';return 'free';}
+  nextBusyH(hi,H){for(let k=H;k<H+CFG.maxH+4;k++)if(this.cell(hi,k)==='busy')return k;return null;}
+  maxFrom(hi,H,tub){const n=this.nextBusyH(hi,H);return n==null?CFG.maxH:Math.min(CFG.maxH,n-H-this.prepOf(HOUSES[hi],tub));}
+  canStart(hi,H){return this.cell(hi,H)==='free'&&this.maxFrom(hi,H,false)>=HOUSES[hi].min;}
+  anyFree(hi,di){const tf=di*24+CFG.tabFrom;for(let k=0;k<24;k++)if(this.canStart(hi,tf+k))return true;return false;}
+  firstFreeStart(hi,di){const tf=di*24+CFG.tabFrom;for(let k=0;k<24;k++)if(this.canStart(hi,tf+k))return tf+k;return null;}
+  initTime(hi,di){const f=this.firstFreeStart(hi,di);return {start:null,dur:null,tub:false,tab:f!=null&&f>=di*24+CFG.tabFrom+12?'night':'day'};}
+  freeRuns(hi,tf){const r=[];let s=null;for(let k=0;k<=24;k++){const f=k<24&&this.cell(hi,tf+k)==='free';if(f&&s==null)s=k;if(!f&&s!=null){r.push([tf+s,tf+k]);s=null;}}if(!r.length)return 'нет';if(r.length===1&&r[0][1]-r[0][0]===24)return 'весь день и ночь';const p=H=>String(H%24).padStart(2,'0');return r.map(([a,b])=>p(a)+'–'+p(b)).join(', ');}
 
-  openBooking(houseId,date,guests,step=1){
+  openBooking(houseId,date,guests,step){
     const h=houseId?HOUSES.find(x=>x.id===houseId):null;if(h&&h.soon)return;
+    const g=guests||this.state.quick.guests||6;
+    if(this.props.preorderMode){this.setState({menuOpen:false,sendError:false,bk:{pre:true,step:h?2:1,houseId:h?h.id:null,date:null,guests:g,month:5,fromHouse:!!h}});return;}
+    const di=date??0;if(step==null)step=h?3:1;
     if(step===2){this.setState({loadingSlots:true});setTimeout(()=>this.setState({loadingSlots:false}),700);}
-    const g=guests||this.state.quick.guests||6;const di=date??0;
-    const start=step===3&&h?this.firstFreeStart(HOUSES.indexOf(h),di):null;
-    this.setState({menuOpen:false,sendError:false,bk:{step,houseId:houseId||null,date:di,guests:g,month:0,start,dur:MIN_H,durMore:false,durCustom:false,extras:[],fromHouse:!!houseId}});
+    const init=h?this.initTime(HOUSES.indexOf(h),di):{start:null,dur:null,tub:false,tab:'day'};
+    this.setState({menuOpen:false,sendError:false,bk:{step,houseId:h?h.id:null,date:di,guests:g,month:0,extras:[],fromHouse:!!h,...init}});
   }
+  pickHouse(id){const hi=HOUSES.findIndex(x=>x.id===id);this.setBk({houseId:id,step:3,...this.initTime(hi,this.state.bk.date)});}
   closeBooking(){const done=this.state.bk&&this.state.bk.step===5;this.setState({bk:null,savedBk:null});if(done)this.go('home');}
   setBk(patch){this.setState(s=>({bk:{...s.bk,...patch}}));}
   back(){const {bk}=this.state;if(!bk)return;
+    if(bk.pre){if(bk.step===3){this.setBk({step:2});return;}if(bk.step===2){if(bk.fromHouse){this.closeBooking();return;}this.setBk({step:1});}return;}
     if(bk.step===4){this.setBk({step:3});return;}
     if(bk.step===3){if(bk.fromHouse){this.closeBooking();return;}this.setBk({step:2});return;}
-    if(bk.step===2){this.setBk({step:1,houseId:bk.fromHouse?bk.houseId:null});return;}}
+    if(bk.step===2){this.setBk({step:1,houseId:null});return;}}
   next(){
-    const {bk}=this.state;
-    const toStep3=()=>{const hi=HOUSES.findIndex(x=>x.id===bk.houseId);this.setBk({step:3,start:this.firstFreeStart(hi,bk.date),dur:MIN_H});};
-    if(bk.step===1){if(bk.houseId){toStep3();return;}this.setState({loadingSlots:true});this.setBk({step:2});setTimeout(()=>this.setState({loadingSlots:false}),700);return;}
-    if(bk.step===2){toStep3();return;}
+    const {bk,form}=this.state;
+    const save=()=>{try{localStorage.setItem('shipa_user',JSON.stringify({name:form.name,phone:form.phone,lastHouse:bk.houseId}));}catch(e){}};
+    if(bk.pre){if(bk.step===2){this.setBk({step:3});return;}if(bk.step===3){save();this.setBk({step:5});}return;}
+    if(bk.step===1){if(bk.houseId){this.pickHouse(bk.houseId);return;}this.setState({loadingSlots:true});this.setBk({step:2});setTimeout(()=>this.setState({loadingSlots:false}),700);return;}
     if(bk.step===3){this.setBk({step:4});return;}
-    if(bk.step===4){const {form}=this.state;if(form.phone.replace(/\D/g,'').endsWith('000')){this.setState({sendError:true});return;}
-      try{localStorage.setItem('shipa_user',JSON.stringify({name:form.name,phone:form.phone,lastHouse:bk.houseId}));}catch(e){}
-      this.setState({sendError:false});this.setBk({step:5});}
+    if(bk.step===4){if(form.phone.replace(/\D/g,'').endsWith('000')){this.setState({sendError:true});return;}save();this.setState({sendError:false});this.setBk({step:5});}
   }
 
   // G1/G2: активное — BRICK; вторичное — кремовое с рамкой NAVY
   chip(active,extra=''){return `height:44px;padding:0 16px;border-radius:999px;border:1px solid ${active?BRICK:'rgba(10,47,79,.3)'};background:${active?BRICK:CREAM};color:${active?CREAM:NAVY};font-size:14px;font-weight:500;white-space:nowrap;letter-spacing:.02em;flex:0 0 auto;${extra}`;}
   dayStyle(active,muted,w){return `flex:0 0 auto;width:${w||'56px'};height:64px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid ${active?BRICK:'rgba(10,47,79,.25)'};background:${active?BRICK:CREAM};color:${active?CREAM:NAVY};opacity:${muted&&!active?'.4':'1'};`;}
 
+  cellStyle(c){const b='height:64px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-variant-numeric:tabular-nums;position:relative;';
+    if(c==='sel')return b+`background:${NAVY};color:${CREAM};border:1px solid ${NAVY};`;
+    if(c==='busy')return b+`background:${BRICK};color:rgba(249,239,227,.82);border:1px solid ${BRICK};`;
+    if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.15) 0 6px,transparent 6px 12px),${CREAM};color:rgba(59,47,42,.62);border:1px solid rgba(59,47,42,.22);`;
+    if(c==='past')return b+`background:transparent;color:rgba(10,47,79,.22);border:1px dashed rgba(10,47,79,.14);`;
+    return b+`background:${CREAM};color:${NAVY};border:1px solid rgba(10,47,79,.4);`;}
+  segStyle(c){const b='flex:1;height:16px;border-radius:3px;';
+    if(c==='busy')return b+`background:${BRICK};`;
+    if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.3) 0 3px,rgba(59,47,42,.08) 3px 6px);`;
+    if(c==='past')return b+'background:rgba(10,47,79,.07);';
+    return b+`background:${CREAM};box-shadow:inset 0 0 0 1px rgba(10,47,79,.3);`;}
+  cta(ok,label){return {bookingNext:()=>this.next(),bookingNextDisabled:!ok,bookingCtaLabel:label,bookingCtaStyle:`width:100%;max-width:520px;margin:0 auto;display:block;height:56px;border-radius:999px;background:${ok?BRICK:'rgba(10,47,79,.15)'};color:${ok?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.04em;`};}
+  calendar(bk,pre){
+    const mo=bk.month||0;const first=new Date(this.today.getFullYear(),this.today.getMonth()+mo,1);
+    const lead=(first.getDay()+6)%7;const dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
+    const dayOff=dd=>Math.round((dd-this.today)/86400000);const openOff=dayOff(new Date(2027,1,1));
+    const monthDays=[...Array.from({length:lead},()=>({day:'',disabled:true,style:'height:44px;'})),...Array.from({length:dim},(_,k)=>{const dd=new Date(first.getFullYear(),first.getMonth(),k+1);const i=dayOff(dd);const past=i<0||(pre&&i<openOff);const act=bk.date===i;const full=!pre&&FULL_DAYS.includes(i);const tdy=i===0;
+      return {day:k+1,disabled:past,select:()=>this.setBk({date:i}),style:`height:44px;border-radius:999px;font-size:15px;font-weight:${act||tdy?600:400};background:${act?BRICK:'transparent'};color:${act?CREAM:past?'rgba(10,47,79,.25)':full?'rgba(10,47,79,.4)':NAVY};text-decoration:${full&&!act?'line-through':'none'};box-shadow:${tdy&&!act?`inset 0 0 0 1px ${BRICK}`:'none'};`};})];
+    const arr=dis=>`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${dis?'.3':'1'};`;
+    return {weekTitle:`${MON_NOM[first.getMonth()]} ${first.getFullYear()}`,monthDays,wdHead:['пн','вт','ср','чт','пт','сб','вс'].map(l=>({l})),prevWeek:()=>mo>0&&this.setBk({month:mo-1}),nextWeek:()=>mo<11&&this.setBk({month:mo+1}),prevWeekStyle:arr(mo===0),nextWeekStyle:arr(mo===11),
+      guestsMinus:()=>this.setBk({guests:Math.max(1,bk.guests-1)}),guestsPlus:()=>this.setBk({guests:Math.min(20,bk.guests+1)})};
+  }
+
   renderVals(){
+    CFG.tabFrom=this.props.dayStartHour??8;const pre=!!this.props.preorderMode;
     const s=this.state,bk=s.bk;const screen=s.screen;const wide=s.isWide;
     const showRatings=this.props.showRatings??false;
-    const houseView=HOUSES.map(h=>({...h,soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:`до ${h.guests} гостей · парная · чан${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceShort:(this.fromPrice(h)/1000)+' 000',
+    const houseView=HOUSES.map(h=>({...h,soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:`до ${h.guests} гостей · парная${h.tub?' · горячий чан':''}${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceShort:(this.fromPrice(h)/1000)+' 000',
       open:()=>!h.soon&&this.go('house',h.id),book:()=>this.openBooking(h.id)}));
     const openView=houseView.filter(h=>!h.soon);
     const housesRowStyle=wide?'display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:0 20px;':'display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;scroll-snap-type:x mandatory;';
@@ -1270,8 +1455,9 @@ class Component extends DCLogic {
     const hIdx=Math.max(0,HOUSES.findIndex(x=>x.id===s.houseId));const hRaw=HOUSES[hIdx];
     const p=PRICES[hRaw.tier];const prog=PROGRAMS[hRaw.prog];const progUn=!!prog.unavailable;
     const house={...hRaw,priceShort:(this.fromPrice(hRaw)/1000)+' 000',legend:`${hRaw.mat}. Картина — ${hRaw.art}. Аромат — ${hRaw.aroma}. ${hRaw.ritual}`,
-      inside:['парная','чан','комната отдыха','терраса','душ и санузел','кухонная зона',...(hRaw.tier==='VIP'?['бассейн','зона барбекю']:[])].map(n=>({name:n})),
-      priceRows:[{label:'День',hours:'08:00–17:00',wd:fmt(p.dayWd)+'/ч',we:fmt(p.dayWe)+'/ч'},{label:'Вечер-ночь',hours:'17:00–08:00',wd:fmt(p.eveWd)+'/ч',we:fmt(p.eveWe)+'/ч'}],
+      inside:[...(hRaw.tubIncl?['горячий чан на дровах']:[]),'парная','комната отдыха','терраса','душ и санузел','кухонная зона',...(hRaw.tier==='VIP'?['бассейн','зона барбекю']:[])].map(n=>({name:n})),
+      hasTubExtra:hRaw.tier==='STANDARD'&&hRaw.tub,tubExtraText:`+${fmt(CFG.tubPrice)} · готовим к вашему приезду`,
+      priceRows:[{label:'День',hours:`${hh(CFG.tariffDayFrom)}–${hh(CFG.tariffNightFrom)}`,wd:fmt(p.dayWd)+'/ч',we:fmt(p.dayWe)+'/ч'},{label:'Ночь',hours:`${hh(CFG.tariffNightFrom)}–${hh(CFG.tariffDayFrom)}`,wd:fmt(p.eveWd)+'/ч',we:fmt(p.eveWe)+'/ч'}],
       program:{...prog,priceText:fmt(prog.price),kicker:progUn?'На эту дату недоступно':'Подходит по атмосфере',cardStyle:`width:100%;text-align:left;background:#0A2F4F;color:#F9EFE3;padding:22px 20px;border-radius:20px;opacity:${progUn?'.6':'1'};`}};
     const gsrc=[`img/h${hRaw.img}_int.png`,`img/h${hRaw.img}_art.png`,`img/h${hRaw.img}_acc.png`];
     const gallery=gsrc.map((src,i)=>({src,style:`width:100%;height:100%;background:#3B2F2A url(${src}) center/cover no-repeat;`,gridStyle:`overflow:hidden;border-radius:16px;${i===0?'grid-row:span 2;':''}`,open:()=>this.setState({lightbox:i})}));
@@ -1292,86 +1478,110 @@ class Component extends DCLogic {
     const langsDark=LANGS.map(c=>({code:c,select:()=>this.setState({lang:c}),style:`height:36px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.1em;background:${s.lang===c?BRICK:'transparent'};color:${CREAM};border:1px solid ${s.lang===c?BRICK:'rgba(249,239,227,.4)'};`}));
     const langsLight=LANGS.map(c=>({code:c,select:()=>this.setState({lang:c}),style:`height:40px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.1em;background:${s.lang===c?BRICK:CREAM};color:${s.lang===c?CREAM:NAVY};border:1px solid ${s.lang===c?BRICK:'rgba(10,47,79,.3)'};`}));
     const inHouse=screen==='house';
-    const stickyLabel=inHouse?`Забронировать ${hRaw.name} · от ${fmt(this.fromPrice(hRaw))}/ч`:'Забронировать';
+    const bookLabel=pre?'Записаться на открытие':'Забронировать';
+    const stickyLabel=pre?(inHouse?`Записаться на открытие · ${hRaw.name}`:bookLabel):inHouse?`Забронировать ${hRaw.name} · от ${fmt(this.fromPrice(hRaw))}/ч`:bookLabel;
 
     let B={};
-    if(bk){
+    const okC=s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10;
+    const guestsTxt=n=>`${n} ${plural(n,'гость','гостя','гостей')}`;
+    if(bk&&bk.pre){
+      const hSel=HOUSES.find(x=>x.id===bk.houseId);
+      const d=bk.date!=null?this.dateAt(bk.date):null;
+      const dateText=d?`${WD_NOM[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`:'';
+      const houseName=bk.houseId==='any'?'Любой дом':hSel?hSel.name:'';
+      const canNext=bk.step===2?bk.date!=null:bk.step===3?okC:false;
+      const preHouses=[{id:'any',kicker:'ПОДБЕРЁМ',name:'ЛЮБОЙ ДОМ',sub:'По числу гостей и дате',bgStyle:'width:100%;height:100%;background:#0A2F4F url(brand/mark-cream.png) center/46% no-repeat;'},...OPEN_HOUSES.map(h=>({id:h.id,kicker:`${h.n} / ${h.tier}`,name:h.name,sub:`до ${h.guests} гостей · ${h.slogan.toLowerCase()}`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;`}))]
+        .map(x=>({...x,select:()=>this.setBk({houseId:x.id,step:2}),style:`display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:10px 14px 10px 10px;border-radius:18px;border:${bk.houseId===x.id?`2px solid ${BRICK}`:'1px solid rgba(10,47,79,.2)'};background:${CREAM};`}));
+      B={...this.calendar(bk,true),stepSegs:[1,2,3].map(i=>({style:`flex:1;height:2px;background:${i<=Math.min(bk.step,3)?BRICK:'rgba(10,47,79,.15)'};`})),
+        preStep1:bk.step===1,showCal:bk.step===2,showContacts:bk.step===3,preDone:bk.step===5,step2:false,step3:false,stepDone:false,
+        calHouse:bk.houseId==='any'?'ЛЮБОЙ ДОМ':hSel?'ДОМ '+hSel.name:'',calTitle:'Когда хотели бы приехать?',calSub:'Точные дату и время подтвердим, когда откроем бронирование',calNote:'Комплекс открывается в феврале 2027. Более ранние даты недоступны.',
+        preHouses,cName:houseName,cLine1:dateText,cLine2:guestsTxt(bk.guests),cLines:[],sendError:false,
+        canBack:bk.step>=2&&bk.step<=3,noBack:!(bk.step>=2&&bk.step<=3),bookingBack:()=>this.back(),backLabel:bk.step===3?'К дате':'К выбору дома',
+        bookingCta:bk.step===2||bk.step===3,...this.cta(canNext,bk.step===2?'Продолжить':'Записаться на открытие'),hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false,
+        bk:{...bk,houseName}};
+    } else if(bk){
       const hSel=HOUSES.find(x=>x.id===bk.houseId);
       const d=this.dateAt(bk.date);
       const stepSegs=[1,2,3,4].map(i=>({style:`flex:1;height:2px;background:${i<=Math.min(bk.step,4)?BRICK:'rgba(10,47,79,.15)'};`}));
-      const mo=bk.month||0;const first=new Date(this.today.getFullYear(),this.today.getMonth()+mo,1);
-      const lead=(first.getDay()+6)%7;const dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
-      const dayOff=dd=>Math.round((dd-this.today)/86400000);
-      const monthDays=[...Array.from({length:lead},()=>({day:'',disabled:true,style:'height:44px;'})),...Array.from({length:dim},(_,k)=>{const dd=new Date(first.getFullYear(),first.getMonth(),k+1);const i=dayOff(dd);const past=i<0;const act=bk.date===i;const full=FULL_DAYS.includes(i);const tdy=i===0;
-        return {day:k+1,disabled:past,select:()=>this.setBk({date:i}),style:`height:44px;border-radius:999px;font-size:15px;font-weight:${act||tdy?600:400};background:${act?BRICK:'transparent'};color:${act?CREAM:past?'rgba(10,47,79,.25)':full?'rgba(10,47,79,.4)':NAVY};text-decoration:${full&&!act?'line-through':'none'};box-shadow:${tdy&&!act?`inset 0 0 0 1px ${BRICK}`:'none'};`};})];
-      const wdHead=['пн','вт','ср','чт','пт','сб','вс'].map(l=>({l}));
-      const cands=OPEN_HOUSES.map(h=>{const hi=HOUSES.indexOf(h);return {h,hi,b:this.busy(hi,bk.date),full:!this.anyFree(hi,bk.date),fits:h.guests>=bk.guests};});
+      const cands=OPEN_HOUSES.map(h=>{const hi=HOUSES.indexOf(h);return {h,hi,full:!this.anyFree(hi,bk.date),fits:h.guests>=bk.guests};});
       const free=cands.filter(c=>!c.full&&c.fits);
       const sorted=[...free,...cands.filter(c=>!c.full&&!c.fits),...cands.filter(c=>c.full)];
       const sortId=bk.sort||'fit';let ordered=sorted;
-      const minRate=c=>Math.min(this.rateAt(c.h,bk.date,12),this.rateAt(c.h,bk.date,20));
+      const minRate=c=>Math.min(this.rateAt(c.h,bk.date,12),this.rateAt(c.h,bk.date,22));
       if(sortId==='price')ordered=[...sorted].sort((a,b)=>((a.full||!a.fits)?1:0)-((b.full||!b.fits)?1:0)||minRate(a)-minRate(b));
       if(sortId==='vip')ordered=sorted.filter(c=>c.h.tier==='VIP');
       if(sortId==='std')ordered=sorted.filter(c=>c.h.tier==='STANDARD');
       const sortChips=[['fit','Подходящие'],['price','Сначала дешевле'],['vip','VIP'],['std','Standard']].map(([id,label])=>({label,style:this.chip(sortId===id,'height:40px;font-size:13px;'),select:()=>this.setBk({sort:id})}));
-      const step2Houses=ordered.map(c=>{const dis=!c.fits||c.full;const act=bk.houseId===c.h.id;const we=this.isWeekend(bk.date);const pr=PRICES[c.h.tier];return {...c.h,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${c.h.img}_int.png) center/cover no-repeat;`,rating:RATING[c.hi],facts:`${c.h.area} м² · до ${c.h.guests} гостей · парная · чан${c.h.tier==='VIP'?' · бассейн':''}`,
-        priceText:'от '+fmt(Math.min(we?pr.dayWe:pr.dayWd,we?pr.eveWe:pr.eveWd))+'/час',priceLabel:we?'на эту дату · выходной тариф':'на эту дату · будни',
-        note:!c.fits?`Только до ${c.h.guests} гостей`:c.full?'Занят на эту дату':c.b.length?'Занято: '+c.b.map(([x,y])=>`${hh(x)}–${hh(y)}`).join(', '):'Свободен весь день',noteColor:c.full||!c.fits?'rgba(10,47,79,.5)':c.b.length?BRICK:'#2F6B3A',disabled:dis,
-        style:`text-align:left;padding:14px;border-radius:20px;border:${act?`2px solid ${BRICK}`:'1px solid rgba(10,47,79,.2)'};background:${act?'rgba(193,92,34,.05)':'rgba(10,47,79,.04)'};opacity:${dis?'.5':'1'};`,
-        btnLabel:act?'Выбрано':dis?'Недоступно':'Выбрать',btnStyle:`height:44px;padding:0 20px;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;background:${dis&&!act?'transparent':BRICK};color:${dis&&!act?'rgba(10,47,79,.5)':CREAM};border:${dis&&!act?'1px solid rgba(10,47,79,.25)':'0'};`,
-        select:()=>!dis&&this.setBk({houseId:c.h.id}),view:()=>{this.setState({savedBk:bk,bk:null});this.go('house',c.h.id);}};});
+      const tf=bk.date*24+CFG.tabFrom;
+      const step2Houses=ordered.map(c=>{const dis=!c.fits||c.full;const we=this.isWeekend(bk.date);const pr=PRICES[c.h.tier];
+        return {...c.h,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${c.h.img}_int.png) center/cover no-repeat;`,rating:RATING[c.hi],facts:`до ${c.h.guests} гостей${c.h.tub?' · горячий чан':''} · от ${c.h.min} ч`,
+          priceText:'от '+fmt(Math.min(we?pr.dayWe:pr.dayWd,we?pr.eveWe:pr.eveWd))+'/час',
+          segs:Array.from({length:24},(_,k)=>({style:this.segStyle(this.cell(c.hi,tf+k))})),
+          note:!c.fits?`Только до ${c.h.guests} гостей`:c.full?'На эту дату нет подходящего окна':'Свободно: '+this.freeRuns(c.hi,tf),noteColor:dis?'rgba(10,47,79,.55)':NAVY,disabled:dis,
+          style:`padding:14px;border-radius:20px;border:1px solid rgba(10,47,79,.2);background:rgba(10,47,79,.04);opacity:${dis?'.5':'1'};`,
+          btnLabel:dis?'Недоступно':'Выбрать время',btnStyle:`height:44px;padding:0 20px;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;background:${dis?'transparent':BRICK};color:${dis?'rgba(10,47,79,.5)':CREAM};border:${dis?'1px solid rgba(10,47,79,.25)':'0'};`,
+          select:()=>!dis&&this.pickHouse(c.h.id),view:()=>{this.setState({savedBk:bk,bk:null});this.go('house',c.h.id);}};});
       const noneFree=!s.loadingSlots&&free.length===0;const listFree=!s.loadingSlots&&free.length>0;
       const nearestDates=[];for(let i=0;i<30&&nearestDates.length<2;i++){if(i===bk.date)continue;if(OPEN_HOUSES.some(h=>h.guests>=bk.guests&&this.anyFree(HOUSES.indexOf(h),i))){const dd=this.dateAt(i);nearestDates.push({label:`${WD_NOM[dd.getDay()]}, ${dd.getDate()} ${MON[dd.getMonth()]}`,select:()=>this.setBk({date:i})});}}
-      // step 3
-      const hh0=hSel||OPEN_HOUSES[0];const hi0=HOUSES.indexOf(hh0);
-      const busyList=this.busy(hi0,bk.date);
-      const start=bk.start??DAY_FROM;
-      const maxD=Math.max(MIN_H,this.maxDur(hi0,bk.date,start));
-      const dur=Math.max(MIN_H,Math.min(bk.dur,maxD));
-      const timeSlots=Array.from({length:48},(_,k)=>{const t=k/2;const ok=this.slotFree(hi0,bk.date,t);const act=bk.start===t;return {label:hh(t),disabled:!ok,select:()=>this.setBk({start:t,dur:Math.min(bk.dur,Math.max(MIN_H,this.maxDur(hi0,bk.date,t)))}),
-        style:`height:44px;border-radius:12px;font-size:14px;font-weight:${act?600:500};border:1px solid ${act?BRICK:ok?'rgba(10,47,79,.25)':'rgba(10,47,79,.08)'};background:${act?BRICK:ok?CREAM:'rgba(10,47,79,.04)'};color:${act?CREAM:ok?NAVY:'rgba(10,47,79,.3)'};text-decoration:${ok?'none':'line-through'};`};});
-      const dchip=(label,act,dis,fn)=>({label,disabled:dis,select:fn,style:`height:44px;border-radius:999px;font-size:14px;font-weight:600;border:1px solid ${act?BRICK:dis?'rgba(10,47,79,.12)':'rgba(10,47,79,.3)'};background:${act?BRICK:CREAM};color:${act?CREAM:dis?'rgba(10,47,79,.3)':NAVY};padding:0;`});
-      const pick=v=>this.setBk({dur:v,durCustom:false});
-      const durChips=[...[3,4,5,6].map(v=>dchip(v+' ч',dur===v&&!bk.durCustom,v>maxD,()=>pick(v))),dchip('Более',bk.durMore,false,()=>this.setBk({durMore:!bk.durMore}))];
-      const durChips2=[...[8,10,12,24].map(v=>dchip(v+' ч',dur===v&&!bk.durCustom,v>maxD,()=>pick(v))),dchip('Другое',bk.durCustom,false,()=>this.setBk({durCustom:true}))];
-      const nxt=this.nextBusy(hi0,bk.date,start);
-      const nxtDay=nxt!==undefined?Math.floor(nxt/24):0;
-      const durHint=(nxt!==undefined&&maxD<72)?`Дом свободен до ${hh(nxt)}${nxtDay?' ('+nxtDay+' дн. позже)':''} — максимум ${Math.floor(maxD)} ${plural(Math.floor(maxD),'час','часа','часов')}`:'';
+      // шаг 3
+      const h0=hSel||OPEN_HOUSES[0];const hi0=HOUSES.indexOf(h0);
+      const night=bk.tab==='night';const base=night?tf+12:tf;
+      const st=bk.start;const hasStart=st!=null;
+      const tubOpt=h0.tier==='STANDARD'&&h0.tub;const tubOn=tubOpt&&!!bk.tub;
+      const maxPlain=hasStart?this.maxFrom(hi0,st,false):0;const maxEff=hasStart?this.maxFrom(hi0,st,tubOn):0;
+      const dur=bk.dur;const end=hasStart&&dur?st+dur:null;
+      const hourCells=Array.from({length:12},(_,k)=>{const H=base+k;const c=this.cell(hi0,H);const inSel=hasStart&&(end!=null?(H>=st&&H<end):H===st);
+        return {label:hh(H),sub:c==='busy'?'занято':c==='prep'?'подготовка':'',hasSub:!inSel&&(c==='busy'||c==='prep'),cont:!night&&k===11&&inSel&&end!=null&&end>base+12,disabled:c!=='free',
+          select:()=>{const m=this.maxFrom(hi0,H,tubOn);this.setBk({start:H,dur:bk.dur&&bk.dur<=m?bk.dur:null});},style:this.cellStyle(inSel?'sel':c)};});
+      const tabs=[['day','День',tf],['night','Ночь',tf+12]].map(([id,label,from])=>{const a=bk.tab===id;return {label,range:`${hh(from)}–${hh(from+12)}`,select:()=>this.setBk({tab:id}),style:`height:52px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};`};});
+      const dayStrip=Array.from({length:14},(_,i)=>{const dd=this.dateAt(i);return {wd:i===0?'сегодня':WD[dd.getDay()],day:dd.getDate(),style:this.dayStyle(bk.date===i,!this.anyFree(hi0,i),i===0?'72px':'52px'),select:()=>this.setBk({date:i,...this.initTime(hi0,i)})};});
+      const nb=hasStart?this.nextBusyH(hi0,st):null;
+      const whenH=H=>{const di=Math.floor(H/24);return (di!==Math.floor(st/24)?WD[this.dateAt(di).getDay()]+' ':'')+hh(H);};
+      const durChips=CFG.durs.filter(v=>v>=h0.min&&v<=CFG.maxH).map(v=>{const off=v>maxEff;const act=dur===v;
+        return {label:v===24?'сутки':v===48?'двое суток':v+' ч',disabled:off,hasReason:off,reason:off?(v>maxPlain?(nb!=null?'занято с '+whenH(nb):'недоступно'):'с чаном не помещается'):'',
+          select:()=>!off&&this.setBk({dur:v}),
+          style:`width:100%;height:48px;border-radius:999px;font-size:14px;font-weight:600;line-height:1.1;padding:0 4px;border:1px ${off?'dashed':'solid'} ${act?NAVY:off?'rgba(10,47,79,.22)':'rgba(10,47,79,.4)'};background:${act?NAVY:CREAM};color:${act?CREAM:off?'rgba(10,47,79,.35)':NAVY};`};});
+      const parts={day:{h:0,sum:0},eve:{h:0,sum:0}};
+      if(end!=null)for(let H=st;H<end;H++){const k=this.isDayHour(H)?'day':'eve';parts[k].h++;parts[k].sum+=this.rateAt(h0,0,H);}
+      const over=Math.max(0,bk.guests-10)*3000;const tubCost=tubOn?CFG.tubPrice:0;const total=parts.day.sum+parts.eve.sum+over+tubCost;
+      const hrs=n=>`${n} ${plural(n,'час','часа','часов')}`;
+      const priceBreak=[...(parts.day.h?[{l:`${hrs(parts.day.h)} по дневному тарифу`,v:fmt(parts.day.sum)}]:[]),...(parts.eve.h?[{l:`${hrs(parts.eve.h)} по ночному тарифу`,v:fmt(parts.eve.sum)}]:[]),...(tubCost?[{l:'Горячий чан',v:fmt(tubCost)}]:[]),...(over?[{l:`Гости свыше 10 (${bk.guests-10} × 3 000 ₸)`,v:fmt(over)}]:[])];
+      const sd=this.dateAt(Math.floor((st??tf)/24));const endD=end!=null?this.dateAt(Math.floor(end/24)):sd;const cross=end!=null&&Math.floor(end/24)!==Math.floor(st/24);
+      const summaryText=end!=null?`${hh(st)}–${hh(end)}${cross?' '+WD[endD.getDay()]:''} · ${hrs(dur)} · ${fmt(total)}`:hasStart?`Начало ${hh(st)} · выберите длительность`:'Выберите час начала';
+      const whenText=end!=null?`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}, ${hh(st)} – ${cross?`${WD_NOM[endD.getDay()]} ${endD.getDate()} ${MON[endD.getMonth()]}, `:''}${hh(end)}`:'';
       const extraRows=EXTRAS.map(e=>{const on=bk.extras.includes(e.id);return {...e,priceText:(e.from?'от ':'')+fmt(e.price),toggle:()=>this.setBk({extras:on?bk.extras.filter(x=>x!==e.id):[...bk.extras,e.id]}),
         style:'display:flex;align-items:center;gap:14px;width:100%;padding:16px 0;border-bottom:1px solid rgba(10,47,79,.15);',
-        switchStyle:`width:48px;height:28px;border-radius:14px;flex:0 0 auto;background:${on?BRICK:'rgba(10,47,79,.2)'};position:relative;transition:background 200ms;`,
+        switchStyle:`width:48px;height:28px;border-radius:14px;flex:0 0 auto;background:${on?NAVY:'rgba(10,47,79,.2)'};position:relative;transition:background 200ms;`,
         knobStyle:`position:absolute;top:3px;left:${on?23:3}px;width:22px;height:22px;border-radius:50%;background:${CREAM};transition:left 200ms;`};});
-      const parts=this.cost(hh0,bk.date,start,dur);
-      const base=Object.values(parts).reduce((a,x)=>a+x.h*x.r,0);
-      const over=Math.max(0,bk.guests-10)*3000;
-      const total=base+over;
-      const priceBreak=[...(parts.day?[{l:`${parts.day.h} ч × ${fmt(parts.day.r)} (день)`,v:fmt(parts.day.h*parts.day.r)}]:[]),...(parts.eve?[{l:`${parts.eve.h} ч × ${fmt(parts.eve.r)} (вечер-ночь)`,v:fmt(parts.eve.h*parts.eve.r)}]:[]),...(over?[{l:`Гости свыше 10 (${bk.guests-10} × 3 000 ₸)`,v:fmt(over)}]:[])];
-      const end=start+dur;
-      const endDays=Math.floor(end/24);const whenText=`${WD_NOM[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}, ${hh(start)}–${hh(end)}${endDays===1?' (след. день)':endDays>1?' (+'+endDays+' дн.)':''}`;
-      const canNext=bk.step===1?true:bk.step===2?!!bk.houseId:bk.step===3?(bk.start!=null&&dur>=MIN_H):bk.step===4?(s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10&&s.form.agree):false;
-      const ctaLabel=bk.step===1?'Показать свободные дома':bk.step===2?(hSel?`Выбрать ${hSel.name}`:'Выберите дом'):bk.step===3?'Продолжить':'Отправить заявку';
       const extrasNames=bk.extras.map(id=>EXTRAS.find(e=>e.id===id)).map(e=>e.name.split(/[:—]/)[0].trim().toLowerCase()+' (от '+fmt(e.price)+')');
-      B={stepSegs,weekTitle:`${MON_NOM[first.getMonth()]} ${first.getFullYear()}`,monthDays,wdHead,prevWeek:()=>mo>0&&this.setBk({month:mo-1}),nextWeek:()=>mo<11&&this.setBk({month:mo+1}),
-        prevWeekStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${mo===0?'.3':'1'};`,nextWeekStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${mo===11?'.3':'1'};`,
-        guestsMinus:()=>this.setBk({guests:Math.max(1,bk.guests-1)}),guestsPlus:()=>this.setBk({guests:Math.min(20,bk.guests+1)}),
-        step1:bk.step===1,step2:bk.step===2,step3:bk.step===3,step4:bk.step===4,stepDone:bk.step===5,
-        step2Title:`Свободно на ${WD_ACC[d.getDay()]}, ${d.getDate()} · ${bk.guests} ${plural(bk.guests,'гость','гостя','гостей')}`,step2Sub:`${d.getDate()} ${MON[d.getMonth()]} · ${free.length} ${plural(free.length,'дом','дома','домов')} · цена за час`,
-        loadingSlots:s.loadingSlots,noneFree,listFree,nearestDates,step2Houses,sortChips,
-        editSearch:()=>this.setBk({step:1,houseId:bk.fromHouse?bk.houseId:null}),searchDate:`${d.getDate()} ${MON[d.getMonth()].slice(0,3)}, ${WD[d.getDay()]}`,
-        hasBusy:busyList.length>0,busyText:busyList.map(([x,y])=>`${hh(x)}–${hh(y)}`).join(', '),timeSlots,durChips,durChips2,durMore:bk.durMore,durCustom:bk.durCustom,durHint,
-        durMinus:()=>this.setBk({dur:Math.max(MIN_H,dur-1)}),durPlus:()=>this.setBk({dur:Math.min(maxD,dur+1)}),setDurInput:e=>{const v=parseInt(e.target.value.replace(/\D/g,''),10);if(!isNaN(v))this.setBk({dur:Math.max(MIN_H,Math.min(maxD,v))});},
-        extraRows,priceBreak,
-        summaryLine1:whenText,summaryLine2:`${bk.guests} ${plural(bk.guests,'гость','гостя','гостей')} · ${dur} ${plural(dur,'час','часа','часов')}`,
-        hasExtras:bk.extras.length>0,extrasLine:'Пожелания, подтвердит администратор: '+extrasNames.join(', '),totalText:fmt(total),
-        agreeBoxStyle:`width:24px;height:24px;flex:0 0 auto;border-radius:6px;border:1px solid ${s.form.agree?BRICK:'rgba(10,47,79,.4)'};background:${s.form.agree?BRICK:'transparent'};display:flex;align-items:center;justify-content:center;`,
-        toggleAgree:()=>this.setState({form:{...s.form,agree:!s.form.agree}}),sendError:s.sendError,
-        successWhen:whenText,waLink:'https://wa.me/77000000000?text='+encodeURIComponent(`Здравствуйте! Заявка в Шипа: дом ${hh0.name}, ${whenText}, ${bk.guests} гостей.`),
+      const tubLine=tubOn?`Горячий чан · ${fmt(CFG.tubPrice)}`:h0.tubIncl?'Горячий чан на дровах — входит в стоимость':'';
+      const cLines=[...(tubLine?[{t:tubLine}]:[]),...(bk.extras.length?[{t:'Пожелания, подтвердит администратор: '+extrasNames.join(', ')}]:[])];
+      const canNext=bk.step===1?true:bk.step===3?(end!=null&&dur<=maxEff):bk.step===4?okC:false;
+      const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Отправить заявку';
+      const waText=`Здравствуйте! Заявка в SHIPA: дом ${h0.name}, ${whenText}, ${guestsTxt(bk.guests)}${tubOn?', горячий чан':''}. Итого ${fmt(total)}.`;
+      B={...this.calendar(bk,false),stepSegs,
+        showCal:bk.step===1,step2:bk.step===2,step3:bk.step===3,showContacts:bk.step===4,stepDone:bk.step===5,preStep1:false,preDone:false,
+        calHouse:hSel?'ДОМ '+hSel.name:'',calTitle:'Когда планируете приехать?',calSub:'Покажем свободные дома и цену за час',calNote:'Бронь открыта на год вперёд. Зачёркнутые дни заняты полностью.',
+        step2Title:`Свободно на ${WD_ACC[d.getDay()]}, ${d.getDate()} · ${guestsTxt(bk.guests)}`,step2Sub:`${free.length} ${plural(free.length,'дом','дома','домов')} · нажмите на дом, чтобы выбрать время`,
+        loadingSlots:s.loadingSlots,noneFree,listFree,nearestDates,step2Houses,sortChips,scaleA:hh(tf),scaleB:hh(tf+12),
+        editSearch:()=>this.setBk({step:1,houseId:null}),searchDate:`${d.getDate()} ${MON[d.getMonth()].slice(0,3)}, ${WD[d.getDay()]}`,
+        h3Kicker:`${h0.n} / ${h0.tier} · минимум ${hrs(h0.min)}`,dayStrip,tabs,hourCells,
+        startedDay:night&&hasStart&&st<tf+12,startedDayText:hasStart?`Начало днём в ${hh(st)}`:'',toDay:()=>this.setBk({tab:'day'}),
+        contNight:!night&&end!=null&&st<tf+12&&end>tf+12,toNight:()=>this.setBk({tab:'night'}),
+        contNext:night&&end!=null&&end>tf+24,contNextText:end!=null?`Продолжение: до ${WD_NOM[endD.getDay()]}, ${endD.getDate()} ${MON[endD.getMonth()]}, ${hh(end)}`:'',
+        hasStart,noStart:!hasStart,durChips,durNote:`Минимум ${hrs(h0.min)}, через сайт — до двух суток.`,
+        longLink:'https://wa.me/77000000000?text='+encodeURIComponent(`Здравствуйте! Хочу взять дом ${h0.name} больше чем на двое суток, с ${d.getDate()} ${MON[d.getMonth()]}.`),
+        tubOpt,tubIncl:!!h0.tubIncl,tubPriceText:'+'+fmt(CFG.tubPrice),
+        toggleTub:()=>{const on=!bk.tub;const m=hasStart?this.maxFrom(hi0,st,on):99;this.setBk({tub:on,dur:bk.dur&&bk.dur>m?null:bk.dur});},
+        tubSwitch:`width:48px;height:28px;border-radius:14px;flex:0 0 auto;background:${tubOn?NAVY:'rgba(10,47,79,.2)'};position:relative;transition:background 200ms;`,tubKnob:`position:absolute;top:3px;left:${tubOn?23:3}px;width:22px;height:22px;border-radius:50%;background:${CREAM};transition:left 200ms;`,
+        extraRows,priceBreak,hasTotal:end!=null,totalText:fmt(total),showSummary:bk.step===3,summaryText,
+        cName:h0.name,cLine1:whenText,cLine2:`${guestsTxt(bk.guests)} · ${dur?hrs(dur):''} · ${fmt(total)}`,cLines,
+        sendError:s.sendError,successWhen:whenText,waLink:'https://wa.me/77000000000?text='+encodeURIComponent(waText),
         canBack:bk.step>=2&&bk.step<=4,noBack:!(bk.step>=2&&bk.step<=4),bookingBack:()=>this.back(),
-        backLabel:bk.step===4?'К времени и услугам':bk.step===3?(bk.fromHouse?'К дому':'К выбору дома'):'К дате',
-        bookingCta:bk.step<5,bookingNext:()=>this.next(),bookingNextDisabled:!canNext,bookingCtaLabel:ctaLabel,
-        bookingCtaStyle:`width:100%;max-width:520px;margin:0 auto;display:block;height:56px;border-radius:999px;background:${canNext?BRICK:'rgba(10,47,79,.15)'};color:${canNext?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.04em;`,
-        bk:{...bk,dur,houseName:hSel?hSel.name:''}};
-    } else B={bk:{houseName:'',guests:6,dur:3},step1:false,step2:false,step3:false,step4:false,stepDone:false,bookingCta:false,durMore:false,durCustom:false,durHint:'',canBack:false,noBack:true,backLabel:''};
+        backLabel:bk.step===4?'К времени и опциям':bk.step===3?(bk.fromHouse?'К дому':'К выбору дома'):'К дате',
+        bookingCta:bk.step!==2&&bk.step<5,...this.cta(canNext,ctaLabel),
+        bk:{...bk,houseName:h0.name}};
+    } else B={bk:{houseName:'',guests:6},showCal:false,step2:false,step3:false,showContacts:false,stepDone:false,preStep1:false,preDone:false,bookingCta:false,canBack:false,noBack:true,backLabel:'',hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false};
 
     const callOk=s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10;
     return {
@@ -1416,6 +1626,9 @@ class Component extends DCLogic {
       showSticky:!bk&&!s.menuOpen&&!s.callOpen&&s.lightbox<0,stickyLabel,stickyAction:()=>{if(s.savedBk&&inHouse){this.setState({bk:{...s.savedBk,houseId:hRaw.id},savedBk:null});return;}this.openBooking(inHouse?hRaw.id:null);},
       showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
       bookingOpen:!!bk,closeBooking:()=>this.closeBooking(),
+      pre,notPre:!pre,bookLabel,showMeaning:this.props.showMeaning??true,showMerch:this.props.showMerch??false,
+      merch:MERCH.map((m,i)=>({...m,priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:'https://wa.me/77000000000?text='+encodeURIComponent(`Здравствуйте! Хочу заказать «${m.name}» из SHIPA.`)})),
+      serviceCats:SERVICE_CATS.map((c,i)=>({...c,soon:!!c.soon,hasImg:!c.soon,slot:'svc-'+i,style:`border-radius:18px;overflow:hidden;display:flex;flex-direction:column;${c.soon?'border:1px dashed rgba(10,47,79,.35);':'background:rgba(10,47,79,.06);'}`})),
       ...B
     };
   }
