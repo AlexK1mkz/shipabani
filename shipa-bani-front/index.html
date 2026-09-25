@@ -2,13 +2,12 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="./image-slot.js"></script>
@@ -19,13 +18,23 @@
     a:hover{color:#C15C22;}
     button{font-family:inherit;cursor:pointer;border:0;background:none;padding:0;color:inherit;-webkit-appearance:none;transition:transform 120ms;}
     button:active{transform:scale(.97);}
+    .noscroll[style*="mandatory"]>button:active,.noscroll[style*="mandatory"]>article:active{transform:none;}
+    a:active{opacity:.9;}
     button:disabled{cursor:default;}
     button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #C15C22;outline-offset:2px;}
     input,textarea{font-family:inherit;}
     input::placeholder{color:rgba(10,47,79,.45);}
     input[style*="color:#F9EFE3"]::placeholder,input[style*="color: rgb(249, 239, 227)"]::placeholder{color:rgba(249,239,227,.55);}
+    :root{--fs-display:clamp(44px,calc(28px + 4.2vw),88px);--fs-h2:clamp(32px,calc(24px + 2.2vw),56px);--fs-h3:clamp(26px,calc(22px + .6vw),32px);--fs-price:clamp(24px,calc(22px + .3vw),28px);--fs-lead:clamp(17px,calc(15px + .35vw),19px);--fs-body:16px;--fs-ui:15px;--fs-small:14px;--fs-caption:12px;}
+    [data-st-off]{display:none;}
+    html[data-stress="0"] [data-st-off]{display:inline;}
+    html[data-stress="0"] [data-st-on]{display:none;}
+    [style*="Cormorant"]{font-variant-numeric:lining-nums tabular-nums;font-feature-settings:"lnum" 1,"tnum" 1;}
     .noscroll::-webkit-scrollbar{display:none;}
-    .noscroll{scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+    .noscroll{scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x pan-y;}
+    .noscroll[style*="scroll-snap-type"]>*{scroll-snap-stop:always;}
+    [data-hit]{position:relative;}
+    [data-hit]::after{content:"";position:absolute;left:-4px;right:-4px;top:50%;height:44px;min-width:44px;transform:translateY(-50%);}
     [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity 400ms ease-out,transform 400ms ease-out;}
     [data-reveal].in{opacity:1;transform:none;}
     @keyframes arrowDown{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(8px);opacity:1}}
@@ -70,8 +79,8 @@
     @keyframes pulseB{0%{box-shadow:0 0 0 0 rgba(10,47,79,0)}30%{box-shadow:0 0 0 4px rgba(10,47,79,.22)}100%{box-shadow:0 0 0 0 rgba(10,47,79,0)}}
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes tickIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-    ::view-transition-group(bk-photo){animation-duration:350ms;animation-timing-function:cubic-bezier(.2,.8,.2,1);}
-    ::view-transition-old(root),::view-transition-new(root){animation-duration:200ms;}
+    ::view-transition-group(bk-photo){animation-duration:250ms;animation-timing-function:cubic-bezier(.2,.8,.2,1);}
+    ::view-transition-old(root),::view-transition-new(root){animation-duration:150ms;}
     @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important;}}
     input[data-agree]:focus-visible + span{outline:2px solid #C15C22;outline-offset:2px;}
     @keyframes shimmer{0%{opacity:.45}50%{opacity:.9}100%{opacity:.45}}
@@ -132,7 +141,7 @@
 <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
 <main data-screen-label="Главная" style="padding-bottom:100px;overflow-x:clip;">
 
-  <section data-screen-label="Первый экран" onPointerDown="{{ heroDown }}" onPointerUp="{{ heroUp }}" onMouseEnter="{{ heroEnter }}" onMouseLeave="{{ heroLeave }}" style="position:relative;min-height:{{ heroH }};overflow:hidden;background:#0A2F4F;touch-action:pan-y;">
+  <section data-screen-label="Первый экран" onPointerDown="{{ heroDown }}" onPointerUp="{{ heroUp }}" onPointerCancel="{{ heroCancel }}" onMouseEnter="{{ heroEnter }}" onMouseLeave="{{ heroLeave }}" style="position:relative;min-height:{{ heroH }};overflow:hidden;background:#0A2F4F;touch-action:pan-y;">
     <div style="position:absolute;inset:0;{{ heroFx.photo }}">
       <sc-for list="{{ heroSlides }}" as="sl" hint-placeholder-count="4">
         <div style="{{ sl.style }}"></div>
@@ -146,12 +155,12 @@
         <div style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 16px;border-radius:999px;background:#F9EFE3;color:#0A2F4F;font-size:13px;font-weight:600;margin-bottom:24px;text-shadow:none;"><span style="width:8px;height:8px;border-radius:999px;background:#C15C22;flex:0 0 auto;"></span>Открытие в феврале 2027 · открыта предзапись</div>
       </sc-if>
       <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.8);margin-bottom:16px;{{ heroFx.kicker }}">Пространство для тела и души · Караганда</div>
-      <h1 aria-label="Выбери своё состояние" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(44px,6vw,88px);letter-spacing:.03em;line-height:1.05;margin:0 0 24px;color:#F9EFE3;">
+      <h1 aria-label="Выбери своё состояние" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:var(--fs-display);letter-spacing:.04em;line-height:1.05;margin:0 0 24px;color:#F9EFE3;">
         <span aria-hidden="true" style="display:block;overflow:hidden;padding:0 .04em .04em;"><span style="display:block;{{ heroFx.l1 }}">ВЫБЕРИ СВОЁ</span></span>
         <span aria-hidden="true" style="display:block;overflow:hidden;padding:0 .04em .04em;"><span style="display:block;{{ heroFx.l2 }}">СОСТОЯНИЕ</span></span>
       </h1>
       <sc-if value="{{ heroRatingRow }}" hint-placeholder-val="{{ false }}">
-        <a href="https://2gis.kz/karaganda" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:32px;margin:-8px 0 16px;font-size:13px;color:#F9EFE3;{{ heroFx.sub }}"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">4,9</span><span style="color:#C15C22;letter-spacing:2px;font-size:12px;">★★★★★</span><span style="color:rgba(249,239,227,.8);">2ГИС · 128 отзывов</span></a>
+        <a data-hit="1" href="https://2gis.kz/karaganda" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:32px;margin:-8px 0 16px;font-size:13px;color:#F9EFE3;{{ heroFx.sub }}"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">4,9</span><span style="color:#C15C22;letter-spacing:2px;font-size:12px;">★★★★★</span><span style="color:rgba(249,239,227,.8);">2ГИС · 128 отзывов</span></a>
       </sc-if>
       <p style="margin:0 0 32px;font-size:clamp(17px,calc(13px + .6vw),19px);line-height:1.5;color:rgba(249,239,227,.88);max-width:600px;{{ heroFx.sub }}">Восемь домов с парными и чанами. Свой дом, своя терраса, никого рядом.</p>
       <div style="{{ statsWrap }}">
@@ -196,17 +205,17 @@
   <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
   <section style="position:relative;z-index:2;max-width:1200px;margin:-64px auto 0;padding:0 16px;">
     <div data-reveal data-screen-label="Найти свободный дом" style="background:#F9EFE3;border:1px solid rgba(59,47,42,.1);border-radius:28px;padding:24px;max-width:720px;margin:0 auto;">
-      <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#3B2F2A;font-weight:600;margin-bottom:16px;text-align:center;">Найти свободный дом</div>
+      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3B2F2A;font-weight:600;margin-bottom:16px;text-align:center;">Найти свободный дом</div>
       <div class="noscroll" style="display:flex;gap:8px;overflow-x:auto;margin:0 -24px;padding:0 24px;scroll-snap-type:x proximity;">
         <sc-for list="{{ quickDays }}" as="d" hint-placeholder-count="7">
           <button onClick="{{ d.select }}" style="{{ d.style }}">
-            <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
+            <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
             <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;">{{ d.day }}</span>
           </button>
         </sc-for>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0;padding-top:16px;border-top:1px solid rgba(59,47,42,.1);">
-        <div><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.6);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.6);margin-top:4px;">Дети до 7 лет не считаются</div></div>
+        <div><div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">Дети до 7 лет не считаются</div></div>
         <div style="display:flex;align-items:center;">
           <button onClick="{{ quickGuestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:999px;font-size:22px;">−</button>
           <div style="width:56px;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;">{{ quickGuests }}</div>
@@ -220,27 +229,28 @@
   </sc-if>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 20px 0;">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIPA — это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
-    <div class="noscroll" style="display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scroll-snap-type:x mandatory;">
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> — это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
+    <div id="car-about" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scroll-snap-type:x mandatory;">
       <sc-for list="{{ aboutItems }}" as="a" hint-placeholder-count="4">
         <div style="flex:0 0 66%;max-width:280px;scroll-snap-align:start;aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
-          <img src="{{ a.img }}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <img decoding="async" src="{{ a.img }}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
           <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,47,79,.15) 0%,rgba(10,47,79,.75) 100%);"></div>
           <div style="position:absolute;right:16px;top:14px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;color:#F9EFE3;">{{ a.n }}</div>
           <div style="position:absolute;left:16px;right:16px;bottom:16px;color:#F9EFE3;">
-            <div style="font-weight:600;font-size:17px;">{{ a.title }}</div>
+            <div style="font-weight:600;font-size:var(--fs-lead);">{{ a.title }}</div>
             <div style="font-size:13px;opacity:.85;margin-top:4px;line-height:1.45;">{{ a.sub }}</div>
           </div>
         </div>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-about" pad="12px 0 0" hint-size="100%,56px"></dc-import>
   </section>
 
   <sc-if value="{{ showMeaning }}" hint-placeholder-val="{{ true }}">
   <section data-reveal data-screen-label="Что значит SHIPA" style="max-width:1200px;margin:0 auto;padding:64px 20px 0;">
     <div style="max-width:1000px;margin:0 auto;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;text-align:center;">ЧТО ЗНАЧИТ <span style="color:#C15C22;">SHIPA</span></h2>
-      <p style="margin:14px auto 0;font-size:17px;line-height:1.55;max-width:560px;text-align:center;color:rgba(10,47,79,.8);text-wrap:pretty;">«Шипа» по-казахски — восстановление, оздоровление. Слово легко звучит на казахском, русском и английском.</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;text-align:center;">ЧТО ЗНАЧИТ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
+      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.55;max-width:560px;text-align:center;color:rgba(10,47,79,.8);text-wrap:pretty;">«Шип<span data-st-on="1">а́</span><span data-st-off="1">а</span>» по-казахски — восстановление, оздоровление. Слово легко звучит на казахском, русском и английском.</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px 48px;align-items:center;margin-top:36px;">
         <div style="padding:48px 28px 40px;border-radius:20px;background:rgba(10,47,79,.05);">
           <div style="position:relative;">
@@ -271,16 +281,16 @@
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 0 0;">
     <div style="padding:0 20px;">
-      <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,7vw,52px);letter-spacing:.08em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ — <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
+      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ — <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
       <p style="margin:0 0 24px;font-size:16px;color:rgba(10,47,79,.7);text-align:center;">Гость выбирает атмосферу, а не номер.</p>
     </div>
-    <div class="noscroll" style="{{ housesRowStyle }}">
+    <div id="car-houses" class="noscroll" style="{{ housesRowStyle }}">
       <sc-for list="{{ houses }}" as="h" hint-placeholder-count="8">
-        <button onClick="{{ h.open }}" disabled="{{ h.soon }}" style="{{ h.cardStyle }}">
+        <article role="link" tabindex="0" aria-disabled="{{ h.soonAria }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="{{ h.cardStyle }}">
           <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
             <div style="{{ h.bgStyle }}"></div>
-            <div style="position:absolute;left:14px;top:12px;font-size:11px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
+            <div style="position:absolute;left:14px;top:12px;font-size:12px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
             <sc-if value="{{ h.soon }}" hint-placeholder-val="{{ false }}">
               <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><span style="padding:10px 18px;border-radius:999px;background:rgba(249,239,227,.92);color:#0A2F4F;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;">Скоро открытие</span></div>
             </sc-if>
@@ -293,11 +303,12 @@
           </sc-if>
           <sc-if value="{{ h.soon }}" hint-placeholder-val="{{ false }}">
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;letter-spacing:.12em;margin-top:16px;line-height:1;color:rgba(10,47,79,.35);">· · ·</div>
-            <div style="font-size:13px;margin-top:10px;color:rgba(10,47,79,.6);">Дом достраивается. Откроем бронь позже.</div>
+            <div style="font-size:13px;margin-top:10px;color:rgba(10,47,79,.7);">Дом достраивается. Откроем бронь позже.</div>
           </sc-if>
-        </button>
+        </article>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-houses" hint-size="100%,56px"></dc-import>
     <div style="display:flex;align-items:center;gap:6px;padding:20px 20px 0;">
       <button onClick="{{ goHouses }}" style="height:44px;font-weight:600;color:#C15C22;font-size:15px;margin-right:auto;letter-spacing:.02em;">Все дома →</button>
       <button onClick="{{ goHousesVip }}" style="height:40px;padding:0 16px;border:1px solid #0A2F4F;border-radius:999px;background:#F9EFE3;font-size:13px;font-weight:500;letter-spacing:.06em;">VIP</button>
@@ -307,8 +318,8 @@
 
   <section data-reveal style="background:#0A2F4F;color:#F9EFE3;margin-top:56px;padding:56px 20px 48px;">
     <div style="max-width:1200px;margin:0 auto;">
-      <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.7;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,7vw,52px);letter-spacing:.1em;margin:0 0 32px;line-height:1.05;text-align:center;">ЧТО ВХОДИТ</h2>
+      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.7;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;margin:0 0 32px;line-height:1.05;text-align:center;">ЧТО ВХОДИТ</h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
         <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
           <div style="background:rgba(249,239,227,.08);border-radius:16px;padding:18px 16px;">
@@ -323,11 +334,11 @@
 
   <section data-reveal style="padding:56px 0 0;">
     <div style="max-width:1200px;margin:0 auto;padding:0 20px 20px;">
-      <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Парение</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,7vw,52px);letter-spacing:.1em;margin:0;line-height:1.05;text-align:center;">ПРОГРАММЫ <span style="color:#C15C22;">ПАРЕНИЯ</span></h2>
+      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Парение</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;margin:0;line-height:1.05;text-align:center;">ПРОГРАММЫ <span style="color:#C15C22;">ПАРЕНИЯ</span></h2>
     </div>
     <div style="max-width:1200px;margin:0 auto;position:relative;">
-      <div class="noscroll" ref="{{ progRowRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:4px 20px 8px;scroll-snap-type:x mandatory;">
+      <div id="car-progs" class="noscroll" ref="{{ progRowRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:4px 20px 8px;scroll-snap-type:x mandatory;">
         <sc-for list="{{ programs }}" as="p" hint-placeholder-count="5">
           <div style="{{ p.cardStyle }}">
             <div style="aspect-ratio:4/3;overflow:hidden;background:#3B2F2A;"><image-slot id="{{ p.slot }}" src="{{ p.img }}" shape="rect" placeholder="{{ p.name }}"></image-slot></div>
@@ -347,7 +358,8 @@
           </div>
         </sc-for>
       </div>
-      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}">
+      <dc-import name="CarNav" target="car-progs" hint-size="100%,56px"></dc-import>
+      <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ progPrev }}" aria-label="Назад" style="position:absolute;left:-8px;top:40%;width:48px;height:48px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;">←</button>
         <button onClick="{{ progNext }}" aria-label="Вперёд" style="position:absolute;right:-8px;top:40%;width:48px;height:48px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;">→</button>
       </sc-if>
@@ -357,11 +369,11 @@
   <section data-reveal id="video" ref="{{ videoRef }}" style="position:relative;background:#0A2F4F;color:#F9EFE3;margin-top:56px;padding:64px 0 64px;overflow:hidden;">
     <img src="img/h7_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;filter:blur(2px);">
     <div style="position:relative;max-width:1200px;margin:0 auto;padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">АТМОСФЕРА БАННЫХ ДОМОВ <span style="color:#C15C22;">SHIPA</span></h2>
-      <p style="margin:14px auto 0;font-size:17px;opacity:.85;max-width:640px;line-height:1.5;">Ни спешки, ни посторонних. Только вы, пар, вода и тишина.</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">АТМОСФЕРА БАННЫХ ДОМОВ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
+      <p style="margin:14px auto 0;font-size:var(--fs-lead);opacity:.85;max-width:640px;line-height:1.5;">Ни спешки, ни посторонних. Только вы, пар, вода и тишина.</p>
     </div>
     <div style="position:relative;max-width:1200px;margin:0 auto;">
-      <div class="noscroll" ref="{{ atmRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:36px 20px 8px;scroll-snap-type:x mandatory;align-items:center;scroll-padding:0 20px;">
+      <div id="car-atm" class="noscroll" ref="{{ atmRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:36px 20px 8px;scroll-snap-type:x mandatory;align-items:center;scroll-padding:0 20px;">
         <sc-for list="{{ atmosphere }}" as="v" hint-placeholder-count="4">
           <div style="{{ v.style }}">
             <div style="position:absolute;inset:0;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
@@ -370,7 +382,8 @@
           </div>
         </sc-for>
       </div>
-      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}">
+      <dc-import name="CarNav" target="car-atm" tone="dark" hint-size="100%,56px"></dc-import>
+      <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ atmPrev }}" aria-label="Назад" style="position:absolute;left:8px;top:50%;width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-size:18px;">←</button>
         <button onClick="{{ atmNext }}" aria-label="Вперёд" style="position:absolute;right:8px;top:50%;width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-size:18px;">→</button>
       </sc-if>
@@ -379,10 +392,10 @@
 
   <section data-reveal style="padding:64px 0 0;">
     <div style="max-width:1200px;margin:0 auto;padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">КУХНЯ <span style="color:#C15C22;">И ЧАЙ</span></h2>
-      <p style="margin:14px auto 0;font-size:17px;line-height:1.5;max-width:560px;color:rgba(10,47,79,.75);">Восточный стол накрываем к вашему приезду: горячий бешбармак, шашлык на углях, баурсаки с мёдом и травяной чай из самовара.</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">КУХНЯ <span style="color:#C15C22;">И ЧАЙ</span></h2>
+      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;max-width:560px;color:rgba(10,47,79,.75);">Восточный стол накрываем к вашему приезду: горячий бешбармак, шашлык на углях, баурсаки с мёдом и травяной чай из самовара.</p>
     </div>
-    <div class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
+    <div id="car-dishes" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
       <sc-for list="{{ dishes }}" as="d" hint-placeholder-count="6">
         <div style="{{ d.style }}">
           <div style="position:absolute;inset:0;"><image-slot id="{{ d.slot }}" src="{{ d.img }}" shape="rect" placeholder="{{ d.photo }}"></image-slot></div>
@@ -393,6 +406,7 @@
         </div>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-dishes" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
     <div style="display:flex;justify-content:center;gap:8px;padding:16px 20px 0;flex-wrap:wrap;">
       <button onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:14px;">Смотреть всё меню</button>
       <button onClick="{{ startBooking }}" style="height:48px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;font-weight:600;font-size:14px;">Заказать стол к брони</button>
@@ -402,10 +416,10 @@
   <sc-if value="{{ showMerch }}" hint-placeholder-val="{{ false }}">
   <section data-reveal data-screen-label="С собой из SHIPA" style="max-width:1200px;margin:0 auto;padding:64px 0 0;">
     <div style="padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">С СОБОЙ <span style="color:#C15C22;">ИЗ SHIPA</span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">С СОБОЙ <span style="color:#C15C22;">ИЗ SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
       <p style="margin:12px auto 0;font-size:16px;color:rgba(10,47,79,.7);max-width:520px;">Полотенца, шапки, масла и веники, которыми пользуетесь в доме</p>
     </div>
-    <div class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
+    <div id="car-merch" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
       <sc-for list="{{ merch }}" as="m" hint-placeholder-count="4">
         <div style="flex:0 0 58%;max-width:260px;scroll-snap-align:start;display:flex;flex-direction:column;">
           <div style="aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:rgba(10,47,79,.08);"><image-slot id="{{ m.slot }}" src="{{ m.img }}" shape="rect" placeholder="{{ m.name }}"></image-slot></div>
@@ -417,15 +431,16 @@
         </div>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-merch" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
   </section>
   </sc-if>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:64px 0 0;">
     <div style="padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;"><span style="color:#C15C22;">ВИДЕО-ОТЗЫВЫ</span> НАШИХ ГОСТЕЙ</h2>
-      <p style="margin:12px auto 0;font-size:16px;color:rgba(10,47,79,.7);max-width:520px;">Настоящие впечатления тех, кто уже побывал в SHIPA</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;"><span style="color:#C15C22;">ВИДЕО-ОТЗЫВЫ</span> НАШИХ ГОСТЕЙ</h2>
+      <p style="margin:12px auto 0;font-size:16px;color:rgba(10,47,79,.7);max-width:520px;">Настоящие впечатления тех, кто уже побывал в SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></p>
     </div>
-    <div class="noscroll" style="display:flex;gap:16px;overflow-x:auto;padding:28px 20px 8px;scroll-snap-type:x mandatory;justify-content:safe center;">
+    <div id="car-vrev" class="noscroll" style="display:flex;gap:16px;overflow-x:auto;padding:28px 20px 8px;scroll-snap-type:x mandatory;justify-content:safe center;">
       <sc-for list="{{ videoReviews }}" as="v" hint-placeholder-count="3">
         <div style="flex:0 0 200px;scroll-snap-align:center;">
           <div style="position:relative;aspect-ratio:9/19;border-radius:28px;border:6px solid #3B2F2A;background:#3B2F2A;overflow:hidden;">
@@ -434,15 +449,16 @@
             <button aria-label="Смотреть" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;z-index:2;"><svg width="16" height="16" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></button>
           </div>
           <div style="text-align:center;margin-top:10px;font-weight:600;font-size:14px;">{{ v.name }}</div>
-          <div style="text-align:center;font-size:12px;color:rgba(10,47,79,.6);">{{ v.house }}</div>
+          <div style="text-align:center;font-size:12px;color:rgba(10,47,79,.7);">{{ v.house }}</div>
         </div>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-vrev" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
   </section>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 0 0;">
     <div style="padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">ОТЗЫВЫ НАШИХ ГОСТЕЙ <span style="color:#C15C22;">В 2ГИС</span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">ОТЗЫВЫ НАШИХ ГОСТЕЙ <span style="color:#C15C22;">В 2ГИС</span></h2>
       <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}">
       <div style="display:inline-flex;align-items:center;gap:10px;margin-top:14px;padding:8px 16px 8px 8px;border-radius:999px;background:rgba(10,47,79,.06);font-size:14px;">
         <span style="width:36px;height:36px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">4,9</span>
@@ -451,23 +467,24 @@
       </div>
       </sc-if>
     </div>
-    <div class="noscroll" style="display:flex;gap:16px;overflow-x:auto;padding:24px 20px 8px;scroll-snap-type:x mandatory;">
+    <div id="car-rev" class="noscroll" style="display:flex;gap:16px;overflow-x:auto;padding:24px 20px 8px;scroll-snap-type:x mandatory;">
       <sc-for list="{{ homeReviews }}" as="r" hint-placeholder-count="3">
         <div style="flex:0 0 86%;max-width:520px;scroll-snap-align:center;background:rgba(10,47,79,.06);border-radius:20px;padding:24px;position:relative;display:flex;flex-direction:column;">
           <div style="position:absolute;right:24px;top:22px;font-family:'Cormorant Garamond',serif;font-size:72px;line-height:.6;color:rgba(193,92,34,.35);font-weight:700;">”</div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <div style="font-weight:600;">{{ r.name }}</div>
             <div style="color:#C15C22;font-size:13px;letter-spacing:.12em;">{{ r.stars }}</div>
-            <div style="font-size:12px;color:rgba(10,47,79,.6);">{{ r.date }}</div>
+            <div style="font-size:12px;color:rgba(10,47,79,.7);">{{ r.date }}</div>
           </div>
           <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:rgba(10,47,79,.9);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;">{{ r.text }}</p>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
-            <a href="https://2gis.kz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px 0 6px;border-radius:999px;background:#F9EFE3;font-size:12px;font-weight:600;letter-spacing:.06em;"><span style="width:28px;height:28px;border-radius:50%;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">2Г</span>ССЫЛКА НА ОТЗЫВ</a>
-            <div style="font-size:12px;color:rgba(10,47,79,.6);letter-spacing:.06em;">{{ r.house }}</div>
+            <a href="https://2gis.kz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px 0 6px;border-radius:999px;background:#F9EFE3;font-size:12px;font-weight:600;letter-spacing:.06em;"><span style="width:28px;height:28px;border-radius:50%;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">2Г</span>ССЫЛКА НА ОТЗЫВ</a>
+            <div style="font-size:12px;color:rgba(10,47,79,.7);letter-spacing:.06em;">{{ r.house }}</div>
           </div>
         </div>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-rev" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
     <div style="display:flex;justify-content:center;gap:8px;padding:12px 20px 0;flex-wrap:wrap;">
       <button onClick="{{ goReviews }}" style="height:48px;padding:0 22px;border-radius:999px;border:1px solid #0A2F4F;background:#F9EFE3;font-weight:600;font-size:14px;">Все отзывы</button>
       <a href="https://2gis.kz" target="_blank" rel="noopener" style="height:48px;padding:0 22px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-weight:600;font-size:14px;">Оставить отзыв</a>
@@ -477,7 +494,7 @@
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:64px 20px 0;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px 48px;">
       <div style="max-width:360px;">
-        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">НАМ ЧАСТО ЗАДАЮТ ЭТИ <span style="color:#C15C22;">ВОПРОСЫ</span></h2>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">НАМ ЧАСТО ЗАДАЮТ ЭТИ <span style="color:#C15C22;">ВОПРОСЫ</span></h2>
         <p style="margin:18px 0 22px;font-size:16px;line-height:1.5;color:rgba(10,47,79,.75);">Не нашли интересующий вас вопрос — задайте его нам</p>
         <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:52px;padding:0 26px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:14px;">Задать вопрос</a>
       </div>
@@ -498,23 +515,23 @@
   </section>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:72px 20px 0;">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;text-align:center;">НАШИ <span style="color:#C15C22;">КОНТАКТЫ</span></h2>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;text-align:center;">НАШИ <span style="color:#C15C22;">КОНТАКТЫ</span></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px;align-items:stretch;">
       <div style="background:rgba(10,47,79,.06);border-radius:20px;padding:28px 24px;">
-        <div style="font-weight:600;font-size:17px;">Адрес</div>
+        <div style="font-weight:600;font-size:var(--fs-lead);">Адрес</div>
         <div style="display:flex;gap:12px;margin-top:12px;font-size:15px;line-height:1.5;">
           <svg width="20" height="20" viewBox="0 0 28 36" fill="#C15C22" style="flex:0 0 auto;margin-top:2px;"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
-          <div>г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242<br><span style="color:rgba(10,47,79,.65);">Круглосуточно</span></div>
+          <div>г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242<br><span style="color:rgba(10,47,79,.7);">Круглосуточно</span></div>
         </div>
-        <div style="font-weight:600;font-size:17px;margin-top:24px;">Телефон</div>
+        <div style="font-weight:600;font-size:var(--fs-lead);margin-top:24px;">Телефон</div>
         <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
-          <a href="{{ telHref }}" style="font-weight:600;font-size:17px;">{{ phoneText }}</a>
+          <a href="{{ telHref }}" style="font-weight:600;font-size:var(--fs-lead);">{{ phoneText }}</a>
           <div style="display:flex;gap:6px;">
             <a href="{{ waGeneral }}" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg></a>
             <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#F9EFE3" stroke="none"/></svg></a>
           </div>
         </div>
-        <div style="font-weight:600;font-size:17px;margin-top:24px;">WhatsApp</div>
+        <div style="font-weight:600;font-size:var(--fs-lead);margin-top:24px;">WhatsApp</div>
         <p style="margin:6px 0 12px;font-size:14px;color:rgba(10,47,79,.7);line-height:1.5;">Поможем подобрать дом и забронируем его для вас</p>
         <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>Написать в WhatsApp</a>
       </div>
@@ -537,26 +554,26 @@
         <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:999px;background:rgba(249,239,227,.1);">
           <span style="width:32px;height:32px;border-radius:50%;background:#C15C22;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">4,9</span>
-          <div style="line-height:1.25;"><div style="font-size:11px;font-weight:600;letter-spacing:.1em;">ХОРОШЕЕ МЕСТО</div><div style="font-size:11px;opacity:.7;">оценки гостей в 2ГИС</div></div>
+          <div style="line-height:1.25;"><div style="font-size:12px;font-weight:600;letter-spacing:.1em;">ХОРОШЕЕ МЕСТО</div><div style="font-size:12px;opacity:.7;">оценки гостей в 2ГИС</div></div>
         </div>
         </sc-if>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <a href="{{ telHref }}" style="color:#F9EFE3;font-size:17px;font-weight:600;">{{ phoneText }}</a>
+        <a href="{{ telHref }}" style="color:#F9EFE3;font-size:var(--fs-lead);font-weight:600;">{{ phoneText }}</a>
         <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="color:rgba(249,239,227,.8);font-size:13px;text-decoration:underline;text-underline-offset:3px;">Написать в WhatsApp</a>
       </div>
-      <nav style="display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;">
-        <button onClick="{{ goHouses }}" style="height:32px;color:#F9EFE3;">Дома</button>
-        <button onClick="{{ goServices }}" style="height:32px;color:#F9EFE3;">Парение</button>
-        <button onClick="{{ goKitchen }}" style="height:32px;color:#F9EFE3;">Кухня</button>
-        <button onClick="{{ goReviews }}" style="height:32px;color:#F9EFE3;">Отзывы</button>
-        <button onClick="{{ goAbout }}" style="height:32px;color:#F9EFE3;">О нас</button>
-        <button onClick="{{ goContacts }}" style="height:32px;color:#F9EFE3;">Контакты</button>
+      <nav style="display:flex;flex-wrap:wrap;gap:0 20px;font-size:15px;">
+        <button onClick="{{ goHouses }}" style="height:44px;color:#F9EFE3;">Дома</button>
+        <button onClick="{{ goServices }}" style="height:44px;color:#F9EFE3;">Парение</button>
+        <button onClick="{{ goKitchen }}" style="height:44px;color:#F9EFE3;">Кухня</button>
+        <button onClick="{{ goReviews }}" style="height:44px;color:#F9EFE3;">Отзывы</button>
+        <button onClick="{{ goAbout }}" style="height:44px;color:#F9EFE3;">О нас</button>
+        <button onClick="{{ goContacts }}" style="height:44px;color:#F9EFE3;">Контакты</button>
       </nav>
       <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start;font-size:12px;">
         <a href="#" style="color:#F9EFE3;opacity:.75;">Политика обработки персональных данных</a>
         <div style="display:flex;gap:6px;align-items:center;">
-          <span style="padding:8px 12px;border-radius:999px;background:rgba(249,239,227,.1);">© SHIPA, 2026</span>
+          <span style="padding:8px 12px;border-radius:999px;background:rgba(249,239,227,.1);">© SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>, 2026</span>
           <sc-for list="{{ langsDark }}" as="l" hint-placeholder-count="3"><button onClick="{{ l.select }}" style="{{ l.style }}">{{ l.code }}</button></sc-for>
         </div>
       </div>
@@ -574,7 +591,7 @@
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:1200px;margin:0 auto;padding:{{ bandPad }};">
       <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Каталог</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ДОМА SHIPA</h1>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ДОМА SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></h1>
       <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Пять открытых домов, у каждого своя парная, чан и терраса. Выберите по числу гостей и настроению.</p>
     </div>
   </section>
@@ -587,13 +604,13 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:40px 24px;">
       <sc-for list="{{ catalogHouses }}" as="h" hint-placeholder-count="8">
         <div style="display:flex;flex-direction:column;">
-          <button onClick="{{ h.open }}" style="width:100%;text-align:left;border-radius:20px;transition:transform 200ms ease-out;" style-hover="transform:translateY(-2px);">
+          <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="width:100%;text-align:left;border-radius:20px;cursor:pointer;">
             <div style="aspect-ratio:16/10;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
               <div class="noscroll" onScroll="{{ h.carScroll }}" style="position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;">
-                <sc-for list="{{ h.photos }}" as="ph" hint-placeholder-count="3"><img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="{{ ph.loading }}" draggable="false" style="flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center;display:block;"></sc-for>
+                <sc-for list="{{ h.photos }}" as="ph" hint-placeholder-count="3"><img decoding="async" src="{{ ph.src }}" alt="{{ ph.alt }}" loading="{{ ph.loading }}" draggable="false" style="flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center;display:block;"></sc-for>
               </div>
               <div style="position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:6px;pointer-events:none;"><sc-for list="{{ h.dots }}" as="dt" hint-placeholder-count="3"><span style="{{ dt.s }}"></span></sc-for></div>
-              <div style="position:absolute;left:16px;top:16px;height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;font-size:11px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
+              <div style="position:absolute;left:16px;top:16px;height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;font-size:12px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;gap:12px;">
               <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;letter-spacing:.1em;line-height:1;">{{ h.name }}</div>
@@ -601,12 +618,12 @@
             </div>
             <div style="font-size:15px;color:rgba(10,47,79,.7);margin-top:8px;">{{ h.slogan }}</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(59,47,42,.12);">
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.6);margin-top:4px;">площадь</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">до {{ h.guests }}</div><div style="font-size:12px;color:rgba(10,47,79,.6);margin-top:4px;">гостей</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">от {{ h.min }} ч</div><div style="font-size:12px;color:rgba(10,47,79,.6);margin-top:4px;">минимум</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.6);margin-top:4px;">₸/час</div></div>
+              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">площадь</div></div>
+              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">до {{ h.guests }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">гостей</div></div>
+              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">от {{ h.min }} ч</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">минимум</div></div>
+              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">₸/час</div></div>
             </div>
-          </button>
+          </article>
           <div style="display:flex;gap:8px;margin-top:16px;">
             <button onClick="{{ h.open }}" style="flex:1;height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:48px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Подробнее</button>
             <button onClick="{{ h.book }}" style="flex:1;height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;height:48px;justify-content:center;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ bookLabel }}</button>
@@ -644,18 +661,18 @@
     </button>
   </div>
   <div style="max-width:720px;margin:0 auto;padding:28px 20px 0;">
-    <div style="font-size:11px;letter-spacing:.22em;color:#C15C22;font-weight:600;">{{ house.n }} / {{ house.tier }}</div>
+    <div style="font-size:12px;letter-spacing:.22em;color:#C15C22;font-weight:600;">{{ house.n }} / {{ house.tier }}</div>
     <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:44px;letter-spacing:.12em;line-height:1;margin:10px 0 8px;">{{ house.name }}</h1>
-    <p style="margin:0;font-size:17px;color:rgba(10,47,79,.7);">{{ house.slogan }}</p>
+    <p style="margin:0;font-size:var(--fs-lead);color:rgba(10,47,79,.7);">{{ house.slogan }}</p>
 
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:28px;border-top:1px solid #0A2F4F;border-bottom:1px solid rgba(10,47,79,.2);padding:18px 0;">
-      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ house.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.65);margin-top:6px;">Площадь</div></div>
-      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">до {{ house.guests }}</div><div style="font-size:12px;color:rgba(10,47,79,.65);margin-top:6px;">Гостей</div></div>
-      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ house.min }} ч</div><div style="font-size:12px;color:rgba(10,47,79,.65);margin-top:6px;">Минимум</div></div>
-      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ house.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.65);margin-top:6px;">₸/час, от</div></div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ house.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:6px;">Площадь</div></div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">до {{ house.guests }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:6px;">Гостей</div></div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ house.min }} ч</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:6px;">Минимум</div></div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ house.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:6px;">₸/час, от</div></div>
     </div>
 
-    <p style="margin:28px 0 0;font-size:17px;line-height:1.55;">{{ house.legend }}</p>
+    <p style="margin:28px 0 0;font-size:var(--fs-lead);line-height:1.55;">{{ house.legend }}</p>
 
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ЧТО ВНУТРИ</h3>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;border-top:1px solid rgba(10,47,79,.2);">
@@ -671,10 +688,10 @@
 
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ЦЕНЫ</h3>
     <div style="font-size:15px;border-top:1px solid #0A2F4F;">
-      <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;padding:10px 0;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;border-bottom:1px solid rgba(10,47,79,.2);"><div></div><div>Будни</div><div>Выходные и праздники</div></div>
+      <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;padding:10px 0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;border-bottom:1px solid rgba(10,47,79,.2);"><div></div><div>Будни</div><div>Выходные и праздники</div></div>
       <sc-for list="{{ house.priceRows }}" as="r" hint-placeholder-count="3">
         <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;padding:14px 0;border-bottom:1px solid rgba(10,47,79,.15);align-items:baseline;">
-          <div><div style="font-weight:500;">{{ r.label }}</div><div style="font-size:12px;color:rgba(10,47,79,.6);">{{ r.hours }}</div></div>
+          <div><div style="font-weight:500;">{{ r.label }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);">{{ r.hours }}</div></div>
           <div style="font-weight:600;">{{ r.wd }}</div>
           <div style="font-weight:600;">{{ r.we }}</div>
         </div>
@@ -690,11 +707,11 @@
         <button onClick="{{ hwNext }}" aria-label="Следующая неделя" style="{{ hwNextStyle }}">→</button>
       </div>
     </div>
-    <div style="font-size:13px;color:rgba(10,47,79,.6);margin-bottom:10px;">{{ hwTitle }} · нажмите на день, чтобы выбрать время</div>
+    <div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:10px;">{{ hwTitle }} · нажмите на день, чтобы выбрать время</div>
     <div class="noscroll" style="display:flex;gap:6px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;">
       <sc-for list="{{ houseWeek }}" as="d" hint-placeholder-count="7">
         <button onClick="{{ d.book }}" disabled="{{ d.disabled }}" style="{{ d.style }}">
-          <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
+          <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
           <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;">{{ d.day }}</span>
           <span style="display:flex;flex-direction:column;gap:2px;margin-top:6px;min-height:34px;">
             <sc-for list="{{ d.busy }}" as="b" hint-placeholder-count="1"><span style="{{ b.style }}">{{ b.t }}</span></sc-for>
@@ -706,7 +723,7 @@
 
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">РЕКОМЕНДУЕМ ПАРЕНИЕ</h3>
     <button onClick="{{ goServices }}" style="{{ house.program.cardStyle }}">
-      <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;">{{ house.program.kicker }}</div>
+      <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;">{{ house.program.kicker }}</div>
       <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;letter-spacing:.04em;margin-top:10px;line-height:1.1;">{{ house.program.name }}</div>
       <div style="font-size:15px;opacity:.85;margin-top:8px;line-height:1.5;">{{ house.program.desc }}</div>
       <div style="display:flex;justify-content:space-between;margin-top:16px;font-weight:600;padding-top:12px;border-top:1px solid rgba(249,239,227,.25);"><span>{{ house.program.dur }}</span><span>{{ house.program.priceText }}</span></div>
@@ -714,13 +731,13 @@
 
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ОТЗЫВЫ О ДОМЕ</h3>
     <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}">
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;">{{ houseRating }}</span><span style="color:#C15C22;letter-spacing:.1em;">★★★★★</span><span style="font-size:13px;color:rgba(10,47,79,.6);">средняя оценка</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;">{{ houseRating }}</span><span style="color:#C15C22;letter-spacing:.1em;">★★★★★</span><span style="font-size:13px;color:rgba(10,47,79,.7);">средняя оценка</span></div>
     </sc-if>
     <sc-if value="{{ houseReviewsEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:15px;color:rgba(10,47,79,.7);">Отзывов об этом доме пока нет — станьте первым.</p></sc-if>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <sc-for list="{{ houseReviews }}" as="r" hint-placeholder-count="2">
         <div style="background:rgba(10,47,79,.06);border-radius:16px;padding:16px 18px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><div style="font-weight:600;">{{ r.name }}</div><div style="font-size:12px;color:rgba(10,47,79,.6);">{{ r.date }}</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><div style="font-weight:600;">{{ r.name }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);">{{ r.date }}</div></div>
           <div style="color:#C15C22;font-size:13px;letter-spacing:.12em;margin:4px 0 8px;">{{ r.stars }}</div>
           <p style="margin:0;font-size:15px;line-height:1.55;">{{ r.text }}</p>
         </div>
@@ -739,7 +756,7 @@
           </div>
           <textarea value="{{ rf.text }}" onChange="{{ rfText }}" placeholder="Что понравилось, что улучшить" rows="3" style="width:100%;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:12px 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;font-family:inherit;resize:vertical;"></textarea>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;">
-            <span style="font-size:12px;color:rgba(10,47,79,.6);">Отзыв появится после проверки</span>
+            <span style="font-size:12px;color:rgba(10,47,79,.7);">Отзыв появится после проверки</span>
             <button onClick="{{ rfSend }}" disabled="{{ rfDisabled }}" style="{{ rfBtnStyle }}">Отправить</button>
           </div>
         </sc-if>
@@ -756,16 +773,17 @@
   </sc-if>
 
   <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:48px auto 14px;padding:0 20px;max-width:720px;">ДРУГИЕ ДОМА</h3>
-  <div class="noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;scroll-snap-type:x mandatory;">
+  <div id="car-other" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;scroll-snap-type:x mandatory;">
     <sc-for list="{{ otherHouses }}" as="h" hint-placeholder-count="7">
-      <button onClick="{{ h.open }}" style="flex:0 0 46%;max-width:220px;scroll-snap-align:start;text-align:left;">
+      <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="flex:0 0 46%;max-width:220px;scroll-snap-align:start;text-align:left;cursor:pointer;">
         <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;"><div style="{{ h.bgStyle }}"></div></div>
-        <div style="font-size:11px;letter-spacing:.18em;color:#C15C22;font-weight:600;margin-top:12px;">{{ h.n }} / {{ h.tier }}</div>
+        <div style="font-size:12px;letter-spacing:.18em;color:#C15C22;font-weight:600;margin-top:12px;">{{ h.n }} / {{ h.tier }}</div>
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.1em;line-height:1;margin-top:6px;">{{ h.name }}</div>
         <div style="font-size:14px;margin-top:6px;font-weight:600;">от {{ h.priceFrom }}/ч</div>
-      </button>
+      </article>
     </sc-for>
   </div>
+  <dc-import name="CarNav" target="car-other" hint-size="100%,56px"></dc-import>
 </main>
 </sc-if>
 
@@ -804,7 +822,7 @@
         <div style="position:relative;aspect-ratio:{{ introAspect }};max-height:{{ introMaxH }};overflow:hidden;border-radius:24px;background:#0A2F4F;color:#F9EFE3;"><image-slot id="{{ c.slot }}" src="{{ c.img }}" shape="rect" placeholder="{{ c.photo }}"></image-slot></div>
         <div>
           <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;">{{ c.kicker }}</div>
-          <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(34px,3.6vw,44px);letter-spacing:.03em;line-height:1.05;margin:0;">{{ c.name }}</h2>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">{{ c.name }}</h2>
           <p style="margin:16px 0 0;font-size:16px;line-height:1.6;color:rgba(10,47,79,.85);max-width:520px;">{{ c.text }}</p>
           <div style="margin-top:16px;font-size:14px;font-weight:600;color:#3B2F2A;">{{ c.facts }}</div>
         </div>
@@ -835,21 +853,22 @@
 
   <sc-if value="{{ showMasters }}" hint-placeholder-val="{{ false }}">
   <section data-screen-label="Мастера" style="max-width:1200px;margin:0 auto;padding:{{ secPad }};">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,3.4vw,40px);letter-spacing:.03em;line-height:1.1;margin:0 0 24px;">НАШИ МАСТЕРА</h2>
-    <div class="noscroll" style="display:grid;grid-auto-flow:column;grid-auto-columns:{{ masterCol }};gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 4px;">
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">НАШИ МАСТЕРА</h2>
+    <div id="car-masters" class="noscroll" style="display:grid;grid-auto-flow:column;grid-auto-columns:{{ masterCol }};gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 4px;">
       <sc-for list="{{ masters }}" as="m" hint-placeholder-count="3">
-        <button onClick="{{ m.open }}" style="text-align:left;scroll-snap-align:start;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid rgba(59,47,42,.08);transition:transform 200ms ease-out;" style-hover="transform:translateY(-2px);">
+        <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ m.open }}" style="text-align:left;scroll-snap-align:start;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid rgba(59,47,42,.08);cursor:pointer;">
           <div style="aspect-ratio:3/4;background:#0A2F4F;color:#F9EFE3;"><image-slot id="{{ m.slot }}" shape="rect" placeholder="Фото мастера со спины или в работе"></image-slot></div>
           <div style="padding:16px 16px 20px;"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;">{{ m.name }}</div><div style="font-size:14px;color:rgba(59,47,42,.75);margin-top:4px;">{{ m.spec }}</div><div style="font-size:13px;color:#C15C22;font-weight:600;margin-top:8px;">{{ m.exp }}</div></div>
-        </button>
+        </article>
       </sc-for>
     </div>
+    <dc-import name="CarNav" target="car-masters" pad="12px 0 0" hint-size="100%,56px"></dc-import>
   </section>
   </sc-if>
 
   <section data-screen-label="Вопросы про парение" style="max-width:1200px;margin:0 auto;padding:{{ secPad }};">
     <div style="display:grid;grid-template-columns:{{ gridAside }};gap:40px;align-items:start;">
-      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,3.4vw,40px);letter-spacing:.03em;line-height:1.1;margin:0 0 24px;">ЧАСТЫЕ ВОПРОСЫ</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">Не нашли ответ — напишите, ответим за 15 минут.</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">Спросить в WhatsApp</a></div>
+      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">ЧАСТЫЕ ВОПРОСЫ</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">Не нашли ответ — напишите, ответим за 15 минут.</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">Спросить в WhatsApp</a></div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:8px 24px;">
         <sc-for list="{{ svcFaq }}" as="q" hint-placeholder-count="4">
           <div style="border-bottom:1px solid rgba(59,47,42,.1);">
@@ -916,7 +935,7 @@
     <img src="img/h5_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:1200px;margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Гости о SHIPA</div>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Гости о SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ОТЗЫВЫ</h1>
       <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Что говорят те, кто уже провёл вечер в наших домах.</p>
     </div>
@@ -936,7 +955,7 @@
       <sc-for list="{{ filteredReviews }}" as="r" hint-placeholder-count="6">
         <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-            <div style="display:flex;align-items:center;gap:12px;"><span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">{{ r.initial }}</span><div><div style="font-weight:600;">{{ r.name }}</div><div style="font-size:13px;color:rgba(10,47,79,.6);">{{ r.date }}</div></div></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">{{ r.initial }}</span><div><div style="font-weight:600;">{{ r.name }}</div><div style="font-size:13px;color:rgba(10,47,79,.7);">{{ r.date }}</div></div></div>
             <div style="color:#C15C22;font-size:13px;letter-spacing:2px;">{{ r.stars }}</div>
           </div>
           <p style="margin:0;font-size:15px;line-height:1.6;flex:1;">{{ r.text }}</p>
@@ -958,14 +977,14 @@
     <div style="position:relative;max-width:1200px;margin:0 auto;padding:{{ bandPad }};">
       <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">О нас</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ТЕПЛО БЕЗ ЛИШНЕГО</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">SHIPA — пространство, где природные материалы и банная традиция возвращают внимание к себе. Восемь домов, один стандарт: приватность, чистота, тёплый свет и заранее согласованный сервис.</p>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> — пространство, где природные материалы и банная традиция возвращают внимание к себе. Восемь домов, один стандарт: приватность, чистота, тёплый свет и заранее согласованный сервис.</p>
     </div>
   </section>
   <div style="max-width:1200px;margin:0 auto;padding:{{ pagePad }};">
     <div style="display:grid;grid-template-columns:{{ grid4 }};gap:16px;">
       <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4">
         <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:24px;">
-          <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;">{{ p.n }} / {{ p.kind }}</div>
+          <div style="font-size:12px;letter-spacing:.2em;color:#C15C22;font-weight:600;">{{ p.n }} / {{ p.kind }}</div>
           <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.03em;margin-top:12px;line-height:1.1;">{{ p.name }}</div>
           <p style="margin:8px 0 0;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ p.desc }}</p>
         </div>
@@ -973,7 +992,7 @@
     </div>
     <div style="aspect-ratio:21/9;overflow:hidden;margin-top:40px;border-radius:28px;background:rgba(10,47,79,.06);"><image-slot id="about-team" src="img/h5_acc.png" shape="rect" placeholder="Команда SHIPA"></image-slot></div>
     <div style="display:grid;grid-template-columns:{{ gridAside }};gap:40px;margin-top:64px;align-items:start;">
-      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(28px,3.4vw,40px);letter-spacing:.03em;line-height:1.1;margin:0 0 24px;">ЧАСТЫЕ ВОПРОСЫ</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">Не нашли ответ — напишите, ответим за 15 минут.</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Спросить в WhatsApp</a></div>
+      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">ЧАСТЫЕ ВОПРОСЫ</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">Не нашли ответ — напишите, ответим за 15 минут.</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Спросить в WhatsApp</a></div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:8px 24px;">
         <sc-for list="{{ faq }}" as="q" hint-placeholder-count="6">
           <div style="border-bottom:1px solid rgba(59,47,42,.1);">
@@ -1011,7 +1030,7 @@
       </div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:32px 24px;display:flex;flex-direction:column;gap:24px;">
         <div>
-          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.6);margin-bottom:8px;">Телефон и WhatsApp</div>
+          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);margin-bottom:8px;">Телефон и WhatsApp</div>
           <a href="{{ telHref }}" style="display:block;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(32px,3.2vw,40px);line-height:1;">{{ phoneText }}</a>
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
             <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;height:48px;padding:0 24px;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">Написать в WhatsApp</a>
@@ -1019,10 +1038,10 @@
           </div>
         </div>
         <div style="display:grid;grid-template-columns:96px 1fr;gap:0 16px;font-size:15px;line-height:1.5;border-top:1px solid rgba(59,47,42,.1);">
-          <div style="color:rgba(10,47,79,.6);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Адрес</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242</div>
-          <div style="color:rgba(10,47,79,.6);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Режим</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Круглосуточно. Бронь на любое время суток.</div>
-          <div style="color:rgba(10,47,79,.6);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Парковка</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">У каждого дома, бесплатно.</div>
-          <div style="color:rgba(10,47,79,.6);padding:12px 0;">Дорога</div><div style="padding:12px 0;">Микрорайон Кунгей, район Казыбек Би. Указатель SHIPA у поворота.</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Адрес</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Режим</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Круглосуточно. Бронь на любое время суток.</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Парковка</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">У каждого дома, бесплатно.</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;">Дорога</div><div style="padding:12px 0;">Микрорайон Кунгей, район Казыбек Би. Указатель SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> у поворота.</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
           <a href="https://2gis.kz" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">2ГИС</a>
@@ -1037,9 +1056,9 @@
 
 <!-- STICKY CTA -->
 <sc-if value="{{ showSticky }}" hint-placeholder-val="{{ true }}">
-<div style="position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 20px calc(12px + env(safe-area-inset-bottom));background:#F9EFE3;border-top:1px solid rgba(10,47,79,.15);">
+<div data-sticky="1" style="position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 20px calc(12px + env(safe-area-inset-bottom));background:#F9EFE3;border-top:1px solid rgba(10,47,79,.15);">
   <button onClick="{{ stickyAction }}" style="width:100%;max-width:560px;margin:0 auto;display:block;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">{{ stickyLabel }}</button>
-  <sc-if value="{{ stickyHouseWa }}" hint-placeholder-val="{{ false }}"><a href="{{ waHouse }}" target="_blank" rel="noopener" style="display:flex;justify-content:center;align-items:center;height:32px;margin-top:4px;font-size:14px;font-weight:500;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Спросить про этот дом в WhatsApp</span></a></sc-if>
+  <sc-if value="{{ stickyHouseWa }}" hint-placeholder-val="{{ false }}"><a data-hit="1" href="{{ waHouse }}" target="_blank" rel="noopener" style="display:flex;justify-content:center;align-items:center;height:32px;margin-top:4px;font-size:14px;font-weight:500;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Спросить про этот дом в WhatsApp</span></a></sc-if>
 </div>
 </sc-if>
 
@@ -1067,7 +1086,7 @@
         <div style="flex:0 0 100%;aspect-ratio:16/10;scroll-snap-align:center;border-radius:20px;overflow:hidden;background:#0A2F4F;color:#F9EFE3;"><image-slot id="{{ g.slot }}" src="{{ g.img }}" shape="rect" placeholder="{{ g.photo }}"></image-slot></div>
       </sc-for>
     </div>
-    <sc-if value="{{ pd.multi }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.6);margin-top:8px;">Листайте фото →</div></sc-if>
+    <sc-if value="{{ pd.multi }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.78);margin-top:8px;">Листайте фото →</div></sc-if>
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-top:24px;"><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.05;margin:0;">{{ pd.name }}</h3><div style="font-size:20px;font-weight:600;white-space:nowrap;">{{ pd.priceText }}</div></div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"><sc-for list="{{ pd.chips }}" as="ch" hint-placeholder-count="2"><span style="height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.06);font-size:13px;display:flex;align-items:center;">{{ ch.t }}</span></sc-for></div>
     <p style="margin:16px 0 0;font-size:15px;line-height:1.6;color:rgba(10,47,79,.85);">{{ pd.desc }}</p>
@@ -1126,7 +1145,7 @@
 <div data-screen-label="Видео-приветствие" role="dialog" aria-label="Видео-приветствие" style="position:fixed;left:16px;bottom:{{ greetBottom }};z-index:62;width:min(320px,calc(100vw - 32px));background:#0A2F4F;border-radius:20px;overflow:hidden;animation:fadeUp 300ms ease-out;">
   <div style="position:relative;aspect-ratio:9/16;max-height:70vh;width:100%;background:#3B2F2A url(img/h2_int.png) center/cover no-repeat;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.7),rgba(10,47,79,0) 50%);"></div>
-    <div style="position:absolute;left:16px;right:16px;bottom:16px;color:#F9EFE3;"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1.1;">Здравствуйте, я пармастер SHIPA</div><div style="font-size:13px;color:rgba(249,239,227,.8);margin-top:4px;">Видео со звуком · 0:24</div></div>
+    <div style="position:absolute;left:16px;right:16px;bottom:16px;color:#F9EFE3;"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1.1;">Здравствуйте, я пармастер SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></div><div style="font-size:13px;color:rgba(249,239,227,.8);margin-top:4px;">Видео со звуком · 0:24</div></div>
     <button onClick="{{ closeGreet }}" aria-label="Закрыть приветствие" style="position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:999px;background:rgba(10,47,79,.5);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 22 22" stroke="#F9EFE3" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
   </div>
   <div style="padding:12px;"><button onClick="{{ greetBook }}" style="width:100%;height:52px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">{{ bookLabel }}</button></div>
@@ -1135,10 +1154,10 @@
 
 <!-- COOKIE STRIP -->
 <sc-if value="{{ showCookie }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;left:0;right:88px;bottom:90px;z-index:29;display:flex;justify-content:center;padding:0 20px;pointer-events:none;">
+<div style="position:fixed;left:0;right:88px;bottom:{{ cookieBottom }};z-index:29;display:flex;justify-content:center;padding:0 20px;pointer-events:none;">
   <div style="pointer-events:auto;display:flex;align-items:center;gap:12px;background:#3B2F2A;color:#F9EFE3;font-size:13px;padding:8px 8px 8px 14px;max-width:560px;">
     <span>Мы используем cookie для работы брони.</span>
-    <button onClick="{{ acceptCookie }}" style="height:32px;padding:0 12px;background:#F9EFE3;color:#3B2F2A;font-weight:600;font-size:13px;">Хорошо</button>
+    <button data-hit="1" onClick="{{ acceptCookie }}" style="height:32px;padding:0 12px;background:#F9EFE3;color:#3B2F2A;font-weight:600;font-size:13px;">Хорошо</button>
   </div>
 </div>
 </sc-if>
@@ -1159,7 +1178,7 @@
     </sc-if>
     <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-top:32px;border-top:1px solid rgba(249,239,227,.12);">
       <div style="display:flex;flex-wrap:wrap;gap:16px 40px;font-size:14px;line-height:1.5;color:rgba(249,239,227,.75);">
-        <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Телефон</div><a href="{{ telHref }}" style="color:#F9EFE3;font-size:17px;font-weight:600;">{{ phoneText }}</a></div>
+        <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Телефон</div><a href="{{ telHref }}" style="color:#F9EFE3;font-size:var(--fs-lead);font-weight:600;">{{ phoneText }}</a></div>
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Адрес</div><div style="color:#F9EFE3;">г. Караганда, ул. Жакана Смакова 242</div></div>
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Режим работы</div><div style="color:#F9EFE3;">Круглосуточно</div></div>
       </div>
@@ -1189,14 +1208,14 @@
     </sc-if>
     <div style="flex:1;display:flex;gap:4px;">
       <sc-for list="{{ stepSegs }}" as="s" hint-placeholder-count="4">
-        <div style="{{ s.style }}"></div>
+        <button onClick="{{ s.go }}" disabled="{{ s.off }}" aria-label="{{ s.label }}" aria-current="{{ s.cur }}" style="flex:1;height:44px;display:flex;align-items:center;cursor:{{ s.cursor }};"><span style="{{ s.style }}"></span></button>
       </sc-for>
     </div>
     <button onClick="{{ closeBooking }}" aria-label="Закрыть" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#0A2F4F" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
   </div>
   </sc-if>
 
-  <div id="bk-scroll" style="flex:1;overflow-y:auto;padding:8px 20px 150px;">
+  <div id="bk-scroll" onPointerDown="{{ swDown }}" onPointerMove="{{ swMove }}" onPointerUp="{{ swUp }}" onPointerCancel="{{ swCancel }}" style="flex:1;overflow-y:auto;padding:8px 20px 150px;touch-action:pan-y;">
   <div style="max-width:560px;margin:0 auto;">
 
     <sc-if value="{{ preStep1 }}" hint-placeholder-val="{{ false }}">
@@ -1209,9 +1228,9 @@
             <button onClick="{{ h.select }}" style="{{ h.style }}">
               <div style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:0 0 auto;"><div style="{{ h.bgStyle }}"></div></div>
               <div style="flex:1;min-width:0;">
-                <div style="font-size:10px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ h.kicker }}</div>
+                <div style="font-size:12px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ h.kicker }}</div>
                 <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.1em;line-height:1;margin-top:4px;">{{ h.name }}</div>
-                <div style="font-size:13px;color:rgba(10,47,79,.65);margin-top:4px;">{{ h.sub }}</div>
+                <div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">{{ h.sub }}</div>
               </div>
               <span style="font-size:18px;">→</span>
             </button>
@@ -1223,15 +1242,15 @@
     <sc-if value="{{ showCal }}" hint-placeholder-val="{{ true }}">
       <div data-screen-label="Шаг 1 — Дата и гости">
       <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
+        <button data-hit="1" onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
       </sc-if>
       <sc-if value="{{ calHouse }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;text-align:center;">{{ calHouse }}</div>
+        <div style="font-size:12px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;text-align:center;">{{ calHouse }}</div>
       </sc-if>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 6px;text-align:center;">{{ calTitle }}</h2>
       <p style="margin:0 0 20px;text-align:center;font-size:15px;color:rgba(10,47,79,.7);">{{ calSub }}</p>
       <div style="border:2px solid #C15C22;border-radius:20px;padding:14px 14px 4px;">
-      <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.6);font-weight:600;margin-bottom:8px;">Дата</div>
+      <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;margin-bottom:8px;">Дата</div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div style="font-weight:600;font-size:15px;">{{ weekTitle }}</div>
         <div style="display:flex;gap:2px;">
@@ -1241,7 +1260,7 @@
       </div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;">
         <sc-for list="{{ wdHead }}" as="w" hint-placeholder-count="7">
-          <div style="text-align:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(10,47,79,.55);padding:4px 0;">{{ w.l }}</div>
+          <div style="text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(10,47,79,.7);padding:4px 0;">{{ w.l }}</div>
         </sc-for>
       </div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
@@ -1249,10 +1268,10 @@
           <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" style="{{ d.style }}">{{ d.day }}</button>
         </sc-for>
       </div>
-      <div style="font-size:12px;color:rgba(10,47,79,.6);margin:8px 0 14px;">{{ calNote }}</div>
+      <div style="font-size:12px;color:rgba(10,47,79,.7);margin:8px 0 14px;">{{ calNote }}</div>
       <div style="border-top:1px solid rgba(10,47,79,.15);margin:0 -14px;"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 10px;">
-        <div><div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.6);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.6);margin-top:4px;">Дети до 7 лет не считаются</div></div>
+        <div><div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">Дети до 7 лет не считаются</div></div>
         <div style="display:flex;align-items:center;">
           <button onClick="{{ guestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;">−</button>
           <div style="width:52px;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;">{{ bk.guests }}</div>
@@ -1266,8 +1285,8 @@
     <sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}">
       <div data-screen-label="Шаг 2 — Какой дом">
       <button onClick="{{ editSearch }}" style="width:100%;display:grid;grid-template-columns:1fr 1fr auto;border:2px solid #C15C22;border-radius:16px;overflow:hidden;background:#F9EFE3;text-align:left;margin-bottom:20px;">
-        <div style="padding:10px 12px;border-right:1px solid rgba(10,47,79,.15);"><div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,47,79,.6);">Дата</div><div style="font-weight:600;font-size:14px;margin-top:2px;white-space:nowrap;">{{ searchDate }}</div></div>
-        <div style="padding:10px 12px;"><div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,47,79,.6);">Гостей</div><div style="font-weight:600;font-size:14px;margin-top:2px;">{{ bk.guests }}</div></div>
+        <div style="padding:10px 12px;border-right:1px solid rgba(10,47,79,.15);"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,47,79,.7);">Дата</div><div style="font-weight:600;font-size:14px;margin-top:2px;white-space:nowrap;">{{ searchDate }}</div></div>
+        <div style="padding:10px 12px;"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,47,79,.7);">Гостей</div><div style="font-weight:600;font-size:14px;margin-top:2px;">{{ bk.guests }}</div></div>
         <div style="display:flex;align-items:center;padding:0 12px;color:#C15C22;font-weight:600;font-size:13px;">Изменить</div>
       </button>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;line-height:1.1;margin:0 0 6px;">{{ step2Title }}</h2>
@@ -1306,7 +1325,7 @@
                 <div style="width:96px;height:112px;overflow:hidden;flex:0 0 auto;border-radius:14px;"><div style="{{ h.bgStyle }}"></div></div>
                 <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
                   <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;">
-                    <div style="font-size:11px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
+                    <div style="font-size:12px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
                     <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:600;color:#0A2F4F;white-space:nowrap;">★ {{ h.rating }}</div></sc-if>
                   </div>
                   <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;line-height:1;margin-top:4px;">{{ h.name }}</div>
@@ -1318,7 +1337,7 @@
                 <div style="display:flex;gap:2px;">
                   <sc-for list="{{ h.segs }}" as="g" hint-placeholder-count="24"><div style="{{ g.style }}"></div></sc-for>
                 </div>
-                <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(10,47,79,.55);margin-top:4px;font-variant-numeric:tabular-nums;"><span>{{ scaleA }}</span><span>{{ scaleB }}</span><span>{{ scaleA }}</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;font-variant-numeric:tabular-nums;"><span>{{ scaleA }}</span><span>{{ scaleB }}</span><span>{{ scaleA }}</span></div>
                 <div style="font-size:13px;font-weight:600;color:{{ h.noteColor }};margin-top:6px;">{{ h.note }}</div>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(10,47,79,.12);flex-wrap:wrap;">
@@ -1341,7 +1360,7 @@
           <div class="noscroll" ref="{{ carRef }}" onScroll="{{ carScroll }}" onPointerDown="{{ carTouch }}" style="display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;transition:opacity 250ms ease;">
             <sc-for list="{{ car.slides }}" as="p" hint-placeholder-count="1">
               <button onClick="{{ p.open }}" aria-label="{{ p.alt }}" style="position:relative;flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;padding:0;background:rgba(10,47,79,.08);">
-                <img src="{{ p.src }}" alt="{{ p.alt }}" loading="{{ p.loading }}" draggable="false" style="{{ p.imgStyle }}">
+                <img decoding="async" src="{{ p.src }}" alt="{{ p.alt }}" loading="{{ p.loading }}" draggable="false" style="{{ p.imgStyle }}">
                 <sc-if value="{{ p.more }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;background:rgba(10,47,79,.6);display:flex;align-items:center;justify-content:center;color:#F9EFE3;font-size:16px;font-weight:600;">Ещё {{ p.moreN }} фото</div></sc-if>
               </button>
             </sc-for>
@@ -1356,8 +1375,8 @@
         <sc-if value="{{ overlayHdr }}" hint-placeholder-val="{{ false }}">
           <div style="position:absolute;top:calc(20px + env(safe-area-inset-top));left:12px;right:12px;display:flex;align-items:center;gap:12px;">
             <button onClick="{{ bookingBack }}" aria-label="Назад" style="width:40px;height:40px;border-radius:50%;background:#F9EFE3;border:1px solid #F9EFE3;display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg></button>
-            <div style="flex:1;display:flex;gap:4px;pointer-events:none;">
-              <sc-for list="{{ stepSegsLight }}" as="s" hint-placeholder-count="4"><div style="{{ s.style }}"></div></sc-for>
+            <div style="flex:1;display:flex;gap:4px;">
+              <sc-for list="{{ stepSegsLight }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.go }}" disabled="{{ s.off }}" aria-label="{{ s.label }}" aria-current="{{ s.cur }}" style="flex:1;height:44px;display:flex;align-items:center;cursor:{{ s.cursor }};"><span style="{{ s.style }}"></span></button></sc-for>
             </div>
             <button onClick="{{ closeBooking }}" aria-label="Закрыть" style="width:40px;height:40px;border-radius:50%;background:#F9EFE3;border:1px solid #F9EFE3;display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><svg width="16" height="16" viewBox="0 0 22 22" stroke="#0A2F4F" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
           </div>
@@ -1373,7 +1392,7 @@
       <div class="noscroll" style="display:flex;gap:6px;overflow-x:auto;margin:0 -20px 16px;padding:0 20px 2px;scroll-snap-type:x proximity;">
         <sc-for list="{{ dayStrip }}" as="d" hint-placeholder-count="14">
           <button onClick="{{ d.select }}" style="{{ d.style }}">
-            <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
+            <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
             <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1;">{{ d.day }}</span>
           </button>
         </sc-for>
@@ -1384,20 +1403,20 @@
         </sc-for>
       </div>
       <sc-if value="{{ startedDay }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ toDay }}" style="height:36px;margin-top:8px;font-size:13px;font-weight:600;">← {{ startedDayText }}</button>
+        <button data-hit="1" onClick="{{ toDay }}" style="height:36px;margin-top:8px;font-size:13px;font-weight:600;">← {{ startedDayText }}</button>
       </sc-if>
       <div id="bk-grid" style="{{ gridWrapStyle }}">
       <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;">
         <sc-for list="{{ hourCells }}" as="c" hint-placeholder-count="12">
           <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">
             <span style="font-size:20px;font-weight:600;line-height:1;">{{ c.label }}</span>
-            <sc-if value="{{ c.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;letter-spacing:.06em;">{{ c.sub }}</span></sc-if>
+            <sc-if value="{{ c.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;letter-spacing:.06em;">{{ c.sub }}</span></sc-if>
             <sc-if value="{{ c.cont }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:8px;top:5px;font-size:15px;">→</span></sc-if>
           </button>
         </sc-for>
       </div>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:11px;color:rgba(10,47,79,.75);">
+      <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:rgba(10,47,79,.75);">
         <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:rgba(255,255,255,.6);border:1px solid rgba(59,47,42,.15);"></span>Свободно</span>
         <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:#0A2F4F;"></span>Выбрано</span>
         <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;border-radius:4px;background:rgba(193,92,34,.12);"></span>Занято</span>
@@ -1415,12 +1434,12 @@
       </sc-if>
       <sc-if value="{{ hasStart }}" hint-placeholder-val="{{ false }}">
         <div style="font-weight:600;margin:24px 0 2px;font-size:15px;">Сколько часов?</div>
-        <div style="font-size:13px;color:rgba(10,47,79,.65);margin-bottom:10px;">{{ durNote }}</div>
+        <div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:10px;">{{ durNote }}</div>
         <div id="bk-durs" style="{{ durWrapStyle }}">
           <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="8">
             <div style="display:flex;flex-direction:column;gap:4px;">
               <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
-              <sc-if value="{{ c.hasReason }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;line-height:1.25;color:#C15C22;text-align:center;">{{ c.reason }}</span></sc-if>
+              <sc-if value="{{ c.hasReason }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.25;color:#C15C22;text-align:center;">{{ c.reason }}</span></sc-if>
             </div>
           </sc-for>
         </div>
@@ -1429,7 +1448,7 @@
 
       <sc-if value="{{ tubOpt }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleTub }}" style="display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin-top:16px;border:1px solid rgba(10,47,79,.25);border-radius:16px;text-align:left;">
-          <div style="flex:1;"><div style="font-weight:600;font-size:16px;">Горячий чан</div><div style="font-size:13px;color:rgba(10,47,79,.65);margin-top:2px;">{{ tubPriceText }} · готовим к вашему приезду</div></div>
+          <div style="flex:1;"><div style="font-weight:600;font-size:16px;">Горячий чан</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:2px;">{{ tubPriceText }} · готовим к вашему приезду</div></div>
           <div style="{{ tubSwitch }}"><div style="{{ tubKnob }}"></div></div>
         </button>
       </sc-if>
@@ -1443,7 +1462,7 @@
           <button onClick="{{ e.toggle }}" style="{{ e.style }}">
             <div style="flex:1;text-align:left;">
               <div style="font-weight:600;font-size:16px;">{{ e.name }}</div>
-              <div style="font-size:13px;color:rgba(10,47,79,.65);margin-top:2px;">{{ e.priceText }} · <span style="color:rgba(59,47,42,.6);">подтвердит администратор</span></div>
+              <div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:2px;">{{ e.priceText }} · <span style="color:rgba(59,47,42,.78);">подтвердит администратор</span></div>
             </div>
             <div style="{{ e.switchStyle }}"><div style="{{ e.knobStyle }}"></div></div>
           </button>
@@ -1456,7 +1475,7 @@
     <sc-if value="{{ showContacts }}" hint-placeholder-val="{{ false }}">
       <div data-screen-label="Шаг 4 — Контакты">
       <sc-if value="{{ pre }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
+        <button data-hit="1" onClick="{{ bookingBack }}" style="display:inline-flex;align-items:center;gap:6px;height:36px;margin:0 0 6px -6px;padding:0 6px;font-size:14px;font-weight:500;color:rgba(10,47,79,.7);"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>{{ backLabel }}</button>
       </sc-if>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0;">Как с вами связаться?</h2>
       <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
@@ -1464,7 +1483,7 @@
           <sc-if value="{{ card.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ card.img }}" alt="" style="width:96px;height:96px;border-radius:14px;object-fit:cover;object-position:center;display:block;flex:0 0 auto;view-transition-name:bk-photo;"></sc-if>
           <sc-if value="{{ card.noImg }}" hint-placeholder-val="{{ false }}"><div style="width:96px;height:96px;border-radius:14px;background:#F3E4D2;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:36px;color:rgba(10,47,79,.3);">{{ card.n }}</div></sc-if>
           <div style="flex:1;min-width:0;padding-right:20px;display:flex;flex-direction:column;gap:3px;">
-            <div style="font-size:11px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ card.kicker }}</div>
+            <div style="font-size:12px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ card.kicker }}</div>
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.1em;line-height:1;color:#0A2F4F;">{{ card.name }}</div>
             <div style="font-size:14px;color:#0A2F4F;margin-top:2px;">{{ card.when }}</div>
             <div style="font-size:13px;color:#3B2F2A;">{{ card.meta }} · <span style="font-weight:600;">{{ card.total }}</span></div>
@@ -1475,7 +1494,7 @@
       </sc-if>
       <div style="font-family:Inter,system-ui,sans-serif;font-size:12px;color:#3B2F2A;margin:14px 0 18px;">* — обязательные поля</div>
       <sc-if value="{{ returning }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:-4px 0 14px;font-size:15px;"><span>С возвращением, {{ returningName }}</span><button onClick="{{ notMe }}" style="height:32px;font-size:14px;font-weight:600;color:#C15C22;">Не вы?</button></div>
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:-4px 0 14px;font-size:15px;"><span>С возвращением, {{ returningName }}</span><button data-hit="1" onClick="{{ notMe }}" style="height:32px;font-size:14px;font-weight:600;color:#C15C22;">Не вы?</button></div>
       </sc-if>
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div>
@@ -1497,7 +1516,7 @@
         <div>Бронь подтверждается предоплатой</div>
         <div>Без предоплаты бронь держится 6 часов</div>
         <div>Время опоздания не продлевается</div>
-        <button onClick="{{ openRules }}" style="height:32px;margin-top:2px;font-size:14px;font-weight:600;color:#C15C22;">Полные условия</button>
+        <button data-hit="1" onClick="{{ openRules }}" style="height:32px;margin-top:2px;font-size:14px;font-weight:600;color:#C15C22;">Полные условия</button>
       </div>
       </sc-if>
       <sc-if value="{{ pre }}" hint-placeholder-val="{{ false }}">
@@ -1522,11 +1541,11 @@
             <span>Согласен с <a href="#" onClick="{{ openRules }}" style="border-bottom:1px solid rgba(10,47,79,.4);">правилами бронирования</a> <span style="color:#C15C22;">*</span></span>
           </label>
           <sc-if value="{{ fbk.agreeErr }}" hint-placeholder-val="{{ false }}"><div style="margin:2px 0 0 36px;font-size:13px;line-height:1.35;color:#C15C22;">Подтвердите согласие с правилами</div></sc-if>
-          <div style="margin-top:10px;font-size:12px;line-height:1.5;color:rgba(59,47,42,.6);">Нажимая «{{ bookingCtaLabel }}», вы даёте согласие на обработку персональных данных</div>
+          <div style="margin-top:10px;font-size:12px;line-height:1.5;color:rgba(59,47,42,.78);">Нажимая «{{ bookingCtaLabel }}», вы даёте согласие на обработку персональных данных</div>
         </div>
       </sc-if>
       <sc-if value="{{ pre }}" hint-placeholder-val="{{ false }}">
-        <div style="margin-top:16px;font-size:12px;line-height:1.5;color:rgba(10,47,79,.6);">Нажимая «{{ bookingCtaLabel }}», вы соглашаетесь с обработкой персональных данных.</div>
+        <div style="margin-top:16px;font-size:12px;line-height:1.5;color:rgba(10,47,79,.7);">Нажимая «{{ bookingCtaLabel }}», вы соглашаетесь с обработкой персональных данных.</div>
       </sc-if>
       </div>
     </sc-if>
@@ -1539,7 +1558,7 @@
         </svg>
         <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:38px;letter-spacing:.06em;margin:28px 0 12px;line-height:1;">Вы в списке</h2>
         <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(10,47,79,.85);">Напишем первыми, когда откроется бронирование.</p>
-        <p style="margin:14px 0 0;font-size:14px;color:rgba(10,47,79,.65);">{{ cName }} · {{ cLine1 }}</p>
+        <p style="margin:14px 0 0;font-size:14px;color:rgba(10,47,79,.7);">{{ cName }} · {{ cLine1 }}</p>
         <a href="{{ waPre }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:52px;margin-top:36px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">Написать в WhatsApp</a>
         <button onClick="{{ closeBooking }}" style="width:100%;height:52px;margin-top:8px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">На главную</button>
       </div>
@@ -1553,7 +1572,7 @@
             <sc-if value="{{ succ.noImg }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;background:#F3E4D2;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:96px;color:rgba(10,47,79,.28);">{{ succ.n }}</div></sc-if>
             <div style="position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(to top,rgba(10,47,79,.85),rgba(10,47,79,0));"></div>
             <div style="position:absolute;left:16px;bottom:44px;color:#F9EFE3;">
-              <div style="font-size:11px;letter-spacing:.2em;font-weight:600;">{{ succ.kicker }}</div>
+              <div style="font-size:12px;letter-spacing:.2em;font-weight:600;">{{ succ.kicker }}</div>
               <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;letter-spacing:.1em;line-height:1;margin-top:6px;">{{ succ.name }}</div>
             </div>
           </div>
@@ -1594,9 +1613,9 @@
         <button onClick="{{ bookingNext }}" disabled="{{ sending }}" style="{{ panelBtnStyle }}"><sc-if value="{{ sending }}" hint-placeholder-val="{{ false }}"><span style="width:16px;height:16px;border-radius:50%;border:2px solid rgba(249,239,227,.35);border-top-color:#F9EFE3;animation:spin 800ms linear infinite;flex:0 0 auto;"></span></sc-if>{{ panelBtnLabel }}</button>
       </div>
     </sc-if>
-    <sc-if value="{{ step4Wa }}" hint-placeholder-val="{{ false }}"><div style="max-width:520px;margin:6px auto 0;text-align:right;"><a href="{{ waStep4 }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:32px;font-size:13px;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">или отправьте заявку в WhatsApp →</span></a></div></sc-if>
+    <sc-if value="{{ step4Wa }}" hint-placeholder-val="{{ false }}"><div style="max-width:520px;margin:6px auto 0;text-align:right;"><a data-hit="1" href="{{ waStep4 }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:32px;font-size:13px;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">или отправьте заявку в WhatsApp →</span></a></div></sc-if>
     <sc-if value="{{ singlePanel }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ bookingNext }}" disabled="{{ bookingNextDisabled }}" style="{{ bookingCtaStyle }}">{{ bookingCtaLabel }}</button>
+      <button onClick="{{ bookingNext }}" style="{{ bookingCtaStyle }}">{{ bookingCtaLabel }}</button>
     </sc-if>
   </div>
   </sc-if>
@@ -1620,7 +1639,7 @@
       <div style="display:flex;flex-direction:column;border-top:1px solid rgba(59,47,42,.12);">
         <sc-for list="{{ calcRows }}" as="r" hint-placeholder-count="2">
           <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(59,47,42,.12);font-size:15px;">
-            <div><div>{{ r.l }}</div><sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.6);margin-top:2px;">{{ r.note }}</div></sc-if></div>
+            <div><div>{{ r.l }}</div><sc-if value="{{ r.hasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.78);margin-top:2px;">{{ r.note }}</div></sc-if></div>
             <div style="white-space:nowrap;font-variant-numeric:tabular-nums;">{{ r.v }}</div>
           </div>
         </sc-for>
@@ -1629,7 +1648,7 @@
         <span style="font-size:15px;font-weight:600;">Итого</span>
         <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;line-height:1;">{{ totalText }}</span>
       </div>
-      <div style="font-size:12px;color:rgba(59,47,42,.6);margin-top:8px;">Опции «подтвердит администратор» в итог не входят, их стоимость сообщим в WhatsApp.</div>
+      <div style="font-size:12px;color:rgba(59,47,42,.78);margin-top:8px;">Опции «подтвердит администратор» в итог не входят, их стоимость сообщим в WhatsApp.</div>
     </sc-if>
     <sc-if value="{{ sheetRules }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;gap:16px;font-size:15px;line-height:1.55;">
@@ -1643,16 +1662,17 @@
 </div>
 </sc-if>
 
+<sc-if value="{{ bkHintOn }}" hint-placeholder-val="{{ false }}"><div role="status" style="position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:90;max-width:calc(100vw - 40px);padding:12px 18px;border-radius:12px;background:#0A2F4F;color:#F9EFE3;font-size:15px;font-weight:500;animation:fadeIn 200ms ease-out;">{{ bkHint }}</div></sc-if>
 <!-- HOUSE GALLERY (booking) -->
 <sc-if value="{{ galOpen }}" hint-placeholder-val="{{ false }}">
-<div data-screen-label="Галерея дома" onPointerDown="{{ galDown }}" onPointerUp="{{ galUp }}" style="position:fixed;inset:0;z-index:95;background:#0A2F4F;color:#F9EFE3;display:flex;flex-direction:column;animation:fadeIn 200ms ease;">
+<div data-screen-label="Галерея дома" onPointerDown="{{ galDown }}" onPointerUp="{{ galUp }}" onPointerCancel="{{ galCancel }}" style="position:fixed;inset:0;z-index:95;background:#0A2F4F;color:#F9EFE3;display:flex;flex-direction:column;animation:fadeIn 200ms ease;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 10px 6px 20px;">
     <div style="font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;">{{ galCounter }}</div>
     <button onClick="{{ closeGal }}" aria-label="Закрыть галерею" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
   </div>
   <div class="noscroll" ref="{{ galRef }}" onScroll="{{ galScroll }}" style="flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;touch-action:pan-x;">
     <sc-for list="{{ galSlides }}" as="p" hint-placeholder-count="1">
-      <div style="flex:0 0 100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;"><img src="{{ p.src }}" alt="{{ p.alt }}" loading="{{ p.loading }}" draggable="false" style="max-width:min(100%,1600px);max-height:100%;width:100%;object-fit:contain;display:block;"></div>
+      <div style="flex:0 0 100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;"><img decoding="async" src="{{ p.src }}" alt="{{ p.alt }}" loading="{{ p.loading }}" draggable="false" style="max-width:min(100%,1600px);max-height:100%;width:100%;object-fit:contain;display:block;"></div>
     </sc-for>
   </div>
   <div class="noscroll" style="display:flex;gap:8px;overflow-x:auto;padding:12px 20px calc(16px + env(safe-area-inset-bottom));justify-content:center;">
@@ -1665,7 +1685,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом больше чем на двое суток&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, {гостей}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, {гостей}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом больше чем на двое суток&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, {гостей}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, {гостей}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;}}">
 const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22';
 const WD=['вс','пн','вт','ср','чт','пт','сб'];
 const WD_ACC=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
@@ -1677,7 +1697,7 @@ const hh=h=>{const m=h%1?'30':'00';return String(Math.floor(h)%24).padStart(2,'0
 const plural=(n,a,b,c)=>{const m=n%10,k=n%100;return k>=11&&k<=14?c:m===1?a:m>=2&&m<=4?b:c;};
 // Настройки из админки. Значения — заглушки до ответа заказчика (п.12 правок 22.09).
 // tabFrom — граница вкладок День/Ночь; tariff* — границы тарифов; prep — подготовка дома после гостя, ч.
-const CFG={tabFrom:8,tariffDayFrom:8,tariffNightFrom:20,minH:{VIP:4,STANDARD:3},maxH:48,prep:{base:1,tub:2,VIP:2},tubPrice:15000,durs:[3,4,5,6,8,12,24,48],nowHour:11,tubHouses:['energiya']};
+const CFG={tabFrom:8,tariffDayFrom:8,tariffNightFrom:20,minH:{VIP:3,STANDARD:3},maxH:48,prep:{base:1,tub:2,VIP:2},tubPrice:15000,durs:[3,4,5,6,8,12,24,48],nowHour:11,tubHouses:['energiya']};
 const PRICES={VIP:{dayWd:30000,dayWe:40000,eveWd:38000,eveWe:45000},STANDARD:{dayWd:17000,dayWe:25000,eveWd:23000,eveWe:30000}};
 const HOUSES=[
  {id:'dyhanie',n:'01',tier:'VIP',name:'ДЫХАНИЕ',slogan:'Вдохни глубже',area:120,guests:14,min:3,img:1,mat:'Светлый дуб, лён и матовый камень',art:'туманный хвойный лес',aroma:'эвкалипт и мята',ritual:'Парение здесь свежее и лёгкое, с травяным чаем после.',prog:1},
@@ -1783,15 +1803,17 @@ class Component extends DCLogic {
     this._rsPoll=setInterval(this.onResize,250);setTimeout(()=>clearInterval(this._rsPoll),4000);
     this.demoScroll=y=>{let n=0;const go=()=>{const tgt=typeof y==='function'?y():y;window.scrollTo(0,tgt);this.onScroll&&this.onScroll();if(Math.abs(window.scrollY-tgt)>4&&n++<20)setTimeout(go,150);};setTimeout(go,300);};
     try{const q=new URLSearchParams(location.search);this.hdrDemo=q.get('hdr');const it=q.get('intro');this.introT=it!=null&&it!==''?+it:null;}catch(e){this.hdrDemo=null;this.introT=null;}
-    let last=0;this.onScroll=()=>{const y=window.scrollY;const el=this.headerRef.current;const sc=y>80;if(sc!==this.state.hdrScrolled)this.setState({hdrScrolled:sc});const ph=y>window.innerHeight*.7;if(ph!==!!this.state.pastHero)this.setState({pastHero:ph});
+    let last=0;this.onScroll=()=>{const y=window.scrollY;const el=this.headerRef.current;const sc=y>80;if(sc!==this.state.hdrScrolled)this.setState({hdrScrolled:sc});const ph=y>window.innerHeight*.7;if(ph!==!!this.state.pastHero)this.setState({pastHero:ph});if(y>240&&this.state.cookie&&this._cookieSeen)this.setState({cookie:false});if(this.state.cookie)this._cookieSeen=true;
       const hide=!this.hdrDemo&&!this.state.menuOpen&&y>last&&y>80;if(el){el.style.transform=hide?'translateY(-100%)':'translateY(0)';}if(Math.abs(y-last)>2&&hide!==!!this.state.hdrHidden)this.setState({hdrHidden:hide});last=y;this.spySvc();};
     window.addEventListener('scroll',this.onScroll,{passive:true});
+    this.onScrollEnd=e=>{const t=e.target;if(t&&t._settle){clearTimeout(t._st);const f=t._settle;t._settle=null;f(t);if(t._touched){t._touched=false;vib(8);}}};document.addEventListener('scrollend',this.onScrollEnd,true);
+    this.onTouchLane=e=>{const l=e.target&&e.target.closest&&e.target.closest('.noscroll');if(l)l._touched=true;};document.addEventListener('touchstart',this.onTouchLane,{passive:true,capture:true});
     if(this.hdrDemo){this.setState({cookie:false,menuOpen:this.hdrDemo==='menu'});if(this.hdrDemo==='scrolled')this.demoScroll(640);}
     try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):+sy);}catch(e){}
     this.reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     try{const s=JSON.parse(localStorage.getItem('shipa_user')||'null');if(s)this.setState(st=>({form:{...st.form,name:s.name||'',phone:s.phone||''},returning:s.name&&s.phone?s.name:null}));
       const dr=JSON.parse(localStorage.getItem('shipa_draft')||'null');
-      if(dr&&dr.bk&&!dr.bk.pre&&!this.props.preorderMode&&!this.hdrDemo&&this.introT==null&&Date.now()-dr.ts<30*60000)this.setState(st=>({bk:dr.bk,form:{...st.form,...dr.form}}));
+      if(dr&&dr.bk&&!dr.bk.pre&&!this.props.preorderMode&&!this.hdrDemo&&this.introT==null&&Date.now()-dr.ts<30*60000)this.setState(st=>{const df={};Object.entries(dr.form||{}).forEach(([k,v])=>{if(v!==''&&v!=null&&v!==false)df[k]=v;});return {bk:dr.bk,form:{...st.form,...df}};});
       if(localStorage.getItem('shipa_cookie')||this.hdrDemo||this.introT!=null)this.setState({cookie:false});}catch(e){}
     if(this.props.demoReturningGuest)this.demoReturning(true);
     this.animTotal();
@@ -1804,6 +1826,7 @@ class Component extends DCLogic {
     this.injectLd();
     try{const c=JSON.parse(localStorage.getItem('shipa_cart')||'[]');if(Array.isArray(c)&&c.length)this.setState({cart:c});}catch(e){}
     this.onKey=e=>{if(e.key==='Escape'&&this.state.pd)this.setState({pd:null});};document.addEventListener('keydown',this.onKey);
+    this.applyStress();this.onPopState=()=>this.onPop();window.addEventListener('popstate',this.onPopState);this._hd=0;
     try{if(!sessionStorage.getItem('shipa_watip')&&!this.hdrDemo&&this.introT==null)this._tipT=setTimeout(()=>{try{sessionStorage.setItem('shipa_watip','1');}catch(e){}this.setState({waTip:true});this._tipT2=setTimeout(()=>this.setState({waTip:false}),5000);},20000);}catch(e){}
     if(this.reduced||(this.hdrDemo&&this.introT==null)){this.setState({intro:false});this.fillStats(1);}
     else if(this.introT!=null){this.fillStats(Math.max(0,Math.min(1,(this.introT-850)/900)));}
@@ -1826,8 +1849,11 @@ class Component extends DCLogic {
     if(over&&lv<2)this.setState({hdrLv:lv+1,hdrLvAt:vw});else if(!over&&lv>0&&vw>(this.state.hdrLvAt||0)+48)this.setState({hdrLv:lv-1,hdrLvAt:vw});}
   dragClose(e,ref,close){const el=ref.current;if(!el||window.innerWidth>=960)return;const y0=e.clientY;
     const mv=ev=>{const dy=Math.max(0,ev.clientY-y0);el.style.transition='none';el.style.transform='translateY('+dy+'px)';};
-    const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);const dy=ev.clientY-y0;el.style.transition='transform 200ms ease-out';el.style.transform='';if(dy>80)close();};
-    window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);}
+    const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cn);const dy=ev.clientY-y0;el.style.transition='transform 200ms ease-out';el.style.transform='';if(dy>80)close();};
+    const cn=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cn);el.style.transition='transform 200ms ease-out';el.style.transform='';};
+    window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cn);}
+  // Номер слайда — только после остановки ленты: scrollend или 120 мс тишины после scroll
+  settle(el,fn){if(!el)return;el._settle=fn;clearTimeout(el._st);el._st=setTimeout(()=>{const f=el._settle;el._settle=null;if(f){f(el);if(el._touched){el._touched=false;vib(8);}}},120);}
   heroShowMs(){return Math.max(1500,Math.round((+(this.props.heroShowSec??5)||5)*1000));}
   // Один таймер на слайдер: _heroLeft — сколько осталось показывать текущий кадр
   heroGo(i){const n=HERO_SLIDES.length;const nx=((i%n)+n)%n;if(nx===this.state.hero){this.schedHero(true);return;}this.setState(s=>({heroPrev:s.hero,hero:nx,heroN:(s.heroN||0)+1}));this.preloadHero(nx+1);}
@@ -1839,15 +1865,21 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){document.removeEventListener('keydown',this.onKey);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){document.removeEventListener('keydown',this.onKey);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
   componentDidUpdate(pp,prev){
     pp=pp||this.props;prev=prev||this.state;
     const s=this.state,b=s.bk;
+    if(b&&!prev.bk)this._bkStart=b.step;
+    if(b&&b.step<5){const pb=prev.bk;let mx=b.maxStep||0;
+      if(pb&&pb.step===b.step&&['date','houseId','start','dur','tub','guests'].some(k=>b[k]!==pb[k]))mx=b.step;
+      if(mx<b.step)mx=b.step;if(mx!==(b.maxStep||0))this.setState(st=>({bk:{...st.bk,maxStep:mx}}));}
+    this.syncHist();this.applyStress();
     if(prev.screen!==s.screen||prev.houseId!==s.houseId){window.scrollTo(0,0);this.observeReveal();}
     if(b&&prev.bk&&prev.bk.step!==b.step){const sc=document.getElementById('bk-scroll');if(sc)sc.scrollTop=0;}
     if(prev.bk&&prev.bk.step===3&&(!b||b.step!==3)&&s.carPaused)this.setState({carPaused:false});
     if(!!pp.demoReturningGuest!==!!this.props.demoReturningGuest)this.demoReturning(!!this.props.demoReturningGuest);
     if(b!==prev.bk||s.form!==prev.form){try{if(b&&!b.pre&&b.step>=2&&b.step<=4)localStorage.setItem('shipa_draft',JSON.stringify({bk:b,form:{name:s.form.name,phone:s.form.phone,agree:s.form.agree},ts:Date.now()}));else if((prev.bk&&!b)||(b&&b.step===5))localStorage.removeItem('shipa_draft');}catch(e){}}
+    {const se=document.querySelector('[data-sticky]');const sh=se?Math.round(se.getBoundingClientRect().height):0;if(sh!==(this.state.stickyH||0))this.setState({stickyH:sh});}
     const ce=this.carRef.current;if(ce&&ce!==this._carEl){this._carEl=ce;if(ce.clientWidth)ce.scrollLeft=(s.carIdx||0)*ce.clientWidth;}if(!ce)this._carEl=null;
     const ge=this.galRef.current;if(ge&&ge!==this._galEl){this._galEl=ge;ge.scrollLeft=Math.max(0,s.gal)*ge.clientWidth;}if(!ge)this._galEl=null;
     this.schedCar();this.animTotal();this.checkHdr();
@@ -1870,13 +1902,15 @@ class Component extends DCLogic {
     if(t===this._targetT)return;const from=this._shownT;this._targetT=t;cancelAnimationFrame(this._taf);
     if(t==null||from==null||this.reduced){this._shownT=t;el.textContent=txt(t);return;}
     const t0=performance.now();const tick=now=>{const k=Math.min(1,(now-t0)/300);const e=1-Math.pow(1-k,3);const v=k<1?Math.round((from+(t-from)*e)/100)*100:t;this._shownT=v;el.textContent=txt(v);if(k<1)this._taf=requestAnimationFrame(tick);};this._taf=requestAnimationFrame(tick);}
-  vt(apply){if(document.startViewTransition&&!this.reduced){try{document.startViewTransition(()=>new Promise(r=>apply(r)));return;}catch(e){}}apply(()=>{});}
+  vt(apply){if(this._vtx){try{this._vtx.skipTransition();}catch(e){}this._vtx=null;apply(()=>{});return;}
+    if(document.startViewTransition&&!this.reduced){try{const t=document.startViewTransition(()=>new Promise(r=>apply(r)));this._vtx=t;t.finished.finally(()=>{if(this._vtx===t)this._vtx=null;});return;}catch(e){}}apply(()=>{});}
   scrollToEl(el){if(!el)return;let p=el.parentElement;while(p&&p!==document.body){const cs=getComputedStyle(p);if(/(auto|scroll)/.test(cs.overflowY)&&p.scrollHeight>p.clientHeight)break;p=p.parentElement;}
     const r=el.getBoundingClientRect();if(p&&p!==document.body){const pr=p.getBoundingClientRect();p.scrollBy({top:r.top-pr.top-pr.height*.25,behavior:this.reduced?'auto':'smooth'});}else window.scrollBy({top:r.top-window.innerHeight*.25,behavior:'smooth'});}
   sheetDown(e){const el=this.sheetRef.current;if(!el)return;const y0=e.clientY;
     const mv=ev=>{const dy=Math.max(0,ev.clientY-y0);el.style.transition='none';el.style.transform='translateY('+dy+'px)';};
-    const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);const dy=ev.clientY-y0;el.style.transition='transform 200ms ease';el.style.transform='';if(dy>80)this.setState({sheet:null});};
-    window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);}
+    const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cn);const dy=ev.clientY-y0;el.style.transition='transform 200ms ease';el.style.transform='';if(dy>80)this.setState({sheet:null});};
+    const cn=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cn);el.style.transition='transform 200ms ease-out';el.style.transform='';};
+    window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cn);}
   observeReveal(){if(this._rv)return;this._rv=requestAnimationFrame(()=>{this._rv=0;document.querySelectorAll('[data-reveal]:not(.in)').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<window.innerHeight&&r.bottom>0)el.classList.add('in');else this.io.observe(el);});});}
 
   go(screen,houseId=null){this.setState(s=>({screen,houseId,menuOpen:false,history:[...s.history,{screen:s.screen,houseId:s.houseId}].slice(-10),galleryIdx:0,hw:0,rf:EMPTY_RF}));}
@@ -1926,7 +1960,64 @@ class Component extends DCLogic {
   }
   pickHouse(id){const hi=HOUSES.findIndex(x=>x.id===id);this.setState({carIdx:0,s3hint:null});this.setBk({houseId:id,step:3,...this.initTime(hi,this.state.bk.date)});}
   closeBooking(){const done=this.state.bk&&this.state.bk.step===5;this.setState({bk:null,savedBk:null});if(done)this.go('home');}
-  setBk(patch,cb){this.setState(s=>({bk:{...s.bk,...patch}}),cb);}
+  // Шаги брони: что обязательно на шаге, можно ли вперёд, подсказка
+  stepOk(bk){if(!bk)return false;if(bk.pre){if(bk.step===1)return !!bk.houseId;if(bk.step===2)return bk.date!=null;return false;}
+    if(bk.step===1)return bk.date!=null&&bk.guests>0;if(bk.step===2)return !!bk.houseId;if(bk.step===3)return !!(this._s3&&this._s3.ok);return false;}
+  minStep(bk){return bk.pre?(bk.fromHouse?2:1):(bk.fromHouse?3:1);}
+  lastStep(bk){return bk.pre?3:4;}
+  hint(t){clearTimeout(this._hintT);this.setState({bkHint:t});vib(20);this._hintT=setTimeout(()=>this.setState({bkHint:null}),2600);}
+  showStepHint(bk){if(bk.pre){this.hint(bk.step===1?'Выберите дом':'Выберите дату');return;}
+    if(bk.step===3){const c=this._s3||{};this.setState(s=>({s3hint:c.hasStart?'dur':'start',s3n:s.s3n+1}));vib(20);this.scrollToEl(document.getElementById(c.hasStart?'bk-durs':'bk-grid'));return;}
+    this.hint(bk.step===1?'Выберите дату':'Выберите дом');}
+  goStep(i){const bk=this.state.bk;if(!bk||i===bk.step)return;
+    if(i<bk.step){if(i===bk.step-1){this.back();return;}const p={step:i};if(!bk.pre&&i===1)p.houseId=null;this.setBk(p);return;}
+    if(!this.stepOk(bk)){this.showStepHint(bk);return;}if(i>(bk.maxStep||bk.step))return;
+    if(i===4)this.vt(done=>this.setState(s=>({bk:{...s.bk,step:4},s3hint:null,sheet:null,bkHint:null}),done));else this.setBk({step:i});}
+  segNav(bk,i,pre){const mx=Math.max(bk.maxStep||0,bk.step);const vis=i>=this.minStep(bk)&&i<=mx&&bk.step<5;const cur=i===bk.step;const names=pre?['Дом','Дата','Контакты']:['Дата и гости','Дом','Время и опции','Контакты'];
+    return {off:!vis||cur,cur:cur?'step':undefined,label:'Шаг '+i+': '+names[i-1],cursor:vis&&!cur?'pointer':'default',go:()=>this.goStep(i)};}
+  canSwipeBack(bk){return bk.step>=2&&bk.step<5;}
+  // Свайп между шагами: вправо — назад, влево — только на уже пройденный шаг с заполненными полями
+  swDown(e){const bk=this.state.bk;if(!bk||bk.step>=5||e.pointerType==='mouse')return;const t=e.target;
+    if(e.clientX<24||(t.closest&&t.closest('.noscroll,input,textarea,select,label,[role=switch],[role=slider],[data-noswipe]')))return;
+    this._sw={x:e.clientX,y:e.clientY,mode:null,pts:[[e.clientX,performance.now()]],id:e.pointerId};}
+  swMove(e){const g=this._sw;if(!g||e.pointerId!==g.id)return;const dx=e.clientX-g.x,dy=e.clientY-g.y;
+    if(!g.mode){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;
+      if(Math.abs(dx)>Math.abs(dy)*1.2){g.mode='h';const el=document.getElementById('bk-scroll');if(!el){this._sw=null;return;}g.el=el;try{el.setPointerCapture(e.pointerId);}catch(_){}el.style.transition='none';if(el.parentElement)el.parentElement.style.background='#E0D7CC';}
+      else{this._sw=null;return;}}
+    const bk=this.state.bk;let x=dx;
+    if(dx<0){const ok=(bk.maxStep||bk.step)>bk.step&&bk.step<this.lastStep(bk)&&this.stepOk(bk);if(!ok)x=Math.max(dx*.25,-24);}
+    else if(!this.canSwipeBack(bk))x=Math.min(dx*.25,24);
+    g.el.style.transform='translateX('+x+'px)';g.pts.push([e.clientX,performance.now()]);if(g.pts.length>6)g.pts.shift();}
+  swEnd(e,cancel){const g=this._sw;this._sw=null;if(!g||g.mode!=='h')return;const el=g.el;const W=el.clientWidth||window.innerWidth;const dx=cancel?0:e.clientX-g.x;
+    const a=g.pts[0],b=g.pts[g.pts.length-1];const v=b[1]>a[1]?(b[0]-a[0])/(b[1]-a[1]):0;const bk=this.state.bk;
+    const clean=()=>setTimeout(()=>{if(el.parentElement)el.parentElement.style.background='';el.style.transition='';},260);
+    const reset=()=>{el.style.transition='transform 250ms ease-out';el.style.transform='';clean();};
+    const commit=(dir,fn)=>{el.style.transition='transform 250ms ease-out';el.style.transform='translateX('+(dir*W)+'px)';
+      setTimeout(()=>{fn();el.style.transition='none';el.style.transform='translateX('+(-dir*W*.3)+'px)';el.scrollTop=0;
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.transition='transform 250ms ease-out';el.style.transform='';clean();}));},250);};
+    const far=Math.abs(dx)>W*.3||Math.abs(v)>.5;
+    if(!cancel&&far&&dx>0&&this.canSwipeBack(bk)){vib(8);commit(1,()=>this.back());return;}
+    if(!cancel&&far&&dx<0&&bk.step<this.lastStep(bk)){
+      if((bk.maxStep||bk.step)>bk.step&&this.stepOk(bk)){vib(8);commit(-1,()=>{if(bk.step===3)this.setState(s=>({bk:{...s.bk,step:4},s3hint:null,sheet:null,bkHint:null}));else this.setBk({step:bk.step+1});});return;}
+      reset();if(!this.stepOk(bk))this.showStepHint(bk);return;}
+    reset();}
+  // История браузера: каждый шаг брони и каждый слой — отдельная запись; системное «назад» закрывает верхний слой
+  applyStress(){const on=(this.props.showStress??true)&&this.state.lang!=='EN'?'1':'0';if(document.documentElement.dataset.stress!==on)document.documentElement.dataset.stress=on;}
+  stressText(t){return (this.props.showStress??true)&&this.state.lang!=='EN'?String(t).replace(/SHIPA/g,'SHIP\u00C1'):t;}
+  histDepth(s){let d=(s.history||[]).length;if(s.bk){d+=s.bk.step>=5?1:Math.max(1,s.bk.step-(this._bkStart||1)+1);}
+    if(s.pd)d++;if(s.sheet)d++;if(s.gal>=0)d++;if(s.lightbox>=0)d++;if(s.menuOpen)d++;if(s.callOpen)d++;return d;}
+  syncHist(){if(this.hdrDemo||this.introT!=null)return;const d=this.histDepth(this.state);const h=this._hd||0;
+    if(this._popping){if(d<h){this._popping=false;this._hd=d;}return;}
+    if(d>h){for(let k=h;k<d;k++){try{history.pushState({shipa:k+1},'');}catch(e){}}}
+    else if(d<h){this._skipPop=(this._skipPop||0)+1;try{history.go(-(h-d));}catch(e){this._skipPop--;}}
+    this._hd=d;}
+  onPop(){if(this._skipPop>0){this._skipPop--;return;}const s=this.state;this._popping=true;
+    if(s.gal>=0){const i=Math.max(0,s.gal);this.setState({gal:-1},()=>this.carGo(i,false));return;}
+    if(s.lightbox>=0){this.setState({lightbox:-1});return;}if(s.sheet){this.setState({sheet:null});return;}if(s.pd){this.setState({pd:null});return;}
+    if(s.callOpen){this.setState({callOpen:false});return;}if(s.menuOpen){this.setState({menuOpen:false});return;}
+    if(s.bk){const bk=s.bk;if(bk.step>=5||bk.step<=(this._bkStart||1)){this.closeBooking();return;}this.back();return;}
+    if((s.history||[]).length){this.goBack();return;}this._popping=false;}
+  setBk(patch,cb){this.setState(s=>({bk:{...s.bk,...patch},bkHint:null}),cb);}
   back(){const {bk}=this.state;if(!bk)return;
     if(bk.pre){if(bk.step===3){this.setBk({step:2});return;}if(bk.step===2){if(bk.fromHouse){this.closeBooking();return;}this.setBk({step:1});}return;}
     if(bk.step===4){if(this.state.sending)return;this.vt(done=>this.setBk({step:3},done));return;}
@@ -1935,7 +2026,7 @@ class Component extends DCLogic {
   next(){
     const {bk,form}=this.state;
     const save=()=>{try{localStorage.setItem('shipa_user',JSON.stringify({name:form.name,phone:form.phone,lastHouse:bk.houseId}));}catch(e){}};
-    if(bk.pre){if(bk.step===2){this.setBk({step:3});return;}if(bk.step===3){if(!this.validate('bk'))return;save();this.setBk({step:5});}return;}
+    if(bk.pre){if(bk.step===2){if(bk.date==null){this.hint('Выберите дату');this.scrollToEl(document.querySelector('[data-screen-label="Предзапись — дата"]')||document.getElementById('bk-cal'));return;}this.setBk({step:3});return;}if(bk.step===3){if(!this.validate('bk'))return;save();this.setBk({step:5});}return;}
     if(bk.step===1){if(bk.houseId){this.pickHouse(bk.houseId);return;}this.setState({loadingSlots:true});this.setBk({step:2});setTimeout(()=>this.setState({loadingSlots:false}),700);return;}
     if(bk.step===3){const c=this._s3||{};
       if(!c.ok){this.setState(s=>({s3hint:c.hasStart?'dur':'start',s3n:s.s3n+1}));vib(20);this.scrollToEl(document.getElementById(c.hasStart?'bk-durs':'bk-grid'));return;}
@@ -1952,7 +2043,7 @@ class Component extends DCLogic {
   cellStyle(c,delay=0){const b=`height:64px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-variant-numeric:tabular-nums;position:relative;transition:background-color 140ms ease ${delay}ms,color 140ms ease ${delay}ms,border-color 140ms ease ${delay}ms;`;
     if(c==='sel')return b+`background:${NAVY};color:${CREAM};border:1px solid ${NAVY};`;
     if(c==='busy')return b+`background:rgba(193,92,34,.12);color:rgba(193,92,34,.6);border:1px solid transparent;`;
-    if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.15) 0 6px,transparent 6px 12px),${CREAM};color:rgba(59,47,42,.62);border:1px solid rgba(59,47,42,.22);`;
+    if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.15) 0 6px,transparent 6px 12px),${CREAM};color:rgba(59,47,42,.78);border:1px solid rgba(59,47,42,.22);`;
     if(c==='past')return b+`background:transparent;color:rgba(10,47,79,.22);border:1px dashed rgba(10,47,79,.14);`;
     return b+`background:rgba(255,255,255,.6);color:${NAVY};border:1px solid rgba(59,47,42,.15);`;}
   segStyle(c){const b='flex:1;height:16px;border-radius:3px;';
@@ -1979,7 +2070,7 @@ class Component extends DCLogic {
       nameStyle:st(fe.name,h>52?16:14),phoneStyle:st(fe.phone,46),
       setName:e=>this.setState({form:{...this.state.form,name:e.target.value},fe:{...this.state.fe,name:false}}),
       setPhone:e=>{const v=e.target.value;const cur=this.state;const old=phoneDigits(cur.form.phone);let d=phoneDigits(v);if(d===old&&v.length<phoneFmt(old).length)d=d.slice(0,-1);this.setState({form:{...cur.form,phone:phoneFmt(d)},fe:{...cur.fe,phone:false}});}};}
-  cta(ok,label){return {bookingNext:()=>this.next(),bookingNextDisabled:!ok,bookingCtaLabel:label,bookingCtaStyle:`width:100%;max-width:520px;margin:0 auto;display:block;height:56px;border-radius:999px;background:${ok?BRICK:'rgba(10,47,79,.15)'};color:${ok?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.04em;`};}
+  cta(ok,label){return {bookingNext:()=>this.next(),bookingNextDisabled:false,bkHintOn:!!this.state.bkHint,bkHint:this.state.bkHint||'',bookingCtaLabel:label,bookingCtaStyle:`width:100%;max-width:520px;margin:0 auto;display:block;height:56px;border-radius:999px;background:${ok?BRICK:'rgba(10,47,79,.15)'};color:${ok?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.04em;`};}
   calendar(bk,pre){
     const mo=bk.month||0;const first=new Date(this.today.getFullYear(),this.today.getMonth()+mo,1);
     const lead=(first.getDay()+6)%7;const dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
@@ -2041,7 +2132,7 @@ class Component extends DCLogic {
     const gallery=gsrc.map((src,i)=>({src,style:`width:100%;height:100%;background:#3B2F2A url(${src}) center/cover no-repeat;`,gridStyle:`overflow:hidden;border-radius:16px;${i===0?'grid-row:span 2;':''}`,open:()=>this.setState({lightbox:i})}));
     const hwBase=s.hw*7;const hwS=this.dateAt(hwBase),hwE=this.dateAt(hwBase+6);
     const houseWeek=Array.from({length:7},(_,k)=>{const i=hwBase+k;const d=this.dateAt(i);const b=this.busy(hIdx,i);const full=!this.anyFree(hIdx,i);return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),disabled:full,
-      busy:full?[{t:'Занят',style:'font-size:11px;color:rgba(10,47,79,.5);'}]:b.length?b.map(([x,y])=>({t:`${hh(x)}–${hh(y)}`,style:'font-size:11px;padding:2px 6px;border-radius:6px;background:rgba(10,47,79,.08);color:#0A2F4F;white-space:nowrap;'})):[{t:'Свободен',style:'font-size:11px;color:#2F6B3A;font-weight:600;'}],
+      busy:full?[{t:'Занят',style:'font-size:12px;color:rgba(10,47,79,.7);'}]:b.length?b.map(([x,y])=>({t:`${hh(x)}–${hh(y)}`,style:'font-size:12px;padding:2px 6px;border-radius:6px;background:rgba(10,47,79,.08);color:#0A2F4F;white-space:nowrap;'})):[{t:'Свободен',style:'font-size:12px;color:#2F6B3A;font-weight:600;'}],
       style:`flex:0 0 auto;width:96px;padding:10px 6px 10px;border-radius:14px;display:flex;flex-direction:column;align-items:center;border:1px solid ${full?'rgba(10,47,79,.12)':'rgba(10,47,79,.25)'};background:${full?'rgba(10,47,79,.04)':CREAM};color:${full?'rgba(10,47,79,.45)':NAVY};`,
       book:()=>this.openBooking(hRaw.id,i,undefined,3)};});
     const otherHouses=openView.filter(h=>h.id!==hRaw.id);
@@ -2053,7 +2144,7 @@ class Component extends DCLogic {
     const filteredReviews=reviews.filter(r=>s.reviewFilter<0||r.hi===s.reviewFilter);
     const catalogHouses=catalogHouses0.map(h=>{const ci=(s.catIdx||{})[h.id]||0;const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
       dots:ph.map((_,i)=>({s:`display:block;height:6px;width:${i===ci?18:6}px;border-radius:999px;background:${i===ci?CREAM:'rgba(249,239,227,.55)'};transition:width 250ms ease-out;`})),
-      carScroll:e=>{const el=e.currentTarget;const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==((this.state.catIdx||{})[h.id]||0))this.setState(st=>({catIdx:{...st.catIdx,[h.id]:i}}));}};});
+      carScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==((this.state.catIdx||{})[h.id]||0))this.setState(st=>({catIdx:{...st.catIdx,[h.id]:i}}));})};});
     const inCart=id=>s.cart.some(x=>x.id===id);
     const mkCard=(o)=>{const added=inCart(o.id);const un=!!o.un;const openFn=()=>this.setState({pd:{type:o.type,id:o.id},pdContra:false});
       return {...o,un,avail:!un,hasDur:!!o.dur,hasWho:!!o.whoText,pressed:added?'true':'false',open:openFn,key:e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();openFn();}},
@@ -2116,7 +2207,7 @@ class Component extends DCLogic {
       const canNext=bk.step===2?bk.date!=null:bk.step===3?okC:false;
       const preHouses=[{id:'any',kicker:'ПОДБЕРЁМ',name:'ЛЮБОЙ ДОМ',sub:'По числу гостей и дате',bgStyle:'width:100%;height:100%;background:#0A2F4F url(brand/mark-cream.png) center/46% no-repeat;'},...OPEN_HOUSES.map(h=>({id:h.id,kicker:`${h.n} / ${h.tier}`,name:h.name,sub:`до ${h.guests} гостей · ${h.slogan.toLowerCase()}`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;`}))]
         .map(x=>({...x,select:()=>this.setBk({houseId:x.id,step:2}),style:`display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:10px 14px 10px 10px;border-radius:18px;border:${bk.houseId===x.id?`2px solid ${BRICK}`:'1px solid rgba(10,47,79,.2)'};background:${CREAM};`}));
-      B={...this.calendar(bk,true),stepSegs:[1,2,3].map(i=>({style:`flex:1;height:2px;background:${i<=Math.min(bk.step,3)?BRICK:'rgba(10,47,79,.15)'};`})),
+      B={...this.calendar(bk,true),stepSegs:[1,2,3].map(i=>({...this.segNav(bk,i,true),style:`display:block;width:100%;height:2px;background:${i<=Math.min(bk.step,3)?BRICK:'rgba(10,47,79,.15)'};`})),
         preStep1:bk.step===1,showCal:bk.step===2,showContacts:bk.step===3,preDone:bk.step===5,step2:false,step3:false,stepDone:false,
         calHouse:bk.houseId==='any'?'ЛЮБОЙ ДОМ':hSel?'ДОМ '+hSel.name:'',calTitle:'Когда хотели бы приехать?',calSub:'Точные дату и время подтвердим, когда откроем бронирование',calNote:'Комплекс открывается в феврале 2027. Более ранние даты недоступны.',
         preHouses,cName:houseName,cLine1:dateText,cLine2:guestsTxt(bk.guests),cLines:[],sendError:false,
@@ -2127,7 +2218,7 @@ class Component extends DCLogic {
     } else if(bk){
       const hSel=HOUSES.find(x=>x.id===bk.houseId);
       const d=this.dateAt(bk.date);
-      const stepSegs=[1,2,3,4].map(i=>({style:`flex:1;height:2px;background:${i<=Math.min(bk.step,4)?BRICK:'rgba(10,47,79,.15)'};`}));
+      const stepSegs=[1,2,3,4].map(i=>({...this.segNav(bk,i,false),style:`display:block;width:100%;height:2px;background:${i<=Math.min(bk.step,4)?BRICK:'rgba(10,47,79,.15)'};`}));
       const cands=OPEN_HOUSES.map(h=>{const hi=HOUSES.indexOf(h);return {h,hi,full:!this.anyFree(hi,bk.date),fits:h.guests>=bk.guests};});
       const free=cands.filter(c=>!c.full&&c.fits);
       const sorted=[...free,...cands.filter(c=>!c.full&&!c.fits),...cands.filter(c=>c.full)];
@@ -2196,7 +2287,7 @@ class Component extends DCLogic {
       const onPhoto=slidesP.length>0;const txtC=onPhoto?CREAM:NAVY;
       const car={loading:cs==='loading',none:cs==='none',hasPhotos:onPhoto,multi:slidesP.length>1,n:h0.n,count:`${ci+1} / ${shownP.length}`,
         wrapStyle:wide?'position:relative;height:320px;border-radius:20px;overflow:hidden;background:rgba(10,47,79,.08);margin-bottom:16px;':'position:relative;height:260px;margin:-8px -20px 16px;overflow:hidden;background:rgba(10,47,79,.08);',
-        kickerStyle:`font-size:11px;letter-spacing:.2em;font-weight:600;color:${onPhoto?CREAM:BRICK};`,
+        kickerStyle:`font-size:12px;letter-spacing:.2em;font-weight:600;color:${onPhoto?CREAM:BRICK};`,
         nameStyle:`font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;letter-spacing:.1em;line-height:1;margin-top:6px;color:${txtC};`,
         slides:slidesP.map((p,i)=>({src:p.src,alt:`${h0.name}, фото ${i+1} из ${shownP.length}`,loading:i<=ci+1?'eager':'lazy',more:!!moreN&&i===MAXS-1,moreN,open:()=>this.setState({gal:i,carPaused:true}),
           imgStyle:`width:100%;height:100%;object-fit:cover;display:block;${i===ci?'view-transition-name:bk-photo;':''}`})),
@@ -2227,7 +2318,7 @@ class Component extends DCLogic {
         succ:{hasImg:cs!=='none',noImg:cs==='none',img:photos[0].src,n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
           wrapStyle:`position:relative;${wide?'margin:0 0 0;':'margin:-8px -20px 0;'}`,clipStyle:`position:relative;aspect-ratio:4/3;overflow:hidden;background:rgba(10,47,79,.08);border-radius:${wide?24:0}px;`},
         stdHeader:!(bk.step===3&&!wide),overlayHdr:bk.step===3&&!wide,
-        stepSegsLight:[1,2,3,4].map(i=>({style:`flex:1;height:2px;background:${i<=bk.step?CREAM:'rgba(249,239,227,.35)'};`})),
+        stepSegsLight:[1,2,3,4].map(i=>({...this.segNav(bk,i,false),style:`display:block;width:100%;height:2px;background:${i<=bk.step?CREAM:'rgba(249,239,227,.35)'};`})),
         gridWrapStyle:`margin-top:12px;border-radius:16px;${s.s3hint==='start'&&!hasStart?pulse:''}`,
         durWrapStyle:`display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 6px;align-items:start;border-radius:16px;${s.s3hint==='dur'&&hasStart&&end==null?pulse:''}`,
         splitPanel:split,singlePanel:bk.step===1,panelLine,hasPanelTotal:this._panelTotal!=null,
@@ -2283,10 +2374,10 @@ class Component extends DCLogic {
       heroDim:String((+(this.props.heroOverlay??45)||45)/100),heroH:wide?'max(78svh,640px)':'88svh',heroPad:wide?'112px 40px 96px':'88px 20px 80px',heroSide:wide?'40px':'20px',statsWrap,
       mouseDot:`position:absolute;left:50%;top:5px;width:3px;height:5px;margin-left:-1.5px;border-radius:999px;background:rgba(249,239,227,.85);${this.reduced?'':'animation:mouseDot 1.6s ease-in-out infinite;'}`,
       arrowStyle:this.reduced?'':'animation:arrowDown 1.6s ease-in-out infinite;',
-      heroEnter:e=>{this._hoverHero=true;this.heroPause(true);},heroLeave:()=>{this._hoverHero=false;if(!document.hidden)this.heroPause(false);},heroDown:e=>{this._hx=e.clientX;this._hy=e.clientY;},heroUp:e=>{if(this._hx==null)return;const dx=e.clientX-this._hx,dy=e.clientY-this._hy;this._hx=null;if(e.pointerType!=='mouse'&&Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){const n=HERO_SLIDES.length;this.heroGo((this.state.hero+(dx<0?1:n-1))%n);}},
+      heroEnter:e=>{this._hoverHero=true;this.heroPause(true);},heroLeave:()=>{this._hoverHero=false;if(!document.hidden)this.heroPause(false);},heroDown:e=>{this._hx=e.clientX;this._hy=e.clientY;},heroCancel:()=>{this._hx=null;this._hy=null;},heroUp:e=>{if(this._hx==null)return;const dx=e.clientX-this._hx,dy=e.clientY-this._hy;this._hx=null;if(e.pointerType!=='mouse'&&Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){const n=HERO_SLIDES.length;this.heroGo((this.state.hero+(dx<0?1:n-1))%n);}},
       atmOpen:!!s.atmOpen,atmVideo:ATM_VIDEO||undefined,openAtm:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-(wide?72:56),behavior:this.reduced?'auto':'smooth'});},closeAtm:()=>this.setState({atmOpen:false}),
       greetMin:!!(this.props.showVideoGreeting||this.greetDemo)&&!s.greetClosed&&!s.greetOpen&&!bk&&!s.menuOpen,greetOpen:!!s.greetOpen&&!bk,
-      waBottom:wide&&!inHouse?'24px':'calc(92px + env(safe-area-inset-bottom))',greetBottom:wide?'24px':'calc(96px + env(safe-area-inset-bottom))',openGreet:()=>this.setState({greetOpen:true}),
+      waBottom:(s.stickyH?(s.stickyH+12)+'px':'calc(24px + env(safe-area-inset-bottom))'),cookieBottom:(s.stickyH?(s.stickyH+8)+'px':'calc(12px + env(safe-area-inset-bottom))'),greetBottom:wide?'24px':'calc(96px + env(safe-area-inset-bottom))',openGreet:()=>this.setState({greetOpen:true}),
       closeGreet:()=>{try{sessionStorage.setItem('shipa_greet','1');}catch(e){}this.setState({greetOpen:false,greetClosed:true});},
       greetBook:()=>{this.setState({greetOpen:false,greetClosed:true});this.openBooking(null);},navLeave:()=>{const p=this.pillRef.current;if(p)p.style.opacity='0';},
       toggleMenu:()=>{const el=this.headerRef.current;if(el)el.style.transform='translateY(0)';this.setState({menuOpen:!s.menuOpen});},
@@ -2295,15 +2386,15 @@ class Component extends DCLogic {
       sendCall:()=>{if(!this.validate('call'))return;try{localStorage.setItem('shipa_user',JSON.stringify({name:s.form.name,phone:s.form.phone}));}catch(e){}this.setState({callSent:true});},callDisabled:false,
       callBtnStyle:`width:100%;height:52px;margin-top:12px;border-radius:999px;background:${BRICK};color:${CREAM};font-weight:600;font-size:15px;letter-spacing:.04em;`,
       fbk:this.fieldVals('bk',56,17),fcall:this.fieldVals('call',52,16),
-      returning:!!(s.returning&&bk&&!bk.pre),returningName:s.returning||'',
+      returning:!!(s.returning&&bk&&!bk.pre&&(s.form.name||'').trim()&&(s.form.phone||'').replace(/\D/g,'').length>=11),returningName:s.returning||'',
       notMe:()=>{try{localStorage.removeItem('shipa_user');}catch(e){}this.setState({returning:null,form:{...s.form,name:'',phone:''}},()=>{const el=document.getElementById('bk-name');el&&el.focus();});},
       totalRef:this.totalRef,sending:!!s.sending,
       carRef:this.carRef,carTouch:()=>{if(!this.state.carPaused)this.setState({carPaused:true});},
-      carScroll:e=>{const el=e.currentTarget;const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==this.state.carIdx)this.setState({carIdx:i});},
+      carScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==this.state.carIdx)this.setState({carIdx:i});}),
       galOpen:s.gal>=0,galRef:this.galRef,
-      galScroll:e=>{const el=e.currentTarget;const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(this.state.gal>=0&&i!==this.state.gal)this.setState({gal:i});},
+      galScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(this.state.gal>=0&&i!==this.state.gal)this.setState({gal:i});}),
       closeGal:()=>{const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));},
-      galDown:e=>{this._gp={x:e.clientX,y:e.clientY};},
+      galDown:e=>{this._gp={x:e.clientX,y:e.clientY};},galCancel:()=>{this._gp=null;},
       galUp:e=>{const p=this._gp;this._gp=null;if(!p)return;if(e.clientY-p.y>90&&Math.abs(e.clientX-p.x)<60){const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));}},
       sheetOpen:!!s.sheet,sheetCalc:s.sheet==='calc',sheetRules:s.sheet==='rules',sheetTitle:s.sheet==='calc'?'Расчёт':'Правила бронирования',rules:RULES,
       sheetRef:this.sheetRef,sheetDown:e=>this.sheetDown(e),closeSheet:()=>this.setState({sheet:null}),
@@ -2323,6 +2414,9 @@ class Component extends DCLogic {
       contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(s.form.phone.replace(/\D/g,'').length>=10?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
       heroStats,heroFx,
       aboutItems:[{n:'01',img:'img/h5_int.png',title:'Свой дом',sub:'Парная, чан и терраса только для вашей компании. Соседей не видно и не слышно.'},{n:'02',img:'img/h3_acc.png',title:'Материал',sub:'Дуб, лён, камень и керамика. Ничего искусственного на ощупь.'},{n:'03',img:'img/h6_int.png',title:'Тёплый свет',sub:'2700–3000 K во всех домах. Глаза отдыхают вместе с телом.'},{n:'04',img:'img/h1_acc.png',title:'Сервис заранее',sub:'Стол, программа парения и веники согласованы при брони. По приезду — только отдых.'}],
+      swDown:e=>this.swDown(e),swMove:e=>this.swMove(e),swUp:e=>this.swEnd(e,false),swCancel:e=>this.swEnd(e,true),
+      tapDown:e=>{this._tap={x:e.clientX,y:e.clientY};},tapGuard:e=>{const t=this._tap;if(t&&Math.hypot(e.clientX-t.x,e.clientY-t.y)>=8){e.stopPropagation();e.preventDefault();}},
+      keyOpen:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click();}},
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
       houses,housesRowStyle,features:FEATURES,homePrograms:programs.slice(0,3),programs,
@@ -2331,7 +2425,7 @@ class Component extends DCLogic {
       atmRef:this.atmRef,atmPrev:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:-300,behavior:'smooth'}),atmNext:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:300,behavior:'smooth'}),
       homeReviews:reviews.slice(0,3),reviews,faq,pillars:PILLARS,
       catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
-      house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>{const el=e.currentTarget;const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==s.galleryIdx)this.setState({galleryIdx:i});},
+      house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==this.state.galleryIdx)this.setState({galleryIdx:i});}),
       lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),lightboxStyle:`width:min(96vw,1200px);height:min(90vh,800px);background:url(${gsrc[Math.max(0,s.lightbox)]}) center/contain no-repeat;`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,
       houseWeek,hwTitle:`${hwS.getDate()} ${MON[hwS.getMonth()]} — ${hwE.getDate()} ${MON[hwE.getMonth()]}`,hwPrev:()=>this.setState({hw:Math.max(0,s.hw-1)}),hwNext:()=>this.setState({hw:Math.min(51,s.hw+1)}),
       hwPrevStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};opacity:${s.hw===0?'.3':'1'};`,hwNextStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};`,
@@ -2344,7 +2438,7 @@ class Component extends DCLogic {
       showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
       bookingOpen:!!bk,closeBooking:()=>this.closeBooking(),
       pre,notPre:!pre,bookLabel,showMeaning:this.props.showMeaning??true,showMerch:this.props.showMerch??false,
-      merch:MERCH.map((m,i)=>({...m,priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:C.wa(C.t('waTextMerch',{товар:m.name}))})),
+      merch:MERCH.map((m,i)=>({...m,name:this.stressText(m.name),priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:C.wa(C.t('waTextMerch',{товар:m.name}))})),
       serviceCats:SERVICE_CATS.map((c,i)=>({...c,soon:!!c.soon,hasImg:!c.soon,slot:'svc-'+i,style:`border-radius:20px;overflow:hidden;display:flex;flex-direction:column;${c.soon?'border:1px dashed rgba(10,47,79,.35);':'background:rgba(10,47,79,.06);'}`})),
       ...B
     };
