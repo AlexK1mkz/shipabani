@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--surface:#F5F5F4;--surface-2:#EDEDEB;--line:#EDEDED;--ink:#0A2F4F;--ink-2:rgba(10,47,79,.62);--brick:#C15C22;--brick-press:#9A4518;--brick-soft:#FBEEE6;--cream:#F9EFE3;--cocoa:#3B2F2A;--ok:#2F6B3A;--font-head:'Cormorant Garamond',serif;--font-body:Inter,system-ui,sans-serif;--r-xs:10px;--r-sm:14px;--r-md:18px;--r-lg:24px;--r-pill:999px;--shadow-1:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);--shadow-2:0 8px 24px rgba(16,24,40,.10);--shadow-bar:0 10px 30px rgba(193,92,34,.35);--ease-out:cubic-bezier(.22,1,.36,1);--ease-spring:cubic-bezier(.34,1.56,.64,1);--z-chips:20;--z-header:30;--z-bar:35;--z-cart:80;--z-sheet:90;--z-toast:95;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;background:#FFFFFF;}
+body{font-family:Inter,system-ui,sans-serif;color:#0A2F4F;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-variant-numeric:tabular-nums;}
+a{color:#0A2F4F;}
+a:hover{color:#C15C22;}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cursor:pointer;}
+input,textarea{font:inherit;color:inherit;}
+input::placeholder,textarea::placeholder{color:rgba(10,47,79,.5);}
+input[type=search]::-webkit-search-cancel-button{display:none;}
+[data-strip]{scrollbar-width:none;}
+[data-strip]::-webkit-scrollbar{display:none;}
+:focus-visible{outline:2px solid #C15C22;outline-offset:2px;}
+@keyframes cntGrow{from{transform:scaleX(.35);opacity:.5}to{transform:none;opacity:1}}
+@keyframes bump0{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes bump1{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes barIn{from{transform:translateY(120%)}to{transform:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(193,92,34,.4)}100%{box-shadow:0 0 0 14px rgba(193,92,34,0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+</style>
+</helmet>
+
+<sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
+  <div lang="{{ htmlLang }}" data-screen-label="Выбор дома" style="max-width:480px;margin:0 auto;min-height:100dvh;padding:12px 16px calc(32px + env(safe-area-inset-bottom));opacity:{{ pickOpacity }};transition:opacity 250ms ease-out;">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;min-height:44px;">
+      <div role="group" aria-label="Язык · Тіл · Language" style="justify-self:start;display:flex;align-items:center;height:36px;padding:2px;border-radius:999px;background:var(--surface);">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="3">
+          <button onClick="{{ l.select }}" aria-pressed="{{ l.pressed }}" style="width:34px;height:44px;margin:-4px 0;display:flex;align-items:center;justify-content:center;"><span style="width:34px;height:32px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;background:{{ l.bg }};box-shadow:{{ l.sh }};color:{{ l.fg }};transition:background-color 150ms ease-out;">{{ l.code }}</span></button>
+        </sc-for>
+      </div>
+      <img src="assets/logo-h-navy.png" alt="SHIPÁ" style="height:28px;width:auto;display:block;">
+      <span></span>
+    </div>
+    <h1 style="font-family:var(--font-head);font-weight:600;font-size:32px;line-height:1.05;letter-spacing:.04em;text-transform:uppercase;margin:28px 0 0;text-wrap:balance;">{{ t.pickHouse }}</h1>
+    <p style="font-size:15px;line-height:1.45;color:var(--ink-2);margin:10px 0 0;text-wrap:pretty;">{{ t.pickHouseSub }}</p>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px;">
+      <sc-for list="{{ pickCards }}" as="h" hint-placeholder-count="8">
+        <button onClick="{{ h.pick }}" aria-disabled="{{ h.disabled }}" aria-label="{{ h.aria }}" style="position:relative;aspect-ratio:3/4;border-radius:24px;overflow:hidden;background:var(--cocoa);text-align:left;display:block;width:100%;opacity:{{ h.op }};filter:{{ h.filter }};cursor:{{ h.cursor }};box-shadow:{{ h.ring }};transform:{{ h.tf }};transition:transform 150ms var(--ease-spring),box-shadow 200ms ease-out;" style-active="transform:scale(.97);">
+          <div style="position:absolute;inset:0;background-image:url({{ h.img }});background-size:cover;background-position:center;"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(59,47,42,.88) 0%,rgba(59,47,42,.5) 40%,rgba(59,47,42,0) 70%);"></div>
+          <div style="position:absolute;inset:0 0 auto 0;height:60px;background:linear-gradient(180deg,rgba(59,47,42,.55),rgba(59,47,42,0));"></div>
+          <div style="position:absolute;left:12px;top:12px;font-size:11px;font-weight:600;letter-spacing:.14em;color:#F9EFE3;">{{ h.num }}</div>
+          <sc-if value="{{ h.soon }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:10px;top:10px;height:24px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ink);font-size:12px;font-weight:600;display:flex;align-items:center;">{{ t.soon }}</span></sc-if>
+          <sc-if value="{{ h.sel }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:50%;background:var(--brick);display:flex;align-items:center;justify-content:center;animation:popIn 200ms var(--ease-spring);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+          <div style="position:absolute;left:12px;right:12px;bottom:12px;color:#F9EFE3;">
+            <div style="font-family:var(--font-head);font-weight:600;font-size:26px;line-height:1;letter-spacing:.04em;overflow-wrap:break-word;">{{ h.name }}</div>
+            <sc-if value="{{ h.hasTr }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;letter-spacing:.1em;margin-top:3px;">{{ h.tr }}</div></sc-if>
+            <div style="font-size:13px;line-height:1.3;margin-top:6px;">{{ h.slogan }}</div>
+          </div>
+        </button>
+      </sc-for>
+    </div>
+    <button onClick="{{ skipPick }}" style="margin:16px auto 0;display:block;min-height:44px;padding:0 16px;font-size:15px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:4px;">{{ t.skipHouse }}</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isMenu }}" hint-placeholder-val="{{ true }}">
+<div lang="{{ htmlLang }}" data-screen-label="Меню" style="max-width:480px;margin:0 auto;min-height:100dvh;padding-bottom:{{ padBottom }};animation:riseIn 300ms var(--ease-out);">
+
+  <header style="padding:10px 16px 0;">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;min-height:44px;">
+      <div role="group" aria-label="Язык · Тіл · Language" style="justify-self:start;display:flex;align-items:center;height:36px;padding:2px;border-radius:999px;background:var(--surface);">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="3">
+          <button onClick="{{ l.select }}" aria-pressed="{{ l.pressed }}" style="width:34px;height:44px;margin:-4px 0;display:flex;align-items:center;justify-content:center;"><span style="width:34px;height:32px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;background:{{ l.bg }};box-shadow:{{ l.sh }};color:{{ l.fg }};transition:background-color 150ms ease-out;">{{ l.code }}</span></button>
+        </sc-for>
+      </div>
+      <img src="assets/logo-h-navy.png" alt="SHIPÁ" style="height:28px;width:auto;display:block;">
+      <div style="justify-self:end;display:flex;gap:4px;">
+          <button onClick="{{ openOrders }}" aria-label="{{ t.myOrders }}" title="{{ t.myOrders }}" style="position:relative;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;" style-hover="background:var(--surface);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"></path><path d="M9 8h6M9 12h6"></path></svg><sc-if value="{{ hasOrders }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--brick);box-shadow:0 0 0 2px #FFFFFF;"></span></sc-if></button>
+        <a href="{{ waHost }}" target="_blank" rel="noopener" aria-label="{{ t.callHost }}" title="{{ t.callHost }}" style="width:44px;height:44px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"></path><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"></path></svg></a>
+      </div>
+    </div>
+    <button onClick="{{ openHouse }}" aria-label="{{ pillAria }}" style="margin-top:10px;width:100%;height:52px;border-radius:18px;display:flex;align-items:center;gap:10px;padding:0 14px 0 10px;background:#FFFFFF;border:{{ pillBd }};color:{{ pillFg }};animation:{{ pillAnim }};transition:transform 100ms ease-out;" style-active="transform:scale(.98);">
+      <sc-if value="{{ hasHouse }}" hint-placeholder-val="{{ false }}"><span style="flex:0 0 32px;width:32px;height:32px;border-radius:50%;background-color:var(--surface);background-image:url({{ houseImg }});background-size:cover;background-position:center;"></span></sc-if>
+      <sc-if value="{{ noHouse }}" hint-placeholder-val="{{ true }}"><span style="flex:0 0 32px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span></sc-if>
+      <span style="flex:1;min-width:0;text-align:left;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pillA }}<span style="font-weight:700;letter-spacing:.02em;">{{ pillB }}</span></span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+    </button>
+  </header>
+
+  <sc-if value="{{ notQ }}" hint-placeholder-val="{{ true }}">
+    <div data-strip="banners" data-drag="1" tabIndex="0" aria-label="Промо" onScroll="{{ onBannerScroll }}" onKeyDown="{{ bannerKey }}" onTouchStart="{{ pauseBanners }}" onPointerDown="{{ pauseBanners }}" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;padding:14px 16px 4px;">
+      <sc-for list="{{ banners }}" as="b" hint-placeholder-count="3">
+        <button onClick="{{ b.go }}" aria-label="{{ b.title }}" style="position:relative;flex:0 0 min(320px,calc(100vw - 64px));height:200px;border-radius:24px;overflow:hidden;scroll-snap-align:start;background:var(--cocoa);text-align:left;display:block;transition:transform 100ms ease-out;" style-active="transform:scale(.98);">
+          <sc-if value="{{ b.noImg }}" hint-placeholder-val="{{ false }}"><img src="assets/mark-cream.png" alt="" style="position:absolute;right:-20px;top:-10px;width:180px;opacity:.12;"></sc-if>
+          <div style="position:absolute;inset:0;background-image:url({{ b.img }});background-size:cover;background-position:center;"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(59,47,42,.92) 0%,rgba(59,47,42,.55) 50%,rgba(59,47,42,0) 88%);pointer-events:none;"></div>
+          <div style="position:absolute;left:16px;right:16px;bottom:14px;color:#F9EFE3;pointer-events:none;">
+            <div style="font-family:var(--font-head);font-weight:600;font-size:26px;line-height:1.05;letter-spacing:.03em;text-transform:uppercase;text-wrap:balance;">{{ b.title }}</div>
+            <div style="font-size:13px;line-height:1.35;margin-top:4px;">{{ b.sub }}</div>
+            <span style="display:inline-flex;align-items:center;height:36px;padding:0 16px;margin-top:10px;border-radius:999px;background:#FFFFFF;color:var(--ink);font-size:14px;font-weight:600;">{{ b.cta }}</span>
+          </div>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 16px 0;min-height:20px;">
+      <div style="flex:1;display:flex;gap:0;">
+        <sc-for list="{{ bannerDots }}" as="d" hint-placeholder-count="6">
+          <button onClick="{{ d.go }}" aria-label="{{ d.label }}" style="height:20px;padding:0 3px;display:flex;align-items:center;"><span style="display:block;height:6px;border-radius:999px;width:{{ d.w }};background:{{ d.bg }};transition:width 200ms ease-out,background-color 200ms ease-out;"></span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ fine }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ ar.bannersL }}" aria-label="←" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.bannersLop }};cursor:{{ ar.bannersLcur }};" style-hover="background:var(--surface);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button onClick="{{ ar.bannersR }}" aria-label="→" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.bannersRop }};cursor:{{ ar.bannersRcur }};" style-hover="background:var(--surface);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <div style="padding:12px 16px 0;display:flex;align-items:center;gap:8px;">
+    <label style="flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:44px;padding:0 4px 0 14px;border-radius:14px;background:{{ searchBg }};box-shadow:{{ searchSh }};transition:background-color 150ms ease-out,box-shadow 150ms ease-out;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(10,47,79,.62)" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <input type="search" value="{{ q }}" onChange="{{ onQ }}" onFocus="{{ onQFocus }}" onBlur="{{ onQBlur }}" placeholder="{{ t.searchPh }}" aria-label="{{ t.search }}" enterkeyhint="search" style="flex:1;min-width:0;height:100%;border:0;background:transparent;outline:none;font-size:16px;color:#0A2F4F;">
+      <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearQ }}" aria-label="{{ t.clear }}" style="width:40px;height:40px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></sc-if>
+    </label>
+    <sc-if value="{{ showCancel }}" hint-placeholder-val="{{ false }}"><button onMouseDown="{{ cancelQ }}" onClick="{{ cancelQ }}" style="height:44px;padding:0 4px;font-size:15px;font-weight:600;color:var(--brick);animation:fadeIn 150ms ease-out;">{{ t.cancel }}</button></sc-if>
+  </div>
+
+  <sc-if value="{{ notQ }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:16px 16px 0;">
+      <sc-for list="{{ tiles }}" as="c" hint-placeholder-count="4">
+        <button onClick="{{ c.go }}" aria-pressed="{{ c.pressed }}" style="min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform 100ms ease-out;" style-active="transform:scale(.97);">
+          <div style="position:relative;width:100%;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:var(--surface);box-shadow:{{ c.ring }};transition:box-shadow 200ms ease-out;">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:28px;opacity:.25;"></div>
+            <div style="position:absolute;inset:0;background-image:url({{ c.img }});background-size:cover;background-position:center;"></div>
+          </div>
+          <div style="font-size:13px;font-weight:600;line-height:1.2;text-align:center;hyphens:manual;overflow-wrap:break-word;color:{{ c.fg }};">{{ c.name }}</div>
+        </button>
+      </sc-for>
+    </div>
+
+    <section style="padding-top:28px;">
+      <div style="display:flex;align-items:flex-end;gap:8px;padding:0 16px;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);">{{ t.popularOver }}</div>
+          <h2 style="font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.1;margin:4px 0 0;">{{ t.popular }}</h2>
+        </div>
+        <sc-if value="{{ fine }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ ar.popularL }}" aria-label="←" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.popularLop }};cursor:{{ ar.popularLcur }};" style-hover="background:var(--surface);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button>
+          <button onClick="{{ ar.popularR }}" aria-label="→" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.popularRop }};cursor:{{ ar.popularRcur }};" style-hover="background:var(--surface);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button>
+        </sc-if>
+      </div>
+      <div data-strip="popular" data-drag="1" onScroll="{{ onStripScroll }}" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;padding:14px 16px 6px;">
+        <sc-for list="{{ popular }}" as="p" hint-placeholder-count="3">
+          <div role="button" tabIndex="0" onClick="{{ p.open }}" onKeyDown="{{ p.key }}" aria-label="{{ p.name }}" style="flex:0 0 216px;width:216px;scroll-snap-align:start;border-radius:24px;background:#FFFFFF;border:1px solid var(--line);cursor:pointer;transition:transform 100ms ease-out;" style-active="transform:scale(.98);">
+            <div style="position:relative;height:196px;border-radius:24px 24px 0 0;background:var(--surface);">
+              <div style="position:absolute;inset:0;border-radius:24px 24px 0 0;overflow:hidden;">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:32px;opacity:.25;"></div>
+                <div style="position:absolute;inset:0;background-image:url({{ p.img }});background-size:cover;background-position:center;"></div>
+              </div>
+              <div style="position:absolute;left:10px;top:10px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;">
+                <sc-for list="{{ p.badges }}" as="bd" hint-placeholder-count="0"><span style="height:22px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:rgba(255,255,255,.94);color:{{ bd.fg }};"><sc-if value="{{ bd.dot }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:50%;background:var(--brick);"></span></sc-if><sc-if value="{{ bd.clock }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></sc-if>{{ bd.text }}</span></sc-for>
+              </div>
+              <sc-if value="{{ p.showAdd }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ p.inc }}" aria-label="{{ p.addLabel }}" style="position:absolute;right:8px;bottom:-22px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><span style="width:40px;height:40px;border-radius:50%;background:var(--brick);box-shadow:0 0 0 3px #FFFFFF,var(--shadow-1);display:flex;align-items:center;justify-content:center;transition:transform 100ms ease-out;" style-active="transform:scale(.92);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+              </sc-if>
+              <sc-if value="{{ p.showCounter }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;right:10px;bottom:-18px;display:flex;align-items:center;justify-content:space-between;width:104px;height:36px;border-radius:999px;background:var(--brick);color:#FFFFFF;box-shadow:0 0 0 3px #FFFFFF;transform-origin:right center;animation:cntGrow 200ms var(--ease-spring);">
+                  <button onClick="{{ p.dec }}" aria-label="−" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+                  <span style="font-size:15px;font-weight:600;">{{ p.qty }}</span>
+                  <button onClick="{{ p.inc }}" aria-label="+" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+                </div>
+              </sc-if>
+            </div>
+            <div style="padding:14px 14px 14px;">
+              <div style="font-size:15px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:39px;padding-right:36px;">{{ p.name }}</div>
+              <div style="font-size:15px;font-weight:600;margin-top:4px;">{{ p.priceText }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <div data-chips style="position:sticky;top:{{ chipsTop }};transform:{{ chipsTf }};z-index:var(--z-chips);margin-top:20px;height:60px;display:flex;align-items:center;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);transition:top 250ms var(--ease-out),transform 250ms var(--ease-out);">
+      <div style="position:relative;flex:1;min-width:0;height:100%;">
+        <nav data-strip="chips" data-drag="1" onScroll="{{ onStripScroll }}" aria-label="{{ t.sections }}" style="height:100%;display:flex;align-items:center;gap:8px;overflow-x:auto;padding:0 8px 0 16px;">
+          <sc-for list="{{ chips }}" as="c" hint-placeholder-count="6">
+            <button data-chip="{{ c.id }}" onClick="{{ c.go }}" aria-current="{{ c.current }}" style="flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:600;white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }};transition:background-color 200ms ease-out,color 200ms ease-out,transform 100ms ease-out;" style-active="transform:scale(.97);">{{ c.name }}</button>
+          </sc-for>
+        </nav>
+        <sc-if value="{{ ar.chipsLshow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;top:0;bottom:0;width:56px;display:flex;align-items:center;padding-left:6px;background:linear-gradient(90deg,#FFFFFF 50%,rgba(255,255,255,0));"><button onClick="{{ ar.chipsL }}" aria-label="←" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button></div></sc-if>
+        <sc-if value="{{ ar.chipsRshow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:0;top:0;bottom:0;width:56px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;background:linear-gradient(270deg,#FFFFFF 50%,rgba(255,255,255,0));"><button onClick="{{ ar.chipsR }}" aria-label="→" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button></div></sc-if>
+      </div>
+      <button onClick="{{ toggleView }}" aria-label="{{ viewLabel }}" title="{{ viewLabel }}" style="flex:0 0 40px;width:40px;height:40px;margin:0 12px 0 4px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;" style-active="background:var(--surface-2);">
+        <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg></sc-if>
+        <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg></sc-if>
+      </button>
+    </div>
+
+    <main style="padding:0 16px;">
+      <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+        <section data-sub="{{ s.id }}" style="padding-top:32px;">
+          <sc-if value="{{ s.hasOver }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-bottom:4px;">{{ s.over }}</div></sc-if>
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <h2 style="flex:1;min-width:0;font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.1;margin:0;overflow-wrap:break-word;">{{ s.name }}</h2>
+            <span style="font-size:13px;color:var(--ink-2);">{{ s.count }}</span>
+          </div>
+          <span style="display:block;width:24px;height:2px;background:var(--brick);margin-top:8px;"></span>
+          <sc-if value="{{ s.hasNote }}" hint-placeholder-val="{{ false }}"><p style="font-size:14px;line-height:1.45;color:var(--ink-2);margin:10px 0 0;text-wrap:pretty;">{{ s.note }}</p></sc-if>
+          <sc-if value="{{ s.hasFlag }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;height:32px;padding:0 12px;border-radius:999px;background:var(--surface);font-size:13px;font-weight:600;color:var(--ok);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ s.flag }}</div></sc-if>
+
+          <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:12px;">
+              <sc-for list="{{ s.items }}" as="it" hint-placeholder-count="3">
+                <div role="button" tabIndex="0" onClick="{{ it.open }}" onKeyDown="{{ it.key }}" aria-label="{{ it.name }}" style="display:flex;gap:14px;padding:16px 0;cursor:pointer;opacity:{{ it.op }};transition:transform 100ms ease-out;" style-active="transform:scale(.98);">
+                  <div style="position:relative;flex:0 0 112px;width:112px;height:112px;border-radius:18px;overflow:hidden;background:var(--surface);">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:32px;opacity:.25;"></div>
+                    <div style="position:absolute;inset:0;background-image:url({{ it.img }});background-size:cover;background-position:center;filter:{{ it.filter }};"></div>
+                    <div style="position:absolute;left:6px;top:6px;right:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;">
+                      <sc-for list="{{ it.badges }}" as="bd" hint-placeholder-count="0"><span style="height:22px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:rgba(255,255,255,.94);color:{{ bd.fg }};"><sc-if value="{{ bd.dot }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:50%;background:var(--brick);"></span></sc-if><sc-if value="{{ bd.clock }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></sc-if>{{ bd.text }}</span></sc-for>
+                    </div>
+                  </div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:112px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:-16px;">
+                    <div style="font-size:16px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;">{{ it.name }}</div>
+                    <sc-if value="{{ it.hasDesc }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;line-height:1.4;color:var(--ink-2);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;">{{ it.desc }}</div></sc-if>
+                    <div style="margin-top:auto;padding-top:8px;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;">
+                      <div style="min-width:0;">
+                        <div style="font-size:16px;font-weight:600;white-space:nowrap;">{{ it.priceText }}</div>
+                        <sc-if value="{{ it.hasUnit }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--ink-2);margin-top:1px;">{{ it.unit }}</div></sc-if>
+                      </div>
+                      <sc-if value="{{ it.showAdd }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ it.inc }}" aria-label="{{ it.addLabel }}" style="width:44px;height:44px;margin:0 -4px -4px 0;flex:0 0 auto;display:flex;align-items:center;justify-content:center;"><span style="width:36px;height:36px;border-radius:50%;background:var(--brick);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;transition:transform 100ms ease-out;" style-active="transform:scale(.9);background:var(--brick-press);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+                      </sc-if>
+                      <sc-if value="{{ it.showCounter }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;align-items:center;justify-content:space-between;width:104px;height:36px;border-radius:999px;background:var(--brick);color:#FFFFFF;flex:0 0 auto;transform-origin:right center;animation:cntGrow 200ms var(--ease-spring);">
+                          <button onClick="{{ it.dec }}" aria-label="−" style="width:36px;height:44px;margin:-4px 0;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+                          <span aria-live="polite" style="font-size:15px;font-weight:600;">{{ it.qty }}</span>
+                          <button onClick="{{ it.inc }}" aria-label="+" style="width:36px;height:44px;margin:-4px 0;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px;margin-top:14px;">
+              <sc-for list="{{ s.items }}" as="it" hint-placeholder-count="4">
+                <div role="button" tabIndex="0" onClick="{{ it.open }}" onKeyDown="{{ it.key }}" aria-label="{{ it.name }}" style="min-width:0;cursor:pointer;opacity:{{ it.op }};transition:transform 100ms ease-out;" style-active="transform:scale(.98);">
+                  <div style="position:relative;aspect-ratio:1/1;border-radius:18px;background:var(--surface);">
+                    <div style="position:absolute;inset:0;border-radius:18px;overflow:hidden;">
+                      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:32px;opacity:.25;"></div>
+                      <div style="position:absolute;inset:0;background-image:url({{ it.img }});background-size:cover;background-position:center;filter:{{ it.filter }};"></div>
+                    </div>
+                    <div style="position:absolute;left:6px;top:6px;right:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none;">
+                      <sc-for list="{{ it.badges }}" as="bd" hint-placeholder-count="0"><span style="height:22px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:rgba(255,255,255,.92);color:{{ bd.fg }};"><sc-if value="{{ bd.dot }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:50%;background:var(--brick);"></span></sc-if>{{ bd.text }}</span></sc-for>
+                    </div>
+                    <sc-if value="{{ it.showAdd }}" hint-placeholder-val="{{ true }}">
+                      <button onClick="{{ it.inc }}" aria-label="{{ it.addLabel }}" style="position:absolute;right:2px;bottom:2px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><span style="width:36px;height:36px;border-radius:50%;background:var(--brick);box-shadow:0 0 0 2px #FFFFFF;display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+                    </sc-if>
+                    <sc-if value="{{ it.showCounter }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;right:6px;bottom:6px;display:flex;align-items:center;justify-content:space-between;width:104px;height:36px;border-radius:999px;background:var(--brick);color:#FFFFFF;box-shadow:0 0 0 2px #FFFFFF;transform-origin:right center;animation:cntGrow 200ms var(--ease-spring);">
+                        <button onClick="{{ it.dec }}" aria-label="−" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+                        <span style="font-size:15px;font-weight:600;">{{ it.qty }}</span>
+                        <button onClick="{{ it.inc }}" aria-label="+" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:15px;font-weight:600;line-height:1.3;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;">{{ it.name }}</div>
+                  <div style="font-size:15px;font-weight:600;margin-top:4px;">{{ it.priceText }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </section>
+      </sc-for>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}">
+    <main style="padding:4px 16px 0;">
+      <sc-for list="{{ results }}" as="it" hint-placeholder-count="0">
+        <div role="button" tabIndex="0" onClick="{{ it.open }}" onKeyDown="{{ it.key }}" aria-label="{{ it.name }}" style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer;opacity:{{ it.op }};">
+          <div style="position:relative;flex:0 0 72px;width:72px;height:72px;border-radius:14px;overflow:hidden;background:var(--surface);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:24px;opacity:.25;"></div>
+            <div style="position:absolute;inset:0;background-image:url({{ it.img }});background-size:cover;background-position:center;filter:{{ it.filter }};"></div>
+          </div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-size:16px;font-weight:500;line-height:1.3;overflow-wrap:break-word;"><sc-for list="{{ it.parts }}" as="pt" hint-placeholder-count="1"><span style="font-weight:{{ pt.fw }};color:{{ pt.c }};">{{ pt.t }}</span></sc-for></div>
+            <div style="font-size:15px;font-weight:600;margin-top:4px;">{{ it.priceText }}</div>
+          </div>
+          <sc-if value="{{ it.showAdd }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ it.inc }}" aria-label="{{ it.addLabel }}" style="align-self:center;width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;"><span style="width:36px;height:36px;border-radius:50%;background:var(--brick);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+          </sc-if>
+          <sc-if value="{{ it.showCounter }}" hint-placeholder-val="{{ false }}">
+            <div style="align-self:center;display:flex;align-items:center;justify-content:space-between;width:104px;height:36px;border-radius:999px;background:var(--brick);color:#FFFFFF;flex:0 0 auto;">
+              <button onClick="{{ it.dec }}" aria-label="−" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+              <span style="font-size:15px;font-weight:600;">{{ it.qty }}</span>
+              <button onClick="{{ it.inc }}" aria-label="+" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:48px 0 8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+          <img src="assets/mark-navy.png" alt="" style="width:48px;height:auto;opacity:.3;">
+          <div style="font-size:16px;font-weight:600;">{{ t.empty }}</div>
+          <a href="{{ waHost }}" target="_blank" rel="noopener" style="height:48px;padding:0 22px;border-radius:999px;background:var(--surface);font-size:15px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">{{ t.askHost }}</a>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <footer style="margin-top:48px;padding:28px 16px 24px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:14px;">
+    <img src="assets/mark-navy.png" alt="SHIPÁ" style="width:40px;height:auto;display:block;">
+    <div style="font-size:14px;color:var(--ink-2);">{{ t.open24 }}</div>
+    <a href="tel:+77018218883" style="font-size:18px;font-weight:600;text-decoration:none;">+7 (701) 821-88-83</a>
+    <div style="font-size:14px;line-height:1.45;">{{ t.address }}</div>
+    <div style="display:flex;gap:8px;">
+      <a href="{{ waHost }}" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"></path><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"></path></svg></a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" style="width:44px;height:44px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="#FFFFFF" stroke="none"></circle></svg></a>
+    </div>
+    <div style="font-size:12px;color:var(--ink-2);margin-top:8px;">© SHIPÁ</div>
+  </footer>
+</div>
+
+<div style="position:fixed;top:0;left:0;right:0;z-index:var(--z-header);transform:{{ compactTf }};transition:transform 250ms var(--ease-out);pointer-events:none;">
+  <div style="max-width:480px;margin:0 auto;height:52px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 6px 0 14px;pointer-events:auto;">
+    <img src="assets/mark-navy.png" alt="SHIPÁ" style="width:24px;height:auto;display:block;flex:0 0 auto;">
+    <button onClick="{{ openHouse }}" style="flex:1;min-width:0;height:44px;display:flex;align-items:center;justify-content:center;gap:4px;font-size:15px;color:{{ pillFg }};"><span style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;">{{ compactLabel }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <button onClick="{{ openCart }}" aria-label="{{ t.yourOrder }}" style="position:relative;width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg><sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:4px;right:2px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:{{ bumpAnim }};">{{ count }}</span></sc-if></button>
+  </div>
+</div>
+
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:var(--z-bar);pointer-events:none;">
+  <div style="max-width:480px;margin:0 auto;padding:0 12px calc(12px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:stretch;gap:10px;">
+    <sc-if value="{{ showUp }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ goTop }}" aria-label="{{ t.up }}" style="pointer-events:auto;align-self:flex-end;width:44px;height:44px;border-radius:50%;background:#FFFFFF;box-shadow:var(--shadow-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;animation:popIn 150ms ease-out;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"></path></svg></button>
+    </sc-if>
+    <sc-if value="{{ showCartBar }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ openCart }}" style="pointer-events:auto;height:60px;border-radius:999px;background:var(--brick);color:#FFFFFF;box-shadow:var(--shadow-bar);display:flex;align-items:center;gap:12px;padding:0 22px 0 14px;animation:barIn 350ms var(--ease-spring);transition:transform 100ms ease-out;" style-active="transform:scale(.98);background:var(--brick-press);">
+        <span aria-live="polite" style="flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:#FFFFFF;color:var(--brick);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:{{ bumpAnim }};">{{ count }}</span>
+        <span style="flex:1;min-width:0;text-align:left;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ t.yourOrder }}</span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;line-height:1.1;"><span style="font-size:16px;font-weight:600;white-space:nowrap;">{{ subtotalText }}</span><sc-if value="{{ hasService }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;opacity:.9;white-space:nowrap;margin-top:2px;">{{ t.serviceHint }}</span></sc-if></span>
+      </button>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+  <div lang="{{ htmlLang }}" data-screen-label="Ваш заказ" role="dialog" aria-modal="true" aria-label="{{ t.yourOrder }}" style="position:fixed;inset:0;z-index:var(--z-cart);background:#FFFFFF;display:flex;flex-direction:column;transform:{{ cartTf }};transition:transform 300ms var(--ease-out);">
+    <div style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;">
+      <div style="max-width:480px;margin:0 auto;padding:8px 16px 24px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-left:-10px;">
+          <button onClick="{{ closeCart }}" aria-label="{{ t.back }}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button>
+          <h2 style="flex:1;font-family:var(--font-head);font-weight:600;font-size:32px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0;">{{ t.yourOrder }}</h2>
+          <button onClick="{{ askClear }}" style="height:44px;padding:0 4px;font-size:15px;font-weight:500;color:var(--ink-2);">{{ t.clear }}</button>
+        </div>
+
+        <div style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-top:20px;">{{ t.where }}</div>
+        <sc-if value="{{ hasHouse }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px;padding:10px 6px 10px 10px;border-radius:18px;border:1px solid var(--line);display:flex;align-items:center;gap:12px;">
+            <div style="flex:0 0 48px;width:48px;height:48px;border-radius:14px;background-color:var(--surface);background-image:url({{ houseImg }});background-size:cover;background-position:center;"></div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;color:var(--ink-2);">{{ t.house }} {{ houseNum }}</div>
+              <div style="font-family:var(--font-head);font-weight:600;font-size:22px;letter-spacing:.04em;line-height:1.1;">{{ houseName }}</div>
+            </div>
+            <button onClick="{{ openHouse }}" style="height:44px;padding:0 10px;font-size:15px;font-weight:600;color:var(--brick);flex:0 0 auto;">{{ t.changeHouse }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noHouse }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ openHouse }}" style="margin-top:12px;width:100%;min-height:56px;padding:0 16px;border-radius:18px;border:1.5px solid var(--brick);color:var(--brick);display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;text-align:left;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg><span style="flex:1;">{{ t.needHouse }}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 18l6-6-6-6"></path></svg></button>
+        </sc-if>
+
+        <div style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-top:28px;">{{ t.when }}</div>
+        <div role="radiogroup" style="display:flex;padding:3px;background:var(--surface);border-radius:12px;margin-top:12px;">
+          <sc-for list="{{ whenOpts }}" as="w" hint-placeholder-count="2">
+            <button role="radio" aria-checked="{{ w.on }}" onClick="{{ w.select }}" style="flex:1;min-width:0;min-height:40px;padding:4px 10px;border-radius:10px;font-size:15px;font-weight:600;line-height:1.2;background:{{ w.bg }};box-shadow:{{ w.sh }};color:var(--ink);transition:background-color 200ms ease-out,box-shadow 200ms ease-out;">{{ w.label }}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ isReady }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px;line-height:1.4;color:var(--ink-2);margin-top:10px;">{{ etaText }}</div></sc-if>
+        <sc-if value="{{ atTime }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;margin:12px -16px 0;">
+            <div data-strip="slots" data-drag="1" onScroll="{{ onStripScroll }}" style="display:flex;align-items:center;gap:8px;overflow-x:auto;padding:0 16px;animation:fadeIn 150ms ease-out;">
+              <sc-for list="{{ slots }}" as="sl" hint-placeholder-count="6">
+                <sc-if value="{{ sl.mark }}" hint-placeholder-val="{{ false }}"><span style="flex:0 0 auto;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brick);padding:0 2px 0 6px;">{{ t.tomorrow }}</span></sc-if>
+                <sc-if value="{{ sl.btn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ sl.select }}" aria-pressed="{{ sl.on }}" style="flex:0 0 72px;width:72px;height:40px;border-radius:999px;font-size:15px;font-weight:{{ sl.fw }};background:{{ sl.bg }};box-shadow:{{ sl.sh }};">{{ sl.label }}</button></sc-if>
+              </sc-for>
+            </div>
+            <sc-if value="{{ ar.slotsLshow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:0;top:0;bottom:0;width:56px;display:flex;align-items:center;padding-left:6px;background:linear-gradient(90deg,#FFFFFF 50%,rgba(255,255,255,0));"><button onClick="{{ ar.slotsL }}" aria-label="←" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button></div></sc-if>
+            <sc-if value="{{ ar.slotsRshow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:0;top:0;bottom:0;width:56px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;background:linear-gradient(270deg,#FFFFFF 50%,rgba(255,255,255,0));"><button onClick="{{ ar.slotsR }}" aria-label="→" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button></div></sc-if>
+          </div>
+          <sc-if value="{{ hasShifted }}" hint-placeholder-val="{{ false }}"><div aria-live="polite" style="margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--brick-soft);font-size:13px;line-height:1.4;animation:fadeIn 150ms ease-out;">{{ shiftedText }}</div></sc-if>
+          <div style="font-size:13px;line-height:1.4;color:var(--ink-2);margin-top:10px;">{{ earliestText }}</div>
+        </sc-if>
+
+        <sc-for list="{{ cartGroups }}" as="g" hint-placeholder-count="1">
+          <div style="margin-top:28px;">
+            <div style="font-size:13px;font-weight:600;color:var(--ink-2);">{{ g.title }}</div>
+            <sc-if value="{{ g.hasNote }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface);font-size:13px;line-height:1.4;">{{ g.note }}</div></sc-if>
+            <div style="margin-top:4px;">
+              <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                <div style="position:relative;overflow:hidden;">
+                  <button onClick="{{ r.remove }}" tabIndex="-1" style="position:absolute;top:0;right:0;bottom:0;width:92px;background:#C0392B;color:#FFFFFF;font-size:14px;font-weight:600;">{{ t.remove }}</button>
+                  <div onTouchStart="{{ r.ts }}" onTouchEnd="{{ r.te }}" style="position:relative;display:flex;gap:12px;align-items:center;padding:12px 0;background:#FFFFFF;transform:translateX({{ r.tx }});transition:transform 200ms var(--ease-out);">
+                    <div style="position:relative;flex:0 0 56px;width:56px;height:56px;border-radius:12px;overflow:hidden;background:var(--surface);">
+                      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:20px;opacity:.25;"></div>
+                      <div style="position:absolute;inset:0;background-image:url({{ r.img }});background-size:cover;background-position:center;"></div>
+                    </div>
+                    <div style="flex:1;min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid var(--line);margin:-12px 0;padding:12px 0;">
+                      <div style="font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:break-word;">{{ r.name }}</div>
+                      <div style="font-size:13px;color:var(--ink-2);margin-top:3px;white-space:nowrap;">{{ r.unitText }}</div>
+                    </div>
+                    <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                      <div style="font-size:15px;font-weight:600;white-space:nowrap;">{{ r.sum }}</div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;width:100px;height:36px;border-radius:999px;background:var(--surface);color:var(--ink);">
+                        <button onClick="{{ r.dec }}" aria-label="−" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:999px;" style-active="background:var(--surface-2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+                        <span style="font-size:15px;font-weight:600;">{{ r.qty }}</span>
+                        <button onClick="{{ r.inc }}" aria-label="+" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:999px;" style-active="background:var(--surface-2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+
+        <sc-if value="{{ hasUpsell }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:8px;margin-top:28px;">
+            <div style="flex:1;font-size:13px;font-weight:600;color:var(--ink-2);">{{ t.upsell }}</div>
+            <sc-if value="{{ fine }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ ar.upsellL }}" aria-label="←" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.upsellLop }};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button>
+              <button onClick="{{ ar.upsellR }}" aria-label="→" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.upsellRop }};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button>
+            </sc-if>
+          </div>
+          <div data-strip="upsell" data-drag="1" onScroll="{{ onStripScroll }}" style="display:flex;gap:10px;overflow-x:auto;margin:12px -16px 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px;">
+            <sc-for list="{{ upsell }}" as="u" hint-placeholder-count="3">
+              <div style="flex:0 0 132px;width:132px;scroll-snap-align:start;border-radius:14px;border:1px solid var(--line);background:#FFFFFF;overflow:hidden;">
+                <div onClick="{{ u.open }}" role="button" tabIndex="0" aria-label="{{ u.name }}" style="position:relative;height:100px;background:var(--surface);cursor:pointer;">
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:24px;opacity:.25;"></div>
+                  <div style="position:absolute;inset:0;background-image:url({{ u.img }});background-size:cover;background-position:center;"></div>
+                </div>
+                <div style="padding:8px 8px 8px 10px;display:flex;flex-direction:column;gap:4px;min-height:72px;">
+                  <div style="font-size:13px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ u.name }}</div>
+                  <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                    <span style="font-size:13px;font-weight:600;white-space:nowrap;">{{ u.priceText }}</span>
+                    <button onClick="{{ u.add }}" aria-label="{{ u.addLabel }}" style="width:40px;height:40px;margin:-4px -4px -4px 0;display:flex;align-items:center;justify-content:center;"><span style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--brick);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <input value="{{ guest }}" onChange="{{ onGuest }}" placeholder="{{ t.name }}" aria-label="{{ t.name }}" autocomplete="given-name" style="display:block;width:100%;height:48px;margin-top:28px;padding:0 14px;border:0;border-radius:14px;background:var(--surface);font-size:16px;outline:none;color:#0A2F4F;">
+        <textarea value="{{ comment }}" onChange="{{ onComment }}" placeholder="{{ t.commentPh }}" aria-label="{{ t.comment }}" rows="{{ commentRows }}" style="display:block;width:100%;margin-top:12px;padding:12px 14px;border:0;border-radius:14px;background:var(--surface);font-size:16px;line-height:1.4;resize:none;outline:none;color:#0A2F4F;"></textarea>
+
+        <div style="margin-top:28px;">
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:15px;color:var(--ink-2);"><span>{{ t.subtotal }}</span><span style="white-space:nowrap;">{{ subtotalText }}</span></div>
+          <sc-if value="{{ hasService }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:15px;color:var(--ink-2);"><span>{{ t.service }}</span><span style="white-space:nowrap;">{{ serviceText }}</span></div></sc-if>
+          <div style="height:1px;background:var(--line);margin:10px 0 12px;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;"><span style="font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1;">{{ t.total }}</span><span style="font-size:22px;font-weight:600;white-space:nowrap;">{{ totalText }}</span></div>
+          <sc-if value="{{ hasPriceNote }}" hint-placeholder-val="{{ false }}"><div aria-live="polite" style="margin-top:10px;font-size:13px;color:var(--ink-2);animation:fadeIn 150ms ease-out;">{{ t.pricesUpdated }}</div></sc-if>
+        </div>
+      </div>
+    </div>
+    <div style="flex:0 0 auto;border-top:1px solid var(--line);background:#FFFFFF;">
+      <div style="max-width:480px;margin:0 auto;padding:12px 16px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;">
+        <a href="{{ waOrder }}" onClick="{{ onSend }}" target="_blank" rel="noopener" data-cta="primary" aria-disabled="{{ sendDisabled }}" style="min-height:56px;padding:8px 20px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:16px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:{{ sendOp }};transition:transform 100ms ease-out;" style-hover="color:#FFFFFF;" style-active="background:var(--brick-press);transform:scale(.98);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"></path><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"></path></svg>{{ sendLabel }}</a>
+        <div style="display:flex;justify-content:center;align-items:center;gap:6px;font-size:12px;color:var(--ink-2);min-height:28px;">
+          <span>{{ sendHint }}</span><span>·</span><a href="tel:+77018218883" style="color:var(--ink);font-weight:600;text-decoration:none;padding:6px 2px;">{{ t.call }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+  <div lang="{{ htmlLang }}" style="position:fixed;inset:0;z-index:var(--z-sheet);display:flex;flex-direction:column;justify-content:flex-end;">
+    <div onClick="{{ closePanel }}" style="position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:{{ panelFade }};transition:opacity 200ms ease-out;"></div>
+    <div role="dialog" aria-modal="true" onTouchStart="{{ dragStart }}" onTouchMove="{{ dragMove }}" onTouchEnd="{{ dragEnd }}" style="position:relative;width:100%;max-width:480px;margin:0 auto;height:{{ panelH }};max-height:calc(100dvh - 24px);display:flex;flex-direction:column;background:#FFFFFF;border-radius:24px 24px 0 0;overflow:hidden;transform:{{ panelTf }};transition:{{ panelTrans }};">
+      <div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;z-index:3;pointer-events:none;"><span style="width:36px;height:5px;border-radius:5px;background:{{ grabberBg }};"></span></div>
+
+      <sc-if value="{{ isItemPanel }}" hint-placeholder-val="{{ false }}">
+        <div data-panel-scroll style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 16px 20px;">
+          <div style="position:relative;width:calc(100% + 32px);margin:0 -16px;aspect-ratio:4/3;overflow:hidden;background:var(--surface);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:56px;opacity:.2;"></div>
+            <div style="position:absolute;inset:0;background-image:url({{ sh.img }});background-size:cover;background-position:center;filter:{{ sh.filter }};"></div>
+            <button onClick="{{ closePanel }}" aria-label="{{ t.close }}" style="position:absolute;top:14px;right:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;"><span style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></span></button>
+          </div>
+          <sc-if value="{{ sh.hasBadges }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;">
+              <sc-for list="{{ sh.badges }}" as="bd" hint-placeholder-count="0"><span style="height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;background:var(--surface);color:{{ bd.fg }};"><sc-if value="{{ bd.dot }}" hint-placeholder-val="{{ false }}"><span style="width:6px;height:6px;border-radius:50%;background:var(--brick);"></span></sc-if><sc-if value="{{ bd.clock }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></sc-if>{{ bd.text }}</span></sc-for>
+            </div>
+          </sc-if>
+          <h3 style="font-family:var(--font-head);font-weight:600;font-size:30px;line-height:1.1;letter-spacing:.02em;margin:12px 0 0;overflow-wrap:break-word;">{{ sh.name }}</h3>
+          <sc-if value="{{ sh.hasWho }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--ink-2);margin-top:6px;">{{ sh.who }}</div></sc-if>
+          <sc-if value="{{ sh.hasRec }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex;align-items:center;margin-top:10px;height:28px;padding:0 12px;border-radius:999px;background:var(--cocoa);color:var(--cream);font-size:13px;font-weight:600;">{{ sh.rec }}</div></sc-if>
+          <sc-if value="{{ sh.hasModes }}" hint-placeholder-val="{{ false }}">
+            <div role="radiogroup" style="display:flex;padding:3px;background:var(--surface);border-radius:12px;margin-top:14px;">
+              <sc-for list="{{ sh.modes }}" as="m" hint-placeholder-count="2"><button role="radio" aria-checked="{{ m.on }}" onClick="{{ m.select }}" style="flex:1;min-width:0;min-height:40px;padding:4px 10px;border-radius:10px;font-size:14px;font-weight:600;line-height:1.2;background:{{ m.bg }};box-shadow:{{ m.sh }};transition:background-color 200ms ease-out;">{{ m.label }}</button></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ sh.hasDesc }}" hint-placeholder-val="{{ true }}"><p style="font-size:15px;line-height:1.5;margin:12px 0 0;color:rgba(10,47,79,.85);text-wrap:pretty;">{{ sh.desc }}</p></sc-if>
+          <sc-if value="{{ sh.hasPrep }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span>{{ sh.prepText }}</span></div></sc-if>
+          <sc-if value="{{ sh.ahead }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--brick);font-weight:600;margin-top:4px;padding-left:24px;">{{ t.orderAhead }}</div></sc-if>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-top:12px;"><div style="font-size:20px;font-weight:600;">{{ sh.priceText }}</div><sc-if value="{{ sh.hasUnit }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--ink-2);">{{ sh.unit }}</div></sc-if></div>
+          <sc-if value="{{ sh.hasIncl }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-top:22px;">{{ t.incl }}</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+              <sc-for list="{{ sh.incl }}" as="inc" hint-placeholder-count="3"><div style="display:flex;gap:10px;font-size:15px;line-height:1.4;"><span style="flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--brick);margin-top:8px;"></span><span>{{ inc.text }}</span></div></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ sh.hasSteps }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-top:22px;">{{ t.steps }}</div>
+            <div style="margin:12px 0 0 5px;border-left:2px solid var(--line);">
+              <sc-for list="{{ sh.steps }}" as="st" hint-placeholder-count="4">
+                <div style="position:relative;display:flex;justify-content:space-between;gap:12px;padding:0 0 14px 18px;font-size:15px;line-height:1.35;"><span style="position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--brick);box-shadow:0 0 0 3px #FFFFFF;"></span><span style="min-width:0;overflow-wrap:break-word;">{{ st.name }}</span><span style="white-space:nowrap;color:var(--ink-2);">{{ st.min }}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ sh.hasNote }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;padding:12px 14px;background:var(--surface);border-radius:12px;font-size:14px;line-height:1.45;">{{ sh.note }}</div></sc-if>
+          <sc-if value="{{ sh.hasGoes }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:8px;margin-top:24px;">
+              <div style="flex:1;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);">{{ t.goesWith }}</div>
+              <sc-if value="{{ fine }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ ar.goesL }}" aria-label="←" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.goesLop }};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg></button>
+                <button onClick="{{ ar.goesR }}" aria-label="→" style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line);box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;opacity:{{ ar.goesRop }};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></button>
+              </sc-if>
+            </div>
+            <div data-strip="goes" data-drag="1" onScroll="{{ onStripScroll }}" style="display:flex;gap:10px;overflow-x:auto;margin:12px -16px 0;padding:0 16px 4px;scroll-snap-type:x mandatory;scroll-padding:0 16px;">
+              <sc-for list="{{ sh.goes }}" as="u" hint-placeholder-count="3">
+                <div style="flex:0 0 132px;width:132px;scroll-snap-align:start;border-radius:14px;border:1px solid var(--line);background:#FFFFFF;overflow:hidden;">
+                  <div onClick="{{ u.open }}" role="button" tabIndex="0" aria-label="{{ u.name }}" style="position:relative;height:100px;background:var(--surface);cursor:pointer;">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><img src="assets/mark-navy.png" alt="" style="width:24px;opacity:.25;"></div>
+                    <div style="position:absolute;inset:0;background-image:url({{ u.img }});background-size:cover;background-position:center;"></div>
+                  </div>
+                  <div style="padding:8px 8px 8px 10px;display:flex;flex-direction:column;gap:4px;min-height:72px;">
+                    <div style="font-size:13px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ u.name }}</div>
+                    <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                      <span style="font-size:13px;font-weight:600;white-space:nowrap;">{{ u.priceText }}</span>
+                      <button onClick="{{ u.add }}" aria-label="{{ u.addLabel }}" style="width:40px;height:40px;margin:-4px -4px -4px 0;display:flex;align-items:center;justify-content:center;"><span style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--brick);display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="flex:0 0 auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#FFFFFF;">
+          <sc-if value="{{ sh.avail }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;width:112px;height:52px;border-radius:999px;background:var(--surface);flex:0 0 auto;">
+                <button onClick="{{ sh.dec }}" aria-label="−" style="width:44px;height:52px;display:flex;align-items:center;justify-content:center;opacity:{{ sh.decOp }};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+                <span style="font-size:17px;font-weight:600;">{{ sh.qty }}</span>
+                <button onClick="{{ sh.inc }}" aria-label="+" style="width:44px;height:52px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+              </div>
+              <button onClick="{{ sh.add }}" style="flex:1;min-width:0;min-height:52px;padding:6px 16px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:16px;font-weight:600;line-height:1.2;transition:transform 100ms ease-out;" style-active="background:var(--brick-press);transform:scale(.98);">{{ sh.addLabel }}</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ sh.un }}" hint-placeholder-val="{{ false }}">
+            <a href="{{ waHost }}" target="_blank" rel="noopener" style="min-height:52px;border-radius:999px;background:var(--surface);font-size:15px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">{{ t.notToday }} · {{ t.callHost }}</a>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isHousePanel }}" hint-placeholder-val="{{ false }}">
+        <div data-panel-scroll style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:28px 16px calc(24px + env(safe-area-inset-bottom));">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <h3 style="flex:1;font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0;">{{ t.chooseHouse }}</h3>
+            <button onClick="{{ closePanel }}" aria-label="{{ t.close }}" style="width:44px;height:44px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px;">
+            <sc-for list="{{ houseCards }}" as="h" hint-placeholder-count="8">
+              <button onClick="{{ h.pick }}" aria-disabled="{{ h.disabled }}" aria-label="{{ h.aria }}" style="position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:var(--cocoa);text-align:left;display:block;width:100%;opacity:{{ h.op }};filter:{{ h.filter }};cursor:{{ h.cursor }};box-shadow:{{ h.ring }};transition:transform 100ms ease-out;" style-active="transform:scale(.97);">
+                <div style="position:absolute;inset:0;background-image:url({{ h.img }});background-size:cover;background-position:center;"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(59,47,42,.9) 0%,rgba(59,47,42,.35) 55%,rgba(59,47,42,0) 85%);"></div>
+                <sc-if value="{{ h.soon }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:8px;top:8px;height:22px;padding:0 8px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ink);font-size:12px;font-weight:600;display:flex;align-items:center;">{{ t.soon }}</span></sc-if>
+                <sc-if value="{{ h.sel }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;background:var(--brick);display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+                <div style="position:absolute;left:10px;right:10px;bottom:10px;color:#F9EFE3;">
+                  <div style="font-size:11px;font-weight:600;letter-spacing:.14em;">{{ h.num }}</div>
+                  <div style="font-family:var(--font-head);font-weight:600;font-size:22px;line-height:1;letter-spacing:.04em;margin-top:2px;overflow-wrap:break-word;">{{ h.name }}</div>
+                  <sc-if value="{{ h.hasTr }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;letter-spacing:.08em;margin-top:2px;">{{ h.tr }}</div></sc-if>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOrdersPanel }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;min-height:0;overflow:hidden;">
+          <div style="display:flex;width:200%;height:100%;transform:{{ ordTf }};transition:transform 250ms var(--ease-out);">
+            <div data-panel-scroll style="width:50%;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:28px 16px calc(24px + env(safe-area-inset-bottom));">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <h3 style="flex:1;font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0;">{{ t.myOrders }}</h3>
+                <button onClick="{{ closePanel }}" aria-label="{{ t.close }}" style="width:44px;height:44px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+              </div>
+              <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:56px 0 32px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;"><img src="assets/mark-navy.png" alt="" style="width:40px;opacity:.3;"><div style="font-size:15px;color:var(--ink-2);">{{ t.noOrders }}</div></div>
+              </sc-if>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="2">
+                  <div role="button" tabIndex="0" onClick="{{ o.open }}" onKeyDown="{{ o.key }}" style="padding:16px;border-radius:18px;border:1px solid var(--line);background:#FFFFFF;display:flex;flex-direction:column;gap:12px;cursor:pointer;transition:transform 100ms ease-out;" style-active="transform:scale(.98);">
+                    <div>
+                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;"><span style="font-size:16px;font-weight:600;">{{ o.title }}</span><span style="font-size:16px;font-weight:600;white-space:nowrap;">{{ o.sum }}</span></div>
+                      <div style="font-size:14px;color:var(--ink-2);margin-top:4px;">{{ o.sub }}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <sc-for list="{{ o.thumbs }}" as="th" hint-placeholder-count="3"><span style="position:relative;width:40px;height:40px;border-radius:10px;overflow:hidden;background:var(--surface);"><span style="position:absolute;inset:0;background-image:url({{ th.img }});background-size:cover;background-position:center;"></span></span></sc-for>
+                      <sc-if value="{{ o.hasMore }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:10px;background:var(--surface);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;">{{ o.more }}</span></sc-if>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:12px;">
+                      <span style="font-size:15px;font-weight:600;display:flex;align-items:center;gap:2px;">{{ t.details }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg></span>
+                      <button onClick="{{ o.repeat }}" style="height:40px;padding:0 16px;border-radius:999px;background:var(--surface);font-size:14px;font-weight:600;flex:0 0 auto;" style-active="background:var(--surface-2);">{{ t.repeat }}</button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="width:50%;height:100%;display:flex;flex-direction:column;background:#FFFFFF;">
+              <div data-panel-scroll2 style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:20px 16px 20px;">
+                <button onClick="{{ ordBack }}" style="height:44px;margin-left:-8px;padding:0 8px;display:flex;align-items:center;gap:2px;font-size:15px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>{{ t.myOrders }}</button>
+                <div style="display:flex;align-items:flex-start;gap:10px;margin-top:6px;">
+                  <div style="flex:1;min-width:0;">
+                    <h3 style="font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0;">{{ t.order }}</h3>
+                    <div style="font-size:14px;color:var(--ink-2);margin-top:4px;">{{ od.meta }}</div>
+                  </div>
+                  <span style="flex:0 0 auto;height:28px;padding:0 10px;border-radius:999px;background:var(--surface);font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:5px;margin-top:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2F6B3A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>{{ t.sentWa }}</span>
+                </div>
+                <div style="margin-top:18px;border-top:1px solid var(--line);">
+                  <sc-for list="{{ od.facts }}" as="f" hint-placeholder-count="1">
+                    <div style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4;"><span style="flex:0 0 108px;color:var(--ink-2);">{{ f.k }}</span><span style="flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:break-word;">{{ f.v }}</span></div>
+                  </sc-for>
+                </div>
+                <sc-for list="{{ od.groups }}" as="g" hint-placeholder-count="1">
+                  <div style="margin-top:24px;">
+                    <div style="font-size:13px;font-weight:600;color:var(--ink-2);">{{ g.title }}</div>
+                    <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);">
+                        <span style="position:relative;flex:0 0 48px;width:48px;height:48px;border-radius:10px;overflow:hidden;background:var(--surface);"><span style="position:absolute;inset:0;background-image:url({{ r.img }});background-size:cover;background-position:center;"></span></span>
+                        <div style="flex:1;min-width:0;"><div style="font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:break-word;">{{ r.name }}</div><div style="font-size:13px;color:var(--ink-2);margin-top:2px;">{{ r.unitText }}</div></div>
+                        <div style="font-size:15px;font-weight:600;white-space:nowrap;">{{ r.sum }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+                <div style="margin-top:24px;">
+                  <div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:15px;color:var(--ink-2);"><span>{{ t.subtotal }}</span><span>{{ od.subtotal }}</span></div>
+                  <sc-if value="{{ od.hasService }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:15px;color:var(--ink-2);"><span>{{ t.service }}</span><span>{{ od.service }}</span></div></sc-if>
+                  <div style="height:1px;background:var(--line);margin:10px 0 12px;"></div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;"><span style="font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1;">{{ t.total }}</span><span style="font-size:22px;font-weight:600;white-space:nowrap;">{{ od.total }}</span></div>
+                </div>
+              </div>
+              <div style="flex:0 0 auto;border-top:1px solid var(--line);padding:12px 16px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:4px;">
+                <button onClick="{{ od.repeat }}" style="min-height:52px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:16px;font-weight:600;" style-active="background:var(--brick-press);">{{ t.repeatOrder }}</button>
+                <a href="{{ od.ask }}" target="_blank" rel="noopener" style="min-height:40px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;text-decoration:none;text-align:center;">{{ t.askAbout }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRepeatPanel }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:32px 20px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
+          <h3 style="font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0 0 6px;">{{ t.cartHasItems }}</h3>
+          <button onClick="{{ repAdd }}" style="min-height:52px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:16px;font-weight:600;" style-active="background:var(--brick-press);">{{ t.addToCurrent }}</button>
+          <button onClick="{{ repReplace }}" style="min-height:52px;border-radius:999px;border:1.5px solid var(--ink);font-size:16px;font-weight:600;">{{ t.replaceCart }}</button>
+          <button onClick="{{ closePanel }}" style="min-height:44px;font-size:15px;font-weight:600;color:var(--ink-2);">{{ t.cancel }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSentPanel }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:32px 20px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;">
+          <h3 style="font-family:var(--font-head);font-weight:600;font-size:30px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0;">{{ t.sentQ }}</h3>
+          <div style="font-size:15px;line-height:1.5;color:var(--ink-2);">{{ sentMeta }}</div>
+          <button onClick="{{ sentYes }}" style="min-height:52px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:16px;font-weight:600;" style-active="background:var(--brick-press);">{{ t.sentYes }}</button>
+          <button onClick="{{ sentBack }}" style="min-height:48px;border-radius:999px;background:var(--surface);font-size:15px;font-weight:600;">{{ t.sentNo }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isClearPanel }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:32px 20px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
+          <h3 style="font-family:var(--font-head);font-weight:600;font-size:28px;letter-spacing:.04em;text-transform:uppercase;line-height:1.05;margin:0 0 6px;">{{ t.clearQ }}</h3>
+          <button onClick="{{ doClear }}" style="min-height:52px;border-radius:999px;background:#C0392B;color:#FFFFFF;font-size:16px;font-weight:600;">{{ t.yesClear }}</button>
+          <button onClick="{{ closePanel }}" style="min-height:48px;border-radius:999px;background:var(--surface);font-size:15px;font-weight:600;">{{ t.cancel }}</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<div style="position:fixed;left:0;right:0;bottom:{{ toastBottom }};z-index:var(--z-toast);pointer-events:none;"><div style="max-width:480px;margin:0 auto;padding:0 12px;">
+    <div aria-live="polite" style="display:flex;justify-content:center;">
+      <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:100%;display:flex;align-items:center;gap:10px;padding:6px 16px 6px {{ toastPadL }};border-radius:20px;min-height:40px;background:#FFFFFF;box-shadow:var(--shadow-2);border:1px solid var(--line);animation:toastIn 200ms var(--ease-out);">
+          <sc-if value="{{ toastHasImg }}" hint-placeholder-val="{{ false }}"><span style="position:relative;flex:0 0 28px;width:28px;height:28px;border-radius:50%;overflow:hidden;background:var(--surface);"><span style="position:absolute;inset:0;background-image:url({{ toastImg }});background-size:cover;background-position:center;"></span></span></sc-if>
+          <div style="min-width:0;">
+            <div style="font-size:14px;font-weight:600;line-height:1.3;">{{ toastText }}</div>
+            <sc-if value="{{ toastSvc }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--ink-2);">{{ t.serviceToast }}</div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+</div></div>
+
+<sc-if value="{{ thanksOpen }}" hint-placeholder-val="{{ false }}">
+  <div lang="{{ htmlLang }}" data-screen-label="Спасибо" style="position:fixed;inset:0;z-index:var(--z-toast);background:#FFFFFF;display:flex;align-items:center;justify-content:center;padding:24px 24px calc(24px + env(safe-area-inset-bottom));animation:fadeIn 200ms ease-out;">
+    <div style="width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;">
+      <span style="width:88px;height:88px;border-radius:50%;background:var(--brick-soft);display:flex;align-items:center;justify-content:center;"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" style="stroke-dasharray:24;stroke-dashoffset:24;animation:draw 600ms var(--ease-out) 150ms forwards;"></path></svg></span>
+      <h2 style="font-family:var(--font-head);font-weight:600;font-size:30px;line-height:1.1;margin:0;text-wrap:balance;">{{ t.thanks }}</h2>
+      <div style="font-size:15px;color:var(--ink-2);">{{ thanksMeta }}</div>
+      <button onClick="{{ closeThanks }}" style="align-self:stretch;margin-top:8px;min-height:52px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:16px;font-weight:600;">{{ t.backToMenu }}</button>
+      <a href="{{ waHost }}" target="_blank" rel="noopener" style="align-self:stretch;min-height:48px;border-radius:999px;background:var(--surface);font-size:15px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;">{{ t.writeHost }}</a>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;markUnavailable&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Демо: «Нет сегодня» на хвойном парении&quot;}}">
+const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22',SURF='#F5F5F4',COCOA='#3B2F2A';
+const WA_NUM='77018218883';
+const LANGS=['RU','KZ','EN'];
+const HTML_LANG={RU:'ru',KZ:'kk',EN:'en'};
+const LS_KEY='shipa-emenu-lang';
+
+const I18N={
+ RU:{search:'Поиск',inHouse:'Вы в доме',add:'Добавить',cart:'Заказ',total:'Итого',comment:'Комментарий к заказу',commentPh:'Например: без лука, к 20:00',send:'Отправить администратору',call:'Позвонить',confirmNote:'Администратор подтвердит заказ и время подачи в WhatsApp',rent:'Аренда',buy:'Купить',perVisit:'за визит',returnNote:'Вернуть при выезде',forGroup:'на компанию',serves:'на 4–6',notToday:'Нет сегодня',steamRequest:'Администратор подтвердит мастера и время',empty:'Ничего не нашли. Спросите администратора',callHost:'Позвать администратора',open24:'Круглосуточно',address:'г. Караганда, ул. Жакана Смакова 242',steps:'Как проходит',incl:'Что входит',min:'мин',up:'Наверх',back:'Назад',close:'Закрыть',clear:'Очистить',sections:'Разделы меню',kitNote:'Базовый комплект полотенец уже есть в доме, здесь дополнительные вещи',orderGroup:'Кухня и покупки'},
+ KZ:{search:'Іздеу',inHouse:'Сіз осы үйдесіз',add:'Қосу',cart:'Тапсырыс',total:'Барлығы',comment:'Тапсырысқа түсініктеме',commentPh:'Мысалы: пиязсыз, 20:00-ге',send:'Әкімшіге жіберу',call:'Қоңырау шалу',confirmNote:'Әкімші тапсырыс пен беру уақытын WhatsApp арқылы растайды',rent:'Жалға',buy:'Сатып алу',perVisit:'бір келуге',returnNote:'Кетерде қайтару',forGroup:'компанияға',serves:'4–6 адамға',notToday:'Бүгін жоқ',steamRequest:'Әкімші шебер мен уақытты растайды',empty:'Ештеңе табылмады. Әкімшіден сұраңыз',callHost:'Әкімшіні шақыру',open24:'Тәулік бойы',address:'Қарағанды қ., Жақан Смақов к-сі, 242',steps:'Қалай өтеді',incl:'Не кіреді',min:'мин',up:'Жоғары',back:'Артқа',close:'Жабу',clear:'Тазалау',sections:'Мәзір бөлімдері',kitNote:'Үйде негізгі сүлгі жинағы бар, мұнда қосымша заттар',orderGroup:'Ас және сатып алу'},
+ EN:{search:'Search',inHouse:"You're in house",add:'Add',cart:'Order',total:'Total',comment:'Order note',commentPh:'E.g. no onion, by 20:00',send:'Send to the host',call:'Call',confirmNote:'The host will confirm your order and serving time on WhatsApp',rent:'Rent',buy:'Buy',perVisit:'per visit',returnNote:'Return on check-out',forGroup:'for sharing',serves:'serves 4–6',notToday:'Not today',steamRequest:'The host will confirm the master and time',empty:'Nothing found. Ask the host',callHost:'Call the host',open24:'Open 24/7',address:'242 Zhakan Smakov St, Karaganda',steps:'How it goes',incl:"What's included",min:'min',up:'Back to top',back:'Back',close:'Close',clear:'Clear',sections:'Menu sections',kitNote:'A basic towel set is already in the house; these are extras',orderGroup:'Food & purchases'}};
+
+const itemsWord=(lang,n)=>{if(lang==='KZ')return 'позиция';if(lang==='EN')return n===1?'item':'items';const m=n%10,k=n%100;return k>=11&&k<=14?'позиций':m===1?'позиция':m>=2&&m<=4?'позиции':'позиций';};
+const fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+'\u00a0₸';
+
+// Какие дома открыты — одна константа
+const OPEN_HOUSES=['dyhanie','sila','balans','energiya','svoboda'];
+const HOUSES=[
+ {id:'dyhanie',n:'01',tier:'VIP',name:['ДЫХАНИЕ','ТЫНЫС','BREATH'],slogan:['Вдохни глубже','Тереңірек тыныста','Breathe deeper'],prog:'herbal'},
+ {id:'sila',n:'02',tier:'VIP',name:['СИЛА','КҮШ','STRENGTH'],slogan:['Верни свою энергию','Қуатыңды қайтар','Get your energy back'],prog:'conifer'},
+ {id:'balans',n:'03',tier:'VIP',name:['БАЛАНС','ТЕПЕ-ТЕҢДІК','BALANCE'],slogan:['Найди своё равновесие','Тепе-теңдігіңді тап','Find your balance'],prog:'soft'},
+ {id:'energiya',n:'04',tier:'STANDARD',tub:true,name:['ЭНЕРГИЯ','ЭНЕРГИЯ','ENERGY'],slogan:['Заряди батарейки','Күш-қуат жина','Recharge'],prog:'classic'},
+ {id:'svoboda',n:'05',tier:'STANDARD',name:['СВОБОДА','ЕРКІНДІК','FREEDOM'],slogan:['Оставь город за дверью','Қаланы есік сыртында қалдыр','Leave the city behind'],prog:'herbal'},
+ {id:'lyogkost',n:'06',tier:'STANDARD',name:['ЛЁГКОСТЬ','ЖЕҢІЛДІК','LIGHTNESS'],slogan:['Будь здесь и сейчас','Осы сәтте бол','Be here and now'],prog:'soft'},
+ {id:'stihiya',n:'07',tier:'STANDARD',name:['СТИХИЯ','СТИХИЯ','ELEMENT'],slogan:['Почувствуй стихию','Табиғат күшін сез','Feel the elements'],prog:'conifer'},
+ {id:'impuls',n:'08',tier:'STANDARD',name:['ИМПУЛЬС','ИМПУЛЬС','IMPULSE'],slogan:['Переключись на отдых','Демалысқа ауыс','Switch to rest'],prog:'classic'}];
+HOUSES.forEach((h,i)=>{h.img='assets/h'+(i+1)+'_int.png';h.tubIncl=h.tier==='VIP';h.tub=h.tubIncl||!!h.tub;h.open=OPEN_HOUSES.includes(h.id);});
+
+const CATS={
+ kitchen:{name:['Кухня','Ас мәзірі','Kitchen'],photo:'Фото: бешбармак на большом блюде'},
+ drinks:{name:['Чай и напитки','Шай мен сусындар','Tea & drinks'],photo:'Фото: самовар и пиалы на столе'},
+ steam:{name:['Парение и уход','Бу мен күтім','Steam & care'],img:'assets/h2_acc.png',photo:'Фото: парение'},
+ merch:{name:['Банные принадлежности','Монша керек-жарақтары','Bath essentials'],img:'assets/h3_acc.png',photo:'Фото: банные принадлежности'}};
+const CAT_ORDER=['kitchen','drinks','steam','merch'];
+
+// Порядок подкатегорий = порядок секций и чипов. chip — к какому чипу относится секция.
+const SUBS=[
+ {id:'starters',cat:'kitchen',name:['Закуски','Тіскебасар','Starters']},
+ {id:'salads',cat:'kitchen',name:['Салаты','Салаттар','Salads']},
+ {id:'mains',cat:'kitchen',name:['Горячее','Ыстық тағамдар','Mains']},
+ {id:'desserts',cat:'kitchen',name:['Десерты','Тәттілер','Desserts']},
+ {id:'tea',cat:'drinks',name:['Чайная карта','Шай картасы','Tea list']},
+ {id:'drinks',cat:'drinks',name:['Напитки','Сусындар','Drinks']},
+ {id:'steam',cat:'steam',name:['Парение и уход','Бу мен күтім','Steam & care'],note:'steamRequest',kind:'steam'},
+ {id:'rent',cat:'merch',name:['Аренда','Жалға','Rent'],note:'kitNote',kind:'rent'},
+ {id:'buy',cat:'merch',name:['Купить','Сатып алу','Buy'],kind:'buy'},
+ {id:'take',cat:'merch',name:['SHIPÁ с собой','SHIPÁ-ны бірге ал','Take SHIPÁ home'],kind:'buy',chip:'buy'}];
+const SUB=Object.fromEntries(SUBS.map(s=>[s.id,s]));
+const LI={RU:0,KZ:1,EN:2};
+const D0=['','',''];
+
+// Цены с пометкой [уточнить] в ТЗ — временные
+const IT=(id,sub,price,name,desc,o={})=>({id,sub,price,name,desc:desc||D0,...o});
+const ITEMS=[
+ IT('pickles','starters',6000,['Сет солений','Тұздық сеті','Pickle platter'],['огурцы, капуста, чеснок, черемша','қияр, қырыққабат, сарымсақ, жабайы сарымсақ','cucumbers, cabbage, garlic, wild garlic'],{photo:'Фото: соленья в керамических плошках'}),
+ IT('kazy','starters',14000,['Казы и жая','Қазы мен жая','Kazy & zhaya'],['домашние конские деликатесы, лук, хлеб','үйде жасалған жылқы етінен дәмдер, пияз, нан','house-made horse-meat delicacies, onion, bread'],{photo:'Фото: казы и жая нарезкой на доске'}),
+ IT('veg','starters',7500,['Овощи с дымком','Көмірде піскен көкөністер','Smoky grilled vegetables'],['баклажан, перец, томаты, зелень','баклажан, бұрыш, қызанақ, көк шөп','aubergine, peppers, tomatoes, herbs'],{photo:'Фото: овощи с углей на чугунной сковороде'}),
+ IT('vegsalad','salads',4500,['Салат из свежих овощей','Жаңа көкөніс салаты','Fresh vegetable salad'],['огурцы, томаты, редис, зелень, масло','қияр, қызанақ, шомыр, көк шөп, май','cucumbers, tomatoes, radish, herbs, oil'],{photo:'Фото: салат из свежих овощей'}),
+ IT('achichuk','salads',3500,['Ачичук','Ачичук','Achichuk'],['томаты, лук, острый перец, зелень','қызанақ, пияз, ащы бұрыш, көк шөп','tomatoes, onion, hot pepper, herbs'],{photo:'Фото: ачичук'}),
+ IT('kazysalad','salads',5500,['Салат с казы','Қазы салаты','Kazy salad'],['казы, картофель, огурец, яйцо, зелень','қазы, картоп, қияр, жұмыртқа, көк шөп','kazy, potato, cucumber, egg, herbs'],{photo:'Фото: салат с казы'}),
+ IT('beefsalad','salads',6500,['Тёплый салат с говядиной','Сиыр етінен жылы салат','Warm beef salad'],['говядина, баклажан, томаты, кинза','сиыр еті, баклажан, қызанақ, кинза','beef, aubergine, tomatoes, coriander'],{photo:'Фото: тёплый салат с говядиной'}),
+ IT('besh','mains',32000,['Бешбармак','Бесбармақ','Beshbarmak'],['конина и баранина, тесто, сорпа, на 4–6','жылқы және қой еті, қамыр, сорпа, 4–6 адамға','horse meat & lamb, hand-cut noodles, sorpa broth, serves 4–6'],{photo:'Фото: бешбармак на большом блюде',badge:'serves'}),
+ IT('shashlik','mains',24000,['Шашлык из баранины','Қой етінен шашлык','Lamb shashlik'],['корейка, 1 кг, лук и лаваш','қабырға, 1 кг, пияз бен лаваш','rack of lamb, 1 kg, onion & lavash'],{photo:'Фото: шашлык из баранины на шампурах'}),
+ IT('zander','mains',18000,['Судак на углях','Көмірде піскен көксерке','Charcoal-grilled zander'],['целиком, лимон, травы','тұтас, лимон, шөптер','whole, lemon, herbs'],{photo:'Фото: судак целиком с лимоном'}),
+ IT('plov','mains',30000,['Узбекский плов','Өзбек палауы','Uzbek plov'],['рис девзира, баранина, нут, на 4–6','девзира күріші, қой еті, ноқат, 4–6 адамға','devzira rice, lamb, chickpeas, serves 4–6'],{photo:'Фото: плов в казане',badge:'serves'}),
+ IT('medovik','desserts',9000,['Медовик','Бал торты','Honey cake'],['сметанный крем, на компанию','қаймақ кремі, компанияға','sour-cream frosting, for sharing'],{photo:'Фото: медовик целиком на блюде',badge:'group'}),
+ IT('baursak','desserts',3500,['Баурсаки с мёдом','Балмен бауырсақ','Baursaks with honey'],['горячие, 12 штук','ыстық, 12 дана','warm, 12 pcs'],{photo:'Фото: баурсаки в миске, мёд рядом'}),
+ IT('fruit','desserts',8000,['Сезонные фрукты','Маусымдық жемістер','Seasonal fruit'],['тарелка на 6 гостей','6 қонаққа арналған табақ','platter for 6'],{photo:'Фото: тарелка сезонных фруктов'}),
+ IT('steppe','tea',4500,['Степной сбор','Дала жинағы','Steppe blend'],['чабрец, душица, зверобой, 0,8 л','жебіршөп, киікоты, шайқурай, 0,8 л',"thyme, oregano, St John's wort, 0.8 l"],{photo:'Фото: чайник со степными травами'}),
+ IT('ivan','tea',4800,['Иван-чай с облепихой','Шырғанақ қосылған Иван-шай','Fireweed tea with sea buckthorn'],['ферментированный, мёд отдельно, 0,8 л','ашытылған, бал бөлек, 0,8 л','fermented, honey on the side, 0.8 l'],{photo:'Фото: иван-чай и облепиха в стеклянном чайнике'}),
+ IT('puer','tea',6500,['Пуэр шу 2018','Шу пуэр 2018','Shu Puerh 2018'],['заваривание проливом, 6 проливов','құйып демдеу, 6 рет','gongfu brewing, 6 infusions'],{photo:'Фото: пуэр, гайвань и пиалы'}),
+ IT('samovar','tea',8000,['Чай из самовара','Самаурын шайы','Samovar tea'],['травы, мёд, варенье, на компанию','шөптер, бал, тосап, компанияға','herbs, honey, jam, for sharing'],{photo:'Фото: самовар, мёд и варенье',badge:'group'}),
+ IT('mors','drinks',2500,['Облепиховый морс','Шырғанақ морсы','Sea buckthorn mors'],['1 л','1 л','1 l'],{photo:'Фото: кувшин облепихового морса'}),
+ IT('kvass','drinks',2000,['Домашний квас','Үй квасы','Homemade kvass'],['1 л','1 л','1 l'],{photo:'Фото: квас в стеклянном кувшине'}),
+ IT('lemonade','drinks',3000,['Лимонад ананас-лайм','Ананас-лайм лимонады','Pineapple-lime lemonade'],['ананас, лайм, мята, газированный','ананас, лайм, жалбыз, газдалған','pineapple, lime, mint, sparkling'],{photo:'Фото: лимонад с лаймом и мятой'}),
+ IT('cucumber','drinks',2500,['Огуречный смузи','Қияр смузиі','Cucumber smoothie'],['огурец, яблоко, киви, шпинат','қияр, алма, киви, шпинат','cucumber, apple, kiwi, spinach'],{photo:'Фото: зелёный смузи в стакане'}),
+ IT('cherry','drinks',2500,['Смузи вишня-банан','Шие-банан смузиі','Cherry-banana smoothie'],D0,{photo:'Фото: вишнёвый смузи в стакане'}),
+ IT('kumys','drinks',2000,['Кумыс','Қымыз','Kumys'],['0,5 л','0,5 л',"fermented mare's milk, 0.5 l"],{photo:'Фото: кумыс в пиале'}),
+ IT('water','drinks',800,['Вода минеральная','Минералды су','Mineral water'],['0,5 л','0,5 л','0.5 l'],{photo:'Фото: бутылка минеральной воды'}),
+ IT('classic','steam',25000,['Классическое парение','Классикалық бу','Classic steam session'],['для тех, кто впервые','алғаш келгендерге','for first-timers'],{img:'assets/h2_acc.png',photo:'Фото: мастер с берёзовым веником в пару',dur:['1,5 ч','1,5 сағ','1.5 h'],
+   long:['Прогрев, два захода с веником, отдых с чаем. Темп — по самочувствию.','Қыздыру, веникпен екі рет кіру, шаймен демалыс. Қарқыны — көңіл-күйіңізге қарай.','Warm-up, two rounds with a besom, rest with tea. The pace follows how you feel.'],
+   steps:[['Прогрев','Қыздыру','Warm-up',15],['Первый заход с веником','Веникпен алғашқы кіру','First round with a besom',20],['Чан','Шан','Hot tub',10],['Второй заход','Екінші кіру','Second round',20],['Чай и отдых','Шай және демалыс','Tea and rest',25]],
+   incl:[['Берёзовый и дубовый веники','Қайың және емен веник','Birch and oak besoms'],['Травяной настой для пара','Буға арналған шөп тұнбасы','Herbal infusion for the steam'],['Чай после парной','Будан кейін шай','Tea after the steam room'],['Полотенца и простыни','Сүлгілер мен жаймалар','Towels and sheets']]}),
+ IT('herbal','steam',28000,['Травяное парение','Шөппен бу','Herbal steam session'],['для спокойного вечера','тыныш кешке','for a calm evening'],{img:'assets/h8_acc.png',photo:'Фото: веник и травы в запарнике',dur:['1,5 ч','1,5 сағ','1.5 h'],
+   long:['Настой степных трав, мягкий пар, медленный ритм. После — чай из тех же трав.','Дала шөптерінің тұнбасы, жұмсақ бу, баяу ырғақ. Соңында — сол шөптерден шай.','Steppe herb infusion, soft steam, slow rhythm. Afterwards, tea from the same herbs.'],
+   steps:[['Прогрев','Қыздыру','Warm-up',15],['Запарка трав, первый заход','Шөп демдеу, алғашқы кіру','Herbs steeped, first round',25],['Отдых','Демалыс','Rest',10],['Второй заход','Екінші кіру','Second round',20],['Чай из тех же трав','Сол шөптерден шай','Tea from the same herbs',20]],
+   incl:[['Сбор степных трав','Дала шөптерінің жинағы','Steppe herb blend'],['Дубовый веник','Емен веник','Oak besom'],['Травяной чай','Шөп шайы','Herbal tea'],['Полотенца и простыни','Сүлгілер мен жаймалар','Towels and sheets']]}),
+ IT('conifer','steam',32000,['Хвойное парение с контрастом','Қылқан жапырақты контрастты бу','Conifer steam with contrast'],['для восстановления сил','күш жинау үшін','to recharge'],{img:'assets/h5_acc.png',photo:'Фото: хвойный веник, чан с паром на улице',dur:['2 ч','2 сағ','2 h'],demoUn:true,
+   long:['Кедровый и дубовый веник, три захода, охлаждение в чане между ними.','Балқарағай мен емен веник, үш рет кіру, арасында шанда салқындау.','Cedar and oak besoms, three rounds, cooling off in the tub between them.'],
+   steps:[['Прогрев','Қыздыру','Warm-up',15],['Заход с кедровым веником','Балқарағай веникпен кіру','Round with a cedar besom',20],['Чан','Шан','Hot tub',10],['Второй заход','Екінші кіру','Second round',20],['Чан','Шан','Hot tub',10],['Третий заход','Үшінші кіру','Third round',20],['Чай и отдых','Шай және демалыс','Tea and rest',25]],
+   incl:[['Кедровый и дубовый веники','Балқарағай және емен веник','Cedar and oak besoms'],['Горячий чан','Ыстық шан','Hot tub'],['Чай после парной','Будан кейін шай','Tea after the steam room'],['Полотенца и простыни','Сүлгілер мен жаймалар','Towels and sheets']]}),
+ IT('soft','steam',28000,['Мягкое расслабляющее','Жұмсақ релакс-бу','Gentle relaxing steam'],['для пары','жұпқа','for couples'],{img:'assets/h1_acc.png',photo:'Фото: приглушённый свет, мягкий пар',dur:['1,5 ч','1,5 сағ','1.5 h'],
+   long:['Низкая температура, ароматы лаванды и сандала, без резких контрастов.','Төмен температура, лаванда мен сандал хош иісі, күрт контрастсыз.','Low heat, lavender and sandalwood, no sharp contrasts.'],
+   steps:[['Мягкий прогрев','Жұмсақ қыздыру','Gentle warm-up',20],['Заход без веника, ароматы','Вениксіз кіру, хош иістер','Round without a besom, aromas',20],['Отдых','Демалыс','Rest',15],['Второй заход','Екінші кіру','Second round',20],['Чай и отдых','Шай және демалыс','Tea and rest',15]],
+   incl:[['Масла лаванды и сандала','Лаванда мен сандал майлары','Lavender and sandalwood oils'],['Чай','Шай','Tea'],['Полотенца и простыни','Сүлгілер мен жаймалар','Towels and sheets']]}),
+ IT('massage','steam',20000,['Массаж и уход','Массаж және күтім','Massage & care'],['после парения','будан кейін','after steam'],{img:'assets/h6_acc.png',photo:'Фото: руки мастера, масло, тёплый свет',dur:['1 ч','1 сағ','1 h'],
+   long:['Массаж тёплым маслом, скраб на основе соли и мёда. В комнате отдыха.','Жылы маймен массаж, тұз бен бал негізіндегі скраб. Демалыс бөлмесінде.','Warm-oil massage and a salt-and-honey scrub, in the lounge.'],
+   steps:[['Разогрев мышц','Бұлшықетті қыздыру','Muscle warm-up',10],['Спина и плечи','Арқа мен иық','Back and shoulders',30],['Ноги','Аяқ','Legs',15],['Отдых и чай','Демалыс және шай','Rest and tea',5]],
+   incl:[['Тёплое масло','Жылы май','Warm oil'],['Полотенца','Сүлгілер','Towels'],['Чай','Шай','Tea']]}),
+ IT('tub','steam',15000,['Горячий чан','Ыстық шан','Hot tub'],['разогреем на дровах к нужному времени','қажет уақытқа отынмен қыздырамыз','wood-fired, heated for the time you choose'],{img:'assets/h1_int.png',photo:'Фото: горячий чан с паром',tubOnly:true}),
+ IT('robe','rent',3000,['Халат','Халат','Bathrobe'],D0,{photo:'Фото: халат на крючке, мягкий свет'}),
+ IT('r_towel','rent',1500,['Большое полотенце','Үлкен сүлгі','Large towel'],D0,{photo:'Фото: стопка больших полотенец',pair:'t_towel'}),
+ IT('sheet','rent',1500,['Простыня для парной','Бу бөлмесіне арналған жайма','Sauna sheet'],D0,{photo:'Фото: льняная простыня на полке парной'}),
+ IT('r_hat','rent',1500,['Банная шапка, войлок','Киіз монша қалпағы','Felt sauna hat'],D0,{photo:'Фото: войлочная шапка на деревянной полке, мягкий тёплый свет',pair:'t_hat'}),
+ IT('r_turban','rent',1500,['Тюрбан','Тюрбан','Hair turban'],D0,{photo:'Фото: тюрбан на полке',pair:'t_turban'}),
+ IT('kilt','rent',2000,['Килт (парео)','Килт (парео)','Sauna kilt'],D0,{photo:'Фото: килт на крючке'}),
+ IT('slippers','buy',500,['Тапочки одноразовые','Бір реттік тәпішке','Disposable slippers'],D0,{photo:'Фото: пара одноразовых тапочек'}),
+ IT('oak','buy',3500,['Дубовый веник','Емен веник','Oak besom'],D0,{photo:'Фото: дубовый веник на скамье'}),
+ IT('birch','buy',3000,['Берёзовый веник','Қайың веник','Birch besom'],D0,{photo:'Фото: берёзовый веник в тазу'}),
+ IT('eucalyptus','buy',4500,['Эвкалиптовый веник','Эвкалипт веник','Eucalyptus besom'],D0,{photo:'Фото: эвкалиптовый веник'}),
+ IT('oil','buy',4500,['Масло для парения','Буға арналған май','Steam oil'],['эвкалипт / кедр / лаванда','эвкалипт / балқарағай / лаванда','eucalyptus / cedar / lavender'],{photo:'Фото: три флакона масла для парения'}),
+ IT('herbs','buy',2500,['Травяной сбор для запарки','Буға арналған шөп жинағы','Herbal steam blend'],D0,{photo:'Фото: сухие травы в льняном мешочке'}),
+ IT('scrub','buy',4000,['Скраб соль и мёд','Тұз бен бал скрабы','Salt & honey scrub'],D0,{photo:'Фото: баночка скраба, соль и мёд'}),
+ IT('kit','buy',2000,['Мини-набор','Шағын жинақ','Toiletry kit'],['шампунь, гель, бальзам','сусабын, гель, бальзам','shampoo, gel, conditioner'],{photo:'Фото: три мини-флакона'}),
+ IT('cloth','buy',500,['Мочалка одноразовая','Бір реттік жөке','Disposable washcloth'],D0,{photo:'Фото: мочалка в упаковке'}),
+ IT('t_towel','take',12000,['Полотенце SHIPÁ','SHIPÁ сүлгісі','SHIPÁ towel'],D0,{img:'assets/h3_acc.png',photo:'Фото: полотенце SHIPÁ',pair:'r_towel'}),
+ IT('t_hat','take',6000,['Банная шапка SHIPÁ','SHIPÁ монша қалпағы','SHIPÁ sauna hat'],D0,{img:'assets/h7_acc.png',photo:'Фото: шапка SHIPÁ',pair:'r_hat'}),
+ IT('t_turban','take',7000,['Тюрбан SHIPÁ','SHIPÁ тюрбаны','SHIPÁ turban'],D0,{img:'assets/h4_acc.png',photo:'Фото: тюрбан SHIPÁ',pair:'r_turban'}),
+ IT('mug','take',5000,['Кружка SHIPÁ','SHIPÁ саптыаяғы','SHIPÁ mug'],D0,{photo:'Фото: кружка SHIPÁ с чаем на деревянном столе'})];
+// Фото позиций: положите файл в assets/menu/{id}.webp и добавьте id сюда. Без фото показывается знак SHIPÁ.
+const MENU_PHOTOS=["achichuk","baursak","beefsalad","besh","birch","cherry","cloth","cucumber","eucalyptus","fruit","herbs","ivan","kazy","kazysalad","kilt","kit","kvass","lemonade","medovik","mors","mug","oak","oil","pickles","plov","puer","r_hat","r_towel","r_turban","robe","samovar","shashlik","sheet","slippers","steppe","veg","vegsalad","water","zander"];
+const PHOTO=Object.fromEntries(MENU_PHOTOS.map(id=>[id,'assets/menu/'+id+'.webp']));
+ITEMS.forEach(i=>{if(PHOTO[i.id])i.img=PHOTO[i.id];});
+// Временно: фото из референса Coffee BOOM (чужие, в релиз не идут). Чтобы убрать — очистите CB_PHOTO.
+const CB_PHOTO={"baursak":"01","kazysalad":"02","beefsalad":"04","veg":"12","vegsalad":"13","zander":"14","shashlik":"15","besh":"17","plov":"18","mors":"07","lemonade":"08","kumys":"09"};ITEMS.forEach(i=>{if(CB_PHOTO[i.id])i.img='assets/cb/c'+CB_PHOTO[i.id]+'.jpeg';});
+const BRAND_PHOTO={kumys:'assets/h6_acc.png',scrub:'assets/h4_acc.png'};ITEMS.forEach(i=>{if(!i.img&&BRAND_PHOTO[i.id])i.img=BRAND_PHOTO[i.id];});
+
+const BY_ID=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+
+const BANNERS=[
+ {id:'besh',title:['Бешбармак к вашему столу','Бесбармақ дастарханыңызға','Beshbarmak for your table'],sub:['На 4–6 гостей, предзаказ','4–6 қонаққа, алдын ала тапсырыс','Serves 4–6, pre-order'],photo:'Фото: бешбармак на большом блюде, вид сверху',act:['item','besh']},
+ {id:'steam',title:['Парение с пармастером','Пармастермен бу','Steam with a bath master'],sub:['Пять программ, от классики до контраста','Бес бағдарлама: классикадан контрастқа дейін','Five programs, from classic to contrast'],img:'assets/h2_acc.png',photo:'',act:['sub','steam']},
+ {id:'tub',title:['Горячий чан','Ыстық шан','Hot tub'],sub:['Разогреем к нужному времени, 15 000 ₸','Қажет уақытқа қыздырамыз, 15 000 ₸','Heated for the time you choose, 15 000 ₸'],img:'assets/h1_int.png',photo:'',act:['item','tub'],tubOnly:true},
+ {id:'samovar',title:['Чай из самовара','Самаурын шайы','Samovar tea'],sub:['Травы, мёд и варенье на всю компанию','Шөптер, бал және тосап бүкіл компанияға','Herbs, honey and jam for the whole table'],photo:'',act:['item','samovar']},
+ {id:'shashlik',title:['Шашлык на углях','Көмірдегі шашлык','Charcoal shashlik'],sub:['Баранина, 1 кг, лук и лаваш','Қой еті, 1 кг, пияз бен лаваш','Lamb, 1 kg, onion and lavash'],photo:'',act:['item','shashlik']},
+ {id:'drinks',title:['Морсы, квас и смузи','Морс, квас және смузи','Mors, kvass and smoothies'],sub:['Холодное после парной','Будан кейін салқын сусын','Something cold after the steam room'],photo:'',act:['sub','drinks']},
+ {id:'besoms',title:['Веники и масла','Веник пен майлар','Besoms and oils'],sub:['Дуб, берёза, эвкалипт','Емен, қайың, эвкалипт','Oak, birch, eucalyptus'],img:'assets/h8_acc.png',photo:'',act:['sub','buy']},
+ {id:'take',title:['Возьмите SHIPÁ с собой','SHIPÁ-ны бірге алыңыз','Take SHIPÁ home'],sub:['Полотенце, шапка и кружка','Сүлгі, қалпақ және саптыаяқ','Towel, hat and mug'],img:'assets/h3_acc.png',photo:'',act:['sub','take']}];
+
+
+
+
+
+// ——— Настройки ———
+const SERVICE_RATE=0.10,SERVICE_ON=['kitchen','drinks'];
+const POPULAR=['besh','shashlik','baursak','samovar','classic','oak'];
+// Время приготовления, мин [уточнить у кухни]
+const PREP={besh:90,plov:90,shashlik:40,zander:40,veg:25,beefsalad:25,vegsalad:15,achichuk:15,kazysalad:15,pickles:15,kazy:15,medovik:10,fruit:10,baursak:20,samovar:20,steppe:10,ivan:10,puer:10};
+const AHEAD=['besh','plov'];
+ITEMS.forEach(i=>{if(i.prep==null)i.prep=PREP[i.id]??(SUB[i.sub].cat==='drinks'?5:0);i.popular=POPULAR.includes(i.id);});
+const SHORT={kitchen:['Кухня','Ас','Kitchen'],drinks:['Напитки','Сусындар','Drinks'],steam:['Парение','Бу','Steam'],merch:['Банное','Монша','Bath']};
+const imgOf=id=>(BY_ID[id]&&BY_ID[id].img)||'';
+const TILE_IMG={kitchen:()=>imgOf('besh'),drinks:()=>imgOf('samovar'),steam:()=>'assets/h2_acc.png',merch:()=>'assets/h3_acc.png'};
+const BANNER_IMG={besh:()=>imgOf('besh'),steam:()=>'assets/h2_acc.png',tub:()=>'assets/h1_int.png',samovar:()=>imgOf('samovar'),shashlik:()=>imgOf('shashlik'),drinks:()=>imgOf('mors'),besoms:()=>imgOf('oak')||'assets/h8_acc.png',take:()=>'assets/h3_acc.png'};
+const GROUPS={order:{name:['Кухня и напитки','Ас және сусындар','Food & drinks'],ru:'Кухня и напитки'},steam:{name:['Парение — заявка','Бу — өтінім','Steam — request'],ru:'Парение — подтвердить мастера и время',note:'steamRequest'},rent:{name:['Аренда','Жалға','Rent'],ru:'Аренда — вернуть при выезде',note:'returnNote'},buy:{name:['Покупки','Сатып алулар','Purchases'],ru:'Покупки'}};
+const GROUP_ORDER=['order','steam','rent','buy'];
+const LANG_WORD={RU:'русский',KZ:'казахский',EN:'английский'};
+Object.assign(I18N.RU,{details:'Подробнее',order:'Заказ',today:'Сегодня',yesterday:'Вчера',sentWa:'Отправлен в WhatsApp',serveReady:'По готовности',serveAt:'К {t}',guestK:'Гость',commentK:'Комментарий',repeatOrder:'Повторить заказ',askAbout:'Написать администратору об этом заказе',cartHasItems:'В корзине уже есть позиции',addToCurrent:'Добавить к текущим',replaceCart:'Заменить корзину',orderAdded:'Заказ добавлен в корзину',pricesUpdated:'Цены обновлены по текущему меню',noOrders:'Здесь появятся отправленные заказы',serveK:'Подать',pickHouse:'Где вы отдыхаете?',pickHouseSub:'Выберите дом, чтобы заказ пришёл точно к вам',house:'Дом',changeHouse:'Сменить',chooseHouse:'Выберите дом',skipHouse:'Сначала посмотреть меню',soon:'Скоро',searchPh:'Блюда, чай, веники…',cancel:'Отмена',popularOver:'Выбор гостей',popular:'Популярное',hit:'Хит',viewList:'Список',viewGrid:'Плитка',yourOrder:'Ваш заказ',when:'Когда подать',whenReady:'По готовности',atTime:'Ко времени',name:'Как к вам обращаться',upsell:'Добавить к заказу?',goesWith:'С этим берут',sendOrder:'Отправить заказ',waHint:'Откроется WhatsApp',needHouse:'Выберите дом, чтобы отправить заказ',sentQ:'Заказ отправлен?',sentYes:'Да, отправил',sentNo:'Нет, вернуться к заказу',thanks:'Спасибо! Администратор подтвердит заказ в WhatsApp',backToMenu:'Вернуться в меню',writeHost:'Написать администратору',myOrders:'Мои заказы',repeat:'Повторить',added:'Добавлено',clearQ:'Очистить заказ?',yesClear:'Да, очистить',remove:'Удалить',tubIncl:'Чан уже входит в ваш дом',recFor:'Рекомендуем для дома',recShort:'Рекомендуем',where:'Куда',etaReady:'Примерно через ~{n} мин. Точное время уточнит официант',etaSoon:'Принесём в ближайшее время',earliestHint:'Ближайшее время — {t}. Точное время подачи уточните у официанта',shifted:'Время сдвинули на {t} — {dish} готовится ~{n} мин',shiftedPlain:'Время сдвинули на {t}',tomorrow:'Завтра',prepTime:'Время приготовления',orderAhead:'Лучше заказать заранее',service:'Обслуживание 10%',subtotal:'Сумма',serviceHint:'+ обслуживание 10%',serviceToast:'Обслуживание 10% к кухне и напиткам',ctaOrder:'Заказать',ctaPick:'Выбрать',ctaView:'Смотреть',forHouse:'Для дома {h}',empty:'Ничего не нашли',askHost:'Спросить администратора',commentPh:'Без лука, приборы на 6…',clear:'Очистить',minShort:'мин'});
+Object.assign(I18N.KZ,{details:'Толығырақ',order:'Тапсырыс',today:'Бүгін',yesterday:'Кеше',sentWa:'WhatsApp-қа жіберілді',serveReady:'Дайын болғанда',serveAt:'{t}-ге',guestK:'Қонақ',commentK:'Түсініктеме',repeatOrder:'Тапсырысты қайталау',askAbout:'Осы тапсырыс туралы әкімшіге жазу',cartHasItems:'Себетте тағамдар бар',addToCurrent:'Барына қосу',replaceCart:'Себетті ауыстыру',orderAdded:'Тапсырыс себетке қосылды',pricesUpdated:'Бағалар қазіргі мәзір бойынша жаңартылды',noOrders:'Жіберілген тапсырыстар осында көрсетіледі',serveK:'Әкелу',pickHouse:'Қай үйде демалып жатырсыз?',pickHouseSub:'Тапсырыс дәл сізге жетуі үшін үйді таңдаңыз',house:'Үй',changeHouse:'Ауыстыру',chooseHouse:'Үйді таңдаңыз',skipHouse:'Алдымен мәзірді көру',soon:'Жақында',searchPh:'Тағамдар, шай, веник…',cancel:'Болдырмау',popularOver:'Қонақтар таңдауы',popular:'Танымал',hit:'Хит',viewList:'Тізім',viewGrid:'Тор',yourOrder:'Тапсырысыңыз',when:'Қашан әкелу керек',whenReady:'Дайын болғанда',atTime:'Белгілі уақытқа',name:'Сізге қалай жүгінейік',upsell:'Тапсырысқа қосасыз ба?',goesWith:'Мұнымен бірге алады',sendOrder:'Тапсырысты жіберу',waHint:'WhatsApp ашылады',needHouse:'Тапсырысты жіберу үшін үйді таңдаңыз',sentQ:'Тапсырыс жіберілді ме?',sentYes:'Иә, жібердім',sentNo:'Жоқ, тапсырысқа оралу',thanks:'Рақмет! Әкімші тапсырысты WhatsApp арқылы растайды',backToMenu:'Мәзірге оралу',writeHost:'Әкімшіге жазу',myOrders:'Менің тапсырыстарым',repeat:'Қайталау',added:'Қосылды',clearQ:'Тапсырысты тазалау керек пе?',yesClear:'Иә, тазалау',remove:'Жою',tubIncl:'Шан үйіңіздің бағасына кіреді',recFor:'Осы үйге ұсынамыз',recShort:'Ұсынамыз',where:'Қайда',etaReady:'Шамамен ~{n} минуттан кейін. Нақты уақытты даяшы нақтылайды',etaSoon:'Жақын арада әкелеміз',earliestHint:'Ең жақын уақыт — {t}. Нақты уақытты даяшыдан нақтылаңыз',shifted:'Уақыт {t}-ге ауыстырылды — {dish} ~{n} мин дайындалады',shiftedPlain:'Уақыт {t}-ге ауыстырылды',tomorrow:'Ертең',prepTime:'Дайындалу уақыты',orderAhead:'Алдын ала тапсырыс берген дұрыс',service:'Қызмет көрсету 10%',subtotal:'Сома',serviceHint:'+ қызмет көрсету 10%',serviceToast:'Ас пен сусындарға 10% қызмет көрсету',ctaOrder:'Тапсырыс беру',ctaPick:'Таңдау',ctaView:'Қарау',forHouse:'{h} үйі үшін',empty:'Ештеңе табылмады',askHost:'Әкімшіден сұрау',commentPh:'Пиязсыз, 6 адамға құрал…',clear:'Тазалау',minShort:'мин'});
+Object.assign(I18N.EN,{details:'Details',order:'Order',today:'Today',yesterday:'Yesterday',sentWa:'Sent via WhatsApp',serveReady:'When ready',serveAt:'At {t}',guestK:'Guest',commentK:'Note',repeatOrder:'Order again',askAbout:'Message the host about this order',cartHasItems:'Your cart already has items',addToCurrent:'Add to current',replaceCart:'Replace cart',orderAdded:'Order added to cart',pricesUpdated:'Prices updated to the current menu',noOrders:'Your sent orders will appear here',serveK:'Serve',pickHouse:'Which house are you in?',pickHouseSub:'Choose your house so the order comes straight to you',house:'House',changeHouse:'Change',chooseHouse:'Choose a house',skipHouse:'Browse the menu first',soon:'Soon',searchPh:'Dishes, tea, besoms…',cancel:'Cancel',popularOver:"Guests' choice",popular:'Popular',hit:'Top pick',viewList:'List',viewGrid:'Grid',yourOrder:'Your order',when:'When to serve',whenReady:'When ready',atTime:'At a set time',name:'Your name',upsell:'Add to your order?',goesWith:'Goes well with',sendOrder:'Send order',waHint:'Opens WhatsApp',needHouse:'Choose a house to send the order',sentQ:'Did you send the order?',sentYes:'Yes, sent',sentNo:'No, back to order',thanks:'Thank you! The host will confirm your order on WhatsApp',backToMenu:'Back to menu',writeHost:'Message the host',myOrders:'My orders',repeat:'Order again',added:'Added',clearQ:'Clear the order?',yesClear:'Yes, clear',remove:'Remove',tubIncl:'Hot tub is included in your house',recFor:'Recommended for this house',recShort:'Recommended',where:'Where',etaReady:'In about ~{n} min. Your server will confirm the exact time',etaSoon:"We'll bring it shortly",earliestHint:'Earliest time is {t}. Please confirm the exact time with your server',shifted:'Time moved to {t} — {dish} takes ~{n} min',shiftedPlain:'Time moved to {t}',tomorrow:'Tomorrow',prepTime:'Cooking time',orderAhead:'Best ordered in advance',service:'Service 10%',subtotal:'Subtotal',serviceHint:'+ 10% service',serviceToast:'10% service on food & drinks',ctaOrder:'Order',ctaPick:'Choose',ctaView:'View',forHouse:'For {h}',empty:'Nothing found',askHost:'Ask the host',commentPh:'No onion, cutlery for 6…',clear:'Clear',minShort:'min'});
+const ITEMS_N={RU:n=>`${n} ${plural(n,['позиция','позиции','позиций'])}`,KZ:n=>`${n} позиция`,EN:n=>`${n} ${n===1?'item':'items'}`};
+const UNAVAIL_N={RU:(n,l)=>`${n} ${plural(n,['позиция сейчас недоступна','позиции сейчас недоступны','позиций сейчас недоступны'])}: ${l}`,KZ:(n,l)=>`${n} позиция қазір қолжетімсіз: ${l}`,EN:(n,l)=>`${n} ${n===1?'item is':'items are'} unavailable now: ${l}`};
+const tpl=(s,v)=>s.replace(/\{(\w+)\}/g,(_,k)=>v[k]??'');
+
+const LS_HOUSE='shipa-emenu-house',LS_ORDERS='shipa-emenu-orders',LS_VIEW='shipa-emenu-view',TTL=12*3600e3,STEP=15*60e3;
+const ls={get(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const KZ=ms=>new Date(ms+5*3600e3);
+const p2=n=>String(n).padStart(2,'0');
+const hm=ms=>{const d=KZ(ms);return p2(d.getUTCHours())+':'+p2(d.getUTCMinutes());};
+const dayKey=ms=>{const d=KZ(ms);return d.getUTCFullYear()*400+d.getUTCMonth()*32+d.getUTCDate();};
+const dm=ms=>{const d=KZ(ms);return p2(d.getUTCDate())+'.'+p2(d.getUTCMonth()+1);};
+const HOUSE_BY=Object.fromEntries(HOUSES.map(h=>[h.id,h]));
+const initHouse=()=>{let q=null;try{q=new URLSearchParams(location.search).get('house');}catch(e){}if(q&&HOUSE_BY[q])return q;const s=ls.get(LS_HOUSE);if(s&&HOUSE_BY[s.id]&&Date.now()-s.ts<TTL)return s.id;return null;};
+const ORD_TTL=24*3600e3,ORD_MAX=10;
+const loadOrders=()=>{const a=ls.get(LS_ORDERS);return Array.isArray(a)?a.filter(o=>o&&Array.isArray(o.lines)&&Date.now()-o.sentAt<ORD_TTL):[];};
+const plural=(n,f)=>{const a=n%10,b=n%100;return a===1&&b!==11?f[0]:a>=2&&a<=4&&(b<12||b>14)?f[1]:f[2];};
+const detectLang=()=>{try{const s=localStorage.getItem(LS_KEY);if(LANGS.includes(s))return s;}catch(e){}const n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();if(n.startsWith('kk'))return 'KZ';if(n.startsWith('en'))return 'EN';return 'RU';};
+const vib=()=>{try{navigator.vibrate&&navigator.vibrate(8);}catch(e){}};
+const groupOf=it=>{const k=SUB[it.sub].kind;return k==='steam'?'steam':k==='rent'?'rent':k==='buy'?'buy':'order';};
+const isSvc=it=>SERVICE_ON.includes(SUB[it.sub].cat);
+const plain=s=>s.normalize('NFC').replace(/[\uFE0F\u200B-\u200D]/g,'').replace(/[\u00A0\u202F]/g,' ');
+const ceil15=ms=>Math.ceil(ms/STEP)*STEP;
+
+class Component extends DCLogic {
+  state=(()=>{const h=initHouse();const v=ls.get(LS_VIEW);return {lang:detectLang(),houseId:h,screen:h?'menu':'pick',pickSel:null,pickFade:false,q:'',qFocus:false,view:v==='grid'?'grid':'list',cart:{},comment:'',guest:'',when:'ready',slotMs:null,shifted:null,active:SUBS[0].id,showUp:false,bar:'top',panel:null,panelIn:false,drag:0,dragging:false,cartOpen:false,cartIn:false,swiped:null,bIdx:0,fine:false,edges:{},toast:null,svcShown:false,bump:0,pending:null,thanks:null,orders:loadOrders(),tick:0};})();
+  lockUntil=0;bannerPause=0;lastY=0;
+
+  componentDidMount(){
+    window.addEventListener('scroll',this.onScroll,{passive:true});
+    window.addEventListener('keydown',this.onKey);
+    window.addEventListener('resize',this.onResize);
+    document.addEventListener('visibilitychange',this.onVis);
+    window.addEventListener('focus',this.onVis);
+    document.addEventListener('mousedown',this.onMD);
+    document.addEventListener('click',this.onClickCap,true);
+    try{this._mq=window.matchMedia('(hover:hover) and (pointer:fine)');this._mq.addEventListener&&this._mq.addEventListener('change',this.onResize);}catch(e){}
+    this.onResize();
+    this._auto=setInterval(()=>{const s=this.state;if(s.screen!=='menu'||s.panel||s.cartOpen||s.q||Date.now()<this.bannerPause)return;this.bannerGo(s.bIdx+1,true);},5000);
+    this._min=setInterval(()=>{if(this.state.cartOpen)this.setState(s=>({tick:s.tick+1}));},60000);
+  }
+  componentDidUpdate(){this.checkSlot();if(!this._ue){this._ue=requestAnimationFrame(()=>{this._ue=0;this.updateEdges();});}}
+  componentWillUnmount(){
+    window.removeEventListener('scroll',this.onScroll);window.removeEventListener('keydown',this.onKey);window.removeEventListener('resize',this.onResize);
+    document.removeEventListener('visibilitychange',this.onVis);window.removeEventListener('focus',this.onVis);
+    document.removeEventListener('mousedown',this.onMD);document.removeEventListener('click',this.onClickCap,true);
+    clearInterval(this._auto);clearInterval(this._min);document.body.style.overflow='';
+  }
+  onResize=()=>{const fine=!!(this._mq&&this._mq.matches);if(fine!==this.state.fine)this.setState({fine});this.updateEdges();};
+  onKey=e=>{if(e.key!=='Escape')return;if(this.state.thanks)this.setState({thanks:null});else if(this.state.panel)this.closePanel();else if(this.state.cartOpen)this.closeCart();};
+  onVis=()=>{if(document.visibilityState==='visible'&&this.pending&&!(this.state.panel&&this.state.panel.type==='sent')){clearTimeout(this._pt);this.openPanel('sent');}};
+
+  // ленты: стрелки на ПК и перетаскивание мышью
+  updateEdges=()=>{const e={};document.querySelectorAll('[data-strip]').forEach(el=>{const n=el.getAttribute('data-strip');e[n]=[el.scrollLeft>4,el.scrollLeft+el.clientWidth<el.scrollWidth-4];});
+    const o=this.state.edges;if(Object.keys(e).some(k=>!o[k]||o[k][0]!==e[k][0]||o[k][1]!==e[k][1])||Object.keys(o).length!==Object.keys(e).length)this.setState({edges:e});};
+  onStripScroll=()=>{if(!this._se)this._se=requestAnimationFrame(()=>{this._se=0;this.updateEdges();});};
+  stripBy=(name,dir)=>{const el=document.querySelector(`[data-strip="${name}"]`);if(!el)return;const c=el.querySelector('button,[role=button]')||el.children[0];const cw=c?c.getBoundingClientRect().width:200;el.scrollBy({left:dir*Math.max(cw,el.clientWidth-cw),behavior:'smooth'});};
+  onMD=e=>{if(!this.state.fine||e.button!==0)return;const el=e.target.closest&&e.target.closest('[data-drag]');if(!el)return;
+    const x0=e.clientX,l0=el.scrollLeft;let moved=false;const snap=el.style.scrollSnapType;
+    const mm=ev=>{const dx=ev.clientX-x0;if(!moved&&Math.abs(dx)>5){moved=true;el.style.scrollSnapType='none';el.style.cursor='grabbing';}if(moved){el.scrollLeft=l0-dx;ev.preventDefault();}};
+    const mu=()=>{document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);el.style.cursor='';if(moved){this._dragMoved=true;el.style.scrollSnapType=snap;setTimeout(()=>{this._dragMoved=false;},50);}};
+    document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);};
+  onClickCap=e=>{if(this._dragMoved){e.stopPropagation();e.preventDefault();this._dragMoved=false;}};
+
+  house(){return this.state.houseId?HOUSE_BY[this.state.houseId]:null;}
+  tubAvail(){const h=this.house();return !h||(h.tub&&!h.tubIncl);}
+  isUn(it){return !!it.demoUn&&(this.props.markUnavailable??false);}
+  visible(it){return !(it.tubOnly&&!this.tubAvail());}
+  lockBody(){document.body.style.overflow='hidden';}
+  unlockBody(){if(!this.state.panel&&!this.state.cartOpen)document.body.style.overflow='';}
+
+  chipsH(){const b=document.querySelector('[data-chips]');return b?b.offsetHeight:60;}
+  onScroll=()=>{
+    const y=window.scrollY,dy=y-this.lastY;this.lastY=y;const s=this.state,up={};
+    const showUp=y>window.innerHeight*2;if(showUp!==s.showUp)up.showUp=showUp;
+    const b=document.querySelector('[data-strip="banners"]');const th=b?b.getBoundingClientRect().bottom+y:320;
+    let bar=s.bar;
+    if(y<th)bar='top';else if(Date.now()<this.lockUntil)bar='shown';else if(dy>6)bar='hidden';else if(dy<-6)bar='shown';else if(bar==='top')bar='shown';
+    if(bar!==s.bar)up.bar=bar;
+    if(!s.q&&Date.now()>=this.lockUntil){
+      const off=(bar==='shown'?52:0)+(bar==='hidden'?0:this.chipsH())+12;let cur=null;
+      document.querySelectorAll('[data-sub]').forEach((el,i)=>{if(i===0||el.getBoundingClientRect().top<=off)cur=el.getAttribute('data-sub');});
+      if(cur&&cur!==s.active)up.active=cur;
+    }
+    if(Object.keys(up).length)this.setState(up,up.active?this.syncChips:undefined);
+  };
+  syncChips=()=>{const sub=SUB[this.state.active];if(!sub)return;const bar=document.querySelector('[data-strip="chips"]');const c=bar&&bar.querySelector(`[data-chip="${sub.chip||sub.id}"]`);if(c)bar.scrollTo({left:Math.max(0,c.offsetLeft-bar.clientWidth/2+c.offsetWidth/2),behavior:'smooth'});};
+  goSub=id=>{
+    const el=document.querySelector(`[data-sub="${id}"]`);if(!el)return;
+    this.lockUntil=Date.now()+1000;
+    const top=el.getBoundingClientRect().top+window.scrollY-52-this.chipsH()+8;
+    this.setState({active:id,bar:'shown'},this.syncChips);
+    window.scrollTo({top,behavior:'smooth'});
+  };
+
+  bannerStep(){const el=document.querySelector('[data-strip="banners"]');const c=el&&el.children[0];return {el,step:c?c.getBoundingClientRect().width+12:332};}
+  bannerGo=(i,loop)=>{const {el,step}=this.bannerStep();if(!el)return;const max=Math.max(0,Math.round((el.scrollWidth-el.clientWidth)/step));let k=i;if(k>max)k=loop?0:max;if(k<0)k=loop?max:0;el.scrollTo({left:k*step,behavior:'smooth'});this.setState({bIdx:k});};
+  onBannerScroll=e=>{const {step}=this.bannerStep();const k=Math.round(e.currentTarget.scrollLeft/step);if(k!==this.state.bIdx)this.setState({bIdx:k});this.onStripScroll();};
+  pauseBanners=()=>{this.bannerPause=Date.now()+8000;};
+  bannerKey=e=>{if(e.key==='ArrowRight'){e.preventDefault();this.pauseBanners();this.bannerGo(this.state.bIdx+1);}if(e.key==='ArrowLeft'){e.preventDefault();this.pauseBanners();this.bannerGo(this.state.bIdx-1);}};
+
+  setLang=l=>{try{localStorage.setItem(LS_KEY,l);}catch(e){}this.setState({lang:l});};
+  setHouse=id=>{ls.set(LS_HOUSE,{id,ts:Date.now()});this.setState({houseId:id});};
+  pickFromScreen=id=>{this.setState({pickSel:id});setTimeout(()=>{this.setHouse(id);this.setState({pickFade:true});setTimeout(()=>{this.setState({screen:'menu',pickFade:false});window.scrollTo(0,0);},250);},250);};
+  pickFromPanel=id=>{this.setHouse(id);setTimeout(this.closePanel,180);};
+
+  add=(id,q=1)=>{const it=BY_ID[id];if(!it)return;vib();
+    this.setState(s=>{const first=!s.svcShown&&isSvc(it);return {cart:{...s.cart,[id]:(s.cart[id]||0)+q},bump:s.bump+1,toast:{id,svc:first},svcShown:s.svcShown||first};});
+    clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:null}),1600);};
+  dec=id=>this.setState(s=>{const c={...s.cart};c[id]=(c[id]||0)-1;if(c[id]<=0)delete c[id];return {cart:c};},this.afterCartChange);
+  remove=id=>this.setState(s=>{const c={...s.cart};delete c[id];return {cart:c,swiped:null};},this.afterCartChange);
+  afterCartChange=()=>{if(!Object.keys(this.state.cart).length&&this.state.cartOpen)this.closeCart();};
+
+  showToast=(o,ms)=>{this.setState({toast:o});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:null}),ms||1600);};
+  repeatOrder=(o,mode)=>{const ok=[],bad=[];o.lines.forEach(l=>{const it=BY_ID[l.id];if(it&&this.visible(it)&&!this.isUn(it))ok.push({it,qty:l.qty});else bad.push(l.name[0]);});
+    const L=LI[this.state.lang],t=I18N[this.state.lang];
+    if(mode==='ask'&&Object.keys(this.state.cart).length){this.openPanel('repeat',o.id);return;}
+    const nowSum=ok.reduce((a,x)=>a+x.it.price*x.qty,0),oldSum=o.lines.filter(l=>ok.some(x=>x.it.id===l.id)).reduce((a,l)=>a+l.price*l.qty,0);
+    this.setState(st=>{const c=mode==='replace'?{}:{...st.cart};ok.forEach(({it,qty})=>{c[it.id]=(c[it.id]||0)+qty;});return {cart:c,when:'ready',slotMs:null,shifted:null,comment:'',guest:o.guest||st.guest,priceNote:nowSum!==oldSum};},()=>{
+      if(this.state.panel){this.setState({panelIn:false});clearTimeout(this._pc);this._pc=setTimeout(()=>this.setState({panel:null}),300);}
+      if(ok.length)setTimeout(()=>{if(!this.state.cartOpen)this.openCart();},this.state.panel?300:0);
+      this.showToast(bad.length?{msg:UNAVAIL_N[this.state.lang](bad.length,bad.join(', '))}:{msg:t.orderAdded},bad.length?4000:2000);
+      if(nowSum!==oldSum){clearTimeout(this._pn);this._pn=setTimeout(()=>this.setState({priceNote:false}),4000);}});};
+  openPanel=(type,id)=>{this.lockBody();
+    if(this.state.panel&&this.state.panelIn){this.setState({panel:{type,id,qty:1}},()=>{const sc=document.querySelector('[data-panel-scroll]');if(sc)sc.scrollTop=0;});return;}
+    clearTimeout(this._pc);
+    this.setState({panel:{type,id,qty:1},panelIn:false,drag:0},()=>requestAnimationFrame(()=>requestAnimationFrame(()=>this.setState({panelIn:true}))));};
+  closePanel=()=>{this.setState({panelIn:false,drag:0,dragging:false});clearTimeout(this._pc);this._pc=setTimeout(()=>{this.setState({panel:null},()=>this.unlockBody());},300);};
+  dragStart=e=>{const P=this.state.panel;const sc=document.querySelector(P&&P.type==='orders'&&P.id?'[data-panel-scroll2]':'[data-panel-scroll]');this._ty=e.touches[0].clientY;this._tt0=Date.now();this._tOk=!sc||sc.scrollTop<=0;};
+  dragMove=e=>{if(!this._tOk)return;const dy=e.touches[0].clientY-this._ty;if(dy>0)this.setState({drag:dy,dragging:true});};
+  dragEnd=()=>{const d=this.state.drag,v=d/Math.max(1,Date.now()-this._tt0);if(d>120||(d>30&&v>0.6))this.closePanel();else this.setState({drag:0,dragging:false});};
+
+  openCart=()=>{if(!Object.keys(this.state.cart).length)return;this.lockBody();clearTimeout(this._cc);this.setState({cartOpen:true,cartIn:false},()=>requestAnimationFrame(()=>requestAnimationFrame(()=>this.setState({cartIn:true}))));};
+  closeCart=()=>{this.setState({cartIn:false});clearTimeout(this._cc);this._cc=setTimeout(()=>{this.setState({cartOpen:false,swiped:null},()=>this.unlockBody());},300);};
+
+  lead(){let m=0,it=null;Object.keys(this.state.cart).forEach(id=>{const x=BY_ID[id];if(x&&x.prep>m){m=x.prep;it=x;}});return {lead:Math.max(30,m),maxPrep:m,maxItem:it};}
+  earliest(){return ceil15(Date.now()+this.lead().lead*60e3);}
+  checkSlot(){const s=this.state;if(s.when!=='time'||!s.slotMs||!Object.keys(s.cart).length)return;const e=this.earliest();if(s.slotMs<e){const {maxItem,maxPrep}=this.lead();
+    this.setState({slotMs:e,shifted:{t:hm(e),dish:maxItem&&maxPrep>=30?maxItem.name:null,n:maxPrep}});clearTimeout(this._sh);this._sh=setTimeout(()=>this.setState({shifted:null}),3000);}}
+
+  suggest(ids){const has=sub=>ids.some(i=>BY_ID[i]&&BY_ID[i].sub===sub);const cat=c=>ids.some(i=>BY_ID[i]&&SUB[BY_ID[i].sub].cat===c);const kind=k=>ids.some(i=>BY_ID[i]&&SUB[BY_ID[i].sub].kind===k);const s=[];
+    if(has('mains'))s.push('samovar','baursak','pickles');if(has('tea'))s.push('baursak','medovik');if(cat('steam'))s.push('oil','oak','herbs');if(kind('rent'))s.push('slippers','kit');if(!cat('drinks'))s.push('mors');
+    s.push('samovar','baursak','medovik','water');
+    return [...new Set(s)].filter(i=>!ids.includes(i)&&BY_ID[i]&&this.visible(BY_ID[i])&&!this.isUn(BY_ID[i])).slice(0,4);}
+  goesWith(it){const sub=it.sub,k=SUB[sub].kind,c=SUB[sub].cat;let m;
+    if(sub==='mains')m=['samovar','baursak','pickles'];else if(sub==='tea')m=['baursak','medovik'];else if(c==='steam')m=['oil','oak','herbs'];else if(k==='rent')m=['slippers','kit'];else if(c==='kitchen')m=['samovar','mors','baursak'];else if(c==='drinks')m=['baursak','medovik'];else m=['oil','slippers','steppe'];
+    return m.filter(i=>i!==it.id&&BY_ID[i]&&this.visible(BY_ID[i])&&!this.isUn(BY_ID[i])).slice(0,4);}
+  mini(id,t,L){const it=BY_ID[id];return {img:it.img||'',name:it.name[L],priceText:fmt(it.price),addLabel:t.add+': '+it.name[L],add:()=>this.add(id),open:()=>this.openPanel('item',id)};}
+
+  badges(it,t,L,rec){
+    const out=[];const k=SUB[it.sub].kind;
+    if(this.isUn(it))out.push({text:t.notToday,fg:NAVY});
+    if(rec)out.push({text:t.recShort,fg:COCOA,dot:true});
+    else if(it.popular)out.push({text:t.hit,fg:NAVY,dot:true});
+    if(it.dur)out.push({text:it.dur[L],fg:NAVY});
+    if(it.badge==='serves')out.push({text:t.serves,fg:NAVY});
+    if(it.badge==='group')out.push({text:t.forGroup,fg:NAVY});
+    if(it.prep>=20)out.push({text:`~${it.prep} ${t.minShort}`,fg:NAVY,clock:true});
+    if(k==='rent')out.push({text:t.rent,fg:NAVY});
+    if(k==='buy')out.push({text:t.buy,fg:BRICK});
+    return out.slice(0,3);
+  }
+  row(it,t,L,rec,q){
+    const n=this.state.cart[it.id]||0,un=this.isUn(it),name=it.name[L],desc=it.desc[L],rent=SUB[it.sub].kind==='rent';
+    let parts=[{t:name,fw:'500',c:NAVY}];
+    if(q){const i=name.toLowerCase().indexOf(q);if(i>=0)parts=[{t:name.slice(0,i),fw:'500',c:NAVY},{t:name.slice(i,i+q.length),fw:'700',c:BRICK},{t:name.slice(i+q.length),fw:'500',c:NAVY}].filter(p=>p.t);}
+    return {id:it.id,img:it.img||'',name,parts,desc,hasDesc:!!desc,priceText:fmt(it.price),unit:rent?t.perVisit:(it.badge==='serves'?t.serves:''),hasUnit:rent||it.badge==='serves',
+      op:un?'0.5':'1',filter:un?'grayscale(1)':'none',badges:this.badges(it,t,L,rec),showAdd:!un&&!n,showCounter:!un&&n>0,qty:n,addLabel:t.add+': '+name,
+      inc:e=>{e&&e.stopPropagation();this.add(it.id);},dec:e=>{e&&e.stopPropagation();this.dec(it.id);},
+      open:()=>this.openPanel('item',it.id),key:e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();this.openPanel('item',it.id);}}};
+  }
+  houseCard(h,L,t,onPick,selId){
+    const sel=selId===h.id;const tr=h.name[L];
+    return {id:h.id,img:h.img,num:`${h.n} · ${h.tier}`,name:h.name[0],tr,hasTr:L>0&&tr!==h.name[0],slogan:h.slogan[L],soon:!h.open,sel,disabled:h.open?'false':'true',
+      op:h.open?'1':'0.6',filter:h.open?'none':'grayscale(1)',cursor:h.open?'pointer':'default',tf:sel?'scale(.97)':'none',ring:sel?'0 0 0 2px #FFFFFF, 0 0 0 4px #C15C22':'none',aria:`${t.house} ${h.n} · ${h.name[0]}${h.open?'':' · '+t.soon}`,
+      pick:()=>{if(h.open)onPick(h.id);}};
+  }
+
+  buildOrderText(house,groups,sums){
+    const s=this.state,L=[`*Заказ из меню SHIPÁ*`,`*Дом ${house.n} · ${house.name[0]}*`,''];
+    if(s.when==='time'&&s.slotMs){const tomorrow=dayKey(s.slotMs)!==dayKey(Date.now());L.push(`Подать к ${hm(s.slotMs)}${tomorrow?', '+dm(s.slotMs):''} (время уточнить)`);}else L.push('Подать: по готовности');
+    if(s.guest.trim())L.push(`Гость: ${s.guest.trim()}`);
+    groups.forEach(g=>{L.push('',`*${GROUPS[g.g].ru}*`);g.ls.forEach(({it,qty})=>L.push(`• ${it.name[0]} × ${qty} — ${fmt(it.price*qty)}`));});
+    L.push('',`Сумма: ${fmt(sums.subtotal)}`);
+    if(sums.service)L.push(`Обслуживание 10%: ${fmt(sums.service)}`);
+    L.push(`*Итого: ${fmt(sums.total)}*`);
+    if(s.comment.trim())L.push('',`Комментарий: ${s.comment.trim()}`);
+    L.push(`${s.comment.trim()?'':'\n'}Язык гостя: ${LANG_WORD[s.lang]}`);
+    const text=plain(L.join('\n'));
+    console.assert(!/[\uFFFD]|[\uD800-\uDFFF]/.test(text),'order text has unsupported chars');
+    return text;
+  }
+
+  renderVals(){
+    const s=this.state,lang=s.lang,L=LI[lang],t=I18N[lang],house=this.house();
+    const wa=tx=>'https://api.whatsapp.com/send?phone='+WA_NUM+'&text='+encodeURIComponent(plain(tx));
+    const langs=LANGS.map(c=>{const on=s.lang===c;return {code:c,pressed:on?'true':'false',bg:on?'#FFFFFF':'transparent',sh:on?'var(--shadow-1)':'none',fg:on?NAVY:'rgba(10,47,79,.62)',select:()=>this.setLang(c)};});
+    const pickCards=HOUSES.map(h=>this.houseCard(h,L,t,this.pickFromScreen,s.pickSel));
+    const houseCards=HOUSES.map(h=>this.houseCard(h,L,t,this.pickFromPanel,s.houseId));
+    const items=ITEMS.filter(i=>this.visible(i));
+    const activeSub=SUB[s.active]||SUBS[0];
+    const q=s.q.trim().toLowerCase();
+    const recId=house&&house.prog;const recIt=recId&&BY_ID[recId];
+    const E=s.edges,fine=s.fine;
+    const ar={};['banners','popular','chips','slots','upsell','goes'].forEach(n=>{const e=E[n]||[false,true];ar[n+'L']=()=>this.stripBy(n,-1);ar[n+'R']=()=>this.stripBy(n,1);ar[n+'Lop']=e[0]?'1':'0.35';ar[n+'Rop']=e[1]?'1':'0.35';ar[n+'Lcur']=e[0]?'pointer':'default';ar[n+'Rcur']=e[1]?'pointer':'default';ar[n+'Lshow']=fine&&e[0];ar[n+'Rshow']=fine&&e[1];});
+
+    // баннеры с персонализацией
+    let bl=BANNERS.filter(b=>!(b.tubOnly&&!this.tubAvail())).map(b=>({id:b.id,img:(BANNER_IMG[b.id]||(()=>''))(),title:b.title[L],sub:b.sub[L],cta:b.act[0]==='item'?t.ctaOrder:(b.id==='take'||b.id==='besoms'?t.ctaView:t.ctaPick),go:()=>b.act[0]==='item'?this.openPanel('item',b.act[1]):this.goSub(b.act[1])}));
+    const tubB=bl.find(b=>b.id==='tub');bl=bl.filter(b=>b.id!=='tub');
+    if(house&&recIt){const i=HOUSES.indexOf(house)+1;bl.unshift({id:'rec',img:`assets/h${i}_acc.png`,title:tpl(t.forHouse,{h:house.name[0]}),sub:recIt.name[L],cta:t.ctaOrder,go:()=>this.openPanel('item',recId)});}
+    if(tubB)bl.splice(1,0,tubB);
+    const banners=bl.map(b=>({...b,noImg:!b.img}));
+    const bannerDots=banners.map((b,i)=>({label:b.title,w:i===s.bIdx?'18px':'6px',bg:i===s.bIdx?BRICK:'#E2E2E0',go:()=>{this.pauseBanners();this.bannerGo(i);}}));
+
+    const tiles=CAT_ORDER.map(id=>{const on=activeSub.cat===id;return {id,img:TILE_IMG[id](),name:SHORT[id][L],pressed:on?'true':'false',ring:on?'0 0 0 2px #FFFFFF, 0 0 0 4px #C15C22':'none',fg:on?BRICK:NAVY,go:()=>this.goSub(SUBS.find(x=>x.cat===id).id)};});
+    const popular=POPULAR.map(id=>BY_ID[id]).filter(i=>i&&this.visible(i)).map(i=>this.row(i,t,L,false));
+    const activeChip=activeSub.chip||activeSub.id;
+    const chips=SUBS.filter(x=>!x.chip).map(x=>{const on=activeChip===x.id;return {id:x.id,name:x.name[L],current:on?'true':'false',bg:on?NAVY:SURF,fg:on?'#FFFFFF':NAVY,go:()=>this.goSub(x.id)};});
+
+    let prevCat=null;
+    const sections=SUBS.map(x=>{let its=items.filter(i=>i.sub===x.id);if(x.id==='steam'&&recId)its=[...its.filter(i=>i.id===recId),...its.filter(i=>i.id!==recId)];
+      const rows=its.map(i=>this.row(i,t,L,i.id===recId));const catName=CATS[x.cat].name[L];const first=prevCat!==x.cat;prevCat=x.cat;
+      const flag=x.id==='steam'&&house&&house.tubIncl;
+      return {id:x.id,name:x.name[L],count:String(rows.length),over:catName,hasOver:first&&catName!==x.name[L],note:x.note?t[x.note]:'',hasNote:!!x.note,flag:t.tubIncl,hasFlag:!!flag,items:rows};});
+    const results=q?items.filter(i=>(i.name[L]+' '+i.desc[L]).toLowerCase().includes(q)).map(i=>this.row(i,t,L,i.id===recId,q)):[];
+
+    // корзина
+    const lines=Object.entries(s.cart).map(([id,qty])=>({it:BY_ID[id],qty})).filter(x=>x.it);
+    const groups=GROUP_ORDER.map(g=>{const ls=lines.filter(x=>groupOf(x.it)===g);return {g,ls,sum:ls.reduce((a,x)=>a+x.it.price*x.qty,0)};}).filter(x=>x.ls.length);
+    const subtotal=lines.reduce((a,x)=>a+x.it.price*x.qty,0),count=lines.reduce((a,x)=>a+x.qty,0);
+    const service=Math.round(lines.filter(x=>isSvc(x.it)).reduce((a,x)=>a+x.it.price*x.qty,0)*SERVICE_RATE);
+    const total=subtotal+service;
+    const cartGroups=groups.map(gr=>{const G=GROUPS[gr.g];return {title:G.name[L],note:G.note?t[G.note]:'',hasNote:!!G.note,rows:gr.ls.map(({it,qty})=>({img:it.img||'',name:it.name[L],qty,unitText:`${qty} × ${fmt(it.price)}`,sum:fmt(it.price*qty),
+      tx:s.swiped===it.id?'-92px':'0px',inc:()=>this.add(it.id),dec:()=>this.dec(it.id),remove:()=>this.remove(it.id),
+      ts:e=>{this._sx=e.touches[0].clientX;},te:e=>{const dx=e.changedTouches[0].clientX-this._sx;if(dx<-40)this.setState({swiped:it.id});else if(dx>20)this.setState({swiped:null});}}))};});
+    const upsellIds=this.suggest(Object.keys(s.cart));
+
+    // время подачи
+    const {lead,maxPrep}=this.lead();const earliest=ceil15(Date.now()+lead*60e3);
+    const onlyNoPrep=lines.length>0&&lines.every(x=>!isSvc(x.it)&&!x.it.prep);
+    const etaText=onlyNoPrep?t.etaSoon:tpl(t.etaReady,{n:Math.round(lead/5)*5});
+    const today=dayKey(Date.now());const slots=[];let markDone=false;
+    for(let i=0;i<=24;i++){const ms=earliest+i*STEP;if(!markDone&&dayKey(ms)!==today){slots.push({mark:true,btn:false,key:'m'});markDone=true;}
+      const on=s.slotMs===ms;slots.push({mark:false,btn:true,label:hm(ms),on:on?'true':'false',bg:on?'#FFFFFF':SURF,sh:on?'inset 0 0 0 1.5px #0A2F4F':'none',fw:on?'700':'500',select:()=>this.setState({slotMs:ms,shifted:null})});}
+    const sh0=s.shifted;const shiftedText=sh0?(sh0.dish?tpl(t.shifted,{t:sh0.t,dish:sh0.dish[L],n:sh0.n}):tpl(t.shiftedPlain,{t:sh0.t})):'';
+
+    const orderText=house&&count?this.buildOrderText(house,groups,{subtotal,service,total}):'';this._orderText=orderText;
+
+    // шторка позиции
+    let sh={name:'',badges:[],modes:[],steps:[],incl:[],goes:[]};
+    const P=s.panel;
+    if(P&&P.type==='item'&&BY_ID[P.id]){
+      const it=BY_ID[P.id],un=this.isUn(it),qty=P.qty,k=SUB[it.sub].kind,pair=it.pair&&BY_ID[it.pair];const rec=it.id===recId;
+      const long=it.long?it.long[L]:it.desc[L];
+      const modes=pair?(k==='rent'?[it,pair]:[pair,it]).map(m=>{const on=m.id===it.id,isRent=SUB[m.sub].kind==='rent';return {on:on?'true':'false',bg:on?'#FFFFFF':'transparent',sh:on?'var(--shadow-1)':'none',label:`${isRent?t.rent:t.buy} · ${fmt(m.price)}`,select:()=>this.setState(st=>({panel:{...st.panel,id:m.id}}))};}):[];
+      const goes=this.goesWith(it).map(id=>this.mini(id,t,L));const bds=this.badges(it,t,L,false).filter(b=>!b.clock);
+      sh={img:it.img||'',filter:un?'grayscale(1)':'none',name:it.name[L],badges:bds,hasBadges:bds.length>0,
+        who:it.long?it.desc[L]:'',hasWho:!!it.long,rec:house?`${t.recFor} · ${house.name[0]}`:'',hasRec:rec,desc:long,hasDesc:!!long,priceText:fmt(it.price),unit:k==='rent'?t.perVisit:'',hasUnit:k==='rent',
+        hasPrep:it.prep>=10&&isSvc(it),prepText:`${t.prepTime} ~${it.prep} ${t.minShort}`,ahead:AHEAD.includes(it.id),
+        hasModes:!!pair,modes,steps:(it.steps||[]).map(x=>({name:x[L],min:`${x[3]} ${t.min}`})),hasSteps:!!it.steps,incl:(it.incl||[]).map(x=>({text:x[L]})),hasIncl:!!it.incl,
+        note:k==='steam'?t.steamRequest:k==='rent'?t.returnNote:'',hasNote:k==='steam'||k==='rent',goes,hasGoes:goes.length>0,
+        avail:!un,un,qty,decOp:qty<=1?'0.35':'1',addLabel:`${t.add} · ${fmt(it.price*qty)}`,
+        inc:()=>this.setState(st=>({panel:{...st.panel,qty:st.panel.qty+1}})),dec:()=>this.setState(st=>({panel:{...st.panel,qty:Math.max(1,st.panel.qty-1)}})),
+        add:()=>{this.add(it.id,qty);this.closePanel();}};
+    }
+    const today0=dayKey(Date.now()),yday=dayKey(Date.now()-86400e3);
+    const when=ms=>{const d=dayKey(ms);return (d===today0?t.today:d===yday?t.yesterday:dm(ms))+', '+hm(ms);};
+    const orderRows=s.orders.map(o=>{const n=o.lines.reduce((a,l)=>a+l.qty,0);return {title:when(o.sentAt),sum:fmt(o.total),sub:`${t.house} ${o.house.n} · ${o.house.name} · ${ITEMS_N[lang](n)}`,
+      thumbs:o.lines.slice(0,3).map(l=>({img:l.img||imgOf(l.id)})),hasMore:o.lines.length>3,more:`+${o.lines.length-3}`,
+      open:()=>this.setState(st=>({panel:{...st.panel,id:o.id}}),()=>{const e=document.querySelector('[data-panel-scroll2]');if(e)e.scrollTop=0;}),key:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();this.setState(st=>({panel:{...st.panel,id:o.id}}));}},
+      repeat:e=>{e.stopPropagation();this.repeatOrder(o,'ask');}};});
+    const OD=P&&(P.type==='orders'||P.type==='repeat')&&P.id?s.orders.find(o=>o.id===P.id):null;
+    const od=OD?{meta:`${when(OD.sentAt)} · ${t.house} ${OD.house.n} · ${OD.house.name}`,
+      facts:[{k:t.serveK,v:OD.serve.mode==='time'?tpl(t.serveAt,{t:OD.serve.at})+(OD.serve.date?', '+OD.serve.date:''):t.serveReady},...(OD.guest?[{k:t.guestK,v:OD.guest}]:[]),...(OD.comment?[{k:t.commentK,v:OD.comment}]:[])],
+      groups:GROUP_ORDER.map(g=>({title:GROUPS[g].name[L],rows:OD.lines.filter(l=>l.group===g).map(l=>({img:l.img||imgOf(l.id),name:l.name[L]||l.name[0],unitText:`${l.qty} × ${fmt(l.price)}`,sum:fmt(l.price*l.qty)}))})).filter(g=>g.rows.length),
+      subtotal:fmt(OD.subtotal),service:fmt(OD.service),hasService:OD.service>0,total:fmt(OD.total),repeat:()=>this.repeatOrder(OD,'ask'),
+      ask:wa(`*SHIPÁ*\n*Дом ${OD.house.n} · ${OD.house.name}*\nВопрос по заказу от ${hm(OD.sentAt)}:\n`)}:{meta:'',facts:[],groups:[],subtotal:'',service:'',hasService:false,total:'',repeat:()=>{},ask:'#'};
+    const repO=P&&P.type==='repeat'?s.orders.find(o=>o.id===P.id):null;
+
+    const pend=s.pending,pendH=pend&&HOUSE_BY[pend.houseId];
+    const toastIt=s.toast&&s.toast.id&&BY_ID[s.toast.id];const toastMsg=s.toast&&s.toast.msg;
+    return {
+      t,htmlLang:HTML_LANG[lang],langs,fine,ar,
+      isPick:s.screen==='pick',isMenu:s.screen==='menu',pickOpacity:s.pickFade?'0':'1',pickCards,skipPick:()=>{this.setState({pickFade:true});setTimeout(()=>{this.setState({screen:'menu',pickFade:false});window.scrollTo(0,0);},250);},
+      hasHouse:!!house,noHouse:!house,houseImg:house?house.img:'',houseNum:house?house.n:'',houseName:house?house.name[0]:'',
+      pillA:house?`${t.house} ${house.n} · `:t.chooseHouse,pillB:house?house.name[0]:'',pillAria:house?`${t.house} ${house.n} · ${house.name[0]}`:t.chooseHouse,
+      pillBd:house?'1px solid #EDEDED':'1.5px solid #C15C22',pillFg:house?NAVY:BRICK,pillAnim:house?'none':'pulse 1.2s ease-out 1',compactLabel:house?`${house.n} · ${house.name[0]}`:t.chooseHouse,
+      openHouse:()=>this.openPanel('house'),hasOrders:s.orders.length>0,openOrders:()=>this.openPanel('orders'),
+      waHost:wa('Здравствуйте! Пишу из меню SHIPÁ'+(house?`, дом ${house.n} · ${house.name[0]}`:'')),
+      banners,bannerDots,onBannerScroll:this.onBannerScroll,pauseBanners:this.pauseBanners,bannerKey:this.bannerKey,onStripScroll:this.onStripScroll,
+      tiles,popular,chips,sections,isList:s.view==='list',isGrid:s.view==='grid',viewLabel:s.view==='list'?t.viewGrid:t.viewList,
+      toggleView:()=>this.setState(st=>{const v=st.view==='list'?'grid':'list';ls.set(LS_VIEW,v);return {view:v};}),
+      chipsTop:s.bar==='shown'?'52px':'0px',chipsTf:s.bar==='hidden'?'translateY(-110%)':'none',compactTf:s.bar==='shown'?'translateY(0)':'translateY(-110%)',
+      q:s.q,hasQ:!!q,notQ:!q,results,noResults:!!q&&!results.length,showCancel:s.qFocus||!!q,
+      searchBg:s.qFocus?'#FFFFFF':SURF,searchSh:s.qFocus?'inset 0 0 0 1.5px #C15C22, 0 4px 14px rgba(193,92,34,.12)':'none',
+      onQ:e=>{this.setState({q:e.target.value});if(!e.target.value)setTimeout(this.onScroll,0);},onQFocus:()=>this.setState({qFocus:true}),onQBlur:()=>setTimeout(()=>this.setState({qFocus:false}),120),
+      clearQ:()=>this.setState({q:''}),cancelQ:e=>{e&&e.preventDefault();this.setState({q:'',qFocus:false});const i=document.querySelector('input[type=search]');if(i)i.blur();},
+      count,hasCart:count>0,showCartBar:count>0&&!s.cartOpen,subtotalText:fmt(subtotal),serviceText:fmt(service),hasService:service>0,totalText:fmt(total),openCart:this.openCart,
+      bumpAnim:s.bump?`bump${s.bump%2} 250ms var(--ease-spring)`:'none',
+      hasToast:!!(toastIt||toastMsg),toastText:toastMsg||(toastIt?`${t.added} · ${toastIt.name[L]}`:''),toastHasImg:!!toastIt,toastPadL:toastIt?'6px':'16px',toastBottom:s.cartOpen?'calc(130px + env(safe-area-inset-bottom))':(count>0?'calc(84px + env(safe-area-inset-bottom))':'calc(20px + env(safe-area-inset-bottom))'),hasPriceNote:!!s.priceNote,toastImg:toastIt?(toastIt.img||''):'',toastSvc:!!(s.toast&&s.toast.svc),
+      padBottom:count>0?'calc(96px + env(safe-area-inset-bottom))':'calc(24px + env(safe-area-inset-bottom))',
+      showUp:s.showUp,goTop:()=>{this.lockUntil=Date.now()+900;this.setState({active:SUBS[0].id,bar:'top'},this.syncChips);window.scrollTo({top:0,behavior:'smooth'});},
+
+      cartOpen:s.cartOpen,cartTf:s.cartIn?'translateY(0)':'translateY(100%)',closeCart:this.closeCart,
+      askClear:()=>this.openPanel('clear'),doClear:()=>{this.setState({cart:{}});this.closePanel();this.closeCart();},
+      whenOpts:[['ready',t.whenReady],['time',t.atTime]].map(([v,l])=>{const on=s.when===v;return {label:l,on:on?'true':'false',bg:on?'#FFFFFF':'transparent',sh:on?'var(--shadow-1)':'none',
+        select:()=>this.setState(st=>({when:v,slotMs:v==='time'?(st.slotMs&&st.slotMs>=earliest?st.slotMs:earliest):st.slotMs,shifted:null}))};}),
+      isReady:s.when==='ready',atTime:s.when==='time',etaText,slots,earliestText:tpl(t.earliestHint,{t:hm(earliest)+(dayKey(earliest)!==today?`, ${dm(earliest)}`:'')}),hasShifted:!!sh0,shiftedText,
+      cartGroups,upsell:upsellIds.map(id=>this.mini(id,t,L)),hasUpsell:upsellIds.length>0,
+      guest:s.guest,onGuest:e=>this.setState({guest:e.target.value}),comment:s.comment,onComment:e=>this.setState({comment:e.target.value}),
+      commentRows:String(Math.min(5,Math.max(2,s.comment.split('\n').length+Math.floor(s.comment.length/38)))),
+      waOrder:orderText?wa(orderText):'#',sendDisabled:house?'false':'true',sendOp:house?'1':'0.45',sendLabel:`${t.sendOrder} · ${fmt(total)}`,sendHint:house?t.waHint:t.needHouse,
+      onSend:e=>{if(!house||!this._orderText){e.preventDefault();if(!house)this.openPanel('house');return;}
+        console.log(this._orderText);
+        const now=Date.now();const snap={id:'o_'+now,sentAt:now,house:{id:house.id,n:house.n,name:house.name[0]},serve:s.when==='time'&&s.slotMs?{mode:'time',at:hm(s.slotMs),date:dayKey(s.slotMs)!==dayKey(now)?dm(s.slotMs):''}:{mode:'ready'},guest:s.guest.trim(),comment:s.comment.trim(),lang:s.lang,lines:lines.map(({it,qty})=>({id:it.id,name:it.name.slice(0,3),group:groupOf(it),qty,price:it.price,img:it.img||''})),subtotal,service,total};
+        const orders=[snap,...this.state.orders.filter(o=>o.id!==snap.id)].slice(0,ORD_MAX);ls.set(LS_ORDERS,orders);
+        this.pending={houseId:house.id,total,ts:now};this.setState({pending:this.pending,orders});
+        clearTimeout(this._pt);this._pt=setTimeout(()=>{if(this.pending&&!(this.state.panel&&this.state.panel.type==='sent'))this.openPanel('sent');},3000);},
+
+      panelOpen:!!P,isItemPanel:!!P&&P.type==='item',isHousePanel:!!P&&P.type==='house',isOrdersPanel:!!P&&P.type==='orders',isSentPanel:!!P&&P.type==='sent',isClearPanel:!!P&&P.type==='clear',isRepeatPanel:!!P&&P.type==='repeat',noOrders:!s.orders.length,ordTf:P&&P.type==='orders'&&P.id?'translateX(-50%)':'translateX(0)',ordBack:()=>this.setState(st=>({panel:{...st.panel,id:null}})),od,
+      repAdd:()=>{if(repO)this.repeatOrder(repO,'add');},repReplace:()=>{if(repO)this.repeatOrder(repO,'replace');},
+      panelH:P&&(P.type==='item'||P.type==='orders')?'calc(100dvh - 24px)':'auto',
+      panelTf:s.panelIn?`translateY(${s.drag}px)`:'translateY(100%)',panelTrans:s.dragging?'none':'transform 300ms cubic-bezier(.22,1,.36,1)',panelFade:s.panelIn?'1':'0',grabberBg:P&&P.type==='item'?'rgba(255,255,255,.85)':'#E2E2E0',
+      closePanel:this.closePanel,dragStart:this.dragStart,dragMove:this.dragMove,dragEnd:this.dragEnd,sh,houseCards,orderRows,
+
+      sentMeta:pend?`${pendH?`${t.house} ${pendH.n} · ${pendH.name[0]} · `:''}${fmt(pend.total)}`:'',
+      sentYes:()=>{const p=this.pending||this.state.pending;if(!p){this.closePanel();return;}this.pending=null;
+        this.setState({cart:{},comment:'',guest:'',when:'ready',slotMs:null,pending:null,thanks:{total:p.total,houseId:p.houseId},cartOpen:false,cartIn:false});this.closePanel();},
+      sentBack:()=>{this.pending=null;this.setState({pending:null});this.closePanel();},
+      thanksOpen:!!s.thanks,thanksMeta:s.thanks?`${HOUSE_BY[s.thanks.houseId]?`${t.house} ${HOUSE_BY[s.thanks.houseId].n} · ${HOUSE_BY[s.thanks.houseId].name[0]} · `:''}${fmt(s.thanks.total)}`:'',
+      closeThanks:()=>{this.setState({thanks:null});this.unlockBody();}
+    };
+  }
+}
+</script>
+</body>
+</html>
