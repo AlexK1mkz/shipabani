@@ -80,6 +80,8 @@
     header[data-solid="0"] a[data-wa]:hover svg{stroke:#0A2F4F;}
     header[data-solid="1"] a[data-wa]:hover{background:#0A2F4F !important;}
     header[data-solid="1"] a[data-wa]:hover svg{stroke:#F9EFE3;}
+    @keyframes limShakeA{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+    @keyframes limShakeB{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
     @keyframes pulseA{0%{box-shadow:0 0 0 0 rgba(10,47,79,0)}30%{box-shadow:0 0 0 4px rgba(10,47,79,.22)}100%{box-shadow:0 0 0 0 rgba(10,47,79,0)}}
     @keyframes pulseB{0%{box-shadow:0 0 0 0 rgba(10,47,79,0)}30%{box-shadow:0 0 0 4px rgba(10,47,79,.22)}100%{box-shadow:0 0 0 0 rgba(10,47,79,0)}}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -211,13 +213,28 @@
   <section style="position:relative;z-index:2;max-width:1200px;margin:-64px auto 0;padding:0 16px;">
     <div data-reveal data-screen-label="Найти свободный дом" style="background:#F9EFE3;border:1px solid rgba(59,47,42,.1);border-radius:28px;padding:24px;max-width:720px;margin:0 auto;">
       <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3B2F2A;font-weight:600;margin-bottom:16px;text-align:center;">Найти свободный дом</div>
-      <div class="noscroll" style="display:flex;gap:8px;overflow-x:auto;margin:0 -24px;padding:0 24px;scroll-snap-type:x proximity;">
-        <sc-for list="{{ quickDays }}" as="d" hint-placeholder-count="7">
-          <button onClick="{{ d.select }}" style="{{ d.style }}">
-            <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
-            <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;">{{ d.day }}</span>
-          </button>
-        </sc-for>
+      <div data-screen-label="Главная — лента дат" style="display:flex;align-items:flex-end;gap:4px;margin:0 -24px;">
+        <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickPrev }}" aria-label="Предыдущие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 0 10px 24px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"></path></svg></button></sc-if>
+        <div ref="{{ quickRef }}" class="noscroll" style="flex:1 1 auto;min-width:0;display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding:0 24px 2px;scroll-snap-type:x proximity;">
+          <sc-for list="{{ quickDays }}" as="d" hint-placeholder-count="14">
+            <div style="flex:0 0 auto;display:flex;align-items:stretch;gap:8px;scroll-snap-align:start;">
+              <sc-if value="{{ d.line }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="flex:0 0 1px;width:1px;background:rgba(59,47,42,.35);"></div></sc-if>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="height:16px;font-size:12px;line-height:16px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(59,47,42,.78);padding-left:2px;">{{ d.mon }}</div>
+                <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
+                  <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;white-space:nowrap;">{{ d.wd }}</span>
+                  <span style="{{ d.numStyle }}">{{ d.day }}</span>
+                  <span aria-hidden="true" style="{{ d.dotStyle }}"></span>
+                </button>
+              </div>
+            </div>
+          </sc-for>
+          <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:4px;">
+            <div style="height:16px;"></div>
+            <button onClick="{{ openDateSheet }}" style="width:88px;height:68px;border-radius:16px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Другая дата</button>
+          </div>
+        </div>
+        <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 24px 10px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0;padding-top:16px;border-top:1px solid rgba(59,47,42,.1);">
         <div><div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">Дети до 7 лет не считаются</div></div>
@@ -1460,8 +1477,22 @@
       <sc-if value="{{ hasStart }}" hint-placeholder-val="{{ false }}">
         <div style="font-weight:600;margin:24px 0 2px;font-size:15px;">Сколько часов?</div>
         <div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:10px;">{{ durNote }}</div>
-        <div id="bk-durs" style="{{ durWrapStyle }}">
-          <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="8">
+        <div id="bk-durs" data-screen-label="Шаг 3 — счётчик часов" style="border-radius:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 4px;">
+            <button onPointerDown="{{ cnt.minusDown }}" onClick="{{ cnt.minusClick }}" disabled="{{ cnt.atMin }}" aria-label="Меньше на час" style="{{ cnt.minusStyle }}">−</button>
+            <div aria-live="polite" style="flex:1 1 auto;min-width:0;text-align:center;">
+              <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:36px;line-height:1.05;font-variant-numeric:lining-nums tabular-nums;text-wrap:balance;">{{ cnt.num }}<sc-if value="{{ cnt.hasSuf }}" hint-placeholder-val="{{ false }}"><span style="font-size:22px;"> {{ cnt.suf }}</span></sc-if></div>
+              <div style="font-family:Inter,system-ui,sans-serif;font-size:15px;margin-top:4px;font-variant-numeric:tabular-nums;">{{ cnt.range }}</div>
+            </div>
+            <button onPointerDown="{{ cnt.plusDown }}" onClick="{{ cnt.plusClick }}" aria-disabled="{{ cnt.plusOffAttr }}" aria-label="Больше на час" style="{{ cnt.plusStyle }}">+</button>
+          </div>
+          <sc-if value="{{ cnt.atMin }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;font-size:13px;color:rgba(10,47,79,.75);margin-bottom:4px;">{{ cnt.minText }}</div></sc-if>
+          <sc-if value="{{ limShow }}" hint-placeholder-val="{{ false }}">
+            <div role="status" style="{{ limStyle }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span>{{ limText }}</span></div>
+          </sc-if>
+        </div>
+        <div style="{{ durWrapStyle }}">
+          <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="7">
             <div style="display:flex;flex-direction:column;gap:4px;">
               <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
               <sc-if value="{{ c.hasReason }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:1.25;color:#C15C22;text-align:center;">{{ c.reason }}</span></sc-if>
@@ -1511,6 +1542,7 @@
             <div style="font-size:12px;letter-spacing:.18em;color:#C15C22;font-weight:600;">{{ card.kicker }}</div>
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.1em;line-height:1;color:#0A2F4F;">{{ card.name }}</div>
             <div style="font-size:14px;color:#0A2F4F;margin-top:2px;">{{ card.when }}</div>
+            <div style="font-size:14px;color:#0A2F4F;font-weight:600;">{{ card.out }}</div>
             <div style="font-size:13px;color:#3B2F2A;">{{ card.meta }} · <span style="font-weight:600;">{{ card.total }}</span></div>
             <sc-if value="{{ card.hasExtras }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.75);">{{ card.extras }}</div></sc-if>
           </div>
@@ -1610,6 +1642,7 @@
           <p style="margin:8px 0 0;font-size:16px;line-height:1.5;color:#0A2F4F;">Мы свяжемся с вами в течение 15 минут</p>
           <div style="margin-top:16px;font-size:14px;line-height:1.6;color:#3B2F2A;font-variant-numeric:tabular-nums;">
             <div>{{ card.when }}</div>
+            <div style="font-weight:600;color:#0A2F4F;">{{ card.out }}</div>
             <div>{{ card.meta }} · {{ card.total }}</div>
           </div>
         </div>
@@ -1759,7 +1792,7 @@ const hh=h=>{const m=h%1?'30':'00';return String(Math.floor(h)%24).padStart(2,'0
 const plural=(n,a,b,c)=>{const m=n%10,k=n%100;return k>=11&&k<=14?c:m===1?a:m>=2&&m<=4?b:c;};
 // Настройки из админки. Значения — заглушки до ответа заказчика (п.12 правок 22.09).
 // tabFrom — граница вкладок День/Ночь; tariff* — границы тарифов; prep — подготовка дома после гостя, ч.
-const CFG={tabFrom:8,tariffDayFrom:8,tariffNightFrom:20,minH:{VIP:3,STANDARD:3},maxH:48,prep:{base:1,tub:2,VIP:2},tubPrice:15000,durs:[3,4,5,6,8,12,24,48],nowHour:11,tubHouses:['energiya']};
+const CFG={tabFrom:8,tariffDayFrom:8,tariffNightFrom:20,minH:{VIP:3,STANDARD:3},maxH:48,prep:{base:1,tub:2,VIP:2},tubPrice:15000,durs:[3,4,6,8,12,24,48],leadH:1,tubHouses:['energiya']};
 const PRICES={VIP:{dayWd:30000,dayWe:40000,eveWd:38000,eveWe:45000},STANDARD:{dayWd:17000,dayWe:25000,eveWd:23000,eveWe:30000}};
 const HOUSES=[
  {id:'dyhanie',n:'01',tier:'VIP',name:'ДЫХАНИЕ',slogan:'Вдохни глубже',area:120,guests:14,min:3,img:1,mat:'Светлый дуб, лён и матовый камень',art:'туманный хвойный лес',aroma:'эвкалипт и мята',ritual:'Парение здесь свежее и лёгкое, с травяным чаем после.',prog:1},
@@ -1773,6 +1806,10 @@ const HOUSES=[
 ];
 HOUSES.forEach(h=>{h.min=CFG.minH[h.tier];h.tubIncl=h.tier==='VIP';h.tub=h.tubIncl||CFG.tubHouses.includes(h.id);});
 const OPEN_HOUSES=HOUSES.filter(h=>!h.soon);
+// Время Караганды: UTC+5 (единое время Казахстана с марта 2024). Часовой пояс телефона не используется.
+const KZ_OFF=5;const kzParts=ms=>{const d=new Date(ms+KZ_OFF*3600e3);return {y:d.getUTCFullYear(),m:d.getUTCMonth(),d:d.getUTCDate(),h:d.getUTCHours(),mi:d.getUTCMinutes()};};
+// ?now=2026-09-26T13:20 — время Караганды для проверки (в бою сдвиг приходит с сервера вместе со свободными окнами)
+const KZ_SKEW=(()=>{try{const q=new URLSearchParams(location.search).get('now');if(!q)return 0;const m=q.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);if(!m)return 0;return Date.UTC(+m[1],m[2]-1,+m[3],+m[4]-KZ_OFF,+m[5],+(m[6]||0))-Date.now();}catch(e){return 0;}})();
 const SERVICE_CATS=[{name:'Парение с пармастером',desc:'От классики до контраста в чане',img:'img/h2_acc.png'},{name:'Массаж',desc:'Тёплое масло, в комнате отдыха',img:'img/h6_acc.png'},{name:'Пилинг',desc:'Скраб на соли и мёде',img:'img/h3_acc.png'},{name:'Авторские программы',desc:'Готовим новую категорию',soon:true}];
 const MERCH=[{name:'Полотенце SHIPA',price:12000},{name:'Банная шапка',price:6000},{name:'Тюрбан',price:7000},{name:'Кружка',price:5000},{name:'Масло для парения',price:4500},{name:'Дубовый веник',price:3500}];
 const PROGRAMS=[
@@ -1832,7 +1869,7 @@ const HERO_SLIDES=[{video:true,img:'img/h1_int.png'},{img:'img/h2_int.png'},{img
 // Тонировка стекла шапки над каждым кадром: минимум, при котором кремовый текст даёт ≥4.5:1 на самом светлом участке под панелью
 const ATM_VIDEO='';
 // Готовые тексты WhatsApp по умолчанию; в админке — поля с теми же ключами
-const WA_TEXT={waTextGeneral:'Здравствуйте! Пишу с сайта SHIPA',waTextHero:'Здравствуйте! Хочу забронировать дом в SHIPA',waTextHouse:'Здравствуйте! Интересует дом {дом}',waTextLong:'Здравствуйте! Хочу забронировать дом больше чем на двое суток',waTextStep4:'Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, {гостей}',waTextError:'Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}',waTextSuccess:'Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, {гостей}',waTextPre:'Здравствуйте! Записался на открытие SHIPA',waTextMerch:'Здравствуйте! Хочу заказать: {товар}'}; // ролик атмосферы из админки
+const WA_TEXT={waTextGeneral:'Здравствуйте! Пишу с сайта SHIPA',waTextHero:'Здравствуйте! Хочу забронировать дом в SHIPA',waTextHouse:'Здравствуйте! Интересует дом {дом}',waTextLong:'Здравствуйте! Хочу забронировать дом больше чем на двое суток',waTextStep4:'Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}',waTextError:'Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}',waTextSuccess:'Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}',waTextPre:'Здравствуйте! Записался на открытие SHIPA',waTextMerch:'Здравствуйте! Хочу заказать: {товар}'}; // ролик атмосферы из админки
 const RATING=['4,9','4,9','5,0','4,8','4,9','4,8','5,0','4,7'];
 const EMPTY_RF={open:false,sent:false,name:'',stars:5,text:''};
 
@@ -1856,10 +1893,33 @@ class Component extends DCLogic {
   videoRef=React.createRef();
   atmRef=React.createRef();
   progRowRef=React.createRef();
-  today=new Date(2026,8,7);
+  _skew=KZ_SKEW;quickRef=React.createRef();
+  kzNow(){return kzParts(Date.now()+this._skew);}
+  kzToday(){const p=this.kzNow();return new Date(p.y,p.m,p.d);}
+  // Самое раннее начало: следующий полный час + «Минимум до заезда» (CFG.leadH). Абсолютный час от 00:00 сегодня.
+  get nowH(){return this.kzNow().h+1+CFG.leadH;}
+  today=this.kzToday();
+  clockTick(){const p=this.kzNow();const key=p.y+'-'+p.m+'-'+p.d;
+    if(key!==this._dayKey){const nt=new Date(p.y,p.m,p.d);const diff=Math.round((nt-this.today)/864e5);this._dayKey=key;this._lastH=p.h;if(!diff)return;this.today=nt;
+      this.setState(s=>{const b=s.bk;const nb=b?{...b,date:Math.max(0,b.date-diff),start:b.start!=null?b.start-24*diff:null}:b;if(nb)nb.month=this.moOf(nb.date);
+        const q={...s.quick,date:Math.max(0,s.quick.date-diff)};if(this.dayLoad(q.date)===0)q.date=this.firstOpenDay();return {bk:nb,quick:q,stripMore:0};});return;}
+    if(p.h!==this._lastH){this._lastH=p.h;this.forceUpdate();}}
+  dayLoad(i){let n=0;for(const h of OPEN_HOUSES)if(this.anyFree(HOUSES.indexOf(h),i))n++;return n;}
+  firstOpenDay(){for(let i=0;i<60;i++)if(this.dayLoad(i)>0)return i;return 0;}
+  durStep(d){const bk=this.state.bk;if(!bk||bk.start==null)return false;const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const h=HOUSES[hi];if(!h)return false;
+    const tub=h.tier==='STANDARD'&&h.tub&&!!bk.tub;const max=Math.max(h.min,this.maxFrom(hi,bk.start,tub));const n=(bk.dur||h.min)+d;
+    if(n<h.min)return false;if(n>max){this.limitBump(max);return false;}vib(8);this.setBk({dur:n,pickEnd:false});return true;}
+  limitBump(max){vib(20);if(max<CFG.maxH){clearTimeout(this._limT);this.setState(s=>({limN:(s.limN||0)+1,limHi:true}));this._limT=setTimeout(()=>this.setState({limHi:false}),1500);}
+    else this.hint('Через сайт — до двух суток. Дольше — напишите нам в WhatsApp',3000);}
+  holdStart(d,e){if(e&&e.button>0)return;this.holdEnd();this.durStep(d);
+    this._holdT=setTimeout(()=>{this._holdI=setInterval(()=>{if(!this.durStep(d))this.holdEnd();},250);},500);
+    const up=()=>{this.holdEnd();window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);};window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);}
+  holdEnd(){clearTimeout(this._holdT);clearInterval(this._holdI);}
 
   componentDidMount(){
     this.onResize=()=>{setTimeout(()=>this.checkHdr&&this.checkHdr(),0);const iw=window.innerWidth||document.documentElement.clientWidth||0;if(iw<=0)return;const w=iw>=960;if(w!==this.state.isWide||iw!==this.state.vw)this.setState({isWide:w,vw:iw});};
+    {const p=this.kzNow();this._dayKey=p.y+'-'+p.m+'-'+p.d;this._lastH=p.h;this._clk=setInterval(()=>this.clockTick(),15000);
+     const q=this.firstOpenDay();if(q!==this.state.quick.date)this.setState(s=>({quick:{...s.quick,date:q}}));}
     this.onResize();window.addEventListener('resize',this.onResize);window.addEventListener('load',this.onResize);
     requestAnimationFrame(this.onResize);setTimeout(this.onResize,0);setTimeout(this.onResize,300);
     try{this.ro=new ResizeObserver(()=>this.onResize());this.ro.observe(document.documentElement);this.ro.observe(document.body);}catch(e){}
@@ -1928,7 +1988,7 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){document.removeEventListener('keydown',this.onKey);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){clearInterval(this._clk);this.holdEnd();document.removeEventListener('keydown',this.onKey);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
   componentDidUpdate(pp,prev){
     pp=pp||this.props;prev=prev||this.state;
     const s=this.state,b=s.bk;
@@ -2005,7 +2065,7 @@ class Component extends DCLogic {
   // Фото дома из админки в заданном порядке, первое — главное
   housePhotos(h){return ['int','art','acc'].map(k=>({src:`img/h${h.img}_${k}.png`}));}
   prepOf(h,tub){return h.tier==='VIP'?CFG.prep.VIP:tub?CFG.prep.tub:CFG.prep.base;}
-  cell(hi,H){if(H<CFG.nowHour)return 'past';const d=Math.floor(H/24);const bs=this.abs(hi,d-1,d);if(bs.some(([s,e])=>H>=s&&H<e))return 'busy';const p=this.prepOf(HOUSES[hi],false);if(bs.some(([s,e])=>H>=e&&H<e+p))return 'prep';return 'free';}
+  cell(hi,H){if(H<this.nowH)return 'past';const d=Math.floor(H/24);const bs=this.abs(hi,d-1,d);if(bs.some(([s,e])=>H>=s&&H<e))return 'busy';const p=this.prepOf(HOUSES[hi],false);if(bs.some(([s,e])=>H>=e&&H<e+p))return 'prep';return 'free';}
   nextBusyH(hi,H){for(let k=H;k<H+CFG.maxH+4;k++)if(this.cell(hi,k)==='busy')return k;return null;}
   maxFrom(hi,H,tub){const n=this.nextBusyH(hi,H);return n==null?CFG.maxH:Math.min(CFG.maxH,n-H-this.prepOf(HOUSES[hi],tub));}
   canStart(hi,H){return this.cell(hi,H)==='free'&&this.maxFrom(hi,H,false)>=HOUSES[hi].min;}
@@ -2014,7 +2074,7 @@ class Component extends DCLogic {
   moOf(i){const d=this.dateAt(i);return (d.getFullYear()-this.today.getFullYear())*12+d.getMonth()-this.today.getMonth();}
   dm(i){const d=this.dateAt(i);return `${d.getDate()} ${MON[d.getMonth()]}`;}
   dayWords(i){const d=this.dateAt(i);return i===0?'Сегодня, '+this.dm(i):i===1?'Завтра, '+this.dm(i):`${cap(WD_NOM[d.getDay()])}, ${this.dm(i)} ${d.getFullYear()}`;}
-  openDateSheet(){const bk=this.state.bk;if(!bk)return;this.setState({sheet:'date',dsh:{date:bk.date,guests:bk.guests,month:this.moOf(bk.date)}});}
+  openDateSheet(){const bk=this.state.bk;if(bk&&bk.pre)return;const src=bk||this.state.quick;this.setState({sheet:'date',dsh:{date:src.date,guests:src.guests,month:this.moOf(src.date),home:!bk}});}
   // Смена даты на шаге 3: время сохраняется, если свободно на новой дате; чан и опции — всегда
   moveDate(di,guests){const bk=this.state.bk;const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const h=HOUSES[hi];
     const p={date:di,guests:guests??bk.guests,month:this.moOf(di)};let msg=null,scroll=false;
@@ -2025,7 +2085,8 @@ class Component extends DCLogic {
     else Object.assign(p,this.initTime(hi,di),{tub:bk.tub});
     this.setState({stripMore:0});
     this.setBk(p,()=>{if(msg)this.hint(msg,3000);if(scroll)setTimeout(()=>this.scrollToEl(document.getElementById('bk-grid')),250);});}
-  applyDateSheet(){const s=this.state,bk=s.bk,d=s.dsh;if(!bk||!d)return;const m=this.moOf(d.date);
+  applyDateSheet(){const s=this.state,bk=s.bk,d=s.dsh;if(!d)return;const m=this.moOf(d.date);
+    if(!bk){this.setState({sheet:null,dsh:null,quick:{...s.quick,date:d.date,guests:d.guests}});this.openBooking(null,d.date,d.guests,2);return;}
     if(bk.step===3){const h=HOUSES.find(x=>x.id===bk.houseId);
       if(h&&d.guests>h.guests){this.setState({sheet:null,dsh:null,loadingSlots:true,stripMore:0});this.setBk({step:2,date:d.date,guests:d.guests,month:m,houseId:null,start:null,dur:null});setTimeout(()=>this.setState({loadingSlots:false}),700);return;}
       this.setState({sheet:null,dsh:null});this.moveDate(d.date,d.guests);return;}
@@ -2159,6 +2220,9 @@ class Component extends DCLogic {
     if(c==='sel')return b+`background:${NAVY};color:${CREAM};border:1px solid ${NAVY};`;
     if(c==='busy')return b+`background:rgba(193,92,34,.12);color:rgba(193,92,34,.6);border:1px solid transparent;`;
     if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.15) 0 6px,transparent 6px 12px),${CREAM};color:rgba(59,47,42,.78);border:1px solid rgba(59,47,42,.22);`;
+    if(c==='prepB')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.15) 0 6px,transparent 6px 12px),${CREAM};color:rgba(59,47,42,.78);border:1px solid rgba(59,47,42,.22);`;
+    if(c==='clean')return b+`background:repeating-linear-gradient(135deg,rgba(10,47,79,.15) 0 6px,transparent 6px 12px),${CREAM};color:${NAVY};border:1px solid rgba(10,47,79,.3);`;
+    if(c==='short')return b+`background:transparent;color:rgba(10,47,79,.72);border:1px dashed rgba(10,47,79,.3);`;
     if(c==='past')return b+`background:transparent;color:rgba(10,47,79,.22);border:1px dashed rgba(10,47,79,.14);`;
     return b+`background:rgba(255,255,255,.6);color:${NAVY};border:1px solid rgba(59,47,42,.15);`;}
   segStyle(c){const b='flex:1;height:16px;border-radius:3px;';
@@ -2191,7 +2255,7 @@ class Component extends DCLogic {
     const mo=bk.month||0;const first=new Date(this.today.getFullYear(),this.today.getMonth()+mo,1);
     const lead=(first.getDay()+6)%7;const dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
     const dayOff=dd=>Math.round((dd-this.today)/86400000);const openOff=dayOff(new Date(2027,1,1));
-    const monthDays=[...Array.from({length:lead},()=>({day:'',disabled:true,style:'height:44px;'})),...Array.from({length:dim},(_,k)=>{const dd=new Date(first.getFullYear(),first.getMonth(),k+1);const i=dayOff(dd);const past=i<0||(pre&&i<openOff)||(!pre&&i>365);const act=bk.date===i;const full=!pre&&FULL_DAYS.includes(i);const tdy=i===0;
+    const monthDays=[...Array.from({length:lead},()=>({day:'',disabled:true,style:'height:44px;'})),...Array.from({length:dim},(_,k)=>{const dd=new Date(first.getFullYear(),first.getMonth(),k+1);const i=dayOff(dd);const past=i<0||(pre&&i<openOff)||(!pre&&i>365);const act=bk.date===i;const full=!pre&&(FULL_DAYS.includes(i)||(i===0&&this.dayLoad(0)===0));const tdy=i===0;
       const dot=!!opt&&opt.hi>=0&&!past&&this.anyFree(opt.hi,i);
       return {day:k+1,disabled:past,dot,dotStyle:`width:4px;height:4px;border-radius:50%;background:${act?CREAM:NAVY};`,select:()=>set({date:i}),style:`${opt?'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;':''}height:44px;border-radius:999px;font-size:15px;font-weight:${act||tdy?600:400};background:${act?BRICK:'transparent'};color:${act?CREAM:past?'rgba(10,47,79,.25)':full?'rgba(10,47,79,.4)':NAVY};text-decoration:${full&&!act?'line-through':'none'};box-shadow:${tdy&&!act?`inset 0 0 0 1px ${BRICK}`:'none'};`};})];
     const arr=dis=>`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${dis?'.3':'1'};`;
@@ -2222,8 +2286,14 @@ class Component extends DCLogic {
     const heroFx={photo:fx('fadeIn',700,0,'ease-out'),hdr:fx('hdrIn',400,200),kicker:fx('fadeIn',400,350,'ease-out'),l1:fx('lineUp',700,450,'cubic-bezier(.16,1,.3,1)'),l2:fx('lineUp',700,570,'cubic-bezier(.16,1,.3,1)'),sub:fx('fadeUp',400,750),cta:fx('fadeUp',400,1000),bottom:fx('fadeIn',400,1200,'ease-out')};
     const heroStats=[{v:OPEN_HOUSES.length,pre:'',suf:'',t:'домов открыто'},{v:14,pre:'до ',suf:'',t:'гостей'},{v:17000,pre:'',suf:' ₸',t:'от, за час'},{v:15,pre:'',suf:' мин',t:'от центра'}].map((x,i)=>({...x,label:`${x.pre}${x.v.toLocaleString('ru-RU').replace(/\u00a0/g,' ')}${x.suf} — ${x.t}`,fx:fx('fadeUp',400,850+i*60)}));
     const statsWrap=wide?'display:flex;justify-content:center;gap:48px;margin-bottom:40px;':'display:grid;grid-template-columns:repeat(2,minmax(0,max-content));justify-content:center;gap:24px 40px;margin-bottom:32px;';
-    const quickDays=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;const full=FULL_DAYS.includes(i);return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),select:()=>this.setState({quick:{...s.quick,date:i}}),
-      style:`flex:0 0 auto;width:${i===0?72:56}px;height:64px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.4:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
+    const quickDays=Array.from({length:14},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;const n=this.dayLoad(i);const full=n===0;const few=!full&&n<3;
+      const wd=i===0?(full?'всё занято':'сегодня'):i===1?'завтра':WD[d.getDay()];const w=i===0&&full?100:i<=1?72:56;
+      return {wd,day:d.getDate(),mon:i===0||d.getDate()===1?MON_STRIP[d.getMonth()]:'',line:d.getDate()===1&&i>0,pressed:act?'true':'false',
+        label:`${this.dayWords(i)}${full?', всё занято':few?', осталось мало окон':''}`,
+        select:()=>{if(full){this.hint(`На ${this.dm(i)} всё занято — выберите другой день`);return;}vib(8);this.setState({quick:{...s.quick,date:i}});},
+        numStyle:`font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;${full?'text-decoration:line-through;':''}`,
+        dotStyle:`width:4px;height:4px;border-radius:50%;background:${few?(act?CREAM:BRICK):'transparent'};`,
+        style:`flex:0 0 auto;width:${w}px;height:68px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
     const faq=FAQ.map((q,i)=>({...q,open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
     const reviews=REVIEWS.map(r=>({...r,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
@@ -2365,10 +2435,17 @@ class Component extends DCLogic {
       const maxPlain=hasStart?this.maxFrom(hi0,st,false):0;const maxEff=hasStart?this.maxFrom(hi0,st,tubOn):0;
       const dur=bk.dur;const end=hasStart&&dur?st+dur:null;
       const stepMs=this.reduced?0:Math.round(200/Math.max(1,Math.min(12,dur||1)));
+      const hrs=n=>`${n} ${plural(n,'час','часа','часов')}`;const prepE=this.prepOf(h0,tubOn);const prepW=n=>n===1?'час':hrs(n);const needW=n=>n===1?'нужен час':'нужно '+hrs(n);
       const hourCells=Array.from({length:12},(_,k)=>{const H=base+k;const c=this.cell(hi0,H);const inSel=hasStart&&(end!=null?(H>=st&&H<end):H===st);
-        const sub=inSel?(H===st?'начало':(end!=null&&dur>1&&H===end-1?'конец':'')):c==='busy'?'занято':c==='prep'?'подготовка':'';
-        return {label:hh(H),sub,hasSub:!!sub,cont:!night&&k===11&&inSel&&end!=null&&end>base+12,disabled:c!=='free',
-          select:()=>{vib(8);const m=this.maxFrom(hi0,H,tubOn);this.setBk({start:H,dur:bk.dur&&bk.dur<=m?bk.dur:null});},style:this.cellStyle(inSel?'sel':c,inSel?(H-st)*stepMs:0)};});
+        let v=c,nbH=null;if(c==='free'){nbH=this.nextBusyH(hi0,H);if(nbH!=null&&nbH-H<=prepE)v='prepB';else if(this.maxFrom(hi0,H,tubOn)<h0.min)v='short';}
+        if(!inSel&&end!=null&&H>=end&&H<end+prepE&&(v==='free'||v==='short'||v==='prepB'))v='clean';
+        const sub=inSel?(H===st?'с '+hh(st):(end!=null&&H===end-1?'до '+hh(end):'')):({busy:'занято',prep:'подготовка',prepB:'подготовка',short:'мало времени',clean:'уборка'})[v]||'';
+        return {label:hh(H),sub,hasSub:!!sub,cont:!night&&k===11&&inSel&&end!=null&&end>base+12,disabled:!(v==='free'||v==='short'||v==='clean'),
+          select:()=>{
+            if(hasStart&&bk.pickEnd&&H>st){const nd=H-st+1;if(nd<h0.min){vib(8);this.setBk({dur:h0.min,pickEnd:false},()=>this.hint('Минимум '+hrs(h0.min)));return;}if(nd<=maxEff){vib(8);this.setBk({dur:nd,pickEnd:false});return;}}
+            if(v==='short'){const n2=nbH??this.nextBusyH(hi0,H);this.hint(`С ${hh(H)} не помещается ${hrs(h0.min)}: в ${hh(n2)} следующие гости, дому ${needW(prepE)} на подготовку`,3600);return;}
+            vib(8);const m=this.maxFrom(hi0,H,tubOn);this.setBk({start:H,dur:Math.min(bk.dur||h0.min,m),pickEnd:true});},
+          style:this.cellStyle(inSel?'sel':v,inSel?(H-st)*stepMs:0)};});
       const tabs=[['day','День',tf],['night','Ночь',tf+12]].map(([id,label,from])=>{const a=bk.tab===id;return {label,range:`${hh(from)}–${hh(from+12)}`,select:()=>this.setBk({tab:id}),style:`height:52px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};`};});
       const s0=Math.max(0,bk.date-3);const sN=Math.min(366,s0+21*(1+(s.stripMore||0)));this._stripN=sN;
       const dayStrip=[];for(let i=s0;i<sN;i++){const dd=this.dateAt(i);const full=!this.anyFree(hi0,i);const act=bk.date===i;
@@ -2379,13 +2456,12 @@ class Component extends DCLogic {
       const nb=hasStart?this.nextBusyH(hi0,st):null;
       const whenH=H=>{const di=Math.floor(H/24);return (di!==Math.floor(st/24)?WD[this.dateAt(di).getDay()]+' ':'')+hh(H);};
       const durChips=CFG.durs.filter(v=>v>=h0.min&&v<=CFG.maxH).map(v=>{const off=v>maxEff;const act=dur===v;
-        return {label:v===24?'сутки':v===48?'двое суток':v+' ч',disabled:off,hasReason:off,reason:off?(v>maxPlain?(nb!=null?'занято с '+whenH(nb):'недоступно'):'с чаном не помещается'):'',
-          select:()=>{if(off)return;vib(8);this.setBk({dur:v});},
+        return {label:v===24?'сутки':v===48?'двое суток':v+' ч',disabled:off,hasReason:off,reason:off?'до '+whenH(st+maxEff):'',
+          select:()=>{if(off)return;vib(8);this.setBk({dur:v,pickEnd:false});},
           style:`width:100%;height:48px;border-radius:999px;font-size:14px;font-weight:600;line-height:1.1;padding:0 4px;border:1px ${off?'dashed':'solid'} ${act?NAVY:off?'rgba(10,47,79,.22)':'rgba(10,47,79,.4)'};background:${act?NAVY:CREAM};color:${act?CREAM:off?'rgba(10,47,79,.35)':NAVY};`};});
       const parts={day:{h:0,sum:0},eve:{h:0,sum:0}};
       if(end!=null)for(let H=st;H<end;H++){const k=this.isDayHour(H)?'day':'eve';parts[k].h++;parts[k].sum+=this.rateAt(h0,0,H);}
       const over=Math.max(0,bk.guests-10)*3000;const tubCost=tubOn?CFG.tubPrice:0;const total=parts.day.sum+parts.eve.sum+over+tubCost;
-      const hrs=n=>`${n} ${plural(n,'час','часа','часов')}`;
       const priceBreak=[...(parts.day.h?[{l:`${hrs(parts.day.h)} по дневному тарифу`,v:fmt(parts.day.sum)}]:[]),...(parts.eve.h?[{l:`${hrs(parts.eve.h)} по ночному тарифу`,v:fmt(parts.eve.sum)}]:[]),...(tubCost?[{l:'Горячий чан',v:fmt(tubCost)}]:[]),...(over?[{l:`Гости свыше 10 (${bk.guests-10} × 3 000 ₸)`,v:fmt(over)}]:[])];
       const sd=this.dateAt(Math.floor((st??tf)/24));const endD=end!=null?this.dateAt(Math.floor(end/24)):sd;const cross=end!=null&&Math.floor(end/24)!==Math.floor(st/24);
       const summaryText=end!=null?`${hh(st)}–${hh(end)}${cross?' '+WD[endD.getDay()]:''} · ${hrs(dur)} · ${fmt(total)}`:hasStart?`Начало ${hh(st)} · выберите длительность`:'Выберите час начала';
@@ -2400,7 +2476,7 @@ class Component extends DCLogic {
       const cLines=[...(tubLine?[{t:tubLine}]:[]),...(bk.extras.length?[{t:'Пожелания, подтвердит администратор: '+extrasNames.join(', ')}]:[])];
       const canNext=bk.step===1?true:bk.step===3?(end!=null&&dur<=maxEff):bk.step===4?true:false;
       const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Отправить заявку';
-      const waVars={дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}–${hh(end)}`:'',гостей:guestsTxt(bk.guests)};
+      const waVars={дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}–${hh(end)}`:'',выезд:end!=null?`${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',гостей:guestsTxt(bk.guests)};
       const waText=`Здравствуйте! Заявка в SHIPA: дом ${h0.name}, ${whenText}, ${guestsTxt(bk.guests)}${tubOn?', горячий чан':''}. Итого ${fmt(total)}.`;
       // карусель
       const photos=this.housePhotos(h0);const cs=this.props.carouselState||'normal';
@@ -2427,7 +2503,7 @@ class Component extends DCLogic {
       const pulse=`animation:${s.s3n%2?'pulseA':'pulseB'} 900ms ease-out 1;`;
       const exList=[...(tubOn?['горячий чан']:[]),...bk.extras.map(id=>EXTRA_SHORT[id])];
       const card={img:(slidesP[ci]||photos[0]).src,hasImg:cs!=='none',noImg:cs==='none',n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
-        when:end!=null?`${dLabel(sd)} · ${hh(st)} → ${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',meta:`${guestsTxt(bk.guests)} · ${dur?hrs(dur):''}`,total:fmt(total),
+        when:end!=null?`${dLabel(sd)} · ${hh(st)} → ${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',meta:`${guestsTxt(bk.guests)} · ${dur?hrs(dur):''}`,total:fmt(total),out:end!=null?`Выезд до ${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',
         hasExtras:exList.length>0,extras:'+ '+cap(exList.join(', '))};
       const calcRows=[...priceBreak.map(r=>({l:r.l,v:r.v,hasNote:false,note:''})),...bk.extras.map(id=>{const e=EXTRAS.find(x=>x.id===id);return {l:e.name.split(/[:—]/)[0].trim(),v:(e.from?'от ':'')+fmt(e.price),hasNote:true,note:'подтвердит администратор'};})];
       const t0=this.today;
@@ -2465,7 +2541,18 @@ class Component extends DCLogic {
         hasStart,noStart:!hasStart,durChips,durNote:`Минимум ${hrs(h0.min)}, через сайт — до двух суток.`,
         longLink:C.wa(C.t('waTextLong')),
         tubOpt,tubIncl:!!h0.tubIncl,tubPriceText:'+'+fmt(CFG.tubPrice),
-        toggleTub:()=>{const on=!bk.tub;const m=hasStart?this.maxFrom(hi0,st,on):99;this.setBk({tub:on,dur:bk.dur&&bk.dur>m?null:bk.dur});},
+        toggleTub:()=>{const on=!bk.tub;const m=hasStart?this.maxFrom(hi0,st,on):99;
+          if(bk.dur&&bk.dur>m){if(m>=h0.min)this.setBk({tub:on,dur:m},()=>this.hint(`Сократили до ${hh(st+m)}, чтобы успеть подготовить чан`,3200));
+            else this.setBk({tub:on,start:null,dur:null},()=>this.hint(`С чаном с ${hh(st)} не помещается ${hrs(h0.min)} — выберите другое время`,3600));}
+          else this.setBk({tub:on});},
+        cnt:(()=>{const dv=dur||h0.min;const atMin=dv<=h0.min;const plusOff=dv>=maxEff;
+          const bs=off=>`flex:0 0 auto;width:48px;height:48px;border-radius:50%;border:1px solid rgba(10,47,79,.3);font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;user-select:none;-webkit-user-select:none;opacity:${off?.35:1};`;
+          return {num:hrs(dv),suf:dv===24?'— сутки':dv===48?'— двое суток':'',hasSuf:dv===24||dv===48,range:end!=null?`${hh(st)} – ${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',
+            atMin,minText:'Минимум '+hrs(h0.min),plusOffAttr:plusOff?'true':'false',minusStyle:bs(atMin),plusStyle:bs(plusOff),
+            minusDown:e=>this.holdStart(-1,e),plusDown:e=>this.holdStart(1,e),minusClick:e=>{if(e.detail===0)this.durStep(-1);},plusClick:e=>{if(e.detail===0)this.durStep(1);}};})(),
+        limShow:hasStart&&nb!=null&&maxEff<CFG.maxH&&dur!=null&&dur>=maxEff,
+        limText:hasStart?(tubOn&&maxEff<maxPlain?`С чаном — до ${whenH(st+maxEff)}: чан готовим ${prepW(CFG.prep.tub)}`:`Можно до ${whenH(st+maxEff)}. В ${nb!=null?whenH(nb):''} приедут следующие гости — ${needW(prepE)}, чтобы подготовить для них дом`):'',
+        limStyle:`display:flex;gap:10px;align-items:flex-start;margin:8px 0 12px;padding:12px 14px;border-radius:12px;background:#F3E4D2;font-size:14px;line-height:1.45;border:1px solid ${s.limHi?BRICK:'transparent'};color:${s.limHi?'#9A4518':NAVY};transition:color 200ms,border-color 200ms;${s.limN?`animation:${s.limN%2?'limShakeA':'limShakeB'} 360ms ease-out 1;`:''}`,
         tubSwitch:`width:48px;height:28px;border-radius:14px;flex:0 0 auto;background:${tubOn?NAVY:'rgba(10,47,79,.2)'};position:relative;transition:background 200ms;`,tubKnob:`position:absolute;top:3px;left:${tubOn?23:3}px;width:22px;height:22px;border-radius:50%;background:${CREAM};transition:left 200ms;`,
         extraRows,priceBreak,hasTotal:end!=null,totalText:fmt(total),showSummary:bk.step===3,summaryText,
         cName:h0.name,cLine1:whenText,cLine2:`${guestsTxt(bk.guests)} · ${dur?hrs(dur):''} · ${fmt(total)}`,cLines,
@@ -2474,7 +2561,7 @@ class Component extends DCLogic {
         backLabel:bk.step===4?'К времени и опциям':bk.step===3?(bk.fromHouse?'К дому':'К выбору дома'):'К дате',
         bookingCta:bk.step!==2&&bk.step<5,...this.cta(canNext,ctaLabel),
         bk:{...bk,houseName:h0.name}};
-    } else B={stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:false,panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],bk:{houseName:'',guests:6},showCal:false,step2:false,step3:false,showContacts:false,stepDone:false,preStep1:false,preDone:false,bookingCta:false,canBack:false,noBack:true,backLabel:'',hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false};
+    } else B={stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:false,panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],bk:{houseName:'',guests:6},showCal:false,step2:false,step3:false,showContacts:false,stepDone:false,preStep1:false,preDone:false,bookingCta:false,openDateSheet:()=>this.openBooking(null,s.quick.date,s.quick.guests,1),bkHintOn:!!s.bkHint,bkHint:s.bkHint||'',canBack:false,noBack:true,backLabel:'',hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false};
 
     const callOk=s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10;
     return {
@@ -2523,7 +2610,7 @@ class Component extends DCLogic {
       galDown:e=>{this._gp={x:e.clientX,y:e.clientY};},galCancel:()=>{this._gp=null;},
       galUp:e=>{const p=this._gp;this._gp=null;if(!p)return;if(e.clientY-p.y>90&&Math.abs(e.clientX-p.x)<60){const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));}},
       sheetOpen:!!s.sheet,sheetCalc:s.sheet==='calc',sheetRules:s.sheet==='rules',sheetTitle:s.sheet==='calc'?'Расчёт':s.sheet==='date'?'Дата и гости':'Правила бронирования',rules:RULES,
-      sheetDate:s.sheet==='date'&&!!s.dsh&&!!bk&&!bk.pre,ds:s.sheet==='date'&&s.dsh&&bk&&!bk.pre?this.dateSheetVals(bk,s.dsh):{},sheetHandle:!(wide&&s.sheet==='date'),
+      sheetDate:s.sheet==='date'&&!!s.dsh&&!(bk&&bk.pre),ds:s.sheet==='date'&&s.dsh&&!(bk&&bk.pre)?this.dateSheetVals(bk||{step:0,date:s.quick.date,guests:s.quick.guests},s.dsh):{},sheetHandle:!(wide&&s.sheet==='date'),
       sheetBoxStyle:wide&&s.sheet==='date'?'position:fixed;top:0;right:0;bottom:0;z-index:var(--z-sheet);width:480px;max-width:100vw;display:flex;flex-direction:column;background:#F9EFE3;padding-top:12px;animation:panelIn 280ms cubic-bezier(.2,.8,.2,1);':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sheet);max-width:560px;margin:0 auto;max-height:86vh;display:flex;flex-direction:column;background:#F9EFE3;border-radius:24px 24px 0 0;animation:sheetUp 280ms cubic-bezier(.2,.8,.2,1);',
       sheetRef:this.sheetRef,sheetDown:e=>this.sheetDown(e),closeSheet:()=>this.setState({sheet:null}),
       openRules:e=>{if(e&&e.preventDefault){e.preventDefault();e.stopPropagation();}this.setState({sheet:'rules'});},
@@ -2533,7 +2620,9 @@ class Component extends DCLogic {
       agreeBoxStyle:`flex:0 0 24px;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:${s.fe.scope==='bk'&&s.fe.agree?'2px solid '+BRICK:'1px solid rgba(10,47,79,.45)'};background:${s.form.agree?NAVY:(s.fe.scope==='bk'&&s.fe.agree?'rgba(193,92,34,.08)':CREAM)};transition:background 150ms;${s.fe.scope==='bk'&&s.fe.agree?`animation:${s.fe.n%2?'shakeA':'shakeB'} 300ms ease-out 1;`:''}`,
       agreeTickStyle:`opacity:${s.form.agree?1:0};transition:opacity 120ms;`,
       form:s.form,setName:e=>this.setState({form:{...s.form,name:e.target.value}}),setPhone:e=>{let v=e.target.value.replace(/[^\d+]/g,'');if(v&&!v.startsWith('+'))v='+'+v;this.setState({form:{...s.form,phone:v}});},
-      quickDays,quickGuests:s.quick.guests,quickGuestsMinus:()=>this.setState({quick:{...s.quick,guests:Math.max(1,s.quick.guests-1)}}),quickGuestsPlus:()=>this.setState({quick:{...s.quick,guests:Math.min(20,s.quick.guests+1)}}),quickGo:()=>this.openBooking(null,s.quick.date,s.quick.guests,2),
+      quickDays,quickGuests:s.quick.guests,quickGuestsMinus:()=>this.setState({quick:{...s.quick,guests:Math.max(1,s.quick.guests-1)}}),quickGuestsPlus:()=>this.setState({quick:{...s.quick,guests:Math.min(20,s.quick.guests+1)}}),quickGo:()=>this.openBooking(null,s.quick.date,s.quick.guests,2),quickRef:this.quickRef,
+      quickPrev:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
+      quickNext:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       heroSlides,heroDots,heroIsVideo:!!HERO_SLIDES[s.hero].video,
       videoReviews:[{slot:'vr-1',name:'Айгерим',house:'01 / ДЫХАНИЕ',img:'img/h1_int.png'},{slot:'vr-2',name:'Дмитрий',house:'02 / СИЛА',img:'img/h2_int.png'},{slot:'vr-3',name:'Руслан',house:'02 / СИЛА',img:'img/h7_int.png'},{slot:'vr-4',name:'Мадина и Тимур',house:'03 / БАЛАНС',img:'img/h3_int.png'}],
       phoneText:C.phone,telHref:C.tel,phoneAria:'Позвонить: '+C.phone,waGeneral:C.wa(C.t('waTextGeneral')),waHeader:C.wa(C.t('waTextGeneral')),waHero:C.wa(C.t('waTextHero')),waPre:C.wa(C.t('waTextPre')),waHouse:C.wa(C.t('waTextHouse',{дом:hRaw.name})),waError:(B.waErrorBk)||C.wa(C.t('waTextError')),
