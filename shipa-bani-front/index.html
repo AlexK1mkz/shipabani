@@ -2185,7 +2185,7 @@ class Component extends DCLogic {
         if(st>=4)this.setState({form:{name:'Алекс',phone:'+7 (701) 555-12-34',agree:true}});
         setTimeout(()=>{if(st>2){if(q.get('mode')==='daily'){this.setMode('daily');}this.setBk(p);}},60);},50);}}catch(e){}
     try{const q=new URLSearchParams(location.search);this.hdrDemo=q.get('hdr');const it=q.get('intro');this.introT=it!=null&&it!==''?+it:null;}catch(e){this.hdrDemo=null;this.introT=null;}
-    let last=0;this.onScroll=()=>{const y=window.scrollY;const el=this.headerRef.current;const sc=y>80;if(sc!==this.state.hdrScrolled)this.setState({hdrScrolled:sc});const ph=y>window.innerHeight*.7;if(ph!==!!this.state.pastHero)this.setState({pastHero:ph});if(y>240&&this.state.cookie&&this._cookieSeen)this.setState({cookie:false});if(this.state.cookie)this._cookieSeen=true;
+    let last=0;this.onScroll=()=>{const y=window.scrollY;const el=this.headerRef.current;const sc=y>80;if(sc!==this.state.hdrScrolled)this.setState({hdrScrolled:sc});const ph=y>window.innerHeight*.7;const docH=document.documentElement.scrollHeight-window.innerHeight;const half=docH>0&&y/docH>=.5;if(half!==!!this.state.pastHalf)this.setState({pastHalf:half});if(ph!==!!this.state.pastHero)this.setState({pastHero:ph});if(y>240&&this.state.cookie&&this._cookieSeen)this.setState({cookie:false});if(this.state.cookie)this._cookieSeen=true;
       const hide=!this.hdrDemo&&!this.state.menuOpen&&y>last&&y>80;if(el){el.style.transform=hide?'translateY(-100%)':'translateY(0)';}if(Math.abs(y-last)>2&&hide!==!!this.state.hdrHidden)this.setState({hdrHidden:hide});last=y;this.spySvc();};
     window.addEventListener('scroll',this.onScroll,{passive:true});
     this.onScrollEnd=e=>{const t=e.target;if(t&&t._settle){clearTimeout(t._st);const f=t._settle;t._settle=null;f(t);if(t._touched){t._touched=false;vib(8);}}};document.addEventListener('scrollend',this.onScrollEnd,true);
@@ -3011,7 +3011,7 @@ class Component extends DCLogic {
       rfStars:[1,2,3,4,5].map(n=>({set:()=>this.setState({rf:{...rf,stars:n}}),style:`width:44px;height:44px;font-size:26px;line-height:1;color:${n<=rf.stars?BRICK:'rgba(10,47,79,.25)'};`})),
       rfSend:()=>rfOk&&this.setState({rf:{...rf,sent:true}}),rfDisabled:!rfOk,rfBtnStyle:`height:44px;padding:0 20px;border-radius:999px;background:${rfOk?BRICK:'rgba(10,47,79,.15)'};color:${rfOk?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:14px;`,
       kitchenTabs,kitchenItems,reviewFilters,filteredReviews,
-      showSticky:(!wide||inHouse)&&!(s.cart.length&&!bk)&&!bk&&!s.menuOpen&&!s.callOpen&&s.lightbox<0,stickyLabel,stickyAction:()=>{if(s.savedBk&&inHouse){this.setState({bk:{...s.savedBk,houseId:hRaw.id},savedBk:null});return;}this.openBooking(inHouse?hRaw.id:null);},
+      showSticky:(!wide||inHouse)&&(wide||inHouse||screen!=='home'||!!s.pastHalf)&&!(s.cart.length&&!bk)&&!bk&&!s.menuOpen&&!s.callOpen&&s.lightbox<0,stickyLabel,stickyAction:()=>{if(s.savedBk&&inHouse){this.setState({bk:{...s.savedBk,houseId:hRaw.id},savedBk:null});return;}this.openBooking(inHouse?hRaw.id:null);},
       showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
       bookingOpen:!!bk,closeBooking:()=>this.closeBooking(),
       pre,notPre:!pre,bookLabel,showMeaning:this.props.showMeaning??true,showMerch:this.props.showMerch??false,
