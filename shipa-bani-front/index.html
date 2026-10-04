@@ -40,6 +40,15 @@
     .noscroll::-webkit-scrollbar{display:none;}
     .noscroll{scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x pan-y;}
     .noscroll[style*="scroll-snap-type"]>*{scroll-snap-stop:always;}
+    /* Десктоп: лента уходит до края экрана и мягко гаснет, а не обрезается по контейнеру; стрелки — в полях */
+    @media (min-width:960px){
+      .lane-bleed{margin-left:calc(50% - 50vw)!important;margin-right:calc(50% - 50vw)!important;max-width:none!important;--gut:max(20px,calc(50vw - var(--wrap) / 2 + 20px));}
+      .lane-bleed>.noscroll{padding-left:var(--gut)!important;padding-right:var(--gut)!important;scroll-padding-left:var(--gut)!important;scroll-padding-right:var(--gut)!important;
+        -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 calc(var(--gut) - 20px),#000 calc(100% - var(--gut) - 60px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 calc(var(--gut) - 20px),#000 calc(100% - var(--gut) - 60px),transparent 100%);}
+      .lane-bleed button[aria-label="Предыдущая карточка"]{left:max(12px,calc(var(--gut) / 2 - 34px))!important;}
+      .lane-bleed button[aria-label="Следующая карточка"]{right:max(12px,calc(var(--gut) / 2 - 34px))!important;}
+    }
+    image-slot,image-slot::part(img),image-slot img{touch-action:pan-x pan-y!important;}
     [data-hit]{position:relative;}
     [data-hit]::after{content:"";position:absolute;left:-4px;right:-4px;top:50%;height:44px;min-width:44px;transform:translateY(-50%);}
     [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity 400ms ease-out,transform 400ms ease-out;}
@@ -285,9 +294,9 @@
         <div style="padding:48px 28px 40px;background:#F9EFE3;">
           <div style="position:relative;">
             <img src="brand/logo-navy.png" alt="SHIPA — банный комплекс" style="width:100%;height:auto;display:block;">
-            <span style="position:absolute;left:1%;top:70%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#C15C22;color:#F9EFE3;border:2px solid #F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</span>
-            <span style="position:absolute;left:19%;top:4%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#C15C22;color:#F9EFE3;border:2px solid #F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">2</span>
-            <span style="position:absolute;left:97%;top:4%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#C15C22;color:#F9EFE3;border:2px solid #F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">3</span>
+            <sc-for list="{{ meaningPins }}" as="pin" hint-placeholder-count="3">
+              <span style="{{ pin.style }}">{{ pin.n }}</span>
+            </sc-for>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;border-top:1px solid #0A2F4F;">
@@ -368,7 +377,7 @@
       <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Парение</div>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;margin:0;line-height:1.05;text-align:center;">ПРОГРАММЫ <span style="color:#C15C22;">ПАРЕНИЯ</span></h2>
     </div>
-    <div style="max-width:var(--wrap);margin:0 auto;position:relative;">
+    <div class="lane-bleed" style="max-width:var(--wrap);margin:0 auto;position:relative;">
       <div id="car-progs" class="noscroll" ref="{{ progRowRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:4px 20px 8px;scroll-snap-type:x mandatory;">
         <sc-for list="{{ programs }}" as="p" hint-placeholder-count="5">
           <div style="{{ p.cardStyle }}">
@@ -403,7 +412,7 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">АТМОСФЕРА БАННЫХ ДОМОВ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);opacity:.85;max-width:560px;line-height:1.5;text-wrap:pretty;">Ни спешки, ни посторонних. Только вы, пар, вода и тишина.</p>
     </div>
-    <div style="position:relative;max-width:var(--wrap);margin:0 auto;">
+    <div class="lane-bleed" style="position:relative;max-width:var(--wrap);margin:0 auto;">
       <div id="car-atm" class="noscroll" ref="{{ atmRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:36px 20px 8px;scroll-snap-type:x mandatory;align-items:center;scroll-padding:0 20px;">
         <sc-for list="{{ atmosphere }}" as="v" hint-placeholder-count="4">
           <div style="{{ v.style }}">
@@ -523,7 +532,7 @@
     </div>
   </section>
 
-  <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:64px 20px 0;">
+  <section data-reveal data-screen-label="FAQ" style="max-width:var(--wrap);margin:0 auto;padding:64px 20px 0;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px 48px;">
       <div style="max-width:360px;">
         <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">НАМ ЧАСТО ЗАДАЮТ ЭТИ <span style="color:#C15C22;">ВОПРОСЫ</span></h2>
@@ -538,7 +547,7 @@
               <span style="{{ q.iconStyle }}">+</span>
             </button>
             <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
-              <p style="margin:0;padding:0 22px 20px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ q.a }}</p>
+              <div style="padding:0 22px 20px;display:flex;flex-direction:column;gap:10px;"><sc-for list="{{ q.paras }}" as="pp" hint-placeholder-count="1"><p style="margin:0;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ pp }}</p></sc-for></div>
             </sc-if>
           </div>
         </sc-for>
@@ -554,7 +563,7 @@
           <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;">Адрес</div>
           <div style="display:flex;gap:12px;margin-top:10px;font-size:var(--fs-body);line-height:1.55;">
             <svg width="20" height="20" viewBox="0 0 28 36" fill="#C15C22" style="flex:0 0 auto;margin-top:3px;"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
-            <div>г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242<br><span style="color:rgba(10,47,79,.7);">Ежедневно 10:00–02:00</span></div>
+            <div>г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242<br><span style="color:rgba(10,47,79,.7);">{{ hoursLine1 }}</span><br><span style="color:rgba(10,47,79,.7);">{{ hoursLine2 }}</span></div>
           </div>
         </div>
         <div>
@@ -573,14 +582,29 @@
           <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>Написать в WhatsApp</a>
         </div>
       </div>
-      <div style="position:relative;border-radius:20px;overflow:hidden;min-height:320px;background:rgba(10,47,79,.06);">
-        <image-slot id="map-static" src="brand/map.png" shape="rect" placeholder="Карта: Караганда, ул. Жакана Смакова 242"></image-slot>
-        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);pointer-events:none;"><svg width="36" height="46" viewBox="0 0 28 36" fill="#C15C22"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></div>
+      <div>
+      <div data-map="home" style="position:relative;border-radius:24px;overflow:hidden;height:{{ mapH }};border:1px solid rgba(59,47,42,.08);background:rgba(10,47,79,.06);">
+        <img src="brand/map.png" alt="Карта: Караганда, ул. Жакана Смакова 242" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <sc-if value="{{ mapHome.show }}" hint-placeholder-val="{{ false }}">
+          <iframe src="{{ mapSrc }}" onLoad="{{ mapHome.loaded }}" title="SHIPA на Яндекс Картах" loading="lazy" style="{{ mapHome.frameStyle }}"></iframe>
+        </sc-if>
+        <sc-if value="{{ mapHome.pin }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);pointer-events:none;"><svg width="36" height="46" viewBox="0 0 28 36" fill="#C15C22"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></div>
+        </sc-if>
+        <sc-if value="{{ mapHome.gate }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ mapHome.arm }}" aria-label="Включить карту" style="position:absolute;inset:0;background:transparent;display:flex;align-items:flex-start;justify-content:center;padding-top:14px;cursor:pointer;"><span style="height:36px;padding:0 16px;border-radius:999px;background:rgba(10,47,79,.85);color:#F9EFE3;font-size:13px;font-weight:600;display:inline-flex;align-items:center;">Нажмите, чтобы двигать карту</span></button>
+        </sc-if>
         <div style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">
-          <a href="https://2gis.kz" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Открыть в 2ГИС</a>
-          <a href="https://yandex.kz/maps" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Яндекс Карты</a>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Google Maps</a>
+          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Открыть в 2ГИС</a>
+          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Яндекс Карты</a>
+          <a href="{{ mapLinks.go }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Google Maps</a>
+          <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><a href="{{ mapLinks.route }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Маршрут</a></sc-if>
         </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:14px;line-height:1.4;">
+        <span style="color:rgba(10,47,79,.85);">{{ mapAddr }}</span>
+        <button onClick="{{ copyAddr }}" style="height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.3);font-size:13px;font-weight:600;color:#0A2F4F;">{{ copyAddrLabel }}</button>
+      </div>
       </div>
     </div>
   </section>
@@ -1038,7 +1062,7 @@
               <span>{{ q.q }}</span><span style="{{ q.iconStyle }}">+</span>
             </button>
             <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
-              <p style="margin:0;padding:0 48px 24px 0;font-size:15px;line-height:1.6;color:rgba(10,47,79,.85);animation:fadeUp 250ms ease-out;">{{ q.a }}</p>
+              <div style="padding:0 48px 24px 0;display:flex;flex-direction:column;gap:10px;animation:fadeUp 250ms ease-out;"><sc-for list="{{ q.paras }}" as="pp" hint-placeholder-count="1"><p style="margin:0;font-size:15px;line-height:1.6;color:rgba(10,47,79,.85);">{{ pp }}</p></sc-for></div>
             </sc-if>
           </div>
         </sc-for>
@@ -1057,14 +1081,34 @@
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
       <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Контакты</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">КАК НАС НАЙТИ</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Караганда, микрорайон Кунгей. Работаем ежедневно с 10:00 до 02:00, отвечаем в WhatsApp за 15 минут.</p>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Караганда, микрорайон Кунгей. {{ hoursAbout }} Отвечаем в WhatsApp за 15 минут.</p>
     </div>
   </section>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
     <div style="display:grid;grid-template-columns:{{ gridContacts }};gap:24px;align-items:stretch;">
-      <div style="position:relative;min-height:360px;overflow:hidden;border-radius:28px;background:rgba(10,47,79,.06);">
-        <image-slot id="map-contacts" src="brand/map.png" shape="rect" placeholder="Статичная карта с меткой"></image-slot>
-        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);pointer-events:none;"><svg width="28" height="36" viewBox="0 0 28 36" fill="#C15C22"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></div>
+      <div>
+      <div data-map="contacts" style="position:relative;height:{{ mapH }};overflow:hidden;border-radius:24px;border:1px solid rgba(59,47,42,.08);background:rgba(10,47,79,.06);">
+        <img src="brand/map.png" alt="Карта с меткой" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <sc-if value="{{ mapContacts.show }}" hint-placeholder-val="{{ false }}">
+          <iframe src="{{ mapSrc }}" onLoad="{{ mapContacts.loaded }}" title="SHIPA на Яндекс Картах" loading="lazy" style="{{ mapContacts.frameStyle }}"></iframe>
+        </sc-if>
+        <sc-if value="{{ mapContacts.pin }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);pointer-events:none;"><svg width="28" height="36" viewBox="0 0 28 36" fill="#C15C22"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></div>
+        </sc-if>
+        <sc-if value="{{ mapContacts.gate }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ mapContacts.arm }}" aria-label="Включить карту" style="position:absolute;inset:0;background:transparent;display:flex;align-items:flex-start;justify-content:center;padding-top:14px;cursor:pointer;"><span style="height:36px;padding:0 16px;border-radius:999px;background:rgba(10,47,79,.85);color:#F9EFE3;font-size:13px;font-weight:600;display:inline-flex;align-items:center;">Нажмите, чтобы двигать карту</span></button>
+        </sc-if>
+        <div style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">
+          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Открыть в 2ГИС</a>
+          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Яндекс Карты</a>
+          <a href="{{ mapLinks.go }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Google Maps</a>
+          <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><a href="{{ mapLinks.route }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Маршрут</a></sc-if>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:14px;line-height:1.4;">
+        <span style="color:rgba(10,47,79,.85);">{{ mapAddr }}</span>
+        <button onClick="{{ copyAddr }}" style="height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.3);font-size:13px;font-weight:600;color:#0A2F4F;">{{ copyAddrLabel }}</button>
+      </div>
       </div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:32px 24px;display:flex;flex-direction:column;gap:24px;">
         <div>
@@ -1077,14 +1121,14 @@
         </div>
         <div style="display:grid;grid-template-columns:96px 1fr;gap:0 16px;font-size:15px;line-height:1.5;border-top:1px solid rgba(59,47,42,.1);">
           <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Адрес</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242</div>
-          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Режим</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Ежедневно 10:00–02:00. Бронь на любое время суток.</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Режим</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ hoursLine1 }}<br><span style="color:rgba(10,47,79,.7);">{{ hoursLine2 }}</span></div>
           <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Парковка</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">У каждого дома, бесплатно.</div>
           <div style="color:rgba(10,47,79,.7);padding:12px 0;">Дорога</div><div style="padding:12px 0;">Микрорайон Кунгей, район Казыбек Би. Указатель SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> у поворота.</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
-          <a href="https://2gis.kz" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">2ГИС</a>
-          <a href="https://yandex.kz/maps" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Яндекс</a>
-          <a href="https://maps.google.com" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Google</a>
+          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">2ГИС</a>
+          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Яндекс</a>
+          <a href="{{ mapLinks.go }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Google</a>
         </div>
       </div>
     </div>
@@ -1218,7 +1262,7 @@
       <div style="display:flex;flex-wrap:wrap;gap:16px 40px;font-size:14px;line-height:1.5;color:rgba(249,239,227,.75);">
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Телефон</div><a href="{{ telHref }}" style="color:#F9EFE3;font-size:var(--fs-lead);font-weight:600;">{{ phoneText }}</a></div>
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Адрес</div><div style="color:#F9EFE3;">г. Караганда, ул. Жакана Смакова 242</div></div>
-        <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Режим работы</div><div style="color:#F9EFE3;">Ежедневно 10:00–02:00</div></div>
+        <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Режим работы</div><div style="color:#F9EFE3;">{{ hoursLine1 }}</div><div style="color:rgba(249,239,227,.7);">{{ hoursLine2 }}</div></div>
       </div>
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
         <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 16px;border:1px solid rgba(249,239,227,.3);border-radius:999px;display:flex;align-items:center;gap:8px;color:#F9EFE3;font-size:14px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>WhatsApp</a>
@@ -1532,7 +1576,7 @@
       </div>
 
       <sc-if value="{{ noStart }}" hint-placeholder-val="{{ true }}">
-        <div style="margin-top:24px;font-size:14px;color:rgba(10,47,79,.7);">Нажмите на час начала — покажем, на сколько можно остаться. Начать можно с 10:00 до 21:00.</div>
+        <div style="margin-top:24px;font-size:14px;color:rgba(10,47,79,.7);">Нажмите на час начала — покажем, на сколько можно остаться. {{ hoursStep3 }}</div>
       </sc-if>
       <sc-if value="{{ hasStart }}" hint-placeholder-val="{{ false }}">
         <div style="font-weight:600;margin:24px 0 2px;font-size:15px;">Сколько часов?</div>
@@ -1937,7 +1981,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://alexk1mkz.github.io/shipabani/e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://alexk1mkz.github.io/shipabani/e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;}}">
 const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22';
 const WD=['вс','пн','вт','ср','чт','пт','сб'];
 const WD_ACC=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
@@ -1947,6 +1991,24 @@ const MON_NOM=['Январь','Февраль','Март','Апрель','Май
 const fmt=n=>n.toLocaleString('ru-RU').replace(/\u00a0/g,' ')+' ₸';
 const hh=h=>{const m=h%1?'30':'00';return String(Math.floor(h)%24).padStart(2,'0')+':'+m;};
 const plural=(n,a,b,c)=>{const m=n%10,k=n%100;return k>=11&&k<=14?c:m===1?a:m>=2&&m<=4?b:c;};
+const hrsTxt=n=>`${n} ${plural(n,'час','часа','часов')}`;
+const hrsGen=n=>`${n} ${plural(n,'часа','часов','часов')}`;
+// Тексты про режим работы — все числа из CFG (правки 04.10, п. 4)
+const HOURS={
+  line1:()=>`Ежедневно ${hh(CFG.open)}–${hh(CFG.close)}`,
+  line2:()=>`Заезд с ${hh(CFG.open)} до ${hh(CFG.lastStart)}`,
+  about:()=>`Открыты каждый день с ${hh(CFG.open)} до ${hh(CFG.close)}. Приехать можно с ${hh(CFG.open)} до ${hh(CFG.lastStart)}, минимум на ${hrsTxt(CFG.minH)}.`,
+  step3:()=>`Заезд возможен с ${hh(CFG.open)} до ${hh(CFG.lastStart)} — чтобы у вас было минимум ${hrsTxt(CFG.minH)} до закрытия в ${hh(CFG.close)}.`,
+  faq:()=>{const ex1=19,ex1n=CFG.close-ex1;const minEnd=CFG.lastStart+CFG.minH;return [
+    `Дома принимают гостей каждый день с ${hh(CFG.open)} до ${hh(CFG.close)} ночи.`,
+    `Приехать можно в любой час с ${hh(CFG.open)} до ${hh(CFG.lastStart)}. Бронь — от ${hrsGen(CFG.minH)}, поэтому последний заезд в ${hh(CFG.lastStart)}: с ${hh(CFG.lastStart)} до ${hh(minEnd)} как раз ${hrsTxt(CFG.minH)}, а дальше дом открыт до ${hh(CFG.close)}.`,
+    `Пример: приезжаете в ${hh(ex1)} — можно остаться до ${hh(CFG.close)}, это ${hrsTxt(ex1n)}. Приезжаете в ${hh(CFG.lastStart)} — минимум до ${hh(minEnd)}, максимум до ${hh(CFG.close)}.`,
+    `VIP-дома можно снять на сутки: заезд в ${hh(CFG.daily.in)}, выезд в ${hh(CFG.daily.out)} на следующий день. Это отдельная цена, не почасовая.`];}};
+const paras=a=>typeof a==='function'?a():Array.isArray(a)?a:[a];
+// Карта — виджет Яндекс Карт без ключа (2ГИС-виджет без карточки фирмы отдаёт ошибку). Настройки админки: mapLat, mapLng, mapLabel.
+const MAP0={lat:49.7656,lng:73.1716,label:'SHIPA',zoom:16,city:'karaganda'};
+// Выноски на логотипе в % от его ширины/высоты: 1 — у S, 2 — у листьев, 3 — у завитка над А
+const MEANING_PINS=[{n:1,x:41,y:24},{n:2,x:13,y:8},{n:3,x:93,y:10}];
 // Настройки из админки (правки 29.09). Часы — от 00:00 дня начала брони: close 26 = 02:00 следующего дня.
 const CFG={open:10,close:26,lastStart:21,tariffs:{day:[10,17],evening:[17,26]},minH:3,maxH:16,prep:2,daily:{in:14,out:12},tubPrice:15000,durs:[3,4,5,6,8],leadH:1,childAge:7,
   weekendDays:[5,6,0],holidays:['01-01','01-02','03-08','03-21','03-22','03-23','05-01','05-07','05-09','07-06','08-30','10-25','12-16'],tubHouses:['energiya'],
@@ -2021,7 +2083,7 @@ const FAQ=[
  {q:'За сколько нужно бронировать?',a:'На будни — обычно за день. На вечер пятницы и субботы — за 3–5 дней. Свободные слоты видны на сайте сразу.'},
  {q:'Что взять с собой?',a:'Ничего обязательного: полотенца, простыни, тапочки и чай — в доме. Веники, шапки и рукавицы можно добавить к брони.'},
  {q:'Можно ли с детьми?',a:'Да. Дети до 7 лет — бесплатно и не считаются в вместимости. Чан неглубокий, в комнате отдыха есть место для игр.'},
- {q:'Режим работы?',a:'Ежедневно с 10:00 до 02:00. Начать можно с 10:00 до 21:00. VIP-дома можно снять на сутки.'},
+ {q:'Во сколько можно приехать?',a:HOURS.faq},
  {q:'Есть ли предоплата?',a:'Да, вносится на сайте при бронировании: 20 000 ₸ для Standard и 40 000 ₸ для VIP. Бронь подтверждается предоплатой; без неё держится 6 часов, бронь на сегодня — 1 час.'},
  {q:'Можно ли отменить или перенести?',a:'Больше 3 дней до визита — отменим и вернём предоплату. Меньше 3 дней — отмены с возвратом нет, возможен перенос. При неявке предоплата не возвращается.'},
  {q:'Что если мы опоздали?',a:'Дом ждёт вас всё забронированное время. Начало и окончание не сдвигаются: время опоздания не продлевается и не переносится. Если следующий слот свободен, продление возможно — уточните у администратора.'},
@@ -2059,7 +2121,18 @@ class Component extends DCLogic {
   state={vw:(typeof window!=='undefined'&&(window.innerWidth||document.documentElement.clientWidth))||undefined,isWide:typeof window!=='undefined'&&(window.innerWidth||0)>=960,screen:'home',houseId:null,history:[],isWide:false,menuOpen:false,callOpen:false,callSent:false,
     form:{name:'',phone:'',agree:false},fe:FE0,faqOpen:-1,catalogFilter:'Все',kitchenTab:'Чайная карта',reviewFilter:-1,
     galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:6},bk:null,savedBk:null,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,hdrLv:0,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,lang:'RU',hw:0,rf:EMPTY_RF,
-    carIdx:0,carPaused:false,gal:-1,sheet:null,s3hint:null,s3n:0,sending:false,returning:null};
+    carIdx:0,carPaused:false,gal:-1,sheet:null,s3hint:null,s3n:0,sending:false,returning:null,
+    maps:{home:{show:false,ok:false,armed:false,failed:false},contacts:{show:false,ok:false,armed:false,failed:false}},addrCopied:false};
+  setMap(k,p){this.setState(s=>({maps:{...s.maps,[k]:{...s.maps[k],...p}}}));}
+  mapCfg(){return {...MAP0,lat:+this.props.mapLat||MAP0.lat,lng:+this.props.mapLng||MAP0.lng,label:this.props.mapLabel||MAP0.label};}
+  mapVals(wide){const m=this.mapCfg();const pt=`${m.lng},${m.lat}`;
+    const src=`https://yandex.ru/map-widget/v1/?ll=${pt}&z=${m.zoom}&pt=${pt},pm2rdm&lang=ru_RU`;
+    const one=k=>{const st=this.state.maps[k];const live=st.show&&st.ok;return {show:st.show,loaded:()=>this.setMap(k,{ok:true}),pin:!live,gate:live&&!st.armed,arm:()=>this.setMap(k,{armed:true}),
+      frameStyle:`position:absolute;inset:0;width:100%;height:100%;border:0;display:block;opacity:${st.ok?1:0};transition:opacity 300ms ease-out;pointer-events:${st.armed?'auto':'none'};`};};
+    return {mapH:wide?'440px':'320px',mapSrc:src,mapAddr:ADDR,copyAddrLabel:this.state.addrCopied?'Скопировано':'Скопировать адрес',
+      copyAddr:()=>{try{navigator.clipboard&&navigator.clipboard.writeText(ADDR);}catch(e){}this.setState({addrCopied:true});clearTimeout(this._addrT);this._addrT=setTimeout(()=>this.setState({addrCopied:false}),1800);},
+      mapLinks:{gis:`https://2gis.kz/${m.city}/geo/${pt}?m=${pt}/${m.zoom}`,ya:`https://yandex.kz/maps/?pt=${pt}&z=${m.zoom}&l=map`,go:`https://www.google.com/maps?q=${m.lat},${m.lng}`,route:`https://2gis.kz/${m.city}/directions/points/|${pt}`},
+      mapHome:one('home'),mapContacts:one('contacts')};}
   carRef=React.createRef();galRef=React.createRef();stripRef=React.createRef();sheetRef=React.createRef();totalRef=React.createRef();
   headerRef=React.createRef();pillRef=React.createRef();pdRef=React.createRef();svcTabsRef=React.createRef();
   videoRef=React.createRef();
@@ -2089,6 +2162,10 @@ class Component extends DCLogic {
 
   componentDidMount(){
     window.__shipa=this;
+    // Карта грузится только когда блок попал в экран
+    this._mapSeen=new WeakSet();
+    try{this._mapIO=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const k=e.target.dataset.map;this._mapIO.unobserve(e.target);if(!this.state.maps[k].show){this.setMap(k,{show:true});clearTimeout(this['_mapT'+k]);this['_mapT'+k]=setTimeout(()=>{if(!this.state.maps[k].ok)this.setMap(k,{show:false,failed:true});},5000);}});},{rootMargin:'200px 0px'});}catch(e){}
+    this._mapPoll=setInterval(()=>{if(!this._mapIO)return;document.querySelectorAll('[data-map]').forEach(el=>{if(this._mapSeen.has(el))return;this._mapSeen.add(el);this._mapIO.observe(el);});},500);
     // ?w=390 — показать сайт в рамке телефона для проверки (ширина кадра вместо ширины окна)
     try{const fw=+new URLSearchParams(location.search).get('w');if(fw>=320&&fw<=1600){this.frameW=fw;const host=document.querySelector('.sc-host')||document.getElementById('dc-root');const fh=+new URLSearchParams(location.search).get('h')||844;
       if(host){host.style.cssText+=`width:${fw}px;height:${fh}px;margin:0 auto;overflow:hidden;contain:layout paint;position:relative;background:#F9EFE3;`;document.body.style.background='#E8E0D6';document.documentElement.style.overflow='hidden';}}}catch(e){}
@@ -2100,7 +2177,7 @@ class Component extends DCLogic {
     requestAnimationFrame(this.onResize);setTimeout(this.onResize,0);setTimeout(this.onResize,300);
     try{this.ro=new ResizeObserver(()=>this.onResize());this.ro.observe(document.documentElement);this.ro.observe(document.body);}catch(e){}
     this._rsPoll=setInterval(this.onResize,250);setTimeout(()=>clearInterval(this._rsPoll),4000);
-    this.demoScroll=y=>{let n=0;const go=()=>{const tgt=typeof y==='function'?y():y;window.scrollTo(0,tgt);this.onScroll&&this.onScroll();if(Math.abs(window.scrollY-tgt)>4&&n++<20)setTimeout(go,150);};setTimeout(go,300);};
+    this.demoScroll=y=>{let n=0;const go=()=>{const tgt=typeof y==='function'?y():y;if(this.frameW){const host=document.querySelector('.sc-host')||document.getElementById('dc-root');if(host){host.scrollTop=tgt;this.onScroll&&this.onScroll();return;}}window.scrollTo(0,tgt);this.onScroll&&this.onScroll();if(Math.abs(window.scrollY-tgt)>4&&n++<20)setTimeout(go,150);};setTimeout(go,300);};
     // ?bk=3&house=energiya&date=2&start=15&dur=4&guests=8&mode=daily&extras=table&progs=classic&paid=1 — открыть бронь на шаге (для проверки)
     try{const q=new URLSearchParams(location.search);this.bkDemo=q.get('bk');if(this.bkDemo){const st=+this.bkDemo;const hid=q.get('house')||'energiya';const di=+(q.get('date')||2);const g=+(q.get('guests')||6);
       setTimeout(()=>{if(st<=2)this.openBooking(null,di,g,st);else this.openBooking(hid,di,g,3);this.setState({cookie:false,intro:false});
@@ -2114,7 +2191,7 @@ class Component extends DCLogic {
     this.onScrollEnd=e=>{const t=e.target;if(t&&t._settle){clearTimeout(t._st);const f=t._settle;t._settle=null;f(t);if(t._touched){t._touched=false;vib(8);}}};document.addEventListener('scrollend',this.onScrollEnd,true);
     this.onTouchLane=e=>{const l=e.target&&e.target.closest&&e.target.closest('.noscroll');if(l)l._touched=true;};document.addEventListener('touchstart',this.onTouchLane,{passive:true,capture:true});
     if(this.hdrDemo){this.setState({cookie:false,menuOpen:this.hdrDemo==='menu'});if(this.hdrDemo==='scrolled')this.demoScroll(640);}
-    try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):+sy);}catch(e){}
+    try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):/^\d+$/.test(sy)?+sy:(()=>{const el=document.querySelector(sy);return el?el.getBoundingClientRect().top+window.scrollY-72:0;})());const fq=q.get('faq');if(fq!=null)setTimeout(()=>this.setState({faqOpen:+fq}),200);}catch(e){}
     this.reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     try{const s=JSON.parse(localStorage.getItem('shipa_user')||'null');if(s)this.setState(st=>({form:{...st.form,name:s.name||'',phone:s.phone||''},returning:s.name&&s.phone?s.name:null}));
       const dr=JSON.parse(localStorage.getItem('shipa_draft')||'null');
@@ -2514,7 +2591,7 @@ class Component extends DCLogic {
         dotStyle:`width:4px;height:4px;border-radius:50%;background:${few?(act?CREAM:BRICK):'transparent'};`,discOn:!full&&this.homeDisc(i)>0,discText:'−'+this.homeDisc(i)+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
         style:`flex:0 0 auto;width:${w}px;height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
-    const faq=FAQ.map((q,i)=>({...q,open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
+    const faq=FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
     const reviews=REVIEWS.map(r=>({...r,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
     const PROG_IMG=['img/h1_acc.png','img/h5_art.png','img/h2_int.png','img/h3_art.png','img/h6_acc.png'];
     const programs=PROGRAMS.map((p,i)=>{const un=!!p.unavailable;return {...p,unavailable:un,slot:'prog-'+i,img:PROG_IMG[i],priceText:fmt(p.price),addToBooking:()=>!un&&this.openBooking(null),
@@ -2664,7 +2741,7 @@ class Component extends DCLogic {
         return {label:hh(H),sub,hasSub:!!sub,disabled:v==='busy'||v==='past',
           select:()=>{if(s.gOpen)this.setState({gOpen:false});
             if(hasStart&&bk.pickEnd&&H>st){const nd=H-st+1;if(nd<CFG.minH){vib(8);this.setBk({dur:CFG.minH,pickEnd:false},()=>this.hint('Минимум '+hrs(CFG.minH)));return;}if(nd<=maxEff){vib(8);this.setBk({dur:nd,pickEnd:false});return;}}
-            if(late){this.hint(`Последнее начало брони — ${hh(D0+CFG.lastStart)}`);return;}
+            if(late){this.hint(HOURS.step3(),3400);return;}
             if(v==='short'){const m=Math.max(0,this.maxFrom(hi0,H));this.hint(`С ${hh(H)} можно только до ${hh(H+m)} — это меньше ${hrs(CFG.minH)}`,3400);return;}
             vib(8);const m=this.maxFrom(hi0,H);this.setBk({start:H,dur:Math.min(bk.dur||CFG.minH,m),pickEnd:true});},
           style:this.cellStyle(inSel?'sel':v,inSel?(H-st)*stepMs:0,eve,late)};});
@@ -2760,7 +2837,7 @@ class Component extends DCLogic {
       const dIn=this.dateAt(bk.date),dOut=this.dateAt(bk.date+1);
       const todayNote=bk.date===0;
       B={...this.calendar(bk,false),stepSegs,car,card,galSlides,galThumbs,galCounter:`${gi+1} / ${shownP.length}`,calcRows,addToCalendar,
-        routeLink:'https://2gis.kz/karaganda/search/'+encodeURIComponent('Жакана Смакова 242'),
+        routeLink:this.mapVals(false).mapLinks.route,
         succ:{hasImg:cs!=='none',noImg:cs==='none',img:photos[0].src,n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
           wrapStyle:`position:relative;${wide?'margin:0 0 0;':'margin:-8px -20px 0;'}`,clipStyle:`position:relative;aspect-ratio:4/3;overflow:hidden;background:rgba(10,47,79,.08);border-radius:${wide?24:0}px;`,
           paid:!!bk.paid,pending:!bk.paid,title:bk.paid?'Бронь подтверждена':'Заявка принята — ждём предоплату',sub:bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`,
@@ -2853,7 +2930,7 @@ class Component extends DCLogic {
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
       masters:MASTERS.map((m,i)=>({...m,slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),masterCol:wide?'calc((100% - 32px) / 3)':'72%',
-      svcFaq:SVC_FAQ.map((q,i)=>({...q,open:s.svcFaq===i,toggle:()=>this.setState({svcFaq:s.svcFaq===i?-1:i}),iconStyle:`width:32px;height:32px;border-radius:999px;border:1px solid ${NAVY};display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;transition:transform 200ms ease-out;transform:rotate(${s.svcFaq===i?45:0}deg);`})),
+      svcFaq:SVC_FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.svcFaq===i,toggle:()=>this.setState({svcFaq:s.svcFaq===i?-1:i}),iconStyle:`width:32px;height:32px;border-radius:999px;border:1px solid ${NAVY};display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;transition:transform 200ms ease-out;transform:rotate(${s.svcFaq===i?45:0}deg);`})),
       svcHeroH:wide?'60svh':'min(64svh,560px)',svcHeroPad:wide?'120px 40px 56px':'88px 16px 32px',tabsTop:(s.hdrHidden?0:(vw>=768?72:56))+'px',pageSide:wide?'40px':'16px',introMaxH:wide?'520px':'320px',cardGap:wide?'24px':'16px',cardTop:wide?'32px':'20px',cardPad:wide?'20px':'16px',
       secPad:wide?'64px 40px 0':'32px 16px 0',introCols:wide?'minmax(0,5fr) minmax(0,7fr)':'minmax(0,1fr)',introGap:wide?'48px':'16px',introAspect:wide?'4/5':'16/9',
       pdOpen:!!s.pd,pd,pdRef:this.pdRef,pdClose:()=>this.setState({pd:null}),pdDrag:e=>this.dragClose(e,this.pdRef,()=>this.setState({pd:null})),pdContra:!!s.pdContra,pdContraToggle:()=>this.setState({pdContra:!s.pdContra}),
@@ -2910,6 +2987,9 @@ class Component extends DCLogic {
       phoneMissing:s.form.phone.replace(/\D/g,'').length<10,contactCallLabel:s.inlineSent?'Отправлено':'Отправить',
       contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(s.form.phone.replace(/\D/g,'').length>=10?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
       heroStats,heroFx,
+      hoursLine1:HOURS.line1(),hoursLine2:HOURS.line2(),hoursAbout:HOURS.about(),hoursStep3:HOURS.step3(),
+      meaningPins:(this.props.meaningPins||MEANING_PINS).map(p=>({n:p.n,style:`position:absolute;left:${p.x}%;top:${p.y}%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:${BRICK};color:${CREAM};border:2px solid ${CREAM};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;`})),
+      ...this.mapVals(wide),
       aboutItems:[{n:'01',img:'img/h5_int.png',title:'Свой дом',sub:'Парная, чан и терраса только для вашей компании. Соседей не видно и не слышно.'},{n:'02',img:'img/h3_acc.png',title:'Материал',sub:'Дуб, лён, камень и керамика. Ничего искусственного на ощупь.'},{n:'03',img:'img/h6_int.png',title:'Тёплый свет',sub:'2700–3000 K во всех домах. Глаза отдыхают вместе с телом.'},{n:'04',img:'img/h1_acc.png',title:'Сервис заранее',sub:'Стол, программа парения и веники согласованы при брони. По приезду — только отдых.'}],
       swDown:e=>this.swDown(e),swMove:e=>this.swMove(e),swUp:e=>this.swEnd(e,false),swCancel:e=>this.swEnd(e,true),
       tapDown:e=>{this._tap={x:e.clientX,y:e.clientY};},tapGuard:e=>{const t=this._tap;if(t&&Math.hypot(e.clientX-t.x,e.clientY-t.y)>=8){e.stopPropagation();e.preventDefault();}},

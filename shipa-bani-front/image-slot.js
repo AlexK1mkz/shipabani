@@ -297,7 +297,9 @@
     // same left/top/width/height in frame-%, computed by _applyView(), so the
     // inside-mask crop and the outside-mask spill stay pixel-aligned.
     '.frame img{position:absolute;max-width:none;transform:translate(-50%,-50%);' +
-    '  -webkit-user-drag:none;user-select:none;touch-action:none}' +
+    '  -webkit-user-drag:none;user-select:none}' +
+    // touch-action:none only while reframing — otherwise a finger on a photo must scroll the page/carousel.
+    ':host([data-reframe]) .frame img,:host([data-reframe]) .spill{touch-action:none}' +
     // Reframe mode (double-click): the full image spills past the mask. The
     // spill layer is sized to the IMAGE bounds so its corners are where the
     // resize handles belong. The ghost <img> inside is translucent; the real
@@ -307,7 +309,7 @@
     // ancestor (a plain z-index can't escape overflow clipping). UA popover
     // defaults (inset:0;margin:auto) are reset; _applyView sets viewport px.
     '.spill{position:fixed;margin:0;inset:auto;border:0;padding:0;background:transparent;' +
-    '  overflow:visible;transform:translate(-50%,-50%);z-index:1;cursor:grab;touch-action:none}' +
+    '  overflow:visible;transform:translate(-50%,-50%);z-index:1;cursor:grab}' +
     ':host([data-panning]) .spill{cursor:grabbing}' +
     '.spill .ghost{position:absolute;inset:0;width:100%;height:100%;opacity:.35;' +
     '  pointer-events:none;-webkit-user-drag:none;user-select:none;' +
@@ -940,6 +942,8 @@
     // always reposition/scale. `fit` only sets the initial baseline (see
     // _geom): contain starts fully-visible, cover starts frame-filling.
     _reframes() {
+      // html[data-noedit] (exported site) disables the reframe editor entirely.
+      if (document.documentElement.dataset.noedit) return false;
       return this.hasAttribute('data-filled');
     }
 
