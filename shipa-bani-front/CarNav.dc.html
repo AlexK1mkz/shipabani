@@ -72,7 +72,7 @@ class Component extends DCLogic {
     const el=this.el;if(!el||el.scrollLeft>4||el.scrollWidth-el.clientWidth<=4||!el.animate)return;
     el.animate([{transform:'translateX(0)'},{transform:'translateX(-32px)',offset:.45},{transform:'translateX(0)'}],{duration:600,easing:'ease-out'});}
   renderVals(){const s=this.state;const dark=this.props.tone==='dark';
-    return {show:s.show,mobile:!s.wide,desktop:s.wide&&!this.props.mobileOnly,atStart:s.atStart,atEnd:s.atEnd,prevOp:s.atStart?'.35':'1',nextOp:s.atEnd?'.35':'1',
+    return {show:s.show,mobile:!s.wide||!!this.props.mobileOnly,desktop:s.wide&&!this.props.mobileOnly,atStart:s.atStart,atEnd:s.atEnd,prevOp:s.atStart?'.35':'1',nextOp:s.atEnd?'.35':'1',
       prev:()=>this.go(-1),next:()=>this.go(1),thumbRef:this.thumbRef,pad:this.props.pad||'12px 20px 0',
       edgeTop:`${-Math.round(s.laneH/2)-24-(+this.props.edgeShift||0)}px`,
       trackC:dark?'rgba(249,239,227,.25)':'rgba(10,47,79,.15)',fillC:dark?'#F9EFE3':'#0A2F4F',

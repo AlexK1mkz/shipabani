@@ -22,6 +22,7 @@
     a:active{opacity:.9;}
     button:disabled{cursor:default;}
     button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #C15C22;outline-offset:2px;}
+    a:focus:not(:focus-visible),button:focus:not(:focus-visible){outline:none;}
     input,textarea{font-family:inherit;}
     input::placeholder{color:rgba(10,47,79,.45);}
     input[style*="color:#F9EFE3"]::placeholder,input[style*="color: rgb(249, 239, 227)"]::placeholder{color:rgba(249,239,227,.55);}
@@ -40,13 +41,20 @@
     .noscroll::-webkit-scrollbar{display:none;}
     .noscroll{scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x pan-y;}
     .noscroll[style*="scroll-snap-type"]>*{scroll-snap-stop:always;}
-    /* Десктоп: лента уходит до края экрана и мягко гаснет, а не обрезается по контейнеру; стрелки — в полях */
-    @media (min-width:960px){
-      .lane-bleed{margin-left:calc(50% - 50vw)!important;margin-right:calc(50% - 50vw)!important;max-width:none!important;--gut:max(20px,calc(50vw - var(--wrap) / 2 + 20px));}
-      .lane-bleed>.noscroll{padding-left:var(--gut)!important;padding-right:var(--gut)!important;scroll-padding-left:var(--gut)!important;scroll-padding-right:var(--gut)!important;
-        -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 calc(var(--gut) - 20px),#000 calc(100% - var(--gut) - 60px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 calc(var(--gut) - 20px),#000 calc(100% - var(--gut) - 60px),transparent 100%);}
-      .lane-bleed button[aria-label="Предыдущая карточка"]{left:max(12px,calc(var(--gut) / 2 - 34px))!important;}
-      .lane-bleed button[aria-label="Следующая карточка"]{right:max(12px,calc(var(--gut) / 2 - 34px))!important;}
+    /* Карусели и ленты — единое правило (правила качества, п. 3.1): лента внутри контейнера, карточки одной ширины из --km/--kd,
+       десктоп ≥1024: сетка (.grid), если помещаются, иначе прокрутка ровно по K карточек; «витринные» ленты (.center) центрируются */
+    .lane{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:20px;padding:0 20px 8px;--k:var(--km,1.2);--lg:16px;}
+    .lane>[data-card]{flex:0 0 calc((100% - var(--lg)) / var(--k));min-width:0;scroll-snap-align:start;scroll-snap-stop:always;}
+    .lane.center>[data-card]{transition:transform 250ms ease-out,opacity 250ms ease-out;will-change:transform;}
+    .lane [data-cap]{transition:opacity 250ms ease-out;}
+    @media (min-width:1024px){
+      .lane{--lg:24px;gap:24px;--k:var(--kd,4);}
+      .lane>[data-card]{flex-basis:calc((100% - (var(--k) - 1) * var(--lg)) / var(--k));}
+      .lane.grid{display:grid;grid-template-columns:repeat(var(--gc,4),minmax(0,1fr));overflow:visible;scroll-snap-type:none;}
+      .lane.center>[data-card]{scroll-snap-align:center;}
+      .lane.center.fits{justify-content:center;}
+      .lane.center.scroll{scroll-padding-inline:calc(50% - ((100% - 40px - (var(--k) - 1) * var(--lg)) / var(--k)) / 2);}
+      .lane.center.scroll::before,.lane.center.scroll::after{content:'';flex:0 0 calc(50% - ((100% - (var(--k) - 1) * var(--lg)) / var(--k)) / 2 - var(--lg));}
     }
     image-slot,image-slot::part(img),image-slot img{touch-action:pan-x pan-y!important;}
     [data-hit]{position:relative;}
@@ -268,9 +276,10 @@
 
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:56px 20px 0;">
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> — это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
-    <div id="car-about" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scroll-snap-type:x mandatory;">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-about" mobile-only="{{ true }}" pad="0 0 16px" hint-size="100%,56px"></dc-import></sc-if>
+    <div id="car-about" class="noscroll lane {{ aboutCls }}" style="margin:0 -20px;--kd:4;--km:1.2;--gc:4;">
       <sc-for list="{{ aboutItems }}" as="a" hint-placeholder-count="4">
-        <div style="flex:0 0 66%;max-width:280px;scroll-snap-align:start;aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
+        <div data-card="1" style="aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
           <img decoding="async" src="{{ a.img }}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
           <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,47,79,.15) 0%,rgba(10,47,79,.75) 100%);"></div>
           <div style="position:absolute;right:16px;top:14px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;color:#F9EFE3;">{{ a.n }}</div>
@@ -281,7 +290,7 @@
         </div>
       </sc-for>
     </div>
-    <dc-import name="CarNav" target="car-about" pad="12px 0 0" hint-size="100%,56px"></dc-import>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-about" pad="12px 0 0" hint-size="100%,56px"></dc-import></sc-if>
   </section>
 
   <sc-if value="{{ showMeaning }}" hint-placeholder-val="{{ true }}">
@@ -324,9 +333,9 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ — <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
       <p style="margin:0 0 24px;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);text-align:center;">Гость выбирает атмосферу, а не номер.</p>
     </div>
-    <div id="car-houses" class="noscroll" style="{{ housesRowStyle }}">
+    <div id="car-houses" class="noscroll lane {{ housesCls }}" style="--kd:4;--km:1.2;--gc:4;">
       <sc-for list="{{ houses }}" as="h" hint-placeholder-count="8">
-        <article role="link" tabindex="0" aria-disabled="{{ h.soonAria }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="{{ h.cardStyle }}">
+        <article data-card="1" role="link" tabindex="0" aria-disabled="{{ h.soonAria }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="{{ h.cardStyle }}">
           <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
             <div style="{{ h.bgStyle }}"></div>
             <div style="position:absolute;left:14px;top:12px;font-size:12px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
@@ -377,10 +386,11 @@
       <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Парение</div>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;margin:0;line-height:1.05;text-align:center;">ПРОГРАММЫ <span style="color:#C15C22;">ПАРЕНИЯ</span></h2>
     </div>
-    <div class="lane-bleed" style="max-width:var(--wrap);margin:0 auto;position:relative;">
-      <div id="car-progs" class="noscroll" ref="{{ progRowRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:4px 20px 8px;scroll-snap-type:x mandatory;">
+    <div style="max-width:var(--wrap);margin:0 auto;position:relative;">
+      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-progs" mobile-only="{{ true }}" pad="0 20px 16px" hint-size="100%,56px"></dc-import></sc-if>
+      <div id="car-progs" class="noscroll lane" ref="{{ progRowRef }}" style="--kd:4;--km:1.2;">
         <sc-for list="{{ programs }}" as="p" hint-placeholder-count="5">
-          <div style="{{ p.cardStyle }}">
+          <div data-card="1" style="{{ p.cardStyle }}">
             <div style="aspect-ratio:4/3;overflow:hidden;background:#3B2F2A;"><image-slot id="{{ p.slot }}" src="{{ p.img }}" shape="rect" placeholder="{{ p.name }}"></image-slot></div>
             <div style="padding:18px 18px 20px;display:flex;flex-direction:column;flex:1;">
               <div style="font-weight:600;font-size:18px;line-height:1.25;">{{ p.name }}</div>
@@ -398,7 +408,7 @@
           </div>
         </sc-for>
       </div>
-      <dc-import name="CarNav" target="car-progs" hint-size="100%,56px"></dc-import>
+      <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-progs" hint-size="100%,56px"></dc-import></sc-if>
       <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ progPrev }}" aria-label="Назад" style="position:absolute;left:-8px;top:40%;width:48px;height:48px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;">←</button>
         <button onClick="{{ progNext }}" aria-label="Вперёд" style="position:absolute;right:-8px;top:40%;width:48px;height:48px;border-radius:50%;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;justify-content:center;">→</button>
@@ -412,17 +422,21 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">АТМОСФЕРА БАННЫХ ДОМОВ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);opacity:.85;max-width:560px;line-height:1.5;text-wrap:pretty;">Ни спешки, ни посторонних. Только вы, пар, вода и тишина.</p>
     </div>
-    <div class="lane-bleed" style="position:relative;max-width:var(--wrap);margin:0 auto;">
-      <div id="car-atm" class="noscroll" ref="{{ atmRef }}" style="display:flex;gap:16px;overflow-x:auto;padding:36px 20px 8px;scroll-snap-type:x mandatory;align-items:center;scroll-padding:0 20px;">
-        <sc-for list="{{ atmosphere }}" as="v" hint-placeholder-count="4">
-          <div style="{{ v.style }}">
+    <div style="position:relative;max-width:var(--wrap);margin:0 auto;">
+      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-atm" tone="dark" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+      <div id="car-atm" class="noscroll lane center {{ atmCls }}" ref="{{ atmRef }}" style="padding:28px 20px 8px;align-items:center;--kd:5;--km:1.6;">
+        <sc-for list="{{ atmosphere }}" as="v" hint-placeholder-count="5">
+          <div data-card="1" role="button" tabindex="0" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ laneTap }}" style="position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#3B2F2A;cursor:pointer;">
             <div style="position:absolute;inset:0;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
-            <button aria-label="Смотреть" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></button>
-            <div style="position:absolute;left:14px;bottom:12px;right:14px;font-size:13px;font-weight:600;color:#F9EFE3;text-shadow:0 1px 6px rgba(0,0,0,.5);">{{ v.name }}</div>
+            <span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></span>
+            <div data-cap="1" style="position:absolute;left:0;right:0;bottom:0;top:40%;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;color:#F9EFE3;background:linear-gradient(180deg,rgba(59,47,42,0) 0%,rgba(59,47,42,.9) 100%);">
+              <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.04em;line-height:1.1;">{{ v.name }}</div>
+              <div style="font-size:13px;opacity:.85;margin-top:4px;">{{ v.sub }}</div>
+            </div>
           </div>
         </sc-for>
       </div>
-      <dc-import name="CarNav" target="car-atm" tone="dark" hint-size="100%,56px"></dc-import>
+      <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-atm" tone="dark" hint-size="100%,56px"></dc-import></sc-if>
       <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ atmPrev }}" aria-label="Назад" style="position:absolute;left:8px;top:50%;width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-size:18px;">←</button>
         <button onClick="{{ atmNext }}" aria-label="Вперёд" style="position:absolute;right:8px;top:50%;width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-size:18px;">→</button>
@@ -435,21 +449,24 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">КУХНЯ <span style="color:#C15C22;">И ЧАЙ</span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;max-width:560px;color:rgba(10,47,79,.75);text-wrap:pretty;">Восточный стол накрываем к вашему приезду: горячий бешбармак, шашлык на углях, баурсаки с мёдом и травяной чай из самовара.</p>
     </div>
-    <div id="car-dishes" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
+    <div style="max-width:var(--wrap);margin:0 auto;">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-dishes" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    <div id="car-dishes" class="noscroll lane" style="padding:28px 20px 8px;--kd:4;--km:1.2;">
       <sc-for list="{{ dishes }}" as="d" hint-placeholder-count="6">
-        <div style="{{ d.style }}">
+        <div data-card="1" style="position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:20px;background:rgba(10,47,79,.08);">
           <div style="position:absolute;inset:0;"><image-slot id="{{ d.slot }}" src="{{ d.img }}" shape="rect" placeholder="{{ d.photo }}"></image-slot></div>
-          <button onClick="{{ goKitchen }}" style="position:absolute;left:0;right:0;bottom:0;padding:40px 16px 14px;text-align:left;color:#F9EFE3;background:linear-gradient(180deg,rgba(59,47,42,0) 0%,rgba(59,47,42,.9) 60%);">
-            <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.04em;line-height:1;">{{ d.name }}</div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;gap:8px;"><span style="font-size:14px;opacity:.85;">{{ d.desc }}</span><span style="font-weight:600;font-size:14px;white-space:nowrap;">{{ d.priceText }}</span></div>
+          <button onClick="{{ goKitchen }}" style="position:absolute;left:0;right:0;bottom:0;top:40%;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 16px 16px;text-align:left;color:#F9EFE3;background:linear-gradient(180deg,rgba(59,47,42,0) 0%,rgba(59,47,42,.55) 45%,rgba(59,47,42,.92) 100%);">
+            <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.04em;line-height:1.1;">{{ d.name }}</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px;gap:8px;"><span style="font-size:13px;opacity:.85;">{{ d.desc }}</span><span style="font-weight:600;font-size:15px;white-space:nowrap;">{{ d.priceText }}</span></div>
           </button>
         </div>
       </sc-for>
     </div>
-    <dc-import name="CarNav" target="car-dishes" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-dishes" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    </div>
     <div style="display:flex;justify-content:center;gap:8px;padding:16px 20px 0;flex-wrap:wrap;">
       <button data-menu-cta="1" onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">Смотреть всё меню</button>
-      <button onClick="{{ startBooking }}" style="height:48px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;font-weight:600;font-size:15px;">Заказать стол к брони</button>
+      <button onClick="{{ startBooking }}" style="height:48px;padding:0 12px;font-weight:600;font-size:15px;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Заказать стол к брони</span></button>
     </div>
   </section>
 
@@ -459,9 +476,10 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">С СОБОЙ <span style="color:#C15C22;">ИЗ SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">Полотенца, шапки, масла и веники, которыми пользуетесь в доме</p>
     </div>
-    <div id="car-merch" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 20px 8px;">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-merch" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    <div id="car-merch" class="noscroll lane {{ merchCls }}" style="padding:28px 20px 8px;--kd:4;--km:1.2;--gc:4;">
       <sc-for list="{{ merch }}" as="m" hint-placeholder-count="4">
-        <div style="flex:0 0 58%;max-width:260px;scroll-snap-align:start;display:flex;flex-direction:column;">
+        <div data-card="1" style="display:flex;flex-direction:column;">
           <div style="aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:rgba(10,47,79,.08);"><image-slot id="{{ m.slot }}" src="{{ m.img }}" shape="rect" placeholder="{{ m.name }}"></image-slot></div>
           <div style="font-weight:600;font-size:16px;margin-top:12px;">{{ m.name }}</div>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;">
@@ -471,7 +489,7 @@
         </div>
       </sc-for>
     </div>
-    <dc-import name="CarNav" target="car-merch" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-merch" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
   </section>
   </sc-if>
 
@@ -480,20 +498,23 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;"><span style="color:#C15C22;">ВИДЕО-ОТЗЫВЫ</span> НАШИХ ГОСТЕЙ</h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">Настоящие впечатления тех, кто уже побывал в SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></p>
     </div>
-    <div id="car-vrev" class="noscroll" style="display:flex;gap:16px;overflow-x:auto;padding:28px 20px 8px;scroll-snap-type:x mandatory;justify-content:safe center;">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-vrev" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    <div id="car-vrev" class="noscroll lane center {{ vrevCls }}" data-cap-desktop="1" style="padding:28px 20px 8px;align-items:flex-start;--kd:4;--km:1.6;">
       <sc-for list="{{ videoReviews }}" as="v" hint-placeholder-count="3">
-        <div style="flex:0 0 200px;scroll-snap-align:center;">
+        <div data-card="1" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onClick="{{ laneCenter }}" style="position:relative;">
           <div style="position:relative;aspect-ratio:9/19;border-radius:28px;border:6px solid #3B2F2A;background:#3B2F2A;overflow:hidden;">
             <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:44%;height:16px;background:#3B2F2A;border-radius:0 0 12px 12px;z-index:2;"></div>
-            <div style="position:absolute;inset:0;border-radius:22px;overflow:hidden;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
-            <button aria-label="Смотреть" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;z-index:2;"><svg width="16" height="16" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></button>
+            <div style="position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#3B2F2A;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
+            <button aria-label="Смотреть видео-отзыв" onClick="{{ laneTap }}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;z-index:2;"><svg width="16" height="16" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></button>
           </div>
-          <div style="text-align:center;margin-top:10px;font-weight:600;font-size:14px;">{{ v.name }}</div>
-          <div style="text-align:center;font-size:12px;color:rgba(10,47,79,.7);">{{ v.house }}</div>
+          <div data-cap="1">
+            <div style="text-align:center;margin-top:10px;font-weight:600;font-size:14px;">{{ v.name }}</div>
+            <div style="text-align:center;font-size:12px;color:rgba(10,47,79,.7);">{{ v.house }}</div>
+          </div>
         </div>
       </sc-for>
     </div>
-    <dc-import name="CarNav" target="car-vrev" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-vrev" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
   </section>
 
   <div data-bgmark="1" aria-hidden="true" style="position:relative;height:0;z-index:0;"><div style="position:absolute;right:-100px;top:60px;width:680px;height:680px;background:rgba(10,47,79,.16);-webkit-mask:url(brand/orn-venik.svg) center/contain no-repeat;mask:url(brand/orn-venik.svg) center/contain no-repeat;pointer-events:none;"></div></div>
@@ -508,9 +529,10 @@
       </div>
       </sc-if>
     </div>
-    <div id="car-rev" class="noscroll" style="display:flex;gap:16px;overflow-x:auto;padding:24px 20px 8px;scroll-snap-type:x mandatory;">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-rev" mobile-only="{{ true }}" pad="24px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    <div id="car-rev" class="noscroll lane {{ revCls }}" style="padding:24px 20px 8px;--kd:3;--km:1.15;--gc:3;">
       <sc-for list="{{ homeReviews }}" as="r" hint-placeholder-count="3">
-        <div style="flex:0 0 86%;max-width:520px;scroll-snap-align:center;background:rgba(10,47,79,.06);border-radius:20px;padding:24px;position:relative;display:flex;flex-direction:column;">
+        <div data-card="1" style="background:rgba(10,47,79,.06);border-radius:20px;padding:24px;position:relative;display:flex;flex-direction:column;">
           <div style="position:absolute;right:24px;top:22px;font-family:'Cormorant Garamond',serif;font-size:72px;line-height:.6;color:rgba(193,92,34,.35);font-weight:700;">”</div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <div style="font-weight:600;">{{ r.name }}</div>
@@ -525,7 +547,7 @@
         </div>
       </sc-for>
     </div>
-    <dc-import name="CarNav" target="car-rev" pad="4px 20px 0" hint-size="100%,56px"></dc-import>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-rev" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
     <div style="display:flex;justify-content:center;gap:8px;padding:12px 20px 0;flex-wrap:wrap;">
       <button onClick="{{ goReviews }}" style="height:48px;padding:0 22px;border-radius:999px;border:1px solid #0A2F4F;background:#F9EFE3;font-weight:600;font-size:14px;">Все отзывы</button>
       <a href="https://2gis.kz" target="_blank" rel="noopener" style="height:48px;padding:0 22px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-weight:600;font-size:14px;">Оставить отзыв</a>
@@ -748,7 +770,10 @@
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 0;border-top:1px solid rgba(10,47,79,.2);border-bottom:1px solid rgba(10,47,79,.15);font-size:16px;"><span style="font-weight:600;">Горячий чан</span><span style="font-size:14px;color:rgba(10,47,79,.75);text-align:right;">{{ house.tubExtraText }}</span></div>
     </sc-if>
 
-    <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ЦЕНЫ</h3>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:40px 0 14px;flex-wrap:wrap;">
+      <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ЦЕНЫ</h3><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">{{ house.priceSub }}</div></div>
+      <button data-hit="1" onClick="{{ openCalcHow }}" style="height:36px;font-size:14px;font-weight:600;color:#C15C22;">Как считается →</button>
+    </div>
     <div style="font-size:15px;border-top:1px solid #0A2F4F;">
       <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;padding:10px 0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;border-bottom:1px solid rgba(10,47,79,.2);"><div></div><div>Будни</div><div>Выходные и праздники</div></div>
       <sc-for list="{{ house.priceRows }}" as="r" hint-placeholder-count="3">
@@ -759,70 +784,130 @@
         </div>
       </sc-for>
     </div>
-    <p style="margin:12px 0 0;font-size:13px;color:rgba(10,47,79,.7);line-height:1.5;">Минимум {{ house.min }} часа. Цена за час. {{ house.priceNote }} {{ house.guestRule }}</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin:14px 0 0;font-size:13px;color:rgba(10,47,79,.8);line-height:1.45;">
+      <div style="display:flex;gap:10px;align-items:flex-start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span>Минимум {{ house.min }} часа. Цена за час.</span></div>
+      <sc-if value="{{ house.hasDisc }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:10px;align-items:flex-start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><path d="M19 5L5 19"></path><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg><span>{{ house.priceNote }}</span></div></sc-if>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>{{ house.guestsLine }}</span></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><path d="M9 12h.01M15 12h.01M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"></path><path d="M12 2a3 3 0 0 0-3 3c-4 1-6 4.5-6 8a9 9 0 0 0 18 0c0-3.5-2-7-6-8a3 3 0 0 0-3-3z"></path></svg><span>{{ house.kidsLine }}</span></div>
+    </div>
 
     <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 14px;gap:8px;">
-      <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ЗАНЯТОСТЬ</h3>
-      <div style="display:flex;gap:2px;">
+    <div data-screen-label="Когда свободен дом" style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 14px;gap:8px;flex-wrap:wrap;">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.06em;margin:0;">КОГДА СВОБОДЕН ДОМ</h3>
+      <div role="tablist" aria-label="Период" style="display:flex;padding:3px;border-radius:999px;border:1px solid rgba(10,47,79,.25);">
+        <sc-for list="{{ hvSegs }}" as="g" hint-placeholder-count="2"><button role="tab" aria-selected="{{ g.sel }}" onClick="{{ g.select }}" style="{{ g.style }}">{{ g.label }}</button></sc-for>
+      </div>
+    </div>
+    <sc-if value="{{ hvWeek }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;">
+      <div style="font-size:13px;color:rgba(10,47,79,.7);">{{ hwTitle }} · нажмите на день, чтобы выбрать время</div>
+      <div style="display:flex;gap:2px;flex:0 0 auto;">
         <button onClick="{{ hwPrev }}" aria-label="Предыдущая неделя" style="{{ hwPrevStyle }}">←</button>
         <button onClick="{{ hwNext }}" aria-label="Следующая неделя" style="{{ hwNextStyle }}">→</button>
       </div>
     </div>
-    <div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:10px;">{{ hwTitle }} · нажмите на день, чтобы выбрать время</div>
     <div class="noscroll" style="display:flex;gap:6px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;">
       <sc-for list="{{ houseWeek }}" as="d" hint-placeholder-count="7">
         <button onClick="{{ d.book }}" disabled="{{ d.disabled }}" style="{{ d.style }}">
           <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
-          <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;">{{ d.day }}</span>
-          <span style="display:flex;flex-direction:column;gap:2px;margin-top:6px;min-height:34px;">
-            <sc-for list="{{ d.busy }}" as="b" hint-placeholder-count="1"><span style="{{ b.style }}">{{ b.t }}</span></sc-for>
-          </span>
+          <span style="{{ d.dayStyle }}">{{ d.day }}</span>
+          <span style="{{ d.freeStyle }}">{{ d.free }}</span>
         </button>
       </sc-for>
     </div>
     </sc-if>
+    <sc-if value="{{ hvMonth }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 10px;">
+      <div style="font-weight:600;font-size:15px;">{{ hm.weekTitle }}</div>
+      <div style="display:flex;gap:2px;">
+        <button onClick="{{ hm.prevWeek }}" aria-label="Предыдущий месяц" style="{{ hm.prevWeekStyle }}">←</button>
+        <button onClick="{{ hm.nextWeek }}" aria-label="Следующий месяц" style="{{ hm.nextWeekStyle }}">→</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;">
+      <sc-for list="{{ hm.wdHead }}" as="w" hint-placeholder-count="7"><div style="text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(10,47,79,.7);padding:4px 0;">{{ w.l }}</div></sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
+      <sc-for list="{{ hm.monthDays }}" as="d" hint-placeholder-count="35">
+        <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" aria-label="{{ d.aria }}" style="{{ d.style }}"><span>{{ d.day }}</span><sc-if value="{{ d.dot }}" hint-placeholder-val="{{ false }}"><span style="{{ d.dotStyle }}"></span></sc-if></button>
+      </sc-for>
+    </div>
+    </sc-if>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:rgba(10,47,79,.7);margin-top:10px;">
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;border:1px solid rgba(10,47,79,.35);"></span>Свободен</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:#C15C22;"></span>Частично</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:50%;background:rgba(193,92,34,.25);"></span><s>Занят</s></span>
+    </div>
+    </sc-if>
 
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">РЕКОМЕНДУЕМ ПАРЕНИЕ</h3>
-    <button onClick="{{ goServices }}" style="{{ house.program.cardStyle }}">
+    <div style="{{ house.program.cardStyle }}">
       <div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;">{{ house.program.kicker }}</div>
       <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;letter-spacing:.04em;margin-top:10px;line-height:1.1;">{{ house.program.name }}</div>
       <div style="font-size:15px;opacity:.85;margin-top:8px;line-height:1.5;">{{ house.program.desc }}</div>
       <div style="display:flex;justify-content:space-between;margin-top:16px;font-weight:600;padding-top:12px;border-top:1px solid rgba(249,239,227,.25);"><span>{{ house.program.dur }}</span><span>{{ house.program.priceText }}</span></div>
-    </button>
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+        <button onClick="{{ goServices }}" style="height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(249,239,227,.6);color:#F9EFE3;font-weight:600;font-size:14px;">Подробнее</button>
+        <button onClick="{{ house.program.add }}" disabled="{{ house.program.un }}" style="{{ house.program.addStyle }}">Добавить к брони</button>
+      </div>
+    </div>
 
-    <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:40px 0 14px;">ОТЗЫВЫ О ДОМЕ</h3>
-    <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}">
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;">{{ houseRating }}</span><span style="color:#C15C22;letter-spacing:.1em;">★★★★★</span><span style="font-size:13px;color:rgba(10,47,79,.7);">средняя оценка</span></div>
+    <div data-screen-label="Отзывы о доме" style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:40px 0 14px;flex-wrap:wrap;">
+      <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ОТЗЫВЫ О ДОМЕ</h3>
+      <button onClick="{{ openReviewForm }}" style="height:40px;padding:0 18px;white-space:nowrap;flex:0 0 auto;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;">Оставить отзыв</button>
+    </div>
+    <sc-if value="{{ rs.full }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:baseline;gap:10px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;"><span style="color:#C15C22;font-size:28px;">★</span> {{ rs.rating }}</span><span style="font-size:14px;color:rgba(10,47,79,.75);">{{ rs.countText }}</span></div>
+        <a href="{{ rs.link }}" target="_blank" rel="noopener" style="font-size:14px;font-weight:600;color:#0A2F4F;height:32px;display:inline-flex;align-items:center;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Все отзывы на 2ГИС ↗</span></a>
+      </div>
+      <div style="display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 10px;align-items:center;margin:12px 0 4px;max-width:420px;">
+        <sc-for list="{{ rs.dist }}" as="b" hint-placeholder-count="5">
+          <span style="font-size:12px;color:rgba(10,47,79,.7);font-variant-numeric:tabular-nums;">{{ b.n }}</span>
+          <span style="display:block;height:6px;border-radius:3px;background:rgba(10,47,79,.08);overflow:hidden;"><span style="{{ b.fill }}"></span></span>
+          <span style="font-size:12px;color:rgba(10,47,79,.7);font-variant-numeric:tabular-nums;min-width:28px;text-align:right;">{{ b.c }}</span>
+        </sc-for>
+      </div>
     </sc-if>
-    <sc-if value="{{ houseReviewsEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:15px;color:rgba(10,47,79,.7);">Отзывов об этом доме пока нет — станьте первым.</p></sc-if>
-    <div style="display:flex;flex-direction:column;gap:10px;">
+    <sc-if value="{{ rs.short }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;font-weight:600;"><span style="color:#C15C22;">★</span> {{ rs.rating }} · {{ rs.countText }}</div></sc-if>
+    <sc-if value="{{ rvHasAny }}" hint-placeholder-val="{{ true }}">
+    <div class="noscroll" style="display:flex;gap:8px;overflow-x:auto;margin:14px -20px 0;padding:0 20px;">
+      <sc-for list="{{ rvSorts }}" as="c" hint-placeholder-count="3"><button aria-pressed="{{ c.sel }}" onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+    </div>
+    </sc-if>
+    <sc-if value="{{ houseReviewsEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 0 0;font-size:15px;color:rgba(10,47,79,.7);">{{ rvEmptyText }}</p></sc-if>
+    <div style="display:flex;flex-direction:column;margin-top:8px;">
       <sc-for list="{{ houseReviews }}" as="r" hint-placeholder-count="2">
-        <div style="background:rgba(10,47,79,.06);border-radius:16px;padding:16px 18px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><div style="font-weight:600;">{{ r.name }}</div><div style="font-size:13px;color:rgba(10,47,79,.7);">{{ r.date }}</div></div>
-          <div style="color:#C15C22;font-size:13px;letter-spacing:.12em;margin:4px 0 8px;">{{ r.stars }}</div>
-          <p style="margin:0;font-size:15px;line-height:1.55;">{{ r.text }}</p>
+        <div style="padding:16px 0;border-top:1px solid rgba(10,47,79,.15);">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:40px;height:40px;border-radius:50%;background:rgba(10,47,79,.1);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;flex:0 0 auto;">{{ r.initial }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><div style="font-weight:600;font-size:15px;">{{ r.name }}</div><div style="font-size:13px;color:rgba(10,47,79,.7);white-space:nowrap;">{{ r.date }}</div></div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:2px;"><span style="color:#C15C22;font-size:14px;letter-spacing:.08em;">{{ r.stars }}</span><sc-if value="{{ r.pending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(10,47,79,.08);color:rgba(10,47,79,.75);">На проверке</span></sc-if><sc-if value="{{ r.is2gis }}" hint-placeholder-val="{{ false }}"><a href="{{ r.srcLink }}" target="_blank" rel="noopener" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid rgba(10,47,79,.25);color:rgba(10,47,79,.8);">2ГИС ↗</a></sc-if></div>
+            </div>
+          </div>
+          <sc-if value="{{ r.hasVisit }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:10px;">{{ r.visit }}</div></sc-if>
+          <p style="{{ r.textStyle }}">{{ r.text }}</p>
+          <sc-if value="{{ r.canMore }}" hint-placeholder-val="{{ false }}"><button data-hit="1" onClick="{{ r.more }}" style="height:32px;font-size:14px;font-weight:600;color:#C15C22;">Читать далее</button></sc-if>
+          <sc-if value="{{ r.hasPhotos }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <sc-for list="{{ r.photos }}" as="ph" hint-placeholder-count="2"><button onClick="{{ ph.open }}" aria-label="Фото гостя" style="width:72px;height:72px;border-radius:12px;overflow:hidden;background:#3B2F2A url({{ ph.src }}) center/cover no-repeat;flex:0 0 auto;"></button></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ r.hasReply }}" hint-placeholder-val="{{ false }}">
+            <div style="margin:14px 0 0 16px;padding-left:12px;border-left:2px solid #0A2F4F;">
+              <div style="font-size:13px;font-weight:600;">Ответ SHIPA · {{ r.reply.date }}</div>
+              <p style="margin:4px 0 0;font-size:14px;line-height:1.5;color:#3B2F2A;">{{ r.reply.text }}</p>
+            </div>
+          </sc-if>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+            <button aria-pressed="{{ r.votedAttr }}" onClick="{{ r.vote }}" style="{{ r.voteStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12M15 5.9 14 10h5.8a2 2 0 0 1 1.9 2.6l-2.3 7A2 2 0 0 1 17.5 21H7V10l4.6-6.2A2 2 0 0 1 15 5.9z"></path></svg>Полезно · {{ r.useful }}</button>
+          </div>
         </div>
       </sc-for>
     </div>
-    <sc-if value="{{ reviewFormClosed }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ openReviewForm }}" style="margin-top:14px;height:48px;padding:0 22px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:14px;">Оставить отзыв</button>
-    </sc-if>
-    <sc-if value="{{ reviewFormOpen }}" hint-placeholder-val="{{ false }}">
-      <div style="margin-top:14px;border:1px solid rgba(10,47,79,.25);border-radius:20px;padding:18px;">
-        <sc-if value="{{ reviewSent }}" hint-placeholder-val="{{ false }}"><div style="font-weight:600;">Спасибо! Отзыв появится после проверки.</div></sc-if>
-        <sc-if value="{{ reviewNotSent }}" hint-placeholder-val="{{ true }}">
-          <input value="{{ rf.name }}" onChange="{{ rfName }}" placeholder="Имя" autoComplete="name" style="width:100%;height:52px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;">
-          <div style="display:flex;gap:4px;margin:12px 0;">
-            <sc-for list="{{ rfStars }}" as="st" hint-placeholder-count="5"><button onClick="{{ st.set }}" aria-label="Оценка" style="{{ st.style }}">★</button></sc-for>
-          </div>
-          <textarea value="{{ rf.text }}" onChange="{{ rfText }}" placeholder="Что понравилось, что улучшить" rows="3" style="width:100%;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:12px 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;font-family:inherit;resize:vertical;"></textarea>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;">
-            <span style="font-size:12px;color:rgba(10,47,79,.7);">Отзыв появится после проверки</span>
-            <button onClick="{{ rfSend }}" disabled="{{ rfDisabled }}" style="{{ rfBtnStyle }}">Отправить</button>
-          </div>
-        </sc-if>
-      </div>
+    <sc-if value="{{ rvMore }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ rvShowMore }}" style="width:100%;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:999px;font-weight:600;font-size:14px;margin-top:4px;">Показать ещё</button>
     </sc-if>
   </div>
 
@@ -834,10 +919,14 @@
     </div>
   </sc-if>
 
-  <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:48px auto 14px;padding:0 20px;max-width:720px;">ДРУГИЕ ДОМА</h3>
-  <div id="car-other" class="noscroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;scroll-snap-type:x mandatory;">
+  <div style="max-width:{{ otherWrap }};margin:0 auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:48px 0 14px;padding:0 20px;">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ДРУГИЕ ДОМА</h3>
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-other" mobile-only="{{ true }}" pad="0" hint-size="auto,44px"></dc-import></sc-if>
+  </div>
+  <div id="car-other" class="noscroll lane {{ otherCls }}" style="--kd:4;--km:1.2;--gc:{{ otherGc }};">
     <sc-for list="{{ otherHouses }}" as="h" hint-placeholder-count="7">
-      <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="flex:0 0 46%;max-width:220px;scroll-snap-align:start;text-align:left;cursor:pointer;">
+      <article data-card="1" role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="text-align:left;cursor:pointer;">
         <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;"><div style="{{ h.bgStyle }}"></div></div>
         <div style="font-size:12px;letter-spacing:.18em;color:#C15C22;font-weight:600;margin-top:12px;">{{ h.n }} / {{ h.tier }}</div>
         <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.1em;line-height:1;margin-top:6px;">{{ h.name }}</div>
@@ -845,7 +934,8 @@
       </article>
     </sc-for>
   </div>
-  <dc-import name="CarNav" target="car-other" hint-size="100%,56px"></dc-import>
+  <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-other" hint-size="100%,56px"></dc-import></sc-if>
+  </div>
 </main>
 </sc-if>
 
@@ -915,16 +1005,19 @@
 
   <sc-if value="{{ showMasters }}" hint-placeholder-val="{{ false }}">
   <section data-screen-label="Мастера" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">НАШИ МАСТЕРА</h2>
-    <div id="car-masters" class="noscroll" style="display:grid;grid-auto-flow:column;grid-auto-columns:{{ masterCol }};gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 4px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 24px;">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">НАШИ МАСТЕРА</h2>
+      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-masters" mobile-only="{{ true }}" pad="0" hint-size="auto,44px"></dc-import></sc-if>
+    </div>
+    <div id="car-masters" class="noscroll lane {{ mastersCls }}" style="{{ mastersLaneStyle }}--kd:4;--km:1.2;--gc:{{ mastersGc }};">
       <sc-for list="{{ masters }}" as="m" hint-placeholder-count="3">
-        <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ m.open }}" style="text-align:left;scroll-snap-align:start;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid rgba(59,47,42,.08);cursor:pointer;">
+        <article data-card="1" role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ m.open }}" style="text-align:left;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid rgba(59,47,42,.08);cursor:pointer;">
           <div style="aspect-ratio:3/4;background:#0A2F4F;color:#F9EFE3;"><image-slot id="{{ m.slot }}" shape="rect" placeholder="Фото мастера со спины или в работе"></image-slot></div>
           <div style="padding:16px 16px 20px;"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;">{{ m.name }}</div><div style="font-size:14px;color:rgba(59,47,42,.75);margin-top:4px;">{{ m.spec }}</div><div style="font-size:13px;color:#C15C22;font-weight:600;margin-top:8px;">{{ m.exp }}</div></div>
         </article>
       </sc-for>
     </div>
-    <dc-import name="CarNav" target="car-masters" pad="12px 0 0" hint-size="100%,56px"></dc-import>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-masters" pad="12px 0 0" hint-size="100%,56px"></dc-import></sc-if>
   </section>
   </sc-if>
 
@@ -1136,11 +1229,21 @@
 </main>
 </sc-if>
 
+<!-- VIDEO LIGHTBOX -->
+<sc-if value="{{ vidOpen }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Видео" role="dialog" aria-modal="true" aria-label="{{ vid.name }}" onClick="{{ closeVid }}" style="position:fixed;inset:0;z-index:var(--z-gallery);background:rgba(10,47,79,.94);display:flex;align-items:center;justify-content:center;padding:64px 20px 56px;animation:fadeIn 200ms ease;">
+  <div style="position:relative;height:100%;max-height:800px;aspect-ratio:{{ vid.ratio }};max-width:100%;border-radius:20px;overflow:hidden;background:#3B2F2A url({{ vid.img }}) center/{{ vid.fit }} no-repeat;">
+    <sc-if value="{{ vid.play }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></span></sc-if>
+  </div>
+  <button onClick="{{ closeVid }}" aria-label="Закрыть" style="position:absolute;right:16px;top:calc(16px + env(safe-area-inset-top));width:48px;height:48px;border-radius:50%;background:rgba(249,239,227,.15);display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#F9EFE3" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
+  <div style="position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#F9EFE3;font-size:14px;font-weight:500;">{{ vid.name }}</div>
+</div>
+</sc-if>
 <!-- STICKY CTA -->
 <sc-if value="{{ showSticky }}" hint-placeholder-val="{{ true }}">
-<div data-sticky="1" style="position:fixed;left:0;right:0;bottom:0;z-index:var(--z-bar);padding:10px 20px calc(12px + env(safe-area-inset-bottom));background:#F9EFE3;border-top:1px solid rgba(10,47,79,.15);">
+<div data-sticky="1" style="position:fixed;left:0;right:0;bottom:0;z-index:var(--z-bar);text-align:center;padding:10px 20px calc(12px + env(safe-area-inset-bottom));background:#F9EFE3;border-top:1px solid rgba(10,47,79,.15);">
   <button onClick="{{ stickyAction }}" style="width:100%;max-width:560px;margin:0 auto;display:block;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">{{ stickyLabel }}</button>
-  <sc-if value="{{ stickyHouseWa }}" hint-placeholder-val="{{ false }}"><a data-hit="1" href="{{ waHouse }}" target="_blank" rel="noopener" style="display:flex;justify-content:center;align-items:center;height:32px;margin-top:4px;font-size:14px;font-weight:500;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Спросить про этот дом в WhatsApp</span></a></sc-if>
+  <sc-if value="{{ stickyHouseWa }}" hint-placeholder-val="{{ false }}"><a data-hit="1" href="{{ waHouse }}" target="_blank" rel="noopener" style="display:inline-flex;justify-content:center;align-items:center;height:32px;margin:4px auto 0;font-size:14px;font-weight:500;color:#0A2F4F;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Спросить про этот дом в WhatsApp</span></a></sc-if>
 </div>
 </sc-if>
 
@@ -1788,24 +1891,43 @@
           </div>
           <sc-if value="{{ succ.todayNote }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:10px;align-items:flex-start;text-align:left;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(10,47,79,.06);font-size:14px;line-height:1.45;color:#0A2F4F;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:2px;"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg><span>Бронь на сегодня: администратор позвонит и подтвердит, что дом готов к вашему приезду.</span></div></sc-if>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:28px;">
+        <sc-if value="{{ succ.hasId }}" hint-placeholder-val="{{ true }}">
+          <div style="text-align:center;margin-top:24px;padding:14px 16px;border:1px solid rgba(10,47,79,.2);border-radius:16px;">
+            <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Бронь №</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.1;letter-spacing:.06em;margin-top:4px;">{{ succ.bookingId }}</div>
+            <div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">назовите его администратору по телефону</div>
+          </div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
           <sc-if value="{{ succ.pending }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ succ.toPay }}" style="height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">{{ succ.prepayBtn }}</button>
-            <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:52px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;">Написать в WhatsApp</a>
           </sc-if>
           <sc-if value="{{ succ.paid }}" hint-placeholder-val="{{ true }}">
             <sc-if value="{{ succ.tableOn }}" hint-placeholder-val="{{ false }}">
-              <a href="{{ succ.menuLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Выбрать меню к приезду</a>
-              <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:52px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;">Написать в WhatsApp</a>
+              <a href="{{ succ.menuLink }}" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Выбрать меню к приезду</a>
             </sc-if>
             <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ true }}">
               <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Написать в WhatsApp</a>
             </sc-if>
           </sc-if>
-          <button onClick="{{ addToCalendar }}" style="height:52px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">Добавить в календарь</button>
+          <div style="display:grid;grid-template-columns:{{ succ.secCols }};gap:8px;">
+            <sc-if value="{{ succ.waSecondary }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:48px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap;">Написать в WhatsApp</a>
+            </sc-if>
+            <div style="position:relative;">
+              <button onClick="{{ openCal }}" aria-expanded="{{ calPopOpen }}" style="width:100%;height:48px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap;">Добавить в календарь</button>
+              <sc-if value="{{ calPopOpen }}" hint-placeholder-val="{{ false }}">
+                <div role="menu" aria-label="Куда добавить?" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:2;background:#F9EFE3;border:1px solid rgba(10,47,79,.2);border-radius:16px;padding:6px;box-shadow:0 12px 32px rgba(10,47,79,.18);animation:fadeIn 150ms ease-out;">
+                  <sc-for list="{{ calOpts }}" as="o" hint-placeholder-count="3">
+                    <a role="menuitem" href="{{ o.href }}" target="{{ o.target }}" rel="noopener" download="{{ o.download }}" onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 12px;border-radius:12px;font-size:15px;font-weight:500;color:#0A2F4F;"><span style="{{ o.dotStyle }}"></span>{{ o.label }}</a>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </div>
           <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
             <a href="{{ routeLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:44px;font-weight:600;font-size:15px;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Как добраться</span></a>
-            <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ false }}"><a href="{{ succ.menuLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:44px;font-weight:600;font-size:15px;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Заказать еду к приезду</span></a></sc-if>
+            <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ false }}"><a href="{{ succ.menuLink }}" style="display:inline-flex;align-items:center;height:44px;font-weight:600;font-size:15px;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Заказать еду к приезду</span></a></sc-if>
           </div>
         </div>
         <div style="display:flex;justify-content:center;margin-top:12px;"><button onClick="{{ closeBooking }}" style="height:40px;padding:0 12px;font-size:13px;color:rgba(59,47,42,.75);">На главную</button></div>
@@ -1879,6 +2001,69 @@
       </div>
       <div style="font-size:12px;color:rgba(59,47,42,.78);margin-top:8px;">Опции «подтвердит администратор» в итог не входят, их стоимость сообщим в WhatsApp.</div>
     </sc-if>
+    <sc-if value="{{ sheetCal }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Лист — куда добавить">
+        <div style="font-size:14px;color:rgba(10,47,79,.75);margin:0 0 10px;line-height:1.45;">{{ calLine }}</div>
+        <div style="display:flex;flex-direction:column;border-top:1px solid rgba(59,47,42,.12);">
+          <sc-for list="{{ calOpts }}" as="o" hint-placeholder-count="3">
+            <a href="{{ o.href }}" target="{{ o.target }}" rel="noopener" download="{{ o.download }}" onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:14px;min-height:56px;padding:6px 0;border-bottom:1px solid rgba(59,47,42,.12);font-size:16px;font-weight:500;color:#0A2F4F;">
+              <span style="{{ o.dotStyle }}"></span>
+              <span style="flex:1;">{{ o.label }}</span>
+              <span style="font-size:12px;color:rgba(10,47,79,.6);">{{ o.hint }}</span>
+            </a>
+          </sc-for>
+        </div>
+        <div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:12px;line-height:1.5;">Событие откроется уже заполненным — останется нажать «Сохранить». Напоминания: за сутки и за 2 часа.</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ sheetCalcHow }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Лист — как считается цена" style="font-size:15px;line-height:1.55;">
+        <p style="margin:0 0 14px;color:#3B2F2A;">Цена за час зависит от времени суток и дня недели. Часы считаются по тарифу того периода, в который они попадают. Гости сверх включённых — доплата за визит, не за час.</p>
+        <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;margin-bottom:6px;">Пример · {{ calcHow.title }}</div>
+        <div style="display:flex;flex-direction:column;border-top:1px solid rgba(59,47,42,.12);">
+          <sc-for list="{{ calcHow.rows }}" as="r" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(59,47,42,.12);"><span>{{ r.l }}</span><span style="white-space:nowrap;font-variant-numeric:tabular-nums;">{{ r.v }}</span></div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:14px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;line-height:1;">{{ calcHow.total }}</span></div>
+        <button onClick="{{ closeSheet }}" style="width:100%;height:52px;margin-top:24px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;">Понятно</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ sheetReview }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Лист — отзыв">
+        <sc-if value="{{ reviewSent }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 0 4px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#C15C22;display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></div>
+            <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1.1;">Спасибо!</div>
+            <p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:#3B2F2A;">Отзыв появится после проверки администратором. Пока он виден только вам — с меткой «На проверке».</p>
+            <button onClick="{{ closeSheet }}" style="width:100%;height:52px;margin-top:24px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;">Понятно</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ reviewNotSent }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:13px;color:rgba(10,47,79,.7);">{{ rfHouseLine }}</div>
+          <div style="display:flex;gap:2px;margin:10px 0 2px;">
+            <sc-for list="{{ rfStars }}" as="st" hint-placeholder-count="5"><button onClick="{{ st.set }}" aria-label="{{ st.aria }}" aria-pressed="{{ st.on }}" style="{{ st.style }}">★</button></sc-for>
+          </div>
+          <div style="font-size:14px;font-weight:600;min-height:20px;color:#0A2F4F;">{{ rfStarLabel }}</div>
+          <textarea value="{{ rf.text }}" onChange="{{ rfText }}" placeholder="Что понравилось? Что можно улучшить? Хотя бы 20 символов" rows="4" style="width:100%;margin-top:14px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:12px 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;font-family:inherit;resize:vertical;line-height:1.45;"></textarea>
+          <div style="display:flex;justify-content:flex-end;font-size:12px;color:rgba(10,47,79,.6);margin-top:4px;font-variant-numeric:tabular-nums;">{{ rfCount }}</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+            <sc-for list="{{ rf.photos }}" as="ph" hint-placeholder-count="0">
+              <div style="position:relative;width:72px;height:72px;border-radius:12px;overflow:hidden;background:#3B2F2A url({{ ph.src }}) center/cover no-repeat;"><button onClick="{{ ph.remove }}" aria-label="Убрать фото" style="position:absolute;right:2px;top:2px;width:24px;height:24px;border-radius:50%;background:rgba(10,47,79,.75);color:#F9EFE3;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;">×</button></div>
+            </sc-for>
+            <sc-if value="{{ rfCanPhoto }}" hint-placeholder-val="{{ true }}">
+              <label style="display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border:1px dashed rgba(10,47,79,.4);border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>Добавить фото<input type="file" accept="image/*" multiple onChange="{{ rfPhoto }}" style="position:absolute;width:1px;height:1px;opacity:0;"></label>
+            </sc-if>
+            <span style="font-size:12px;color:rgba(10,47,79,.6);">до 3 фото</span>
+          </div>
+          <input value="{{ rf.name }}" onChange="{{ rfName }}" placeholder="Как вас зовут" autoComplete="name" style="width:100%;height:52px;margin-top:14px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 14px;font-size:16px;background:#F9EFE3;color:#0A2F4F;">
+          <button role="checkbox" aria-checked="{{ rfAgreeAttr }}" onClick="{{ rfAgreeToggle }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;padding:12px 0 4px;font-size:14px;line-height:1.45;color:#0A2F4F;">
+            <span style="{{ rfAgreeBox }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>
+            <span>Согласен на публикацию отзыва и фото на сайте SHIPA</span>
+          </button>
+        </sc-if>
+      </div>
+    </sc-if>
     <sc-if value="{{ sheetRules }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;gap:16px;font-size:15px;line-height:1.55;">
         <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
@@ -1950,6 +2135,11 @@
       <button data-cta="sheet" onClick="{{ progSheet.done }}" style="width:100%;height:56px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:16px;letter-spacing:.02em;">{{ progSheet.doneLabel }}</button>
     </div>
   </sc-if>
+  <sc-if value="{{ sheetReviewForm }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:0 0 auto;padding:12px 20px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(10,47,79,.12);background:#F9EFE3;">
+      <button data-cta="sheet" onClick="{{ rfSend }}" disabled="{{ rfDisabled }}" style="{{ rfBtnStyle }}">Отправить</button>
+    </div>
+  </sc-if>
   <sc-if value="{{ sheetDate }}" hint-placeholder-val="{{ false }}">
     <div style="flex:0 0 auto;padding:12px 20px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(10,47,79,.12);background:#F9EFE3;">
       <button data-cta="sheet" onClick="{{ ds.apply }}" style="width:100%;height:56px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:16px;letter-spacing:.02em;">{{ ds.btn }}</button>
@@ -1981,7 +2171,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://alexk1mkz.github.io/shipabani/e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://alexk1mkz.github.io/shipabani/e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHouseRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
 const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22';
 const WD=['вс','пн','вт','ср','чт','пт','сб'];
 const WD_ACC=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
@@ -2007,8 +2197,8 @@ const HOURS={
 const paras=a=>typeof a==='function'?a():Array.isArray(a)?a:[a];
 // Карта — виджет Яндекс Карт без ключа (2ГИС-виджет без карточки фирмы отдаёт ошибку). Настройки админки: mapLat, mapLng, mapLabel.
 const MAP0={lat:49.7656,lng:73.1716,label:'SHIPA',zoom:16,city:'karaganda'};
-// Выноски на логотипе в % от его ширины/высоты: 1 — у S, 2 — у листьев, 3 — у завитка над А
-const MEANING_PINS=[{n:1,x:41,y:24},{n:2,x:13,y:8},{n:3,x:93,y:10}];
+// Выноски на логотипе в % от его ширины/высоты: 1 — над паром между листьями и S, 2 — у нижнего левого листа, 3 — у завитка над А
+const MEANING_PINS=[{n:1,x:6,y:11},{n:2,x:14,y:6},{n:3,x:93,y:10}]; // 1 — начало S-дуги, 2 — верхний синий лист (заказчик 09.10); координаты сняты с brand/logo-navy.png
 // Настройки из админки (правки 29.09). Часы — от 00:00 дня начала брони: close 26 = 02:00 следующего дня.
 const CFG={open:10,close:26,lastStart:21,tariffs:{day:[10,17],evening:[17,26]},minH:3,maxH:16,prep:2,daily:{in:14,out:12},tubPrice:15000,durs:[3,4,5,6,8],leadH:1,childAge:7,
   weekendDays:[5,6,0],holidays:['01-01','01-02','03-08','03-21','03-22','03-23','05-01','05-07','05-09','07-06','08-30','10-25','12-16'],tubHouses:['energiya'],
@@ -2072,12 +2262,12 @@ const SVC_FAQ=[{q:'Можно, если парюсь впервые?',a:'Да. �
 const EXTRAS=[{id:'program',name:'Парение — программу уточнит администратор',price:25000,from:true},{id:'table',name:'Накрыть стол к приезду',price:40000,from:true},{id:'kit',name:'Набор для парения: шапка, веник, рукавица',price:8000,from:false}];
 const FEATURES=[{name:'Парная',desc:'дровяная печь, липа и кедр'},{name:'Чан',desc:'горячая вода на дровах'},{name:'Комната отдыха',desc:'стол, диваны, тишина'},{name:'Терраса',desc:'своя, закрытая от соседей'},{name:'Душ и санузел',desc:'в каждом доме'},{name:'Кухонная зона',desc:'можно заказать стол заранее'}];
 const REVIEWS=[
- {name:'Айгерим',date:'2 сент.',stars:5,house:0,text:'Приехали вечером после работы, к нашему приезду уже накрыли стол. Парная прогрета, чан горячий. Никто не мешал — своя терраса, свой двор.'},
- {name:'Дмитрий',date:'29 авг.',stars:5,house:1,text:'Брали СИЛУ на компанию из десяти. Парение с контрастом в чане после — то что нужно.'},
+ {name:'Айгерим',date:'2 сент.',stars:5,house:0,useful:12,visit:'Была в доме ДЫХАНИЕ · 4 часа · август',photos:['img/h1_int.png','img/h1_acc.png'],reply:{date:'3 сентября',text:'Айгерим, спасибо! Стол к приезду — наша любимая часть. Ждём вас снова.'},text:'Приехали вечером после работы, к нашему приезду уже накрыли стол. Парная прогрета, чан горячий. Никто не мешал — своя терраса, свой двор. Отдельное спасибо администратору: подсказала, как лучше распределить время между парной и чаном, и заранее уточнила, нужен ли нам веник.'},
+ {name:'Дмитрий',date:'29 авг.',stars:5,house:1,useful:7,src:'2gis',srcLink:'https://2gis.kz/karaganda',text:'Брали СИЛУ на компанию из десяти. Парение с контрастом в чане после — то что нужно.'},
  {name:'Мадина и Тимур',date:'24 авг.',stars:5,house:2,text:'Ездили вдвоём. Тихо, тёплый свет, ничего лишнего. Взяли мягкое парение — вернёмся ещё.'},
  {name:'Сергей',date:'17 авг.',stars:4,house:4,text:'Хороший дом, чистый, дрова уже сложены. Единственное — хотелось бы больше вешалок в раздевалке.'},
  {name:'Алия',date:'10 авг.',stars:5,house:3,text:'Ответили в WhatsApp через пять минут. С детьми удобно: комната отдыха большая, чан неглубокий.'},
- {name:'Руслан',date:'3 авг.',stars:5,house:1,text:'СИЛА — самый атмосферный дом. Тёмный камень, вода, пар. Взяли на шесть часов вечером — идеально на день рождения.'},
+ {name:'Руслан',date:'3 авг.',stars:5,house:1,useful:4,photos:['img/h2_int.png'],text:'СИЛА — самый атмосферный дом. Тёмный камень, вода, пар. Взяли на шесть часов вечером — идеально на день рождения.'},
 ];
 const FAQ=[
  {q:'За сколько нужно бронировать?',a:'На будни — обычно за день. На вечер пятницы и субботы — за 3–5 дней. Свободные слоты видны на сайте сразу.'},
@@ -2105,7 +2295,10 @@ const ATM_VIDEO='';
 // Готовые тексты WhatsApp по умолчанию; в админке — поля с теми же ключами
 const WA_TEXT={waTextGeneral:'Здравствуйте! Пишу с сайта SHIPA',waTextHero:'Здравствуйте! Хочу забронировать дом в SHIPA',waTextHouse:'Здравствуйте! Интересует дом {дом}',waTextLong:'Здравствуйте! Хочу забронировать дом на весь день или дольше',waTextStep4:'Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}',waTextError:'Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}',waTextSuccess:'Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}',waTextPre:'Здравствуйте! Записался на открытие SHIPA',waTextMerch:'Здравствуйте! Хочу заказать: {товар}'}; // ролик атмосферы из админки
 const RATING=['4,9','4,9','5,0','4,8','4,9','4,8','5,0','4,7'];
-const EMPTY_RF={open:false,sent:false,name:'',stars:5,text:''};
+// Сводка по дому: число отзывов и распределение 5→1 — из админки и выгрузки 2ГИС
+const REVIEW_STATS=[{count:128,dist:[112,12,3,1,0]},{count:96,dist:[86,8,2,0,0]},{count:41,dist:[40,1,0,0,0]},{count:4,dist:[3,1,0,0,0]},{count:57,dist:[50,6,1,0,0]},{count:22,dist:[18,3,1,0,0]},{count:0,dist:[0,0,0,0,0]},{count:0,dist:[0,0,0,0,0]}];
+const STAR_LABELS=['','Плохо','Так себе','Нормально','Хорошо','Отлично'];
+const EMPTY_RF={sent:false,name:'',stars:0,text:'',photos:[],agree:false};
 
 const FE0={scope:null,name:false,phone:false,agree:false,n:0};
 const MON_S=['янв','фев','мар','апр','мая','июн','июл','авг','сент','окт','нояб','дек'];
@@ -2190,9 +2383,14 @@ class Component extends DCLogic {
     window.addEventListener('scroll',this.onScroll,{passive:true});
     this.onScrollEnd=e=>{const t=e.target;if(t&&t._settle){clearTimeout(t._st);const f=t._settle;t._settle=null;f(t);if(t._touched){t._touched=false;vib(8);}}};document.addEventListener('scrollend',this.onScrollEnd,true);
     this.onTouchLane=e=>{const l=e.target&&e.target.closest&&e.target.closest('.noscroll');if(l)l._touched=true;};document.addEventListener('touchstart',this.onTouchLane,{passive:true,capture:true});
+    this._laneT=setInterval(()=>this.attachLanes(),500);this.attachLanes();this.onLaneResize=()=>document.querySelectorAll('.lane.center').forEach(el=>this.paintLane(el));window.addEventListener('resize',this.onLaneResize,{passive:true});
+    // Рамка фокуса — только с клавиатуры: после тапа или клика по ссылке фокус снимаем
+    this.onLinkTap=e=>{const a=e.target&&e.target.closest&&e.target.closest('a');if(a)setTimeout(()=>a.blur(),0);};document.addEventListener('pointerup',this.onLinkTap,{passive:true});
     if(this.hdrDemo){this.setState({cookie:false,menuOpen:this.hdrDemo==='menu'});if(this.hdrDemo==='scrolled')this.demoScroll(640);}
     try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):/^\d+$/.test(sy)?+sy:(()=>{const el=document.querySelector(sy);return el?el.getBoundingClientRect().top+window.scrollY-72:0;})());const fq=q.get('faq');if(fq!=null)setTimeout(()=>this.setState({faqOpen:+fq}),200);}catch(e){}
     this.reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    try{const p=((navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||navigator.userAgent||'').toLowerCase();this.plat=/iphone|ipad|ipod|mac/.test(p)||(/mac/.test(p)&&navigator.maxTouchPoints>1)?'apple':/android/.test(p)?'android':'other';}catch(e){this.plat='other';}
+    try{const u=JSON.parse(localStorage.getItem('shipa_useful')||'null');if(u)this.setState({useful:u});}catch(e){}
     try{const s=JSON.parse(localStorage.getItem('shipa_user')||'null');if(s)this.setState(st=>({form:{...st.form,name:s.name||'',phone:s.phone||''},returning:s.name&&s.phone?s.name:null}));
       const dr=JSON.parse(localStorage.getItem('shipa_draft')||'null');
       if(dr&&dr.bk&&!dr.bk.pre&&!this.props.preorderMode&&!this.hdrDemo&&this.introT==null&&!this.bkDemo&&Date.now()-dr.ts<30*60000)this.setState(st=>{const df={};Object.entries(dr.form||{}).forEach(([k,v])=>{if(v!==''&&v!=null&&v!==false)df[k]=v;});return {bk:dr.bk,form:{...st.form,...df}};});
@@ -2382,6 +2580,21 @@ class Component extends DCLogic {
   stripTo(first){const el=this.stripRef.current;if(!el)return;const items=[...el.querySelectorAll('[data-day]')];const ix=items.findIndex(x=>x.getAttribute('data-sel')==='1');if(ix<0)return;
     const t=items[Math.max(0,ix-1)];el.scrollTo({left:Math.max(0,t.offsetLeft-20),behavior:first||this.reduced?'auto':'smooth'});}
   initTime(hi,di){return {start:null,dur:null,tub:false,mode:'hours',pickEnd:false};}
+  // Лента с центральной карточкой: scale 1→1.08 и opacity .7→1 по расстоянию до центра; подпись видна у центральной
+  attachLanes(){for(const id of ['car-atm','car-vrev']){const el=document.getElementById(id);if(!el||el._fx)continue;el._fx=true;
+      const paint=()=>{el._raf=0;this.paintLane(el);};el.addEventListener('scroll',()=>{if(!el._raf)el._raf=requestAnimationFrame(paint);},{passive:true});
+      paint();setTimeout(paint,300);setTimeout(paint,1200);}}
+  paintLane(el){const cards=el.querySelectorAll(':scope>[data-card]');if(!cards.length)return;const w=cards[0].getBoundingClientRect().width||220;const lc=el.getBoundingClientRect();const cx=lc.left+lc.width/2;const capAll=el.hasAttribute('data-cap-desktop')&&window.innerWidth>=1024;
+    cards.forEach(c=>{const r=c.getBoundingClientRect();const k=1-Math.min(1,Math.abs(r.left+r.width/2-cx)/w);
+      c.style.transform=this.reduced?'none':`scale(${(1+.08*k).toFixed(3)})`;c.style.opacity=(.7+.3*k).toFixed(2);c.dataset.center=k>.5?'1':'0';
+      const cap=c.querySelector('[data-cap]');if(cap)cap.style.opacity=(capAll||k>.5)?'1':'0';});}
+  laneTap(e,open){const card=e.currentTarget.closest('[data-card]');if(!card)return;const lane=card.parentElement;if(card.dataset.center==='1'){if(open){e.stopPropagation();this.setState({vid:{img:card.dataset.img,name:card.dataset.name,play:true,ratio:'9/16',fit:'cover'}});}return;}
+    e.stopPropagation();const lc=lane.getBoundingClientRect(),r=card.getBoundingClientRect();lane.scrollTo({left:lane.scrollLeft+(r.left+r.width/2)-(lc.left+lc.width/2),behavior:this.reduced?'auto':'smooth'});}
+  // «Весь день» / «с 19:00» / «до 14:00» / «с 10 до 14, с 19» — свободные промежутки словами
+  freeLabel(hi,di){const r=[];let s=null;for(let k=CFG.open;k<=CFG.close;k++){const f=k<CFG.close&&this.cell(hi,di*24+k)==='free';if(f&&s==null)s=k;if(!f&&s!=null){r.push([s,k]);s=null;}}
+    if(!r.length)return 'Занят';if(r.length===1&&r[0][0]===CFG.open&&r[0][1]===CFG.close)return 'Весь день';
+    const t=x=>hh(x);if(r.length===1){const [a,b]=r[0];if(a===CFG.open)return 'до '+t(b);if(b===CFG.close)return 'с '+t(a);return 'с '+t(a)+' до '+t(b);}
+    return r.map(([a,b])=>b===CFG.close?'с '+String(a%24):'с '+String(a%24)+' до '+String(b%24)).join(', ');}
   freeRuns(hi,di){const r=[];let s=null;for(let k=CFG.open;k<=CFG.close;k++){const f=k<CFG.close&&this.cell(hi,di*24+k)==='free';if(f&&s==null)s=k;if(!f&&s!=null){r.push([s,k]);s=null;}}if(!r.length)return 'нет';if(r.length===1&&r[0][0]===CFG.open&&r[0][1]===CFG.close)return 'весь день';return r.map(([a,b])=>hh(a)+'–'+hh(b)).join(', ');}
   setMode(m){const bk=this.state.bk;if(!bk)return;this.setState({stripMore:0});
     if(m==='daily'){const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const ok=this.dailyOk(hi,bk.date);this.setBk({mode:'daily',start:ok?bk.date*24+CFG.daily.in:null,dur:ok?24-CFG.daily.in+CFG.daily.out:null,pickEnd:false},()=>{if(!ok)this.hint(`На ${this.dm(bk.date)} сутки заняты — выберите другую дату заезда`,3000);});}
@@ -2393,7 +2606,7 @@ class Component extends DCLogic {
     if(this.state.menuOpen)this.setState({menuOpen:false});
     if(this.state.screen==='home'){run();return;}
     this.go('home');setTimeout(run,60);setTimeout(run,300);}
-  openMenuUrl(){const u=this.props.menuUrl||CFG.menuUrl;try{const w=window.open(u,'_blank','noopener');if(!w)location.href=u;}catch(e){location.href=u;}if(this.state.menuOpen)this.setState({menuOpen:false});}
+  openMenuUrl(){const u=this.props.menuUrl||CFG.menuUrl;location.href=u;if(this.state.menuOpen)this.setState({menuOpen:false});}
   formOk(){const f=this.state.form;return f.name.trim().length>0&&phoneDigits(f.phone).length>=10&&!!f.agree;}
   // Предоплата: ссылка платёжной системы из админки; результат в прототипе — по демо-переключателю
   pay(m){const bk=this.state.bk;if(!bk||this.state.sending)return;const link=PAY_LINKS[m];if(link){try{window.open(link,'_blank','noopener');}catch(e){}}
@@ -2551,6 +2764,9 @@ class Component extends DCLogic {
     const lead=(first.getDay()+6)%7;const dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
     const dayOff=dd=>Math.round((dd-this.today)/86400000);const openOff=dayOff(new Date(2027,1,1));
     const monthDays=[...Array.from({length:lead},()=>({day:'',disabled:true,style:'height:44px;'})),...Array.from({length:dim},(_,k)=>{const dd=new Date(first.getFullYear(),first.getMonth(),k+1);const i=dayOff(dd);const past=i<0||(pre&&i<openOff)||(!pre&&i>365);const act=bk.date===i;const full=!pre&&(FULL_DAYS.includes(i)||(i===0&&this.dayLoad(0)===0));const tdy=i===0;
+      if(opt&&opt.avail){const aFull=!past&&!this.anyFree(opt.hi,i);const aPart=!past&&!aFull&&this.busy(opt.hi,i).length>0;
+        return {day:k+1,disabled:past||aFull,dot:aPart,dotStyle:`width:4px;height:4px;border-radius:50%;background:${BRICK};`,select:()=>set({date:i}),aria:`${k+1}: ${past?'прошло':aFull?'занят':aPart?'частично свободен':'свободен весь день'}`,
+          style:`display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:44px;border-radius:999px;font-size:15px;font-weight:${tdy?600:400};background:transparent;color:${past?'rgba(10,47,79,.25)':aFull?'rgba(10,47,79,.4)':NAVY};text-decoration:${aFull?'line-through':'none'};box-shadow:${tdy?`inset 0 0 0 1px ${BRICK}`:'none'};`};}
       const dot=!!opt&&opt.hi>=0&&!past&&this.anyFree(opt.hi,i);
       return {day:k+1,disabled:past,dot,dotStyle:`width:4px;height:4px;border-radius:50%;background:${act?CREAM:NAVY};`,select:()=>set({date:i}),style:`${opt?'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;':''}height:44px;border-radius:999px;font-size:15px;font-weight:${act||tdy?600:400};background:${act?BRICK:'transparent'};color:${act?CREAM:past?'rgba(10,47,79,.25)':full?'rgba(10,47,79,.4)':NAVY};text-decoration:${full&&!act?'line-through':'none'};box-shadow:${tdy&&!act?`inset 0 0 0 1px ${BRICK}`:'none'};`};})];
     const arr=dis=>`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${dis?'.3':'1'};`;
@@ -2570,8 +2786,9 @@ class Component extends DCLogic {
     const houseView=HOUSES.map(h=>({...h,soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:`до ${h.guestsIncl} гостей в цене · максимум ${h.maxGuests}${h.tub?' · горячий чан':''}${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceShort:(this.fromPrice(h)/1000)+' 000',
       open:()=>!h.soon&&this.go('house',h.id),book:()=>this.openBooking(h.id)}));
     const openView=houseView.filter(h=>!h.soon);
-    const housesRowStyle=wide?'display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:0 20px;':'display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;scroll-snap-type:x mandatory;';
-    const houses=houseView.map(h=>({...h,cardStyle:(wide?'text-align:left;':'flex:0 0 82%;max-width:360px;scroll-snap-align:center;text-align:left;')+(h.soon?'cursor:default;':'')}));
+    // Ленты (правила качества, п. 3.1): десктоп ≥1024 — сетка, если карточки помещаются (N ≤ K), иначе прокрутка по K; витринные — центрируются
+    const lw=(s.vw||0)>=1024;const laneCls=(n,k)=>lw&&n<=k?'grid':'';const centerCls=(n,k)=>lw?(n<=k?'fits':'scroll'):'';
+    const houses=houseView.map(h=>({...h,cardStyle:'text-align:left;'+(h.soon?'cursor:default;':'')}));
     const SHOW=this.heroShowMs(),FADE=this.reduced?300:Math.min(SHOW-200,Math.round((+(this.props.heroFadeSec??1)||1)*1000));const hn=s.heroN||0;const run=this.heroAuto&&!s.heroPaused;
     const heroSlides=HERO_SLIDES.map((sl,i)=>{const act=s.hero===i,prv=s.heroPrev===i;const kb=!this.reduced&&(act||prv);const nm=(act?hn:hn-1)%2?'kbA':'kbB';return {style:`position:absolute;inset:0;background:#0A2F4F url(${sl.img}) center 45%/cover no-repeat;opacity:${act?1:0};transition:opacity ${FADE}ms ease-in-out;${kb?`animation:${nm} ${SHOW}ms linear forwards;animation-play-state:${run||prv?'running':'paused'};`:''}`};});
     const heroDots=HERO_SLIDES.map((_,i)=>({go:()=>this.heroGo(i),label:`Кадр ${i+1} из ${HERO_SLIDES.length}`,aria:s.hero===i?'true':undefined,
@@ -2592,10 +2809,10 @@ class Component extends DCLogic {
         style:`flex:0 0 auto;width:${w}px;height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
     const faq=FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
-    const reviews=REVIEWS.map(r=>({...r,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
+    const reviews=REVIEWS.map((r,i)=>({...r,id:'r'+i,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
     const PROG_IMG=['img/h1_acc.png','img/h5_art.png','img/h2_int.png','img/h3_art.png','img/h6_acc.png'];
     const programs=PROGRAMS.map((p,i)=>{const un=!!p.unavailable;return {...p,unavailable:un,slot:'prog-'+i,img:PROG_IMG[i],priceText:fmt(p.price),addToBooking:()=>!un&&this.openBooking(null),
-      cardStyle:`flex:0 0 78%;max-width:300px;scroll-snap-align:start;background:rgba(10,47,79,.06);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;opacity:${un?'.55':'1'};`,
+      cardStyle:`background:rgba(10,47,79,.06);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;opacity:${un?'.55':'1'};`,
       btnStyle:`height:44px;padding:0 20px;border-radius:999px;background:${un?'rgba(10,47,79,.15)':BRICK};color:${un?'rgba(10,47,79,.5)':CREAM};font-weight:600;font-size:14px;`,
       rowStyle:`padding:24px;border-radius:20px;background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);display:flex;flex-direction:column;opacity:${un?'.55':'1'};`,
       addStyle:`height:44px;padding:0 18px;white-space:nowrap;flex:0 0 auto;border:1px solid ${un?'rgba(10,47,79,.3)':NAVY};background:${CREAM};color:${un?'rgba(10,47,79,.5)':NAVY};border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;`,
@@ -2610,17 +2827,43 @@ class Component extends DCLogic {
       inside:[...(hRaw.tubIncl?['горячий чан на дровах']:[]),'парная','комната отдыха','терраса','душ и санузел','кухонная зона',...(hRaw.tier==='VIP'?['бассейн','зона барбекю']:[])].map(n=>({name:n})),
       hasTubExtra:hRaw.tier==='STANDARD'&&hRaw.tub,tubExtraText:`+${fmt(CFG.tubPrice)} · готовим к вашему приезду`,
       priceRows:[{label:'День',hours:`${hh(CFG.tariffs.day[0])}–${hh(CFG.tariffs.day[1])}`,wd:fmt(p.dayWd)+'/ч',we:fmt(p.dayWe)+'/ч'},{label:'Вечер',hours:`${hh(CFG.tariffs.evening[0])}–${hh(CFG.tariffs.evening[1])}`,wd:fmt(p.eveWd)+'/ч',we:fmt(p.eveWe)+'/ч'}],priceNote:p.disc?`Пн–чт дешевле на ${p.disc}%. Выходные — пт, сб, вс и праздники.`:'',
-      program:{...prog,priceText:fmt(prog.price),kicker:progUn?'На эту дату недоступно':'Подходит по атмосфере',cardStyle:`width:100%;text-align:left;background:#0A2F4F;color:#F9EFE3;padding:22px 20px;border-radius:20px;opacity:${progUn?'.6':'1'};`}};
+      hasDisc:!!p.disc,guestsLine:`До ${hRaw.guestsIncl} гостей — в цене. Каждый следующий — ${fmt(this.extraGuestFee(hRaw,0))} за визит. Максимум ${hRaw.maxGuests}.`,kidsLine:`Дети до ${CFG.childAge} лет — бесплатно и не считаются.`,priceSub:`за час, до ${hRaw.guestsIncl} гостей`,
+      program:{...prog,priceText:fmt(prog.price),un:progUn,kicker:progUn?'На эту дату недоступно':'Подходит по атмосфере',cardStyle:`width:100%;text-align:left;background:#0A2F4F;color:#F9EFE3;padding:22px 20px;border-radius:20px;opacity:${progUn?'.6':'1'};`,
+        addStyle:`height:44px;padding:0 18px;border-radius:999px;background:${progUn?'rgba(249,239,227,.2)':BRICK};color:#F9EFE3;font-weight:600;font-size:14px;`,
+        add:()=>{if(progUn)return;this.openBooking(hRaw.id);setTimeout(()=>{const b=this.state.bk;if(b&&b.extras&&!b.extras.includes('program'))this.setBk({extras:[...b.extras,'program']});},0);}}};
+    const calcHowRows=(()=>{const ex=4;const dayH=Math.max(0,Math.min(ex,CFG.tariffs.day[1]-15));const eveH=ex-dayH;const rows=[];if(dayH)rows.push({l:`${dayH} ч днём (15:00–${hh(15+dayH)}) × ${fmt(p.dayWd)}`,v:fmt(dayH*p.dayWd)});if(eveH)rows.push({l:`${eveH} ч вечером (${hh(15+dayH)}–${hh(19)}) × ${fmt(p.eveWd)}`,v:fmt(eveH*p.eveWd)});
+      const extraG=2;const fee=this.extraGuestFee(hRaw,0);rows.push({l:`${hRaw.guestsIncl+extraG} гостей: ${extraG} сверх включённых × ${fmt(fee)}`,v:fmt(extraG*fee)});return {title:`будний день, 15:00–19:00, ${hRaw.guestsIncl+extraG} гостей`,rows,total:fmt(dayH*p.dayWd+eveH*p.eveWd+extraG*fee)};})();
     const gsrc=[`img/h${hRaw.img}_int.png`,`img/h${hRaw.img}_art.png`,`img/h${hRaw.img}_acc.png`];
     const gallery=gsrc.map((src,i)=>({src,style:`width:100%;height:100%;background:#3B2F2A url(${src}) center/cover no-repeat;`,gridStyle:`overflow:hidden;border-radius:16px;${i===0?'grid-row:span 2;':''}`,open:()=>this.setState({lightbox:i})}));
     const hwBase=s.hw*7;const hwS=this.dateAt(hwBase),hwE=this.dateAt(hwBase+6);
-    const houseWeek=Array.from({length:7},(_,k)=>{const i=hwBase+k;const d=this.dateAt(i);const b=this.busy(hIdx,i);const full=!this.anyFree(hIdx,i);return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),disabled:full,
-      busy:full?[{t:'Занят',style:'font-size:12px;color:rgba(10,47,79,.7);'}]:b.length?b.map(([x,y])=>({t:`${hh(x)}–${hh(y)}`,style:'font-size:12px;padding:2px 6px;border-radius:6px;background:rgba(10,47,79,.08);color:#0A2F4F;white-space:nowrap;'})):[{t:'Свободен',style:'font-size:12px;color:#2F6B3A;font-weight:600;'}],
-      style:`flex:0 0 auto;width:96px;padding:10px 6px 10px;border-radius:14px;display:flex;flex-direction:column;align-items:center;border:1px solid ${full?'rgba(10,47,79,.12)':'rgba(10,47,79,.25)'};background:${full?'rgba(10,47,79,.04)':CREAM};color:${full?'rgba(10,47,79,.45)':NAVY};`,
+    // Подпись в ячейке говорит, когда дом свободен; «Занят» — кирпичная ячейка с зачёркнутым числом; частично — кирпичная полоска снизу
+    const houseWeek=Array.from({length:7},(_,k)=>{const i=hwBase+k;const d=this.dateAt(i);const full=!this.anyFree(hIdx,i);const part=!full&&this.busy(hIdx,i).length>0;
+      const free=full?'Занят':part?this.freeLabel(hIdx,i):'Весь день';
+      return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),disabled:full,free,
+      dayStyle:`font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;text-decoration:${full?'line-through':'none'};`,
+      freeStyle:`display:block;margin-top:6px;min-height:34px;font-size:12px;line-height:1.35;text-align:center;font-weight:${full?'400':'600'};color:${full?'rgba(10,47,79,.6)':NAVY};`,
+      style:`flex:0 0 auto;width:96px;padding:10px 6px ${part?'7px':'10px'};border-radius:14px;display:flex;flex-direction:column;align-items:center;border:1px solid ${full?'rgba(193,92,34,.2)':'rgba(10,47,79,.25)'};border-bottom:${part?'3px solid '+BRICK:full?'1px solid rgba(193,92,34,.2)':'1px solid rgba(10,47,79,.25)'};background:${full?'rgba(193,92,34,.12)':CREAM};color:${full?'rgba(10,47,79,.6)':NAVY};`,
       book:()=>this.openBooking(hRaw.id,i,undefined,3)};});
+    const hvMode=s.hvMode||'week';
+    const hvSegs=[['week','Неделя'],['month','Месяц']].map(([id,label])=>{const a=hvMode===id;return {label,sel:a?'true':'false',select:()=>this.setState({hvMode:id}),style:`height:38px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:600;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
+    const hm=hvMode==='month'?this.calendar({date:-1,month:s.hvMo||0,guests:0},false,{set:p=>{if(p.month!=null)this.setState({hvMo:p.month});if(p.date!=null)this.openBooking(hRaw.id,p.date,undefined,3);},hi:hIdx,avail:true}):{};
     const otherHouses=openView.filter(h=>h.id!==hRaw.id);
-    const houseReviews=reviews.filter(r=>r.hi===hIdx).slice(0,3);
-    const rf=s.rf;const rfOk=rf.name.trim().length>1&&rf.text.trim().length>5;
+    // Отзывы о доме: сортировка, постранично (3, потом +10), «Полезно» — один голос на устройство
+    const voted=s.useful||{};const rvSort=s.rvSort||'new';
+    const rvAllBase=[...(s.rfPosted||[]).filter(r=>r.hi===hIdx),...reviews.filter(r=>r.hi===hIdx)];
+    const rvAll=rvSort==='photo'?rvAllBase.filter(r=>r.photos&&r.photos.length):rvSort==='useful'?[...rvAllBase].sort((a,b)=>((b.useful||0)+(voted[b.id]?1:0))-((a.useful||0)+(voted[a.id]?1:0))):rvAllBase;
+    const rvShow=s.rvShow||3;
+    const houseReviews=rvAll.slice(0,rvShow).map(r=>{const open=!!(s.rvOpen||{})[r.id];const v=!!voted[r.id];const canMore=r.text.length>180&&!open;
+      return {...r,pending:!!r.pending,is2gis:r.src==='2gis',srcLink:r.srcLink||'',hasVisit:!!r.visit,visit:r.visit||'',hasPhotos:!!(r.photos&&r.photos.length),photos:(r.photos||[]).slice(0,3).map(src=>({src,open:()=>this.setState({vid:{img:src,name:r.name,play:false,ratio:'4/3',fit:'contain'}})})),
+        hasReply:!!r.reply,reply:r.reply||{},canMore,more:()=>this.setState(st=>({rvOpen:{...(st.rvOpen||{}),[r.id]:true}})),
+        textStyle:`margin:10px 0 0;font-size:15px;line-height:1.55;${canMore?'display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;':''}`,
+        useful:(r.useful||0)+(v?1:0),votedAttr:v?'true':'false',vote:()=>{if(r.pending)return;this.setState(st=>{const u={...(st.useful||{})};if(u[r.id])delete u[r.id];else u[r.id]=1;try{localStorage.setItem('shipa_useful',JSON.stringify(u));}catch(e){}return {useful:u};});},
+        voteStyle:`display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid ${v?NAVY:'rgba(10,47,79,.3)'};background:${v?NAVY:'transparent'};color:${v?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
+    const rst=REVIEW_STATS[hIdx]||{count:rvAllBase.length,dist:[0,0,0,0,0]};const rsMax=Math.max(1,...rst.dist);
+    const hrOn=this.props.showHouseRatings??true;const rs={full:hrOn&&rst.count>=5,short:hrOn&&rst.count>0&&rst.count<5,rating:RATING[hIdx],countText:`${rst.count} ${plural(rst.count,'отзыв','отзыва','отзывов')}`,link:'https://2gis.kz/karaganda',
+      dist:rst.dist.map((c,i)=>({n:5-i,c,fill:`display:block;height:100%;width:${Math.round(100*c/rsMax)}%;border-radius:3px;background:${BRICK};`}))};
+    const rvSorts=[['new','Сначала новые'],['useful','Сначала полезные'],['photo','С фото']].map(([id,label])=>({label,sel:rvSort===id?'true':'false',select:()=>this.setState({rvSort:id,rvShow:3}),style:this.chip(rvSort===id)}));
+    const rf=s.rf;const rfOk=rf.stars>0&&rf.text.trim().length>=20&&!!rf.agree;
     const kitchenTabs=Object.keys(KITCHEN).map(t=>{const a=s.kitchenTab===t;return {label:t,sel:a?'true':'false',select:()=>this.setState({kitchenTab:t}),style:`flex:0 0 auto;height:44px;padding:0 20px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;border:1px solid ${a?NAVY:'rgba(10,47,79,.25)'};background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
     const kitchenItems=(KITCHEN[s.kitchenTab]||[]).map((k,i)=>({...k,priceText:fmt(k.price),slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:'Фото: '+k.name.toLowerCase()+' — '+k.desc.split(',')[0]}));
     const reviewFilters=[{label:'Все',v:-1},...OPEN_HOUSES.map(h=>({label:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
@@ -2695,7 +2938,7 @@ class Component extends DCLogic {
         calHouse:bk.houseId==='any'?'ЛЮБОЙ ДОМ':hSel?'ДОМ '+hSel.name:'',calTitle:'Когда хотели бы приехать?',calSub:'Точные дату и время подтвердим, когда откроем бронирование',calNote:'Комплекс открывается в феврале 2027. Более ранние даты недоступны.',
         preHouses,cName:houseName,cLine1:dateText,cLine2:guestsTxt(bk.guests),cLines:[],sendError:false,
         canBack:bk.step>=2&&bk.step<=3,noBack:!(bk.step>=2&&bk.step<=3),bookingBack:()=>this.back(),backLabel:bk.step===3?'К дате':'К выбору дома',
-        stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:true,panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],
+        stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:true,panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],calOpts:[],sheetCal:false,
         bookingCta:bk.step===2||bk.step===3,...this.cta(bk.step===3||canNext,bk.step===2?'Продолжить':'Записаться на открытие'),hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false,
         bk:{...bk,houseName}};
     } else if(bk){
@@ -2771,7 +3014,7 @@ class Component extends DCLogic {
       const progs=(bk.progs||[]).filter(id=>PDATA[id]);const progSum=progs.reduce((m,id)=>m+PDATA[id].price,0);
       const tubCost=tubOn?CFG.tubPrice:0;
       const known=daily?hasStart&&!rentUnknown:end!=null;
-      const total=known?rentFull-discSum+gSum+tubCost+progSum:null;const totalTxt=total!=null?fmt(total):'уточнит администратор';
+      const total=known?rentFull-discSum+gSum+tubCost+progSum:null;const totalTxt=total!=null?fmt(total):'стоимость суток сообщит администратор';
       const prepay=this.prepayOf(h0,bk.date);
       const priceBreak=[...rentSeg,...(discSum?[{l:`Скидка пн–чт −${disc}%`,v:'−'+fmt(discSum)}]:[]),...(daily&&rentUnknown&&hasStart?[{l:'Стоимость суток',v:'уточнит администратор'}]:[]),...(gx?[{l:`Гости сверх ${h0.guestsIncl} · ${gx} × ${fmt(gFee)}`,v:fmt(gSum)}]:[]),...(tubCost?[{l:'Горячий чан',v:fmt(tubCost)}]:[]),...progs.map(id=>({l:'Парение: '+PDATA[id].name,v:fmt(PDATA[id].price)}))];
       const kids=bk.kids||0;const kidsTxt=kids?` + ${kids} ${plural(kids,'ребёнок','ребёнка','детей')} до ${CFG.childAge} лет`:'';
@@ -2826,22 +3069,42 @@ class Component extends DCLogic {
         hasExtras:exList.length>0,extras:'+ '+cap(exList.join(', '))};
       const calcRows=[...priceBreak.map(r=>({l:r.l,v:r.v,hasNote:false,note:''})),...(kitOn?[{l:'Набор для парения',v:'от '+fmt(8000),hasNote:true,note:'подтвердит администратор'}]:[]),...(tableOn?[{l:'Стол к приезду',v:'по меню',hasNote:true,note:'выберете после брони'}]:[])];
       const t0=this.today;
-      const addToCalendar=()=>{if(end==null)return;const a=new Date(t0.getTime()+st*3600000),b2=new Date(t0.getTime()+end*3600000);
-        const f=x=>x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0')+'T'+String(x.getHours()).padStart(2,'0')+'0000';
-        const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//SHIPA//RU','BEGIN:VEVENT','UID:'+Date.now()+'@shipa','DTSTAMP:'+f(new Date()),'DTSTART:'+f(a),'DTEND:'+f(b2),'SUMMARY:SHIPA — дом '+h0.name,'LOCATION:'+ADDR.replace(/,/g,'\\,'),'DESCRIPTION:'+guestsTxt(bk.guests)+', '+durTxt,'END:VEVENT','END:VCALENDAR'].join('\r\n');
-        const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));const l=document.createElement('a');l.href=url;l.download='shipa-'+h0.id+'.ics';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+      // «Добавить в календарь»: событие создаётся сразу в календаре гостя (Google / Outlook / Apple), .ics-файл — последним пунктом
+      const calOpts=(()=>{if(end==null)return [];const a=new Date(t0.getTime()+st*3600000),b2=new Date(t0.getTime()+end*3600000);
+        const p2=n=>String(n).padStart(2,'0');const f=x=>x.getFullYear()+p2(x.getMonth()+1)+p2(x.getDate())+'T'+p2(x.getHours())+p2(x.getMinutes())+'00';const iso=x=>x.getFullYear()+'-'+p2(x.getMonth()+1)+'-'+p2(x.getDate())+'T'+p2(x.getHours())+':'+p2(x.getMinutes())+':00';
+        const title=`SHIPA · ${h0.name} · ${h0.n}/${h0.tier}`;const bid=bk.id||'';
+        const details=[`${guestsTxt(bk.guests)}${kidsTxt} · ${durTxt}`,bk.paid?'Предоплата внесена':'Предоплата ожидается',bid?'Бронь № '+bid:'',`Администратор: ${C.phone}`,'WhatsApp: '+C.wa('')].filter(Boolean);
+        const loc=`${ADDR} (${this.props.mapLat??MAP0.lat}, ${this.props.mapLng??MAP0.lng})`;
+        const esc=t=>t.replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;');
+        const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//SHIPA//RU','X-WR-TIMEZONE:Asia/Almaty','BEGIN:VEVENT','UID:'+(bid||Date.now())+'@shipa','DTSTAMP:'+f(new Date())+'Z','DTSTART;TZID=Asia/Almaty:'+f(a),'DTEND;TZID=Asia/Almaty:'+f(b2),'SUMMARY:'+esc(title),'LOCATION:'+esc(loc),'DESCRIPTION:'+esc(details.join('\\n')),
+          'BEGIN:VALARM','TRIGGER:-PT24H','ACTION:DISPLAY','DESCRIPTION:SHIPA завтра','END:VALARM','BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:SHIPA через 2 часа','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+        const q=o=>Object.entries(o).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+        const google='https://calendar.google.com/calendar/render?'+q({action:'TEMPLATE',text:title,dates:f(a)+'/'+f(b2),ctz:'Asia/Almaty',details:details.join('\n'),location:loc});
+        const outlook='https://outlook.live.com/calendar/0/action/compose?'+q({rru:'addevent',subject:title,startdt:iso(a),enddt:iso(b2),body:details.join('\n'),location:loc});
+        const apple='data:text/calendar;charset=utf8,'+encodeURIComponent(ics);
+        const dl=e=>{e.preventDefault();const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));const l=document.createElement('a');l.href=url;l.download='shipa-'+h0.id+'.ics';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+        const close=()=>setTimeout(()=>this.setState({sheet:null,calPop:false}),150);
+        const dot=c=>`width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:${c};`;
+        const O={google:{label:'Google Календарь',hint:'откроется в браузере',href:google,target:'_blank',dotStyle:dot('#4285F4'),pick:close},
+          outlook:{label:'Outlook',hint:'личный и рабочий',href:outlook,target:'_blank',dotStyle:dot('#0F6CBD'),pick:close},
+          apple:{label:'Apple Календарь',hint:'iPhone и Mac',href:apple,dotStyle:dot(NAVY),pick:close},
+          other:{label:'Другой календарь',hint:'файл .ics',href:'#',dotStyle:dot('rgba(10,47,79,.35)'),pick:e=>{dl(e);close();}}};
+        const pl=this.plat||'other';const order=pl==='apple'?['apple','google','outlook']:['google','outlook','other'];return order.map(k=>O[k]);})();
+      const openCal=()=>{if(!calOpts.length)return;if(wide)this.setState({calPop:!s.calPop});else this.setState({sheet:'cal'});};
+      const calLine=end!=null?`${dLabel(sd)} · ${hh(st)}–${hh(end)} · ${h0.name}`:'';
       const split=bk.step===3||bk.step===4;
       const holdP=bk.holdAt?kzParts(bk.holdAt):null;const holdUntil=holdP?String(holdP.h).padStart(2,'0')+':'+String(holdP.mi).padStart(2,'0'):'';
       const menuLink=`${this.props.menuUrl||CFG.menuUrl}?house=${h0.id}&date=${this.dkey(bk.date)}&time=${encodeURIComponent(hh(st??D0+CFG.open))}&guests=${bk.guests}&booking=${encodeURIComponent(bk.id||'')}`;
       const modeSegs=[['hours','По часам'],['daily','Сутки']].map(([id,label])=>{const a=(bk.mode||'hours')===id;return {label,sel:a?'true':'false',select:()=>this.setMode(id),style:`height:44px;border-radius:999px;font-size:15px;font-weight:600;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
       const dIn=this.dateAt(bk.date),dOut=this.dateAt(bk.date+1);
       const todayNote=bk.date===0;
-      B={...this.calendar(bk,false),stepSegs,car,card,galSlides,galThumbs,galCounter:`${gi+1} / ${shownP.length}`,calcRows,addToCalendar,
+      B={...this.calendar(bk,false),stepSegs,car,card,galSlides,galThumbs,galCounter:`${gi+1} / ${shownP.length}`,calcRows,calOpts,openCal,calLine,calPopOpen:!!s.calPop&&wide,sheetCal:s.sheet==='cal',
         routeLink:this.mapVals(false).mapLinks.route,
         succ:{hasImg:cs!=='none',noImg:cs==='none',img:photos[0].src,n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
           wrapStyle:`position:relative;${wide?'margin:0 0 0;':'margin:-8px -20px 0;'}`,clipStyle:`position:relative;aspect-ratio:4/3;overflow:hidden;background:rgba(10,47,79,.08);border-radius:${wide?24:0}px;`,
           paid:!!bk.paid,pending:!bk.paid,title:bk.paid?'Бронь подтверждена':'Заявка принята — ждём предоплату',sub:bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`,
-          payLine:'Предоплата · '+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:'Оплатить '+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,todayNote,bookingId:bk.id||'',
+          payLine:'Предоплата · '+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:'Оплатить '+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,todayNote,bookingId:bk.id||'',hasId:!!bk.id,
+          waSecondary:!bk.paid||tableOn,secCols:wide&&(!bk.paid||tableOn)?'1fr 1fr':'1fr',
           badgeStyle:`position:absolute;left:50%;bottom:-32px;margin-left:-32px;width:64px;height:64px;border-radius:50%;background:${bk.paid?BRICK:NAVY};display:flex;align-items:center;justify-content:center;animation:popIn 300ms ease-out;`},
         stdHeader:!(bk.step===3&&!wide),overlayHdr:bk.step===3&&!wide,
         stepSegsLight:[1,2,3,4,5].map(i=>({...this.segNav(bk,i,false),style:`display:block;width:100%;height:2px;background:${i<=bk.step?CREAM:'rgba(249,239,227,.35)'};`})),
@@ -2929,7 +3192,7 @@ class Component extends DCLogic {
       openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:vw>=1024&&(s.hdrLv||0)<2,hdrNavGap:vw>=1280?'28px':'20px',hdrBookPad:vw>=1280?'24px':'20px',hdrSub:vw>=1440,hdrPhoneText:vw>=1280&&(s.hdrLv||0)<1,hdrPhoneIcon:!(vw>=1280&&(s.hdrLv||0)<1),hdrBook:vw>=768,hdrMenuBtn:!(vw>=1024&&(s.hdrLv||0)<2),hdrMenuWord:vw>=768&&!(vw>=1024&&(s.hdrLv||0)<2),hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
-      masters:MASTERS.map((m,i)=>({...m,slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),masterCol:wide?'calc((100% - 32px) / 3)':'72%',
+      masters:MASTERS.map((m,i)=>({...m,slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),
       svcFaq:SVC_FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.svcFaq===i,toggle:()=>this.setState({svcFaq:s.svcFaq===i?-1:i}),iconStyle:`width:32px;height:32px;border-radius:999px;border:1px solid ${NAVY};display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;transition:transform 200ms ease-out;transform:rotate(${s.svcFaq===i?45:0}deg);`})),
       svcHeroH:wide?'60svh':'min(64svh,560px)',svcHeroPad:wide?'120px 40px 56px':'88px 16px 32px',tabsTop:(s.hdrHidden?0:(vw>=768?72:56))+'px',pageSide:wide?'40px':'16px',introMaxH:wide?'520px':'320px',cardGap:wide?'24px':'16px',cardTop:wide?'32px':'20px',cardPad:wide?'20px':'16px',
       secPad:wide?'64px 40px 0':'32px 16px 0',introCols:wide?'minmax(0,5fr) minmax(0,7fr)':'minmax(0,1fr)',introGap:wide?'48px':'16px',introAspect:wide?'4/5':'16/9',
@@ -2966,9 +3229,9 @@ class Component extends DCLogic {
       closeGal:()=>{const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));},
       galDown:e=>{this._gp={x:e.clientX,y:e.clientY};},galCancel:()=>{this._gp=null;},
       galUp:e=>{const p=this._gp;this._gp=null;if(!p)return;if(e.clientY-p.y>90&&Math.abs(e.clientX-p.x)<60){const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));}},
-      sheetOpen:!!s.sheet,sheetCalc:s.sheet==='calc',sheetRules:s.sheet==='rules',sheetProgs:s.sheet==='progs'&&!!bk&&!bk.pre,sheetTitle:s.sheet==='calc'?'Расчёт':s.sheet==='date'?'Дата и гости':s.sheet==='progs'?'Программы парения':'Правила бронирования',rules:RULES,
-      sheetDate:s.sheet==='date'&&!!s.dsh&&!(bk&&bk.pre),ds:s.sheet==='date'&&s.dsh&&!(bk&&bk.pre)?this.dateSheetVals(bk||{step:0,date:s.quick.date,guests:s.quick.guests},s.dsh):{},sheetHandle:!(wide&&(s.sheet==='date'||s.sheet==='progs')),
-      sheetBoxStyle:wide&&(s.sheet==='date'||s.sheet==='progs')?'position:fixed;top:0;right:0;bottom:0;z-index:var(--z-sheet);width:'+(s.sheet==='progs'?420:480)+'px;max-width:100vw;display:flex;flex-direction:column;background:#F9EFE3;padding-top:12px;animation:panelIn 280ms cubic-bezier(.2,.8,.2,1);':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sheet);max-width:560px;margin:0 auto;max-height:86vh;display:flex;flex-direction:column;background:#F9EFE3;border-radius:24px 24px 0 0;animation:sheetUp 280ms cubic-bezier(.2,.8,.2,1);',
+      sheetOpen:!!s.sheet,sheetCalc:s.sheet==='calc',sheetRules:s.sheet==='rules',sheetProgs:s.sheet==='progs'&&!!bk&&!bk.pre,sheetTitle:s.sheet==='calc'?'Расчёт':s.sheet==='date'?'Дата и гости':s.sheet==='progs'?'Программы парения':s.sheet==='cal'?'Куда добавить?':s.sheet==='review'?'Ваш отзыв':s.sheet==='calcHow'?'Как считается цена':'Правила бронирования',rules:RULES,
+      sheetDate:s.sheet==='date'&&!!s.dsh&&!(bk&&bk.pre),ds:s.sheet==='date'&&s.dsh&&!(bk&&bk.pre)?this.dateSheetVals(bk||{step:0,date:s.quick.date,guests:s.quick.guests},s.dsh):{},sheetHandle:!(wide&&(s.sheet==='date'||s.sheet==='progs'||s.sheet==='review')),
+      sheetBoxStyle:wide&&(s.sheet==='date'||s.sheet==='progs'||s.sheet==='review')?'position:fixed;top:0;right:0;bottom:0;z-index:var(--z-sheet);width:'+(s.sheet==='progs'?420:480)+'px;max-width:100vw;display:flex;flex-direction:column;background:#F9EFE3;padding-top:12px;animation:panelIn 280ms cubic-bezier(.2,.8,.2,1);':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sheet);max-width:560px;margin:0 auto;max-height:86vh;display:flex;flex-direction:column;background:#F9EFE3;border-radius:24px 24px 0 0;animation:sheetUp 280ms cubic-bezier(.2,.8,.2,1);',
       sheetRef:this.sheetRef,sheetDown:e=>this.sheetDown(e),closeSheet:()=>this.setState({sheet:null}),
       openRules:e=>{if(e&&e.preventDefault){e.preventDefault();e.stopPropagation();}this.setState({sheet:'rules'});},
       phoneShown:phoneFmt(phoneDigits(s.form.phone)),phoneOk:phoneDigits(s.form.phone).length===10,
@@ -2996,20 +3259,32 @@ class Component extends DCLogic {
       keyOpen:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click();}},
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
-      houses,housesRowStyle,features:FEATURES,homePrograms:programs.slice(0,3),programs,
-      dishes:[['Бешбармак','конина, баранина, сорпа',32000,'Фото: бешбармак на большом блюде'],['Шашлык из баранины','корейка на углях, 1 кг',24000,'Фото: шашлык на углях'],['Казы и жая','конские деликатесы',14000,'Фото: нарезка казы'],['Баурсаки с мёдом','горячие, 12 штук',3500,'Фото: баурсаки и мёд'],['Степной сбор','чабрец, душица, самовар',4500,'Фото: чай из самовара'],['Судак на углях','целиком, лимон, травы',18000,'Фото: рыба на углях']].map((d,i)=>({name:d[0],desc:d[1],priceText:fmt(d[2]),photo:d[3],slot:'dish-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png','img/h1_acc.png','img/h6_acc.png','img/h3_acc.png'][i],style:`position:relative;flex:0 0 ${i===0?'78%':'62%'};max-width:${i===0?'400px':'300px'};aspect-ratio:${i===0?'4/5':'3/4'};overflow:hidden;scroll-snap-align:start;border-radius:20px;background:rgba(10,47,79,.08);`})),
-      atmosphere:[{slot:'atm-1',name:'Парная перед сеансом',img:'img/h2_int.png'},{slot:'atm-2',name:'Чан на дровах',img:'img/h7_int.png'},{slot:'atm-3',name:'Терраса вечером',img:'img/h4_int.png'},{slot:'atm-4',name:'Скраб и травы',img:'img/h3_acc.png'},{slot:'atm-5',name:'Чай после парной',img:'img/h1_acc.png'}].map((v,i)=>({...v,style:`position:relative;flex:0 0 ${i===0?'260px':'220px'};aspect-ratio:9/16;max-height:${i===0?'520px':'440px'};border-radius:20px;overflow:hidden;background:#3B2F2A;scroll-snap-align:center;`})),
+      houses,housesCls:lw?'grid':'',aboutCls:laneCls(4,4),merchCls:laneCls(MERCH.length,4),revCls:laneCls(3,3),atmCls:centerCls(5,5),vrevCls:centerCls(3,4),
+      mastersCls:laneCls(MASTERS.length,4),mastersGc:Math.min(4,Math.max(1,MASTERS.length)),mastersLaneStyle:lw?'margin:0;padding:0 0 8px;scroll-padding-inline:0;':'margin:0 -16px;padding:0 16px 8px;scroll-padding-inline:16px;',
+      features:FEATURES,homePrograms:programs.slice(0,3),programs,
+      dishes:[['Бешбармак','конина, баранина, сорпа',32000,'Фото: бешбармак на большом блюде'],['Шашлык из баранины','корейка на углях, 1 кг',24000,'Фото: шашлык на углях'],['Казы и жая','конские деликатесы',14000,'Фото: нарезка казы'],['Баурсаки с мёдом','горячие, 12 штук',3500,'Фото: баурсаки и мёд'],['Степной сбор','чабрец, душица, самовар',4500,'Фото: чай из самовара'],['Судак на углях','целиком, лимон, травы',18000,'Фото: рыба на углях']].map((d,i)=>({name:d[0],desc:d[1],priceText:fmt(d[2]),photo:d[3],slot:'dish-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png','img/h1_acc.png','img/h6_acc.png','img/h3_acc.png'][i]})),
+      atmosphere:[{slot:'atm-1',name:'Парная перед сеансом',sub:'дровяная печь, липа',img:'img/h2_int.png'},{slot:'atm-2',name:'Чан на дровах',sub:'горячая вода под открытым небом',img:'img/h7_int.png'},{slot:'atm-3',name:'Терраса вечером',sub:'тёплый свет, тишина',img:'img/h4_int.png'},{slot:'atm-4',name:'Скраб и травы',sub:'уход после парной',img:'img/h3_acc.png'},{slot:'atm-5',name:'Чай после парной',sub:'самовар, степной сбор',img:'img/h1_acc.png'}],
       atmRef:this.atmRef,atmPrev:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:-300,behavior:'smooth'}),atmNext:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:300,behavior:'smooth'}),
       homeReviews:reviews.slice(0,3),reviews,faq,pillars:PILLARS,
       catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
       house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==this.state.galleryIdx)this.setState({galleryIdx:i});}),
       lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),lightboxStyle:`width:min(96vw,1200px);height:min(90vh,800px);background:url(${gsrc[Math.max(0,s.lightbox)]}) center/contain no-repeat;`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,
+      hvSegs,hvWeek:hvMode==='week',hvMonth:hvMode==='month',hm,openCalcHow:()=>this.setState({sheet:'calcHow'}),sheetCalcHow:s.sheet==='calcHow',calcHow:calcHowRows,
       houseWeek,hwTitle:`${hwS.getDate()} ${MON[hwS.getMonth()]} — ${hwE.getDate()} ${MON[hwE.getMonth()]}`,hwPrev:()=>this.setState({hw:Math.max(0,s.hw-1)}),hwNext:()=>this.setState({hw:Math.min(51,s.hw+1)}),
       hwPrevStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};opacity:${s.hw===0?'.3':'1'};`,hwNextStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};`,
-      otherHouses,houseReviews,houseReviewsEmpty:houseReviews.length===0,houseRating:RATING[hIdx],
-      rf,reviewFormOpen:rf.open,reviewFormClosed:!rf.open,reviewSent:rf.sent,reviewNotSent:!rf.sent,openReviewForm:()=>this.setState({rf:{...rf,open:true}}),rfName:e=>this.setState({rf:{...rf,name:e.target.value}}),rfText:e=>this.setState({rf:{...rf,text:e.target.value}}),
-      rfStars:[1,2,3,4,5].map(n=>({set:()=>this.setState({rf:{...rf,stars:n}}),style:`width:44px;height:44px;font-size:26px;line-height:1;color:${n<=rf.stars?BRICK:'rgba(10,47,79,.25)'};`})),
-      rfSend:()=>rfOk&&this.setState({rf:{...rf,sent:true}}),rfDisabled:!rfOk,rfBtnStyle:`height:44px;padding:0 20px;border-radius:999px;background:${rfOk?BRICK:'rgba(10,47,79,.15)'};color:${rfOk?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:14px;`,
+      otherHouses,otherWrap:lw?'var(--wrap)':'720px',otherCls:laneCls(otherHouses.length,4),otherGc:Math.min(4,Math.max(1,otherHouses.length)),
+      laneTap:e=>this.laneTap(e,true),laneCenter:e=>this.laneTap(e,false),vidOpen:!!s.vid,vid:s.vid||{},closeVid:()=>this.setState({vid:null}),
+      houseReviews,houseReviewsEmpty:houseReviews.length===0,houseRating:RATING[hIdx],
+      rs,rvSorts,rvHasAny:rvAllBase.length>0,rvEmptyText:rvSort==='photo'?'Отзывов с фото пока нет.':'Отзывов об этом доме пока нет — станьте первым.',rvMore:rvAll.length>rvShow,rvShowMore:()=>this.setState({rvShow:rvShow+10}),
+      rf,sheetReview:s.sheet==='review',sheetReviewForm:s.sheet==='review'&&!rf.sent,reviewSent:rf.sent,reviewNotSent:!rf.sent,rfHouseLine:`Дом ${hRaw.name} · ${hRaw.n} / ${hRaw.tier}`,
+      openReviewForm:()=>{let name=rf.name;try{const u=JSON.parse(localStorage.getItem('shipa_user')||'null');if(u&&u.name&&!name)name=u.name;}catch(e){}this.setState({sheet:'review',rf:{...EMPTY_RF,name}});},
+      rfName:e=>this.setState({rf:{...rf,name:e.target.value}}),rfText:e=>this.setState({rf:{...rf,text:e.target.value.slice(0,1500)}}),rfCount:`${rf.text.trim().length} / 20${rf.text.trim().length>=20?' ✓':''}`,rfStarLabel:STAR_LABELS[rf.stars]||'Поставьте оценку',
+      rfStars:[1,2,3,4,5].map(n=>({set:()=>{vib(8);this.setState({rf:{...rf,stars:n}});},aria:`${n} — ${STAR_LABELS[n]}`,on:n<=rf.stars?'true':'false',style:`width:44px;height:44px;font-size:30px;line-height:1;color:${n<=rf.stars?BRICK:'rgba(10,47,79,.25)'};transition:color 150ms ease-out,transform 120ms;`})),
+      rfCanPhoto:rf.photos.length<3,rfPhoto:e=>{const fs=[...(e.target.files||[])].slice(0,3-rf.photos.length);const ph=fs.map(f=>({src:URL.createObjectURL(f)}));e.target.value='';this.setState({rf:{...rf,photos:[...rf.photos,...ph].map((p,i)=>({src:p.src,remove:()=>this.setState(st=>({rf:{...st.rf,photos:st.rf.photos.filter((_,j)=>j!==i)}}))}))}});},
+      rfAgreeAttr:rf.agree?'true':'false',rfAgreeToggle:()=>this.setState({rf:{...rf,agree:!rf.agree}}),rfAgreeBox:`flex:0 0 auto;width:22px;height:22px;margin-top:1px;border-radius:6px;border:1px solid ${rf.agree?NAVY:'rgba(10,47,79,.4)'};background:${rf.agree?NAVY:'transparent'};display:flex;align-items:center;justify-content:center;`,
+      rfSend:()=>{if(!rfOk)return;const r={id:'p'+Date.now(),name:rf.name.trim()||'Гость',date:'сегодня',stars:rf.stars,hi:hIdx,text:rf.text.trim(),photos:rf.photos.map(p=>p.src),pending:true,useful:0,initial:(rf.name.trim()||'Г')[0].toUpperCase(),starsTxt:''};
+        this.setState(st=>({rf:{...st.rf,sent:true},rfPosted:[{...r,stars:'★'.repeat(rf.stars)+'☆'.repeat(5-rf.stars)},...(st.rfPosted||[])],rvSort:'new',rvShow:Math.max(3,st.rvShow||3)}));},
+      rfDisabled:!rfOk,rfBtnStyle:`width:100%;height:56px;border-radius:999px;background:${rfOk?BRICK:'rgba(10,47,79,.15)'};color:${rfOk?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.02em;transition:background-color 200ms ease-out,color 200ms ease-out;`,
       kitchenTabs,kitchenItems,reviewFilters,filteredReviews,
       showSticky:(!wide||inHouse)&&(wide||inHouse||screen!=='home'||!!s.pastHalf)&&!(s.cart.length&&!bk)&&!bk&&!s.menuOpen&&!s.callOpen&&s.lightbox<0,stickyLabel,stickyAction:()=>{if(s.savedBk&&inHouse){this.setState({bk:{...s.savedBk,houseId:hRaw.id},savedBk:null});return;}this.openBooking(inHouse?hRaw.id:null);},
       showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
