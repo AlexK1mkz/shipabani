@@ -43,19 +43,20 @@
     .noscroll[style*="scroll-snap-type"]>*{scroll-snap-stop:always;}
     /* Карусели и ленты — единое правило (правила качества, п. 3.1): лента внутри контейнера, карточки одной ширины из --km/--kd,
        десктоп ≥1024: сетка (.grid), если помещаются, иначе прокрутка ровно по K карточек; «витринные» ленты (.center) центрируются */
-    .lane{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:20px;padding:0 20px 8px;--k:var(--km,1.2);--lg:16px;}
+    .lane{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:20px;padding:0 20px 8px;--k:var(--km,1.2);--lg:16px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
+    @media (prefers-reduced-motion:reduce){.lane{scroll-behavior:auto;}}
+    @media (min-width:600px) and (max-width:1023px){.lane{--k:var(--kt,2.4);}}
     .lane>[data-card]{flex:0 0 calc((100% - var(--lg)) / var(--k));min-width:0;scroll-snap-align:start;scroll-snap-stop:always;}
-    .lane.center>[data-card]{transition:transform 250ms ease-out,opacity 250ms ease-out;will-change:transform;}
-    .lane [data-cap]{transition:opacity 250ms ease-out;}
+    .lane.center{padding-block:12px;}
+    .lane.center>[data-card]{transform-origin:left center;transition:transform 250ms ease-out,opacity 250ms ease-out;will-change:transform;}
+    .lane.center [data-cap],.lane.center [data-scale]{transition:opacity 250ms ease-out,transform 250ms ease-out;transform-origin:left center;}
     @media (min-width:1024px){
       .lane{--lg:24px;gap:24px;--k:var(--kd,4);}
       .lane>[data-card]{flex-basis:calc((100% - (var(--k) - 1) * var(--lg)) / var(--k));}
       .lane.grid{display:grid;grid-template-columns:repeat(var(--gc,4),minmax(0,1fr));overflow:visible;scroll-snap-type:none;}
-      .lane.center>[data-card]{scroll-snap-align:center;}
-      .lane.center.fits{justify-content:center;}
-      .lane.center.scroll{scroll-padding-inline:calc(50% - ((100% - 40px - (var(--k) - 1) * var(--lg)) / var(--k)) / 2);}
-      .lane.center.scroll::before,.lane.center.scroll::after{content:'';flex:0 0 calc(50% - ((100% - (var(--k) - 1) * var(--lg)) / var(--k)) / 2 - var(--lg));}
     }
+    /* Витринные ленты («Атмосфера», «Видео-отзывы»): старт слева, на десктопе сетка, если помещаются, иначе K целых + начало следующей */
+    @media (min-width:1024px){.lane.center>[data-card]{transform:none!important;opacity:1!important;}.lane.center [data-cap],.lane.center [data-scale]{opacity:1!important;transform:none!important;}}
     image-slot,image-slot::part(img),image-slot img{touch-action:pan-x pan-y!important;}
     [data-hit]{position:relative;}
     [data-hit]::after{content:"";position:absolute;left:-4px;right:-4px;top:50%;height:44px;min-width:44px;transform:translateY(-50%);}
@@ -276,8 +277,7 @@
 
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:56px 20px 0;">
     <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> — это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
-    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-about" mobile-only="{{ true }}" pad="0 0 16px" hint-size="100%,56px"></dc-import></sc-if>
-    <div id="car-about" class="noscroll lane {{ aboutCls }}" style="margin:0 -20px;--kd:4;--km:1.2;--gc:4;">
+    <div id="car-about" class="noscroll lane {{ gridCls }}" style="margin:0 -20px;--kd:4;--kt:2.4;--km:1.2;--gc:4;">
       <sc-for list="{{ aboutItems }}" as="a" hint-placeholder-count="4">
         <div data-card="1" style="aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
           <img decoding="async" src="{{ a.img }}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -333,7 +333,7 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ — <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
       <p style="margin:0 0 24px;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);text-align:center;">Гость выбирает атмосферу, а не номер.</p>
     </div>
-    <div id="car-houses" class="noscroll lane {{ housesCls }}" style="--kd:4;--km:1.2;--gc:4;">
+    <div id="car-houses" class="noscroll lane {{ gridCls }}" style="--kd:4;--kt:2.4;--km:1.2;--gc:4;">
       <sc-for list="{{ houses }}" as="h" hint-placeholder-count="8">
         <article data-card="1" role="link" tabindex="0" aria-disabled="{{ h.soonAria }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="{{ h.cardStyle }}">
           <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
@@ -388,7 +388,7 @@
     </div>
     <div style="max-width:var(--wrap);margin:0 auto;position:relative;">
       <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-progs" mobile-only="{{ true }}" pad="0 20px 16px" hint-size="100%,56px"></dc-import></sc-if>
-      <div id="car-progs" class="noscroll lane" ref="{{ progRowRef }}" style="--kd:4;--km:1.2;">
+      <div id="car-progs" class="noscroll lane" ref="{{ progRowRef }}" style="--kd:4;--kt:2.4;--km:1.2;">
         <sc-for list="{{ programs }}" as="p" hint-placeholder-count="5">
           <div data-card="1" style="{{ p.cardStyle }}">
             <div style="aspect-ratio:4/3;overflow:hidden;background:#3B2F2A;"><image-slot id="{{ p.slot }}" src="{{ p.img }}" shape="rect" placeholder="{{ p.name }}"></image-slot></div>
@@ -423,8 +423,8 @@
       <p style="margin:14px auto 0;font-size:var(--fs-lead);opacity:.85;max-width:560px;line-height:1.5;text-wrap:pretty;">Ни спешки, ни посторонних. Только вы, пар, вода и тишина.</p>
     </div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;">
-      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-atm" tone="dark" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
-      <div id="car-atm" class="noscroll lane center {{ atmCls }}" ref="{{ atmRef }}" style="padding:28px 20px 8px;align-items:center;--kd:5;--km:1.6;">
+      <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-atm" tone="dark" mobile-only="{{ true }}" pad="24px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+      <div id="car-atm" class="noscroll lane center" ref="{{ atmRef }}" style="margin-top:8px;align-items:center;--kd:4.25;--kt:2.6;--km:1.25;">
         <sc-for list="{{ atmosphere }}" as="v" hint-placeholder-count="5">
           <div data-card="1" role="button" tabindex="0" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ laneTap }}" style="position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#3B2F2A;cursor:pointer;">
             <div style="position:absolute;inset:0;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
@@ -436,7 +436,7 @@
           </div>
         </sc-for>
       </div>
-      <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-atm" tone="dark" hint-size="100%,56px"></dc-import></sc-if>
+      <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-atm" tone="dark" mobile-only="{{ true }}" hint-size="100%,56px"></dc-import></sc-if>
       <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ atmPrev }}" aria-label="Назад" style="position:absolute;left:8px;top:50%;width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-size:18px;">←</button>
         <button onClick="{{ atmNext }}" aria-label="Вперёд" style="position:absolute;right:8px;top:50%;width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);color:#0A2F4F;display:flex;align-items:center;justify-content:center;font-size:18px;">→</button>
@@ -451,7 +451,7 @@
     </div>
     <div style="max-width:var(--wrap);margin:0 auto;">
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-dishes" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
-    <div id="car-dishes" class="noscroll lane" style="padding:28px 20px 8px;--kd:4;--km:1.2;">
+    <div id="car-dishes" class="noscroll lane" style="padding:28px 20px 8px;--kd:4;--kt:2.4;--km:1.2;">
       <sc-for list="{{ dishes }}" as="d" hint-placeholder-count="6">
         <div data-card="1" style="position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:20px;background:rgba(10,47,79,.08);">
           <div style="position:absolute;inset:0;"><image-slot id="{{ d.slot }}" src="{{ d.img }}" shape="rect" placeholder="{{ d.photo }}"></image-slot></div>
@@ -477,7 +477,7 @@
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">Полотенца, шапки, масла и веники, которыми пользуетесь в доме</p>
     </div>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-merch" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
-    <div id="car-merch" class="noscroll lane {{ merchCls }}" style="padding:28px 20px 8px;--kd:4;--km:1.2;--gc:4;">
+    <div id="car-merch" class="noscroll lane" style="padding:28px 20px 8px;--kd:4;--kt:2.4;--km:1.2;">
       <sc-for list="{{ merch }}" as="m" hint-placeholder-count="4">
         <div data-card="1" style="display:flex;flex-direction:column;">
           <div style="aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:rgba(10,47,79,.08);"><image-slot id="{{ m.slot }}" src="{{ m.img }}" shape="rect" placeholder="{{ m.name }}"></image-slot></div>
@@ -498,11 +498,11 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;"><span style="color:#C15C22;">ВИДЕО-ОТЗЫВЫ</span> НАШИХ ГОСТЕЙ</h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">Настоящие впечатления тех, кто уже побывал в SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></p>
     </div>
-    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-vrev" mobile-only="{{ true }}" pad="28px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
-    <div id="car-vrev" class="noscroll lane center {{ vrevCls }}" data-cap-desktop="1" style="padding:28px 20px 8px;align-items:flex-start;--kd:4;--km:1.6;">
+    <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-vrev" mobile-only="{{ true }}" pad="16px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    <div id="car-vrev" class="noscroll lane center" data-cap-desktop="1" style="margin-top:8px;align-items:flex-start;--kd:4.25;--kt:2.6;--km:1.25;">
       <sc-for list="{{ videoReviews }}" as="v" hint-placeholder-count="3">
-        <div data-card="1" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onClick="{{ laneCenter }}" style="position:relative;">
-          <div style="position:relative;aspect-ratio:9/19;border-radius:28px;border:6px solid #3B2F2A;background:#3B2F2A;overflow:hidden;">
+        <div data-card="1" data-noscale="1" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onClick="{{ laneCenter }}" style="position:relative;">
+          <div data-scale="1" style="position:relative;aspect-ratio:9/19;border-radius:28px;border:6px solid #3B2F2A;background:#3B2F2A;overflow:hidden;">
             <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:44%;height:16px;background:#3B2F2A;border-radius:0 0 12px 12px;z-index:2;"></div>
             <div style="position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#3B2F2A;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
             <button aria-label="Смотреть видео-отзыв" onClick="{{ laneTap }}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;z-index:2;"><svg width="16" height="16" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></button>
@@ -514,7 +514,7 @@
         </div>
       </sc-for>
     </div>
-    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-vrev" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-vrev" mobile-only="{{ true }}" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
   </section>
 
   <div data-bgmark="1" aria-hidden="true" style="position:relative;height:0;z-index:0;"><div style="position:absolute;right:-100px;top:60px;width:680px;height:680px;background:rgba(10,47,79,.16);-webkit-mask:url(brand/orn-venik.svg) center/contain no-repeat;mask:url(brand/orn-venik.svg) center/contain no-repeat;pointer-events:none;"></div></div>
@@ -530,18 +530,19 @@
       </sc-if>
     </div>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-rev" mobile-only="{{ true }}" pad="24px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
-    <div id="car-rev" class="noscroll lane {{ revCls }}" style="padding:24px 20px 8px;--kd:3;--km:1.15;--gc:3;">
+    <div id="car-rev" class="noscroll lane {{ revCls }}" style="padding:24px 20px 8px;align-items:stretch;--kd:2.3;--kt:1.6;--km:1.15;--gc:2;">
       <sc-for list="{{ homeReviews }}" as="r" hint-placeholder-count="3">
-        <div data-card="1" style="background:rgba(10,47,79,.06);border-radius:20px;padding:24px;position:relative;display:flex;flex-direction:column;">
-          <div style="position:absolute;right:24px;top:22px;font-family:'Cormorant Garamond',serif;font-size:72px;line-height:.6;color:rgba(193,92,34,.35);font-weight:700;">”</div>
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <div style="font-weight:600;">{{ r.name }}</div>
-            <div style="color:#C15C22;font-size:13px;letter-spacing:.12em;">{{ r.stars }}</div>
-            <div style="font-size:13px;color:rgba(10,47,79,.7);">{{ r.date }}</div>
+        <div data-card="1" style="background:rgba(10,47,79,.06);border-radius:20px;padding:20px;position:relative;display:flex;flex-direction:column;">
+          <div style="position:absolute;right:20px;top:18px;font-family:'Cormorant Garamond',serif;font-size:56px;line-height:.6;color:rgba(193,92,34,.35);font-weight:700;">”</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-right:32px;">
+            <div style="font-weight:600;font-size:15px;">{{ r.name }}</div>
+            <div style="color:#C15C22;font-size:12px;letter-spacing:.12em;">{{ r.stars }}</div>
+            <div style="font-size:12px;color:rgba(10,47,79,.7);">{{ r.date }}</div>
           </div>
-          <p style="margin:14px 0 0;font-size:var(--fs-body);line-height:1.6;color:rgba(10,47,79,.9);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;">{{ r.text }}</p>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap;">
-            <a href="https://2gis.kz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px 0 6px;border-radius:999px;background:#F9EFE3;font-size:12px;font-weight:600;letter-spacing:.06em;"><span style="width:28px;height:28px;border-radius:50%;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">2Г</span>ССЫЛКА НА ОТЗЫВ</a>
+          <p style="margin:12px 0 0;font-size:15px;line-height:1.55;color:rgba(10,47,79,.9);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">{{ r.text }}</p>
+          <sc-if value="{{ r.long }}" hint-placeholder-val="{{ false }}"><button data-hit="1" onClick="{{ goReviews }}" style="align-self:flex-start;height:28px;margin-top:2px;font-size:13px;font-weight:600;color:#C15C22;">Читать далее</button></sc-if>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:auto;padding-top:16px;flex-wrap:wrap;">
+            <a data-hit="1" href="https://2gis.kz" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 5px;border-radius:999px;background:#F9EFE3;font-size:12px;font-weight:600;letter-spacing:.06em;"><span style="width:26px;height:26px;border-radius:50%;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">2Г</span>ССЫЛКА НА ОТЗЫВ</a>
             <div style="font-size:12px;color:rgba(10,47,79,.7);letter-spacing:.06em;">{{ r.house }}</div>
           </div>
         </div>
@@ -549,7 +550,7 @@
     </div>
     <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><dc-import name="CarNav" target="car-rev" pad="4px 20px 0" hint-size="100%,56px"></dc-import></sc-if>
     <div style="display:flex;justify-content:center;gap:8px;padding:12px 20px 0;flex-wrap:wrap;">
-      <button onClick="{{ goReviews }}" style="height:48px;padding:0 22px;border-radius:999px;border:1px solid #0A2F4F;background:#F9EFE3;font-weight:600;font-size:14px;">Все отзывы</button>
+      <button onClick="{{ goReviews }}" style="height:48px;padding:0 22px;border-radius:999px;border:1px solid #0A2F4F;background:#F9EFE3;font-weight:600;font-size:14px;white-space:nowrap;flex:0 0 auto;">Все отзывы</button>
       <a href="https://2gis.kz" target="_blank" rel="noopener" style="height:48px;padding:0 22px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-weight:600;font-size:14px;">Оставить отзыв</a>
     </div>
   </section>
@@ -924,7 +925,7 @@
     <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ДРУГИЕ ДОМА</h3>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-other" mobile-only="{{ true }}" pad="0" hint-size="auto,44px"></dc-import></sc-if>
   </div>
-  <div id="car-other" class="noscroll lane {{ otherCls }}" style="--kd:4;--km:1.2;--gc:{{ otherGc }};">
+  <div id="car-other" class="noscroll lane {{ otherCls }}" style="--kd:4;--kt:2.4;--km:1.2;--gc:{{ otherGc }};">
     <sc-for list="{{ otherHouses }}" as="h" hint-placeholder-count="7">
       <article data-card="1" role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="text-align:left;cursor:pointer;">
         <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;"><div style="{{ h.bgStyle }}"></div></div>
@@ -1009,7 +1010,7 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">НАШИ МАСТЕРА</h2>
       <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><dc-import name="CarNav" target="car-masters" mobile-only="{{ true }}" pad="0" hint-size="auto,44px"></dc-import></sc-if>
     </div>
-    <div id="car-masters" class="noscroll lane {{ mastersCls }}" style="{{ mastersLaneStyle }}--kd:4;--km:1.2;--gc:{{ mastersGc }};">
+    <div id="car-masters" class="noscroll lane {{ mastersCls }}" style="{{ mastersLaneStyle }}--kd:4;--kt:2.4;--km:1.2;--gc:{{ mastersGc }};">
       <sc-for list="{{ masters }}" as="m" hint-placeholder-count="3">
         <article data-card="1" role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ m.open }}" style="text-align:left;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.55);border:1px solid rgba(59,47,42,.08);cursor:pointer;">
           <div style="aspect-ratio:3/4;background:#0A2F4F;color:#F9EFE3;"><image-slot id="{{ m.slot }}" shape="rect" placeholder="Фото мастера со спины или в работе"></image-slot></div>
@@ -2198,7 +2199,7 @@ const paras=a=>typeof a==='function'?a():Array.isArray(a)?a:[a];
 // Карта — виджет Яндекс Карт без ключа (2ГИС-виджет без карточки фирмы отдаёт ошибку). Настройки админки: mapLat, mapLng, mapLabel.
 const MAP0={lat:49.7656,lng:73.1716,label:'SHIPA',zoom:16,city:'karaganda'};
 // Выноски на логотипе в % от его ширины/высоты: 1 — над паром между листьями и S, 2 — у нижнего левого листа, 3 — у завитка над А
-const MEANING_PINS=[{n:1,x:6,y:11},{n:2,x:14,y:6},{n:3,x:93,y:10}]; // 1 — начало S-дуги, 2 — верхний синий лист (заказчик 09.10); координаты сняты с brand/logo-navy.png
+const MEANING_PINS=[{n:1,x:5,y:13},{n:2,x:21,y:26},{n:3,x:93,y:10}]; // 1 — начало S-дуги (пар), 2 — внешний край верхнего синего листа, ниже и правее, по диагонали от 1; 3 — завиток над А
 // Настройки из админки (правки 29.09). Часы — от 00:00 дня начала брони: close 26 = 02:00 следующего дня.
 const CFG={open:10,close:26,lastStart:21,tariffs:{day:[10,17],evening:[17,26]},minH:3,maxH:16,prep:2,daily:{in:14,out:12},tubPrice:15000,durs:[3,4,5,6,8],leadH:1,childAge:7,
   weekendDays:[5,6,0],holidays:['01-01','01-02','03-08','03-21','03-22','03-23','05-01','05-07','05-09','07-06','08-30','10-25','12-16'],tubHouses:['energiya'],
@@ -2584,12 +2585,13 @@ class Component extends DCLogic {
   attachLanes(){for(const id of ['car-atm','car-vrev']){const el=document.getElementById(id);if(!el||el._fx)continue;el._fx=true;
       const paint=()=>{el._raf=0;this.paintLane(el);};el.addEventListener('scroll',()=>{if(!el._raf)el._raf=requestAnimationFrame(paint);},{passive:true});
       paint();setTimeout(paint,300);setTimeout(paint,1200);}}
-  paintLane(el){const cards=el.querySelectorAll(':scope>[data-card]');if(!cards.length)return;const w=cards[0].getBoundingClientRect().width||220;const lc=el.getBoundingClientRect();const cx=lc.left+lc.width/2;const capAll=el.hasAttribute('data-cap-desktop')&&window.innerWidth>=1024;
-    cards.forEach(c=>{const r=c.getBoundingClientRect();const k=1-Math.min(1,Math.abs(r.left+r.width/2-cx)/w);
-      c.style.transform=this.reduced?'none':`scale(${(1+.08*k).toFixed(3)})`;c.style.opacity=(.7+.3*k).toFixed(2);c.dataset.center=k>.5?'1':'0';
-      const cap=c.querySelector('[data-cap]');if(cap)cap.style.opacity=(capAll||k>.5)?'1':'0';});}
+  // До 1024 px: активная карточка — та, что прилипла к левому полю: scale 1.04 от левого края, подпись 1, у остальных 0.6. На десктопе без эффекта.
+  paintLane(el){const cards=el.querySelectorAll(':scope>[data-card]');if(!cards.length)return;const desk=window.innerWidth>=1024;const w=cards[0].getBoundingClientRect().width||220;const lc=el.getBoundingClientRect();const cx=lc.left+20+w/2;
+    cards.forEach(c=>{const r=c.getBoundingClientRect();const k=desk?1:1-Math.min(1,Math.abs(r.left+r.width/2-cx)/w);const act=k>.5;c.dataset.center=act?'1':'0';
+      const tgt=c.hasAttribute('data-noscale')?c.querySelector('[data-scale]'):c;if(tgt){tgt.style.transform=desk||this.reduced?'':`scale(${(1+.04*k).toFixed(3)})`;}c.style.opacity=desk?'':(.85+.15*k).toFixed(2);
+      const cap=c.querySelector('[data-cap]');if(cap)cap.style.opacity=desk?'':(act?'1':'0.6');});}
   laneTap(e,open){const card=e.currentTarget.closest('[data-card]');if(!card)return;const lane=card.parentElement;if(card.dataset.center==='1'){if(open){e.stopPropagation();this.setState({vid:{img:card.dataset.img,name:card.dataset.name,play:true,ratio:'9/16',fit:'cover'}});}return;}
-    e.stopPropagation();const lc=lane.getBoundingClientRect(),r=card.getBoundingClientRect();lane.scrollTo({left:lane.scrollLeft+(r.left+r.width/2)-(lc.left+lc.width/2),behavior:this.reduced?'auto':'smooth'});}
+    e.stopPropagation();const lc=lane.getBoundingClientRect(),r=card.getBoundingClientRect();const target=lane.scrollLeft+r.left-lc.left-20;lane.scrollTo({left:target,behavior:this.reduced?'auto':'smooth'});}
   // «Весь день» / «с 19:00» / «до 14:00» / «с 10 до 14, с 19» — свободные промежутки словами
   freeLabel(hi,di){const r=[];let s=null;for(let k=CFG.open;k<=CFG.close;k++){const f=k<CFG.close&&this.cell(hi,di*24+k)==='free';if(f&&s==null)s=k;if(!f&&s!=null){r.push([s,k]);s=null;}}
     if(!r.length)return 'Занят';if(r.length===1&&r[0][0]===CFG.open&&r[0][1]===CFG.close)return 'Весь день';
@@ -2787,7 +2789,7 @@ class Component extends DCLogic {
       open:()=>!h.soon&&this.go('house',h.id),book:()=>this.openBooking(h.id)}));
     const openView=houseView.filter(h=>!h.soon);
     // Ленты (правила качества, п. 3.1): десктоп ≥1024 — сетка, если карточки помещаются (N ≤ K), иначе прокрутка по K; витринные — центрируются
-    const lw=(s.vw||0)>=1024;const laneCls=(n,k)=>lw&&n<=k?'grid':'';const centerCls=(n,k)=>lw?(n<=k?'fits':'scroll'):'';
+    const lw=(s.vw||0)>=1024;const laneCls=(n,k)=>lw&&n<=k?'grid':'';
     const houses=houseView.map(h=>({...h,cardStyle:'text-align:left;'+(h.soon?'cursor:default;':'')}));
     const SHOW=this.heroShowMs(),FADE=this.reduced?300:Math.min(SHOW-200,Math.round((+(this.props.heroFadeSec??1)||1)*1000));const hn=s.heroN||0;const run=this.heroAuto&&!s.heroPaused;
     const heroSlides=HERO_SLIDES.map((sl,i)=>{const act=s.hero===i,prv=s.heroPrev===i;const kb=!this.reduced&&(act||prv);const nm=(act?hn:hn-1)%2?'kbA':'kbB';return {style:`position:absolute;inset:0;background:#0A2F4F url(${sl.img}) center 45%/cover no-repeat;opacity:${act?1:0};transition:opacity ${FADE}ms ease-in-out;${kb?`animation:${nm} ${SHOW}ms linear forwards;animation-play-state:${run||prv?'running':'paused'};`:''}`};});
@@ -2809,7 +2811,7 @@ class Component extends DCLogic {
         style:`flex:0 0 auto;width:${w}px;height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
     const faq=FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
-    const reviews=REVIEWS.map((r,i)=>({...r,id:'r'+i,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
+    const reviews=REVIEWS.map((r,i)=>({...r,id:'r'+i,long:r.text.length>200,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
     const PROG_IMG=['img/h1_acc.png','img/h5_art.png','img/h2_int.png','img/h3_art.png','img/h6_acc.png'];
     const programs=PROGRAMS.map((p,i)=>{const un=!!p.unavailable;return {...p,unavailable:un,slot:'prog-'+i,img:PROG_IMG[i],priceText:fmt(p.price),addToBooking:()=>!un&&this.openBooking(null),
       cardStyle:`background:rgba(10,47,79,.06);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;opacity:${un?'.55':'1'};`,
@@ -3183,6 +3185,9 @@ class Component extends DCLogic {
         bk:{...bk,houseName:h0.name}};
     } else B={stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:false,payPanel:false,showPay:false,isVipHouse:false,hoursUI:true,dailyUI:false,todayNote:false,stripHintOn:false,progSheet:{list:[]},panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],bk:{houseName:'',guests:6},showCal:false,step2:false,step3:false,showContacts:false,stepDone:false,preStep1:false,preDone:false,bookingCta:false,openDateSheet:()=>this.openBooking(null,s.quick.date,s.quick.guests,1),bkHintOn:!!s.bkHint,bkHint:s.bkHint||'',canBack:false,noBack:true,backLabel:'',hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false};
 
+    const VREV=[{slot:'vr-1',name:'Айгерим',house:'01 / ДЫХАНИЕ',img:'img/h1_int.png'},{slot:'vr-2',name:'Дмитрий',house:'02 / СИЛА',img:'img/h2_int.png'},{slot:'vr-4',name:'Алия',house:'04 / СВЕТ',img:'img/h4_int.png'},{slot:'vr-3',name:'Руслан',house:'02 / СИЛА',img:'img/h7_int.png'},{slot:'vr-4',name:'Мадина и Тимур',house:'03 / БАЛАНС',img:'img/h3_int.png'}];
+    const ATM=[{slot:'atm-1',name:'Парная перед сеансом',sub:'дровяная печь, липа',img:'img/h2_int.png'},{slot:'atm-2',name:'Чан на дровах',sub:'горячая вода под открытым небом',img:'img/h7_int.png'},{slot:'atm-3',name:'Терраса вечером',sub:'тёплый свет, тишина',img:'img/h4_int.png'},{slot:'atm-4',name:'Скраб и травы',sub:'уход после парной',img:'img/h3_acc.png'},{slot:'atm-5',name:'Чай после парной',sub:'самовар, степной сбор',img:'img/h1_acc.png'}];
+    const HOME_REV=reviews.slice(0,6);
     const callOk=s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10;
     return {
       isWide:wide,isNarrow:!wide,showChrome:!bk,showRatings,isHome:screen==='home',isHouses:screen==='houses',isHouse:screen==='house',isServices:screen==='services',isKitchen:screen==='kitchen',isReviews:screen==='reviews',isAbout:screen==='about',isContacts:screen==='contacts',
@@ -3244,7 +3249,7 @@ class Component extends DCLogic {
       quickPrev:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       quickNext:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       heroSlides,heroDots,heroIsVideo:!!HERO_SLIDES[s.hero].video,
-      videoReviews:[{slot:'vr-1',name:'Айгерим',house:'01 / ДЫХАНИЕ',img:'img/h1_int.png'},{slot:'vr-2',name:'Дмитрий',house:'02 / СИЛА',img:'img/h2_int.png'},{slot:'vr-3',name:'Руслан',house:'02 / СИЛА',img:'img/h7_int.png'},{slot:'vr-4',name:'Мадина и Тимур',house:'03 / БАЛАНС',img:'img/h3_int.png'}],
+      videoReviews:VREV,
       phoneText:C.phone,telHref:C.tel,phoneAria:'Позвонить: '+C.phone,waGeneral:C.wa(C.t('waTextGeneral')),waHeader:C.wa(C.t('waTextGeneral')),waHero:C.wa(C.t('waTextHero')),waPre:C.wa(C.t('waTextPre')),waHouse:C.wa(C.t('waTextHouse',{дом:hRaw.name})),waError:(B.waErrorBk)||C.wa(C.t('waTextError')),
       stickyHouseWa:inHouse,waTip:!!s.waTip&&(!wide||!!s.pastHero||screen!=='home'),waTipBottom:wide?'32px':'calc(104px + env(safe-area-inset-bottom))',showWa:!bk&&!s.menuOpen&&s.lightbox<0&&(!wide||!!s.pastHero||screen!=='home'),
       phoneMissing:s.form.phone.replace(/\D/g,'').length<10,contactCallLabel:s.inlineSent?'Отправлено':'Отправить',
@@ -3259,13 +3264,13 @@ class Component extends DCLogic {
       keyOpen:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click();}},
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
-      houses,housesCls:lw?'grid':'',aboutCls:laneCls(4,4),merchCls:laneCls(MERCH.length,4),revCls:laneCls(3,3),atmCls:centerCls(5,5),vrevCls:centerCls(3,4),
+      houses,gridCls:lw?'grid':'',revCls:laneCls(HOME_REV.length,2),
       mastersCls:laneCls(MASTERS.length,4),mastersGc:Math.min(4,Math.max(1,MASTERS.length)),mastersLaneStyle:lw?'margin:0;padding:0 0 8px;scroll-padding-inline:0;':'margin:0 -16px;padding:0 16px 8px;scroll-padding-inline:16px;',
       features:FEATURES,homePrograms:programs.slice(0,3),programs,
       dishes:[['Бешбармак','конина, баранина, сорпа',32000,'Фото: бешбармак на большом блюде'],['Шашлык из баранины','корейка на углях, 1 кг',24000,'Фото: шашлык на углях'],['Казы и жая','конские деликатесы',14000,'Фото: нарезка казы'],['Баурсаки с мёдом','горячие, 12 штук',3500,'Фото: баурсаки и мёд'],['Степной сбор','чабрец, душица, самовар',4500,'Фото: чай из самовара'],['Судак на углях','целиком, лимон, травы',18000,'Фото: рыба на углях']].map((d,i)=>({name:d[0],desc:d[1],priceText:fmt(d[2]),photo:d[3],slot:'dish-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png','img/h1_acc.png','img/h6_acc.png','img/h3_acc.png'][i]})),
-      atmosphere:[{slot:'atm-1',name:'Парная перед сеансом',sub:'дровяная печь, липа',img:'img/h2_int.png'},{slot:'atm-2',name:'Чан на дровах',sub:'горячая вода под открытым небом',img:'img/h7_int.png'},{slot:'atm-3',name:'Терраса вечером',sub:'тёплый свет, тишина',img:'img/h4_int.png'},{slot:'atm-4',name:'Скраб и травы',sub:'уход после парной',img:'img/h3_acc.png'},{slot:'atm-5',name:'Чай после парной',sub:'самовар, степной сбор',img:'img/h1_acc.png'}],
+      atmosphere:ATM,
       atmRef:this.atmRef,atmPrev:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:-300,behavior:'smooth'}),atmNext:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:300,behavior:'smooth'}),
-      homeReviews:reviews.slice(0,3),reviews,faq,pillars:PILLARS,
+      homeReviews:HOME_REV,reviews,faq,pillars:PILLARS,
       catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
       house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==this.state.galleryIdx)this.setState({galleryIdx:i});}),
       lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),lightboxStyle:`width:min(96vw,1200px);height:min(90vh,800px);background:url(${gsrc[Math.max(0,s.lightbox)]}) center/contain no-repeat;`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,
