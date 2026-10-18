@@ -118,7 +118,44 @@
     input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#C15C22;margin-top:-13px;border:3px solid #F9EFE3;box-shadow:0 0 0 1px rgba(10,47,79,.25);}
     input[type=range]::-moz-range-track{height:2px;background:rgba(10,47,79,.25);}
     input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#C15C22;border:3px solid #F9EFE3;}
-  </style>
+  
+/* SHIPA OTHER HOUSES CENTER FIX */
+@media (max-width: 599px) {
+  #car-other {
+    --other-card-width: min(78vw, 320px);
+    padding-inline: calc((100% - var(--other-card-width)) / 2);
+    scroll-padding-inline: calc((100% - var(--other-card-width)) / 2);
+  }
+
+  #car-other > [data-card] {
+    flex: 0 0 var(--other-card-width);
+    scroll-snap-align: center;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  #car-other {
+    --k: 2;
+  }
+}
+
+/* SHIPA: lock background scrolling while booking rules are open */
+html:has([data-shipa-rules="true"]),
+body:has([data-shipa-rules="true"]) {
+    overflow: hidden !important;
+    overscroll-behavior: none;
+}
+
+body:has([data-shipa-rules="true"]) #bk-scroll {
+    overflow-y: hidden !important;
+    touch-action: none !important;
+}
+
+[data-shipa-rules="true"] > div[style*="overflow-y:auto"] {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+</style>
 </helmet>
 
 <div style="min-height:100vh;background:#F9EFE3;color:#0A2F4F;font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.4;">
@@ -145,7 +182,7 @@
       </sc-if>
     </div>
     <div style="justify-self:end;display:flex;align-items:center;gap:{{ hdrGap }};">
-      <a data-wa="1" href="{{ waHeader }}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp" title="Написать в WhatsApp" style="width:{{ hdrIcon }};height:{{ hdrIcon }};border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:#F9EFE3;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg></a>
+      <a data-wa="1" href="{{ waHeader }}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp" title="Написать в WhatsApp" style="width:{{ hdrIcon }};height:{{ hdrIcon }};border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:#F9EFE3;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
       <sc-if value="{{ hdrPhoneText }}" hint-placeholder-val="{{ true }}">
         <a href="{{ telHref }}" style="font-size:16px;font-weight:600;line-height:1;color:#F9EFE3;white-space:nowrap;border-radius:8px;padding:0 4px;">{{ phoneText }}</a>
       </sc-if>
@@ -594,7 +631,7 @@
           <div style="display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap;">
             <a href="{{ telHref }}" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:var(--fs-h3);letter-spacing:.02em;line-height:1;font-variant-numeric:lining-nums tabular-nums;">{{ phoneText }}</a>
             <div style="display:flex;gap:6px;">
-            <a href="{{ waGeneral }}" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg></a>
+            <a href="{{ waGeneral }}" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#F9EFE3" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
             <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#F9EFE3" stroke="none"/></svg></a>
             </div>
           </div>
@@ -602,7 +639,7 @@
         <div>
           <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;">WhatsApp</div>
           <p style="margin:10px 0 14px;font-size:var(--fs-body);color:rgba(10,47,79,.75);line-height:1.55;">Поможем подобрать дом и забронируем его для вас</p>
-          <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>Написать в WhatsApp</a>
+          <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#F9EFE3" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Написать в WhatsApp</a>
         </div>
       </div>
       <div>
@@ -1253,7 +1290,7 @@
 <sc-if value="{{ waTip }}" hint-placeholder-val="{{ false }}"><div role="status" style="position:fixed;right:84px;bottom:{{ waTipBottom }};z-index:var(--z-fab);max-width:220px;padding:10px 14px;border-radius:12px;background:#0A2F4F;color:#F9EFE3;font-size:14px;line-height:1.35;animation:fadeUp 300ms ease-out;">Есть вопрос? Ответим в WhatsApp</div></sc-if>
 <a href="{{ waGeneral }}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp" style="position:fixed;right:16px;bottom:{{ waBottom }};z-index:var(--z-fab);width:56px;height:56px;border-radius:999px;background:#0A2F4F;border:1px solid rgba(249,239,227,.2);display:flex;align-items:center;justify-content:center;">
   <span style="position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(10,47,79,.35);animation:waPulse 2.2s ease-out infinite;"></span>
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="#F9EFE3" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 </a>
 </sc-if>
 
@@ -1369,7 +1406,7 @@
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Режим работы</div><div style="color:#F9EFE3;">{{ hoursLine1 }}</div><div style="color:rgba(249,239,227,.7);">{{ hoursLine2 }}</div></div>
       </div>
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
-        <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 16px;border:1px solid rgba(249,239,227,.3);border-radius:999px;display:flex;align-items:center;gap:8px;color:#F9EFE3;font-size:14px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8.5 8.5 0 1 1 8.2 19.1L4 20z"/><path d="M9.5 9.2c.2 1.9 2.4 4.4 4.6 5.1l1.2-1.1-1.7-1-1 .6c-.7-.3-1.6-1.2-2-1.9l.6-1-1-1.7-1 1.1z"/></svg>WhatsApp</a>
+        <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 16px;border:1px solid rgba(249,239,227,.3);border-radius:999px;display:flex;align-items:center;gap:8px;color:#F9EFE3;font-size:14px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp</a>
         <a href="#" style="height:44px;padding:0 16px;border:1px solid rgba(249,239,227,.3);border-radius:999px;display:flex;align-items:center;gap:8px;color:#F9EFE3;font-size:14px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>Instagram</a>
         <button onClick="{{ startBookingFromMenu }}" style="height:52px;padding:0 32px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.01em;">{{ bookLabel }}</button>
       </div>
@@ -1977,7 +2014,7 @@
 <!-- BOTTOM SHEET -->
 <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
 <div onClick="{{ closeSheet }}" style="position:fixed;inset:0;z-index:var(--z-sheet-bg);background:rgba(10,47,79,.5);animation:fadeIn 200ms ease;"></div>
-<div ref="{{ sheetRef }}" role="dialog" aria-modal="true" aria-label="{{ sheetTitle }}" data-screen-label="Нижний лист" style="{{ sheetBoxStyle }}">
+<div ref="{{ sheetRef }}" role="dialog" aria-modal="true" aria-label="{{ sheetTitle }}" data-screen-label="Нижний лист" data-shipa-rules="{{ sheetRules }}" style="{{ sheetBoxStyle }}">
   <div onPointerDown="{{ sheetDown }}" style="touch-action:none;cursor:grab;padding:10px 20px 6px;">
     <sc-if value="{{ sheetHandle }}" hint-placeholder-val="{{ true }}"><div style="width:36px;height:4px;border-radius:2px;background:rgba(59,47,42,.25);margin:0 auto 14px;"></div></sc-if>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
@@ -2356,6 +2393,7 @@ class Component extends DCLogic {
 
   componentDidMount(){
     window.__shipa=this;
+    try{this._priorScrollRestoration=history.scrollRestoration;history.scrollRestoration='manual';}catch(e){}
     // Карта грузится только когда блок попал в экран
     this._mapSeen=new WeakSet();
     try{this._mapIO=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const k=e.target.dataset.map;this._mapIO.unobserve(e.target);if(!this.state.maps[k].show){this.setMap(k,{show:true});clearTimeout(this['_mapT'+k]);this['_mapT'+k]=setTimeout(()=>{if(!this.state.maps[k].ok)this.setMap(k,{show:false,failed:true});},5000);}});},{rootMargin:'200px 0px'});}catch(e){}
@@ -2446,7 +2484,7 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
   componentDidUpdate(pp,prev){
     pp=pp||this.props;prev=prev||this.state;
     const s=this.state,b=s.bk;
@@ -2456,7 +2494,7 @@ class Component extends DCLogic {
       if(pb&&pb.step===b.step&&['date','houseId','start','dur','tub','guests','mode'].some(k=>b[k]!==pb[k]))mx=b.step;
       if(mx<b.step)mx=b.step;if(mx!==(b.maxStep||0))this.setState(st=>({bk:{...st.bk,maxStep:mx}}));}
     this.syncHist();this.applyStress();
-    if(prev.screen!==s.screen||prev.houseId!==s.houseId){window.scrollTo(0,0);this.observeReveal();}
+    if(prev.screen!==s.screen||prev.houseId!==s.houseId){this.resetPageScroll();this.observeReveal();}
     if(b&&(!prev.bk||prev.bk.step!==b.step))this.bkTop();
     if(b)this.qaSchedule();
     {const k=b&&b.step===3?b.date:null;if(k!==this._stripKey){const first=this._stripKey==null;this._stripKey=k;if(k!=null)requestAnimationFrame(()=>requestAnimationFrame(()=>this.stripTo(first)));}}
@@ -2498,8 +2536,39 @@ class Component extends DCLogic {
     window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cn);}
   observeReveal(){if(this._rv)return;this._rv=requestAnimationFrame(()=>{this._rv=0;document.querySelectorAll('[data-reveal]:not(.in)').forEach(el=>{const r=el.getBoundingClientRect();if(r.top<window.innerHeight&&r.bottom>0)el.classList.add('in');else this.io.observe(el);});});}
 
-  go(screen,houseId=null){this.setState(s=>({screen,houseId,menuOpen:false,history:[...s.history,{screen:s.screen,houseId:s.houseId}].slice(-10),galleryIdx:0,hw:0,rf:EMPTY_RF}));}
-  goBack(){this.setState(s=>{const h=s.history.slice();const p=h.pop()||{screen:'home',houseId:null};return {screen:p.screen,houseId:p.houseId,history:h};});}
+  resetPageScroll(){
+    const token=(this._pageScrollToken||0)+1;
+    this._pageScrollToken=token;
+
+    const jump=()=>{
+      if(this._pageScrollToken!==token)return;
+
+      const root=document.scrollingElement||document.documentElement;
+      if(root)root.scrollTop=0;
+      if(document.documentElement)document.documentElement.scrollTop=0;
+      if(document.body)document.body.scrollTop=0;
+
+      try{
+        window.scrollTo({left:0,top:0,behavior:'instant'});
+      }catch(e){
+        window.scrollTo(0,0);
+      }
+
+      if(this.frameW){
+        const host=document.querySelector('.sc-host')||
+                   document.getElementById('dc-root');
+        if(host)host.scrollTop=0;
+      }
+    };
+
+    jump();
+
+    if(!this._kitchenNavPending){
+      requestAnimationFrame(()=>requestAnimationFrame(jump));
+    }
+  }
+  go(screen,houseId=null){this.setState(s=>({screen,houseId,menuOpen:false,history:[...s.history,{screen:s.screen,houseId:s.houseId}].slice(-10),galleryIdx:0,hw:0,rf:EMPTY_RF}),()=>this.resetPageScroll());}
+  goBack(){this.setState(s=>{const h=s.history.slice();const p=h.pop()||{screen:'home',houseId:null};return {screen:p.screen,houseId:p.houseId,history:h};},()=>this.resetPageScroll());}
 
   dateAt(i){const d=new Date(this.today);d.setDate(d.getDate()+i);return d;}
   dkey(di){const d=this.dateAt(di);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -2607,7 +2676,7 @@ class Component extends DCLogic {
       setTimeout(()=>{const b=el.querySelector('[data-menu-cta]');if(b){b.style.animation=this.reduced?'':'menuPulse 900ms ease-out 2';setTimeout(()=>{b.style.animation='';},1900);}},this.reduced?0:600);};
     if(this.state.menuOpen)this.setState({menuOpen:false});
     if(this.state.screen==='home'){run();return;}
-    this.go('home');setTimeout(run,60);setTimeout(run,300);}
+    this._kitchenNavPending=true;this.go('home');setTimeout(()=>{this._kitchenNavPending=false;run();},60);setTimeout(run,300);}
   openMenuUrl(){const u=this.props.menuUrl||CFG.menuUrl;location.href=u;if(this.state.menuOpen)this.setState({menuOpen:false});}
   formOk(){const f=this.state.form;return f.name.trim().length>0&&phoneDigits(f.phone).length>=10&&!!f.agree;}
   // Предоплата: ссылка платёжной системы из админки; результат в прототипе — по демо-переключателю
