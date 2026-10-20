@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script defer src="./shipa-ru-kz.js"></script>
 </head>
 <body>
 <x-dc>
@@ -48,6 +49,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 <!-- Основная область -->
 <main style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;">
   <header style="height:72px;flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:0 32px;">
+<div role="group" aria-label="Язык / Тіл" style="display:flex;gap:3px;padding:4px;background:#f4eee8;border-radius:999px;flex-shrink:0;">
+<button data-shipa-lang="RU" style="border-radius:999px;padding:8px 12px;font-size:12px;font-weight:600;">RU</button>
+<button data-shipa-lang="KZ" style="border-radius:999px;padding:8px 12px;font-size:12px;font-weight:600;">KZ</button>
+</div>
     <h1 style="font-size:24px;font-weight:600;margin:0;letter-spacing:-.01em;white-space:nowrap;">{{ screenTitle }}</h1>
     <span style="font-size:14px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ todayLabel }}</span>
     <div style="margin-left:auto;position:relative;width:360px;">
