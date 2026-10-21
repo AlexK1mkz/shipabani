@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
-<script defer src="./shipa-booking-kz.js"></script>
-<script defer src="./shipa-extra-kz.js"></script>
-<script defer src="./shipa-content-kz.js"></script>
+
+
+
 <script defer src="./shipa-ru-kz.js"></script>
 </head>
 <body>
@@ -342,7 +342,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </sc-if>
 
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:56px 20px 0;">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">{{ shipaBrandText }}<span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIPÁ — это свой дом, натуральные материалы, тёплый свет и сервис, согласованный заранее.</h2>
     <div id="car-about" class="noscroll lane {{ gridCls }}" style="margin:0 -20px;--kd:4;--kt:2.4;--km:1.2;--gc:4;">
       <sc-for list="{{ aboutItems }}" as="a" hint-placeholder-count="4">
         <div data-card="1" style="aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
@@ -493,7 +493,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <div id="car-atm" class="noscroll lane center" ref="{{ atmRef }}" style="margin-top:8px;align-items:center;--kd:4.25;--kt:2.6;--km:1.25;">
         <sc-for list="{{ atmosphere }}" as="v" hint-placeholder-count="5">
           <div data-card="1" role="button" tabindex="0" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ laneTap }}" style="position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#3B2F2A;cursor:pointer;">
-            <div style="position:absolute;inset:0;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
+            <div style="position:absolute;inset:0;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" fit="contain" placeholder="{{ v.name }}"></image-slot></div>
             <span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></span>
             <div data-cap="1" style="position:absolute;left:0;right:0;bottom:0;top:40%;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;color:#F9EFE3;background:linear-gradient(180deg,rgba(59,47,42,0) 0%,rgba(59,47,42,.9) 100%);">
               <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.04em;line-height:1.1;">{{ v.name }}</div>
@@ -568,9 +568,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <div id="car-vrev" class="noscroll lane center" data-cap-desktop="1" style="margin-top:8px;align-items:flex-start;--kd:4.25;--kt:2.6;--km:1.25;">
       <sc-for list="{{ videoReviews }}" as="v" hint-placeholder-count="3">
         <div data-card="1" data-noscale="1" data-img="{{ v.img }}" data-name="{{ v.name }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onClick="{{ laneCenter }}" style="position:relative;">
-          <div data-scale="1" style="position:relative;aspect-ratio:9/19;border-radius:28px;border:6px solid #3B2F2A;background:#3B2F2A;overflow:hidden;">
-            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:44%;height:16px;background:#3B2F2A;border-radius:0 0 12px 12px;z-index:2;"></div>
-            <div style="position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#3B2F2A;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
+          <div data-scale="1" style="position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:rgba(10,47,79,.08);">
+            <div style="position:absolute;inset:0;overflow:hidden;"><image-slot id="{{ v.slot }}" src="{{ v.img }}" shape="rect" placeholder="{{ v.name }}"></image-slot></div>
             <button aria-label="Смотреть видео-отзыв" onClick="{{ laneTap }}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(249,239,227,.9);display:flex;align-items:center;justify-content:center;z-index:2;"><svg width="16" height="16" viewBox="0 0 22 22" fill="#C15C22"><path d="M7 3l12 8-12 8z"/></svg></button>
           </div>
           <div data-cap="1">
@@ -1135,6 +1134,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             </div>
             <div style="padding:{{ cardPad }};display:flex;flex-direction:column;gap:8px;flex:1;">
               <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1.1;color:#0A2F4F;">{{ k.name }}</div><div style="font-size:18px;font-weight:600;white-space:nowrap;">{{ k.priceText }}</div></div>
+              <sc-if value="{{ k.hasPortion }}" hint-placeholder-val="{{ false }}"><div data-menu-portion="1" style="font-size:13px;line-height:1.4;color:rgba(10,47,79,.64);">{{ k.portion }}</div></sc-if>
               <sc-if value="{{ k.hasWho }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:rgba(59,47,42,.7);">{{ k.whoText }}</div></sc-if>
               <div style="font-size:15px;line-height:1.5;color:rgba(10,47,79,.85);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ k.desc }}</div>
               <span style="font-size:14px;color:#0A2F4F;text-decoration:underline;text-underline-offset:3px;">Подробнее</span>
@@ -1361,7 +1361,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <sc-if value="{{ pd.isProg }}" hint-placeholder-val="{{ false }}">
       <div style="margin-top:24px;display:flex;align-items:center;gap:12px;padding:16px;border-radius:16px;background:rgba(10,47,79,.05);">
         <span style="width:48px;height:48px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;flex:0 0 auto;">S</span>
-        <div><div style="font-weight:600;">Мастер</div><div style="font-size:14px;color:rgba(59,47,42,.75);">Мастера подберём под вас</div></div>
+        <div style="flex:1;min-width:0;"><div style="font-weight:600;">Мастер</div><div style="font-size:14px;color:rgba(59,47,42,.75);">Наличие мастера и время сеанса уточняйте у администратора</div><a href="{{ pd.masterWa }}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;min-height:40px;margin-top:8px;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px;color:#0A2F4F;">Уточнить в WhatsApp →</a></div>
       </div>
       <div style="margin-top:16px;border-top:1px solid rgba(59,47,42,.1);border-bottom:1px solid rgba(59,47,42,.1);">
         <button onClick="{{ pdContraToggle }}" aria-expanded="{{ pdContra }}" style="width:100%;min-height:56px;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:500;text-align:left;border-radius:8px;"><span>Кому стоит быть осторожнее</span><span style="{{ pdContraIcon }}">+</span></button>
@@ -2307,6 +2307,11 @@ const PROGRAMS=[
  {name:'Массаж и уход',dur:'1 час',who:'после парения',price:20000,desc:'Массаж тёплым маслом, скраб на основе соли и мёда. В комнате отдыха.'},
 ];
 const P_IDS=['classic','herbal','conifer','soft','massage'];
+// Service-page content is translated at the data-source level.
+// This avoids the RU/KZ race between React renders and DOM text observers.
+const SERVICE_TEXT_KZ={"Парение":"Булау","Массаж":"Уқалау","Пилинг":"Дене скрабы","Массаж и уход":"Уқалау және күтім","Массаж тёплым маслом, скраб на основе соли и мёда. В комнате отдыха.":"Демалыс бөлмесінде жылы маймен денені уқалау және тұз бен балдан жасалған скрабпен күтім жасау.","Пилинг на соли и мёде":"Тұз бен балдан жасалған дене скрабы","Пармастер ведёт сеанс от прогрева до чая: веники, травяные настои, контраст с чаном. Подходит и тем, кто парится впервые, и тем, кто любит жар.":"Монша шебері денені жылытудан бастап шай ішуге дейінгі сеансты жүргізеді: сыпыртқылар, шөп тұнбалары және чанға түсу. Алғаш рет моншаға келгендерге де, ыстық буды ұнататындарға да лайық.","Массаж тёплым маслом в комнате отдыха, когда мышцы уже прогреты парной. Спокойный темп, без спешки.":"Бу бөлмесінде бұлшықеттер жылынғаннан кейін демалыс бөлмесінде жылы маймен денеге уқалау жасалады. Бәрі асықпай, жайлы қарқынмен өтеді.","Скраб на соли и мёде после прогрева: кожа мягкая, дыхание лёгкое.":"Дене жылынғаннан кейін тұз бен балдан жасалған скрабпен күтім жасалады: тері жұмсарып, бой сергиді.","Классическое парение":"Классикалық булау","Травяное парение":"Шөппен булау","Хвойное парение с контрастом":"Қылқанжапырақты сыпыртқымен булау","Мягкое расслабляющее":"Босаңсытатын жұмсақ булау","Для восстановления сил":"Күш-қуатты қалпына келтіру үшін","Для пары":"Жұптарға арналған","Для тех, кто впервые":"Алғаш рет моншаға келетіндерге","Для спокойного вечера":"Жайлы, тыныш кеш үшін","После парения":"Булаудан кейін","После прогрева":"Дене жылынғаннан кейін","для восстановления сил":"күш-қуатты қалпына келтіру үшін","для пары":"жұптарға арналған","для тех, кто впервые":"алғаш рет моншаға келетіндерге","для спокойного вечера":"жайлы, тыныш кеш үшін","после парения":"булаудан кейін","после прогрева":"дене жылынғаннан кейін","1,5 часа":"1,5 сағат","2 часа":"2 сағат","1 час":"1 сағат","40 минут":"40 минут","Временно недоступна":"Уақытша қолжетімсіз","Только в VIP-домах":"Тек VIP үйлерде","Прогрев, два захода с веником, отдых с чаем. Темп — по самочувствию.":"Денені жылыту, сыпыртқымен екі рет булау және шай ішіп демалу. Қарқыны өз жағдайыңызға қарай таңдалады.","Настой степных трав, мягкий пар, медленный ритм. После — чай из тех же трав.":"Дала шөптерінің тұнбасы, жұмсақ бу және баяу қарқын. Соңында сол шөптерден дайындалған шай беріледі.","Кедровый и дубовый веник, три захода, охлаждение в чане между ними.":"Балқарағай мен емен сыпыртқылары арқылы үш рет булау, арасында чанға түсіп салқындау.","Низкая температура, ароматы лаванды и сандала, без резких контрастов.":"Төмен температура, лаванда мен сандал ағашының хош иісі. Температура күрт өзгермейді.","Мягкий скраб из соли и мёда по всему телу, затем тёплый душ и отдых. Можно добавить к любой программе парения.":"Бүкіл денеге тұз бен балдан жасалған жұмсақ скраб жағылады. Одан кейін жылы душ пен демалыс. Кез келген булау бағдарламасына қосуға болады.","Прогрев":"Жылыту","Первый заход с веником":"Сыпыртқымен бірінші булау","Чан":"Чан","Второй заход":"Екінші булау","Чай и отдых":"Шай ішіп демалу","Запарка трав, первый заход":"Шөптерді дайындау, бірінші булау","Чай из тех же трав":"Сол шөптерден дайындалған шай","Заход с кедровым веником":"Балқарағай сыпыртқысымен булау","Третий заход":"Үшінші булау","Мягкий прогрев":"Ақырын жылыту","Заход без веника, ароматы":"Сыпыртқысыз булау, хош иістер","Разогрев мышц":"Бұлшықеттерді жылыту","Спина и плечи":"Арқа мен иық","Ноги":"Аяқтар","Отдых и чай":"Демалыс және шай","Прогрев в парной":"Бу бөлмесінде жылыту","Нанесение скраба":"Скраб жағу","Тёплый душ":"Жылы душ","Отдых":"Демалыс","Берёзовый и дубовый веники":"Қайың және емен сыпыртқылары","Травяной настой для пара":"Буға арналған шөп тұнбасы","Чай после парной":"Булаудан кейінгі шай","Полотенца и простыни":"Сүлгілер мен жаймалар","Сбор степных трав":"Дала шөптерінің жинағы","Дубовый веник":"Емен сыпыртқысы","Травяной чай":"Шөп шайы","Кедровый и дубовый веники":"Балқарағай мен емен сыпыртқылары","Горячий чан":"Ыстық чан","Масла лаванды и сандала":"Лаванда және сандал майлары","Чай":"Шай","Тёплое масло":"Жылы май","Полотенца":"Сүлгілер","Соль и мёд":"Тұз бен бал","Что входит":"Не кіреді","Беременность, высокое давление, болезни сердца и сосудов, острые воспаления и температура, недавние травмы. Если сомневаетесь — посоветуйтесь с врачом или напишите нам, подберём мягкую программу.":"Жүктілік, жоғары қан қысымы, жүрек-қан тамырлары аурулары, жедел қабыну, дене қызуының көтерілуі және жақында алған жарақаттар кезінде дәрігермен кеңесіңіз. Күмәндансаңыз, бізге жазыңыз."};
+const svcText=(value,lang)=>lang==='KZ'?(SERVICE_TEXT_KZ[value]||value):value;
+
 const PDATA={
  classic:{photo:'Фото: мастер с берёзовым веником в пару, спина гостя на полке',steps:[['Прогрев','15 мин'],['Первый заход с веником','20 мин'],['Чан','10 мин'],['Второй заход','20 мин'],['Чай и отдых','25 мин']],incl:['Берёзовый и дубовый веники','Травяной настой для пара','Чай после парной','Полотенца и простыни']},
  herbal:{photo:'Фото: веник и травы в запарнике, пар, пучки трав на полке',steps:[['Прогрев','15 мин'],['Запарка трав, первый заход','25 мин'],['Отдых','10 мин'],['Второй заход','20 мин'],['Чай из тех же трав','20 мин']],incl:['Сбор степных трав','Дубовый веник','Травяной чай','Полотенца и простыни']},
@@ -2347,10 +2352,10 @@ const FAQ=[
  {q:'Можно ли продлить на месте?',a:'Да, если следующий слот свободен. Стоимость считается по тарифу того времени, на которое продлеваете. Напишите администратору в WhatsApp.'},
 ];
 const KITCHEN={
- 'Чайная карта':[{name:'Степной сбор',desc:'чабрец, душица, зверобой, 0,8 л',price:4500},{name:'Иван-чай с облепихой',desc:'ферментированный, мёд отдельно, 0,8 л',price:4800},{name:'Пуэр шу 2018',desc:'заваривание проливом, 6 проливов',price:6500}],
+ 'Чайная карта':[{name:'Степной сбор',desc:'чабрец, душица, зверобой, 0,8 л',portion:'Объём: 0,8 л',price:4500},{name:'Иван-чай с облепихой',desc:'ферментированный, мёд отдельно, 0,8 л',portion:'Объём: 0,8 л',price:4800},{name:'Пуэр шу 2018',desc:'заваривание проливом, 6 проливов',price:6500}],
  'Закуски':[{name:'Сет солений',desc:'огурцы, капуста, чеснок, черемша',price:6000},{name:'Казы и жая',desc:'домашние конские деликатесы, лук, хлеб',price:14000},{name:'Овощи с дымком',desc:'баклажан, перец, томаты, зелень',price:7500}],
- 'Горячее':[{name:'Бешбармак',desc:'конина и баранина, тесто, сорпа, на 4–6',price:32000},{name:'Шашлык из баранины',desc:'корейка, 1 кг, лук и лаваш',price:24000},{name:'Судак на углях',desc:'целиком, лимон, травы',price:18000}],
- 'Десерты':[{name:'Медовик',desc:'сметанный крем, на компанию',price:9000},{name:'Баурсаки с мёдом',desc:'горячие, 12 штук',price:3500},{name:'Сезонные фрукты',desc:'тарелка на 6 гостей',price:8000}],
+ 'Горячее':[{name:'Бешбармак',desc:'конина и баранина, тесто, сорпа, на 4–6',price:32000},{name:'Шашлык из баранины',desc:'корейка, 1 кг, лук и лаваш',portion:'Вес: 1 кг',price:24000},{name:'Судак на углях',desc:'целиком, лимон, травы',price:18000}],
+ 'Десерты':[{name:'Медовик',desc:'сметанный крем, на компанию',price:9000},{name:'Баурсаки с мёдом',desc:'горячие, 12 штук',portion:'Порция: 12 шт.',price:3500},{name:'Сезонные фрукты',desc:'тарелка на 6 гостей',price:8000}],
 };
 const PILLARS=[{n:'01',kind:'СМЫСЛ',name:'Восстановление',desc:'Пар, вода и тишина помогают переключиться с городского ритма.'},{n:'02',kind:'ПОЗИЦИЯ',name:'Приватный отдых',desc:'Премиальный отдых без показной роскоши.'},{n:'03',kind:'ОБЕЩАНИЕ',name:'Продуманная забота',desc:'Чистое тепло, приватность и сервис для семьи и близких.'},{n:'04',kind:'ХАРАКТЕР',name:'Спокойная уверенность',desc:'Тёплый, природный, современный. Говорит ясно и по существу.'}];
 const FULL_DAYS=[3,9];
@@ -2360,7 +2365,7 @@ const HERO_SLIDES=[{video:true,img:'img/h1_int.png'},{img:'img/h2_int.png'},{img
 // Тонировка стекла шапки над каждым кадром: минимум, при котором кремовый текст даёт ≥4.5:1 на самом светлом участке под панелью
 const ATM_VIDEO='';
 // Готовые тексты WhatsApp по умолчанию; в админке — поля с теми же ключами
-const WA_TEXT={waTextGeneral:'Здравствуйте! Пишу с сайта SHIPA',waTextHero:'Здравствуйте! Хочу забронировать дом в SHIPA',waTextHouse:'Здравствуйте! Интересует дом {дом}',waTextLong:'Здравствуйте! Хочу забронировать дом на весь день или дольше',waTextStep4:'Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}',waTextError:'Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}',waTextSuccess:'Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}',waTextPre:'Здравствуйте! Записался на открытие SHIPA',waTextMerch:'Здравствуйте! Хочу заказать: {товар}'}; // ролик атмосферы из админки
+const WA_TEXT={waTextGeneral:'Здравствуйте! Пишу с сайта SHIPA',waTextHero:'Здравствуйте! Хочу забронировать дом в SHIPA',waTextHouse:'Здравствуйте! Интересует дом {дом}',waTextLong:'Здравствуйте! Хочу забронировать дом на весь день или дольше',waTextStep4:'Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}',waTextError:'Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}',waTextSuccess:'Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}. Номер брони: {бронь}',waTextPre:'Здравствуйте! Записался на открытие SHIPA',waTextMerch:'Здравствуйте! Хочу заказать: {товар}'}; // ролик атмосферы из админки
 const RATING=['4,9','4,9','5,0','4,8','4,9','4,8','5,0','4,7'];
 // Сводка по дому: число отзывов и распределение 5→1 — из админки и выгрузки 2ГИС
 const REVIEW_STATS=[{count:128,dist:[112,12,3,1,0]},{count:96,dist:[86,8,2,0,0]},{count:41,dist:[40,1,0,0,0]},{count:4,dist:[3,1,0,0,0]},{count:57,dist:[50,6,1,0,0]},{count:22,dist:[18,3,1,0,0]},{count:0,dist:[0,0,0,0,0]},{count:0,dist:[0,0,0,0,0]}];
@@ -2711,8 +2716,17 @@ class Component extends DCLogic {
   // Предоплата: ссылка платёжной системы из админки; результат в прототипе — по демо-переключателю
   pay(m){const bk=this.state.bk;if(!bk||this.state.sending)return;const link=PAY_LINKS[m];if(link){try{window.open(link,'_blank','noopener');}catch(e){}}
     this.setState({sending:true});setTimeout(()=>{const paid=(this.props.demoPayment??'paid')==='paid';this.setState({sending:false});this.finish(paid,m);},1200);}
+  bookingCode(phone){
+    const last4=String(phone||'').replace(/\D/g,'').slice(-4).padStart(4,'0');
+    const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const bytes=new Uint8Array(6);
+    if(typeof crypto!=='undefined'&&crypto.getRandomValues)crypto.getRandomValues(bytes);
+    else for(let i=0;i<bytes.length;i++)bytes[i]=Math.floor(Math.random()*256);
+    const suffix=Array.from(bytes,x=>alphabet[x%alphabet.length]).join('');
+    return `SH-${last4}-${suffix}`;
+  }
   finish(paid,m){const bk=this.state.bk;if(!bk)return;const holdH=bk.date===0?CFG.holdTodayH:CFG.holdH;
-    this.setBk({step:6,paid:!!paid,payMethod:m||null,id:bk.id||('SH-'+Date.now().toString(36).toUpperCase().slice(-6)),holdAt:bk.holdAt||Date.now()+this._skew+holdH*3600e3});}
+    this.setBk({step:6,paid:!!paid,payMethod:m||null,id:bk.id||this.bookingCode(this.state.form.phone),holdAt:bk.holdAt||Date.now()+this._skew+holdH*3600e3});}
 
   openBooking(houseId,date,guests,step){
     const h=houseId?HOUSES.find(x=>x.id===houseId):null;if(h&&h.soon)return;
@@ -2890,9 +2904,9 @@ if(s.lang==='KZ'){
     l2:'\u0422\u0410\u04a2\u0414\u0410',
     sub:'\u0411\u0443 \u0431\u04e9\u043b\u043c\u0435\u043b\u0435\u0440\u0456 \u043c\u0435\u043d \u044b\u0441\u0442\u044b\u049b \u0447\u0430\u043d\u0434\u0430\u0440\u044b \u0431\u0430\u0440 \u0441\u0435\u0433\u0456\u0437 \u04af\u0439. \u0416\u0435\u043a\u0435 \u04af\u0439, \u0436\u0435\u043a\u0435 \u0442\u0435\u0440\u0440\u0430\u0441\u0430 \u2014 \u0430\u0439\u043d\u0430\u043b\u0430\u0434\u0430 \u0431\u04e9\u0433\u0434\u0435 \u0435\u0448\u043a\u0456\u043c \u0436\u043e\u049b.'
   });
-}const SHIPA_BRAND_RU='{{ shipaBrandText }}';
-const SHIPA_MEANING_RU='{{ shipaMeaningText }}';
-const SHIPA_BRAND_KZ=JSON.parse('"\u0053\u0048\u0049\u0050\u00c1\u0020\u2014\u0020\u0430\u0440\u0442\u044b\u049b\u0020\u0435\u0448\u0442\u0435\u04a3\u0435\u0441\u0456\u0020\u0436\u043e\u049b\u0020\u0436\u0430\u0439\u043b\u044b\u043b\u044b\u049b\u003a\u0020\u0436\u0435\u043a\u0435\u0020\u04af\u0439\u002c\u0020\u0442\u0430\u0431\u0438\u0493\u0438\u0020\u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u0434\u0430\u0440\u002c\u0020\u0436\u044b\u043b\u044b\u0020\u0436\u0430\u0440\u044b\u049b\u0020\u0436\u04d9\u043d\u0435\u0020\u0430\u043b\u0434\u044b\u043d\u0020\u0430\u043b\u0430\u0020\u043a\u0435\u043b\u0456\u0441\u0456\u043b\u0433\u0435\u043d\u0020\u049b\u044b\u0437\u043c\u0435\u0442"');
+}const SHIPA_BRAND_RU='SHIPÁ — это свой дом, натуральные материалы, тёплый свет и сервис, согласованный заранее.';
+const SHIPA_MEANING_RU='«Шипа» по-казахски означает исцеление и оздоровление. Название легко произносится на казахском, русском и английском языках.';
+const SHIPA_BRAND_KZ='SHIPÁ — бұл жеке үй, табиғи материалдар, жылы жарық және алдын ала келісілген қызмет.';
 const SHIPA_MEANING_KZ=JSON.parse('"\u00ab\u0428\u0438\u043f\u0430\u00bb\u0020\u049b\u0430\u0437\u0430\u049b\u0020\u0442\u0456\u043b\u0456\u043d\u0434\u0435\u0020\u0435\u043c\u002c\u0020\u0441\u0430\u0443\u044b\u0493\u0443\u0020\u0434\u0435\u0433\u0435\u043d\u0020\u043c\u0430\u0493\u044b\u043d\u0430\u043d\u044b\u0020\u0431\u0456\u043b\u0434\u0456\u0440\u0435\u0434\u0456\u002e\u0020\u0411\u04b1\u043b\u0020\u0430\u0442\u0430\u0443\u0020\u049b\u0430\u0437\u0430\u049b\u002c\u0020\u043e\u0440\u044b\u0441\u0020\u0436\u04d9\u043d\u0435\u0020\u0430\u0493\u044b\u043b\u0448\u044b\u043d\u0020\u0442\u0456\u043b\u0434\u0435\u0440\u0456\u043d\u0434\u0435\u0020\u0430\u0439\u0442\u0443\u0493\u0430\u0020\u0436\u0435\u04a3\u0456\u043b"');
 const shipaBrandText=s.lang==='KZ'?SHIPA_BRAND_KZ:SHIPA_BRAND_RU;
 const shipaMeaningText=s.lang==='KZ'?SHIPA_MEANING_KZ:SHIPA_MEANING_RU;
@@ -3003,25 +3017,29 @@ if(s.lang==='KZ'){
     const mkCard=(o)=>{const added=inCart(o.id);const un=!!o.un;const openFn=()=>this.setState({pd:{type:o.type,id:o.id},pdContra:false});
       return {...o,un,avail:!un,hasDur:!!o.dur,hasWho:!!o.whoText,pressed:added?'true':'false',open:openFn,key:e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();openFn();}},
         stop:e=>e.stopPropagation(),toggle:e=>{e&&e.stopPropagation&&e.stopPropagation();this.toggleCart({type:o.type,id:o.id,name:o.name,price:o.price});},
-        btnLabel:added?'✓ Добавлено':'Добавить к брони',
+        btnLabel:added?(s.lang==='KZ'?'✓ Қосылды':'✓ Добавлено'):(s.lang==='KZ'?'Брондауға қосу':'Добавить к брони'),
         btnStyle:`width:100%;height:44px;border-radius:999px;font-weight:600;font-size:14px;white-space:nowrap;border:1px solid ${NAVY};background:${added?NAVY:'transparent'};color:${added?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`,
         cardStyle:`position:relative;display:flex;flex-direction:column;background:rgba(255,255,255,.55);border:1px solid ${added?NAVY:'rgba(59,47,42,.08)'};box-shadow:${added?'inset 0 0 0 .5px '+NAVY:'none'};border-radius:20px;cursor:pointer;transition:transform 200ms ease-out,border-color 200ms ease-out;`};};
-    const progCard=id=>{const p=PDATA[id];return mkCard({type:'prog',id,name:p.name,price:p.price,priceText:fmt(p.price),dur:p.dur,whoText:cap(p.who||''),desc:p.desc,slot:'prog-'+id,img:p.imgs[0],photo:p.photo,ratio:wide?'4/3':'3/2',un:!!p.unavailable,reason:p.reason||'Временно недоступна',wa:C.wa(`Здравствуйте! Интересует программа «${p.name}»`)});};
+    const progCard=id=>{const p=PDATA[id];return mkCard({type:'prog',id,name:svcText(p.name,s.lang),price:p.price,priceText:fmt(p.price),dur:svcText(p.dur,s.lang),whoText:svcText(cap(p.who||''),s.lang),desc:svcText(p.desc,s.lang),slot:'prog-'+id,img:p.imgs[0],photo:p.photo,ratio:wide?'4/3':'3/2',un:!!p.unavailable,reason:svcText(p.reason||'Временно недоступна',s.lang),wa:C.wa(s.lang==='KZ'?`Сәлеметсіз бе! «${svcText(p.name,s.lang)}» бағдарламасы туралы білгім келеді.`:`Здравствуйте! Интересует программа «${p.name}»`)});};
     const toH=d=>{const n=parseFloat(String(d).replace(',','.'))||0;return /мин/.test(d)?n/60:n;};const fH=h=>h<1?Math.round(h*60)+' мин':String(h).replace('.',',');
     const durRange=ps=>{const hs=ps.map(p=>toH(p.dur));const a=Math.min(...hs),b=Math.max(...hs);return a===b?ps[0].dur:(a<1?fH(a)+' – '+fH(b)+' ч':fH(a)+'–'+fH(b)+' часа');};
     const svcVisible=SVC.filter(c=>c.progs.length);
     const svcSections=svcVisible.map((c,i)=>{const ps=c.progs.map(id=>PDATA[id]);const mn=Math.min(...ps.map(p=>p.price));
-      return {...c,anchor:'svc-'+c.id,kicker:`0${i+1} / ${c.name}`,slot:'svc-intro-'+c.id,facts:`от ${fmt(mn)} · ${durRange(ps)} · ${ps.length} ${plural(ps.length,'программа','программы','программ')}`,programs:c.progs.map(progCard)};});
-    const svcTabs=svcVisible.map(c=>{const a=s.svcCat===c.id;return {id:c.id,name:c.name,letter:c.img?'':c.name[0],sel:a?'true':'false',go:()=>this.goSvc(c.id),
+      return {...c,name:svcText(c.name,s.lang),text:svcText(c.text,s.lang),anchor:'svc-'+c.id,kicker:`0${i+1} / ${svcText(c.name,s.lang)}`,slot:'svc-intro-'+c.id,facts:s.lang==='KZ'?`${fmt(mn)} бастап · ${durRange(ps).replace(/часа?|часов/g,'сағат').replace(/минут/g,'минут')} · ${ps.length} бағдарлама`:`от ${fmt(mn)} · ${durRange(ps)} · ${ps.length} ${plural(ps.length,'программа','программы','программ')}`,programs:c.progs.map(progCard)};});
+    const svcTabs=svcVisible.map(c=>{const a=s.svcCat===c.id;return {id:c.id,name:svcText(c.name,s.lang),letter:c.img?'':svcText(c.name,s.lang)[0],sel:a?'true':'false',go:()=>this.goSvc(c.id),
       thumb:`width:28px;height:28px;border-radius:999px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;overflow:hidden;${c.img?`background:#3B2F2A url(${c.img}) center/cover no-repeat;`:`background:${a?'rgba(249,239,227,.2)':'rgba(10,47,79,.08)'};`}`,
       style:`flex:0 0 auto;height:44px;padding:0 18px 0 8px;border-radius:999px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;white-space:nowrap;border:1px solid ${a?NAVY:'rgba(10,47,79,.25)'};background:${a?NAVY:CREAM};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`}});
-    const kitchenCards=(KITCHEN[s.kitchenTab]||[]).map((k,i)=>mkCard({type:'dish',id:'dish-'+s.kitchenTab+'-'+i,name:k.name,price:k.price,priceText:fmt(k.price),desc:k.desc,slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:'Фото: '+k.name.toLowerCase(),ratio:'1/1',cat:s.kitchenTab}));
+    const kitchenCards=(KITCHEN[s.kitchenTab]||[]).map((k,i)=>mkCard({type:'dish',id:'dish-'+s.kitchenTab+'-'+i,name:k.name,price:k.price,priceText:fmt(k.price),portion:k.portion||'',hasPortion:!!k.portion,desc:k.desc,slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:'Фото: '+k.name.toLowerCase(),ratio:'1/1',cat:s.kitchenTab}));
     let pd={};const pdS=s.pd;
-    if(pdS){if(pdS.type==='prog'){const c=progCard(pdS.id);const p=PDATA[pdS.id];pd={...c,kicker:(SVC.find(x=>x.progs.includes(pdS.id))||{}).name||'Программа',isProg:true,chips:[p.dur,cap(p.who||'')].filter(Boolean).map(t=>({t})),meta:p.dur,
+    if(pdS){if(pdS.type==='prog'){const c=progCard(pdS.id);const p=PDATA[pdS.id];pd={...c,kicker:svcText((SVC.find(x=>x.progs.includes(pdS.id))||{}).name||'Программа',s.lang),isProg:true,chips:[c.dur,c.whoText].filter(Boolean).map(t=>({t})),meta:c.dur,
         gallery:p.imgs.map((src,j)=>({slot:'pd-'+pdS.id+'-'+(j+1),img:src,photo:j?'Фото программы '+(j+1):p.photo})),multi:true,
-        hasSteps:true,steps:p.steps.map((x,j,a)=>({t:x[0],m:x[1],line:j<a.length-1?'position:absolute;left:7.5px;top:18px;bottom:-6px;width:1px;background:rgba(10,47,79,.25);':'display:none;'})),hasIncl:true,inclTitle:'Что входит',incl:p.incl.map(t=>({t})),contra:CONTRA};}
-      else if(pdS.type==='dish'){const c=kitchenCards.find(x=>x.id===pdS.id)||mkCard({type:'dish',id:pdS.id,name:'',price:0});pd={...c,kicker:c.cat||'Кухня',isProg:false,chips:[],meta:'К столу при бронировании',desc:'',gallery:[{slot:c.slot,img:c.img,photo:c.photo}],multi:false,hasSteps:false,hasIncl:true,inclTitle:'Состав',incl:(c.desc||'').split(/,\s+/).map(t=>({t:cap(t.trim())}))};}
+        hasSteps:true,steps:p.steps.map((x,j,a)=>({t:svcText(x[0],s.lang),m:svcText(x[1],s.lang),line:j<a.length-1?'position:absolute;left:7.5px;top:18px;bottom:-6px;width:1px;background:rgba(10,47,79,.25);':'display:none;'})),hasIncl:true,inclTitle:svcText('Что входит',s.lang),incl:p.incl.map(t=>({t:svcText(t,s.lang)})),contra:svcText(CONTRA,s.lang)};}
+      else if(pdS.type==='dish'){const c=kitchenCards.find(x=>x.id===pdS.id)||mkCard({type:'dish',id:pdS.id,name:'',price:0});pd={...c,kicker:c.cat||'Кухня',isProg:false,chips:[],meta:c.portion||'К столу при бронировании',desc:'',gallery:[{slot:c.slot,img:c.img,photo:c.photo}],multi:false,hasSteps:false,hasIncl:true,inclTitle:'Состав',incl:(c.desc||'').split(/,\s+/).map(t=>({t:cap(t.trim())}))};}
       else if(pdS.type==='master'){const m=MASTERS[pdS.idx]||MASTERS[0];pd={name:m.name,kicker:'Мастер',priceText:'',desc:m.story,chips:[{t:m.spec},{t:m.exp}],meta:'',gallery:[{slot:'master-'+pdS.idx,img:'',photo:'Фото мастера со спины или в работе'}],multi:false,hasSteps:false,hasIncl:true,inclTitle:'Ведёт программы',incl:m.progs.map(id=>({t:PDATA[id].name})),isProg:false,avail:false,un:false};}}
+    if(pd&&pd.isProg){
+      const progTitle=pd.name||'парение';
+      pd.masterWa=C.wa((s.lang==='KZ'?'Сәлеметсіз бе! Монша шебері мен бос уақытын нақтылағым келеді. Бағдарлама: ':'Здравствуйте! Подскажите, какие мастера свободны и на какое время? Программа: ')+progTitle);
+    }
     const cartProgs=s.cart.filter(x=>x.type==='prog');const cn=s.cart.length;
     const cartLabel=(cartProgs.length===cn?`${cn} ${plural(cn,'программа','программы','программ')}`:`${cn} ${plural(cn,'позиция','позиции','позиций')}`)+' · '+s.cart.map(x=>x.name).join(', ');
     const MENU=[['Дома','houses','img/h1_int.png'],['Парение и услуги','services','img/h2_acc.png'],['Кухня','kitchen','img/h4_acc.png'],['Отзывы','reviews','img/h5_int.png'],['О нас','about','img/h3_acc.png'],['Контакты','contacts','img/h6_int.png']];
@@ -3195,7 +3213,7 @@ const LANGS=['RU','KZ'];
       const canNext=bk.step===1?true:bk.step===3?ok3:bk.step===4?true:false;
       const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Перейти к предоплате';
       const payTxt=(bk.paid?'оплачено':'ожидает')+' · '+fmt(prepay);
-      const waVars={дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}–${hh(end)}`:'',выезд:end!=null?`${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',гостей:guestsTxt(bk.guests)+kidsTxt,предоплата:payTxt};
+      const waVars={бронь:bk.id||'',дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}–${hh(end)}`:'',выезд:end!=null?`${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',гостей:guestsTxt(bk.guests)+kidsTxt,предоплата:payTxt};
       // карусель
       const photos=this.housePhotos(h0);const cs=this.props.carouselState||'normal';
       const shownP=cs==='one'?photos.slice(0,1):(cs==='none'||cs==='loading')?[]:photos;
