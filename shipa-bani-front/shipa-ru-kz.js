@@ -163,8 +163,6 @@ const raw=`
 Заказать еду к приезду|Келгенге дейін асқа тапсырыс беру
 Вы в списке|Сіз тізімдесіз
 Бронь №|Брондау №
-Спасибо!|Рақмет!
-На проверке|Тексерілуде
 Добавить фото|Фото қосу
 до 3 фото|3 фотоға дейін
 Для кого:|Кімге арналған:
@@ -183,7 +181,6 @@ const raw=`
 ВИДЕО-ОТЗЫВЫ|БЕЙНЕПІКІРЛЕР
 Читать далее|Толығырақ оқу
 Все|Барлығы
-Сегодня|Бүгін
 Сегодня|Бүгін
 Завтра|Ертең
 сегодня|бүгін
@@ -244,8 +241,6 @@ const raw=`
 Нет данных|Деректер жоқ
 Ничего не найдено|Ештеңе табылмады
 Норматив|Норматив
-Все дома|Барлық үйлер
-Новая бронь|Жаңа брондау
 Взять|Қабылдау
 Позвонить|Қоңырау шалу
 Ответить|Жауап беру
@@ -267,7 +262,7 @@ const raw=`
 Рассылка|Хабарлама тарату
 Шаблоны по событиям|Оқиға бойынша үлгілер
 Журнал отправок|Жіберілім журналы
-Журнал рассылок|Хабарлама тарату журналы
+Журнал рассылок|Хабарламалар журналы
 Личный кабинет|Жеке кабинет
 Скидки и лояльность|Жеңілдіктер мен адалдық бағдарламасы
 Брони и продажи|Брондаулар және сатылымдар
@@ -295,7 +290,6 @@ const raw=`
 Праздник|Мереке
 Дата отправки|Жіберу күні
 Время отправки|Жіберу уақыты
-Журнал рассылок|Хабарламалар журналы
 Платежи|Төлемдер
 Зафиксировать оплату|Төлемді тіркеу
 Зафиксировать|Тіркеу
@@ -322,7 +316,6 @@ const raw=`
 Перенесена|Ауыстырылды
 Неявка|Келмеді
 Принят|Қабылданды
-Оплачено|Төленді
 без оплаты|төлемсіз
 не оплачено|төленбеген
 предоплата|алдын ала төлем
@@ -336,6 +329,23 @@ const raw=`
 Карта|Карта
 Администратор|Әкімші
 Поиск|Іздеу
+Подробнее ниже|Төменірек қараңыз
+Гость выбирает атмосферу, а не номер.|Қонақ нөмірді емес, атмосфераны таңдайды.
+Удобнее в WhatsApp? Напишите нам →|WhatsApp ыңғайлырақ па? Бізге жазыңыз →
+ролики комплекса|кешеннің видеолары
+Скоро открытие|Жақында ашылады
+Дом достраивается. Откроем бронь позже.|Үй әлі салынып жатыр. Брондауды кейін ашамыз.
+Поможем подобрать дом и забронируем его для вас|Сізге лайықты үйді таңдап, брондап береміз
+Политика обработки персональных данных|Дербес деректерді өңдеу саясаты
+Ежедневно 10:00–02:00|Күн сайын 10:00–02:00
+Заезд с 10:00 до 21:00|Келу уақыты: 10:00–21:00
+г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242|Қарағанды қ., Күнгей ш/а, Қазыбек би ауданы, Жақана Смақов көшесі, 242
+Скопировать адрес|Мекенжайды көшіру
+Скопировано|Көшірілді
+Нажмите, чтобы двигать карту|Картаны жылжыту үшін басыңыз
+Настоящие впечатления тех, кто уже побывал в SHIPÁ|SHIPÁ-да болып кеткен қонақтардың шынайы әсерлері
+Настоящие впечатления тех, кто уже побывал в SHIPA|SHIPÁ-да болып кеткен қонақтардың шынайы әсерлері
+Настоящие впечатления тех, кто уже побывал в SHIP|SHIPÁ-да болып кеткен қонақтардың шынайы әсерлері
 `;
 
 const dictionary=Object.create(null);
@@ -344,11 +354,19 @@ raw.trim().split(/\r?\n/).forEach(line=>{
   if(i>0)dictionary[line.slice(0,i)]=line.slice(i+1);
 });
 
+const reverseDictionary=Object.create(null);
+Object.entries(dictionary).forEach(([ru,kz])=>{
+  if(!(kz in reverseDictionary))reverseDictionary[kz]=ru;
+});
+
 const entries=Object.entries(dictionary)
-  .filter(([a])=>a.length>=3)
+  .filter(([a])=>a.length>=2)
+  .sort((a,b)=>b[0].length-a[0].length);
+const reverseEntries=Object.entries(reverseDictionary)
+  .filter(([a])=>a.length>=2)
   .sort((a,b)=>b[0].length-a[0].length);
 
-const letters='А-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі';
+const letters='A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі';
 function esc(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 
 let lang='RU';
@@ -359,19 +377,24 @@ try{
 const memory=new WeakMap();
 const attributes=new WeakMap();
 
-function translate(text){
-  if(!/[А-Яа-яЁё]/.test(text))return text;
+function swap(text,map,list){
+  if(!text||!/[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі]/.test(text))return text;
   const leading=(text.match(/^\s*/)||[''])[0];
   const trailing=(text.match(/\s*$/)||[''])[0];
   let result=text.trim();
-  if(dictionary[result])return leading+dictionary[result]+trailing;
-  for(const [ru,kk] of entries){
-    if(!result.includes(ru))continue;
-    const re=new RegExp('(^|[^'+letters+'])'+esc(ru)+'(?=$|[^'+letters+'])','g');
-    result=result.replace(re,(_,before)=>before+kk);
+  if(map[result])return leading+map[result]+trailing;
+  for(const [from,to] of list){
+    if(!result.includes(from))continue;
+    const re=new RegExp('(^|[^'+letters+'])'+esc(from)+'(?=$|[^'+letters+'])','g');
+    result=result.replace(re,(_,before)=>before+to);
   }
   return leading+result+trailing;
 }
+
+function toKZ(text){return swap(text,dictionary,entries);}
+function toRU(text){return swap(text,reverseDictionary,reverseEntries);}
+function canonicalRU(text){return toRU(text);}
+function normalize(s){return (s||'').replace(/\s+/g,' ').trim();}
 
 function textNode(n){
   if(!n||!n.parentElement)return;
@@ -379,8 +402,10 @@ function textNode(n){
   if(/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE)$/i.test(p.tagName))return;
   const value=n.nodeValue||'';
   let state=memory.get(n);
-  if(!state||value!==state.out)state={source:value,out:value};
-  const output=lang==='KZ'?translate(state.source):state.source;
+  if(!state||(value!==state.out&&value!==state.source)){
+    state={source:canonicalRU(value),out:value};
+  }
+  const output=lang==='KZ'?toKZ(state.source):state.source;
   memory.set(n,{source:state.source,out:output});
   if(value!==output)n.nodeValue=output;
 }
@@ -393,8 +418,10 @@ function elementAttributes(el){
     if(!el.hasAttribute(name))continue;
     const value=el.getAttribute(name);
     let state=record[name];
-    if(!state||value!==state.out)state={source:value,out:value};
-    const output=lang==='KZ'?translate(state.source):state.source;
+    if(!state||(value!==state.out&&value!==state.source)){
+      state={source:canonicalRU(value),out:value};
+    }
+    const output=lang==='KZ'?toKZ(state.source):state.source;
     record[name]={source:state.source,out:output};
     if(value!==output)el.setAttribute(name,output);
   }
@@ -410,8 +437,7 @@ function visit(root){
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
   while(walker.nextNode())textNode(walker.currentNode);
   if(root.querySelectorAll){
-    root.querySelectorAll('[placeholder],[aria-label],[title],[alt]')
-      .forEach(elementAttributes);
+    root.querySelectorAll('[placeholder],[aria-label],[title],[alt]').forEach(elementAttributes);
   }
 }
 
@@ -424,12 +450,133 @@ function updateButtons(){
   });
 }
 
+const HOME_TEXT={
+  RU:{
+    scrollHint:'Подробнее ниже',
+    heroWhatsApp:'Удобнее в WhatsApp? Напишите нам →',
+    atmosphereTitle:'Атмосфера',
+    atmosphereSub:'ролики комплекса',
+    atmosphereAria:'Атмосфера — смотреть ролики комплекса',
+    housesLead:'Гость выбирает атмосферу, а не номер.',
+    allHouses:'Все дома →',
+    reviewsLead:'Настоящие впечатления тех, кто уже побывал в SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>',
+    contactHelp:'Поможем подобрать дом и забронируем его для вас',
+    writeWhatsApp:'Написать в WhatsApp',
+    privacy:'Политика обработки персональных данных',
+    mapHint:'Нажмите, чтобы двигать карту',
+    copyAddress:'Скопировать адрес',
+    copiedAddress:'Скопировано',
+    address:'г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242',
+    hours1:'Ежедневно 10:00–02:00',
+    hours2:'Заезд с 10:00 до 21:00'
+  },
+  KZ:{
+    scrollHint:'Төменірек қараңыз',
+    heroWhatsApp:'WhatsApp ыңғайлырақ па? Бізге жазыңыз →',
+    atmosphereTitle:'Атмосфера',
+    atmosphereSub:'кешеннің видеолары',
+    atmosphereAria:'Атмосфера — кешеннің видеоларын қарау',
+    housesLead:'Қонақ нөмірді емес, атмосфераны таңдайды.',
+    allHouses:'Барлық үйлер →',
+    reviewsLead:'SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>-да болып кеткен қонақтардың шынайы әсерлері',
+    contactHelp:'Сізге лайықты үйді таңдап, брондап береміз',
+    writeWhatsApp:'WhatsApp арқылы жазу',
+    privacy:'Дербес деректерді өңдеу саясаты',
+    mapHint:'Картаны жылжыту үшін басыңыз',
+    copyAddress:'Мекенжайды көшіру',
+    copiedAddress:'Көшірілді',
+    address:'Қарағанды қ., Күнгей ш/а, Қазыбек би ауданы, Жақана Смақов көшесі, 242',
+    hours1:'Күн сайын 10:00–02:00',
+    hours2:'Келу уақыты: 10:00–21:00'
+  }
+};
+
+function findByExact(selector,candidates){
+  const list=Array.isArray(selector)?selector:[selector];
+  const arr=Array.isArray(candidates)?candidates:[candidates];
+  const norms=arr.map(normalize);
+  for(const sel of list){
+    const nodes=document.querySelectorAll(sel);
+    for(const el of nodes){
+      const txt=normalize(el.textContent);
+      if(norms.includes(txt))return el;
+    }
+  }
+  return null;
+}
+
+function findByContains(selector,snippets){
+  const list=Array.isArray(selector)?selector:[selector];
+  const arr=Array.isArray(snippets)?snippets:[snippets];
+  const norms=arr.map(normalize);
+  for(const sel of list){
+    const nodes=document.querySelectorAll(sel);
+    for(const el of nodes){
+      const txt=normalize(el.textContent);
+      if(norms.some(s=>txt.includes(s)))return el;
+    }
+  }
+  return null;
+}
+
+function setText(el,text){if(el&&el.textContent!==text)el.textContent=text;}
+function setHTML(el,html){if(el&&el.innerHTML!==html)el.innerHTML=html;}
+
+function applyHomeOverrides(){
+  const t=HOME_TEXT[lang]||HOME_TEXT.RU;
+
+  setText(findByExact('div',[HOME_TEXT.RU.scrollHint,HOME_TEXT.KZ.scrollHint]),t.scrollHint);
+  setText(findByExact('a',[HOME_TEXT.RU.heroWhatsApp,HOME_TEXT.KZ.heroWhatsApp]),t.heroWhatsApp);
+
+  const atmosBtn=findByContains('button',[HOME_TEXT.RU.atmosphereSub,HOME_TEXT.KZ.atmosphereSub,HOME_TEXT.RU.atmosphereTitle]);
+  if(atmosBtn){
+    const col=atmosBtn.querySelector('span[style*="flex-direction:column"]');
+    if(col&&col.children.length>=2){
+      col.children[0].textContent=t.atmosphereTitle;
+      col.children[1].textContent=t.atmosphereSub;
+    }
+    atmosBtn.setAttribute('aria-label',t.atmosphereAria);
+  }
+
+  setText(findByExact('p',[HOME_TEXT.RU.housesLead,HOME_TEXT.KZ.housesLead]),t.housesLead);
+  setText(findByExact('button',[HOME_TEXT.RU.allHouses,HOME_TEXT.KZ.allHouses]),t.allHouses);
+  const reviewEl=findByContains('p',['Настоящие впечатления тех, кто уже побывал','болып кеткен қонақтардың шынайы әсерлері']);
+  if(reviewEl)setHTML(reviewEl,t.reviewsLead);
+  setText(findByExact('p',[HOME_TEXT.RU.contactHelp,HOME_TEXT.KZ.contactHelp]),t.contactHelp);
+
+  document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
+    const txt=normalize(a.textContent);
+    if([normalize(HOME_TEXT.RU.writeWhatsApp),normalize(HOME_TEXT.KZ.writeWhatsApp)].includes(txt)){
+      const svg=a.querySelector('svg');
+      if(svg){
+        [...a.childNodes].forEach(n=>{if(n!==svg)a.removeChild(n);});
+        a.appendChild(document.createTextNode(t.writeWhatsApp));
+      }else{
+        a.textContent=t.writeWhatsApp;
+      }
+    }
+  });
+
+  setText(findByExact('a',[HOME_TEXT.RU.privacy,HOME_TEXT.KZ.privacy]),t.privacy);
+  setText(findByExact('span',[HOME_TEXT.RU.mapHint,HOME_TEXT.KZ.mapHint]),t.mapHint);
+  const copyBtn=findByExact('button',[HOME_TEXT.RU.copyAddress,HOME_TEXT.RU.copiedAddress,HOME_TEXT.KZ.copyAddress,HOME_TEXT.KZ.copiedAddress]);
+  if(copyBtn){
+    const txt=normalize(copyBtn.textContent);
+    const copied=txt===normalize(HOME_TEXT.RU.copiedAddress)||txt===normalize(HOME_TEXT.KZ.copiedAddress);
+    copyBtn.textContent=copied?t.copiedAddress:t.copyAddress;
+  }
+  setText(findByExact(['span','div'],[HOME_TEXT.RU.address,HOME_TEXT.KZ.address]),t.address);
+  setText(findByExact('span',[HOME_TEXT.RU.hours1,HOME_TEXT.KZ.hours1]),t.hours1);
+  setText(findByExact('span',[HOME_TEXT.RU.hours2,HOME_TEXT.KZ.hours2]),t.hours2);
+}
+
 function apply(next){
   if(next!=='RU'&&next!=='KZ')return;
   lang=next;
   document.documentElement.lang=lang==='KZ'?'kk':'ru';
   try{localStorage.setItem('shipa-lang',lang);}catch(e){}
   visit(document.body);
+  applyHomeOverrides();
   updateButtons();
 }
 
@@ -437,9 +584,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest&&e.target.closest('button');
   if(!b)return;
   const choice=b.getAttribute('data-shipa-lang')||(b.textContent||'').trim();
-  if(choice==='RU'||choice==='KZ'){
-    setTimeout(()=>apply(choice),0);
-  }
+  if(choice==='RU'||choice==='KZ')setTimeout(()=>apply(choice),0);
 },true);
 
 function start(){
@@ -454,6 +599,7 @@ function start(){
         refresh=true;
       }
     }
+    applyHomeOverrides();
     if(refresh)updateButtons();
   });
   observer.observe(document.body,{
@@ -463,9 +609,8 @@ function start(){
   });
 }
 
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',start,{once:true});
-}else start();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
+else start();
 
 window.ShipaLocale={set:apply,get:()=>lang};
 })();
