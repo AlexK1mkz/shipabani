@@ -648,7 +648,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px;align-items:stretch;">
       <div style="background:rgba(10,47,79,.06);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;gap:28px;">
         <div>
-          <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;">Адрес</div>
+          <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;">{{ contactAddressLabel }}</div>
           <div style="display:flex;gap:12px;margin-top:10px;font-size:var(--fs-body);line-height:1.55;">
             <svg width="20" height="20" viewBox="0 0 28 36" fill="#C15C22" style="flex:0 0 auto;margin-top:3px;"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>
             <div>г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242<br><span style="color:rgba(10,47,79,.7);">{{ hoursLine1 }}</span><br><span style="color:rgba(10,47,79,.7);">{{ hoursLine2 }}</span></div>
@@ -667,26 +667,26 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <div>
           <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;">WhatsApp</div>
           <p style="margin:10px 0 14px;font-size:var(--fs-body);color:rgba(10,47,79,.75);line-height:1.55;">Поможем подобрать дом и забронируем его для вас</p>
-          <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#F9EFE3" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Написать в WhatsApp</a>
+          <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;font-weight:600;font-size:15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#F9EFE3" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>{{ contactWhatsApp }}</a>
         </div>
       </div>
       <div>
       <div data-map="home" style="position:relative;border-radius:24px;overflow:hidden;height:{{ mapH }};border:1px solid rgba(59,47,42,.08);background:rgba(10,47,79,.06);">
         <img src="brand/map.png" alt="Карта: Караганда, ул. Жакана Смакова 242" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <sc-if value="{{ mapHome.show }}" hint-placeholder-val="{{ false }}">
-          <iframe src="{{ mapSrc }}" onLoad="{{ mapHome.loaded }}" title="SHIPA на Яндекс Картах" loading="lazy" style="{{ mapHome.frameStyle }}"></iframe>
+          <iframe src="{{ mapSrc }}" onLoad="{{ mapHome.loaded }}" title="{{ contactMapTitle }}" loading="lazy" style="{{ mapHome.frameStyle }}"></iframe>
         </sc-if>
         <sc-if value="{{ mapHome.pin }}" hint-placeholder-val="{{ true }}">
           <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);pointer-events:none;"><svg width="36" height="46" viewBox="0 0 28 36" fill="#C15C22"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></div>
         </sc-if>
         <sc-if value="{{ mapHome.gate }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ mapHome.arm }}" aria-label="Включить карту" style="position:absolute;inset:0;background:transparent;display:flex;align-items:flex-start;justify-content:center;padding-top:14px;cursor:pointer;"><span style="height:36px;padding:0 16px;border-radius:999px;background:rgba(10,47,79,.85);color:#F9EFE3;font-size:13px;font-weight:600;display:inline-flex;align-items:center;">Нажмите, чтобы двигать карту</span></button>
+          <button onClick="{{ mapHome.arm }}" aria-label="{{ contactMapEnable }}" style="position:absolute;inset:0;background:transparent;display:flex;align-items:flex-start;justify-content:center;padding-top:14px;cursor:pointer;"><span style="height:36px;padding:0 16px;border-radius:999px;background:rgba(10,47,79,.85);color:#F9EFE3;font-size:13px;font-weight:600;display:inline-flex;align-items:center;">{{ contactMapTap }}</span></button>
         </sc-if>
         <div style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">
-          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Открыть в 2ГИС</a>
-          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Яндекс Карты</a>
+          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">{{ contactMapGis }}</a>
+          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">{{ contactMapYandex }}</a>
           <a href="{{ mapLinks.go }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Google Maps</a>
-          <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><a href="{{ mapLinks.route }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Маршрут</a></sc-if>
+          <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><a href="{{ mapLinks.route }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">{{ contactMapRoute }}</a></sc-if>
         </div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:14px;line-height:1.4;">
@@ -710,7 +710,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
         <a href="{{ telHref }}" style="color:#F9EFE3;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;letter-spacing:.02em;font-variant-numeric:lining-nums tabular-nums;">{{ phoneText }}</a>
-        <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="color:rgba(249,239,227,.8);font-size:14px;text-decoration:underline;text-underline-offset:3px;">Написать в WhatsApp</a>
+        <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="color:rgba(249,239,227,.8);font-size:14px;text-decoration:underline;text-underline-offset:3px;">{{ contactWhatsApp }}</a>
       </div>
       <nav style="display:flex;flex-wrap:wrap;gap:0 20px;font-size:15px;">
         <button onClick="{{ goHouses }}" style="height:44px;color:#F9EFE3;">Дома</button>
@@ -1019,7 +1019,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.9);">Пармастер, веники и травы, массаж и уход после парной. Всё, что нужно, — уже в доме.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:32px;">
           <button onClick="{{ startBooking }}" style="height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ bookLabel }}</button>
-          <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid rgba(249,239,227,.3);color:#F9EFE3;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.12);">Спросить в WhatsApp</a>
+          <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid rgba(249,239,227,.3);color:#F9EFE3;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.12);">{{ faqAskLabel }}</a>
         </div>
         <div style="margin-top:16px;font-size:14px;line-height:1.5;color:rgba(249,239,227,.75);">Программу добавляете к брони как пожелание — администратор подтвердит её в WhatsApp</div>
       </div>
@@ -1060,7 +1060,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
               <span style="font-size:14px;color:#0A2F4F;text-decoration:underline;text-underline-offset:3px;">Подробнее</span>
               <div style="margin-top:auto;padding-top:12px;">
                 <sc-if value="{{ p.avail }}" hint-placeholder-val="{{ true }}"><button onClick="{{ p.toggle }}" aria-pressed="{{ p.pressed }}" style="{{ p.btnStyle }}">{{ p.btnLabel }}</button></sc-if>
-                <sc-if value="{{ p.un }}" hint-placeholder-val="{{ false }}"><a href="{{ p.wa }}" onClick="{{ p.stop }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;width:100%;">Спросить в WhatsApp</a></sc-if>
+                <sc-if value="{{ p.un }}" hint-placeholder-val="{{ false }}"><a href="{{ p.wa }}" onClick="{{ p.stop }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;width:100%;">{{ faqAskLabel }}</a></sc-if>
               </div>
             </div>
           </div>
@@ -1089,7 +1089,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
   <section data-screen-label="Вопросы про парение" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
     <div style="display:grid;grid-template-columns:{{ gridAside }};gap:40px;align-items:start;">
-      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">ЧАСТЫЕ ВОПРОСЫ</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">Не нашли ответ — напишите, ответим за 15 минут.</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">Спросить в WhatsApp</a></div>
+      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">{{ faqTitle }}</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">{{ faqHint }}</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">{{ faqAskLabel }}</a></div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:8px 24px;">
         <sc-for list="{{ svcFaq }}" as="q" hint-placeholder-count="4">
           <div style="border-bottom:1px solid rgba(59,47,42,.1);">
@@ -1140,7 +1140,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
               <span style="font-size:14px;color:#0A2F4F;text-decoration:underline;text-underline-offset:3px;">Подробнее</span>
               <div style="margin-top:auto;padding-top:12px;">
                 <sc-if value="{{ k.avail }}" hint-placeholder-val="{{ true }}"><button onClick="{{ k.toggle }}" aria-pressed="{{ k.pressed }}" style="{{ k.btnStyle }}">{{ k.btnLabel }}</button></sc-if>
-                <sc-if value="{{ k.un }}" hint-placeholder-val="{{ false }}"><a href="{{ k.wa }}" onClick="{{ k.stop }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;width:100%;">Спросить в WhatsApp</a></sc-if>
+                <sc-if value="{{ k.un }}" hint-placeholder-val="{{ false }}"><a href="{{ k.wa }}" onClick="{{ k.stop }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;width:100%;">{{ faqAskLabel }}</a></sc-if>
               </div>
             </div>
           </div>
@@ -1157,9 +1157,9 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <img src="img/h5_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Гости о SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ОТЗЫВЫ</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Что говорят те, кто уже провёл вечер в наших домах.</p>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ reviewKickerPre }}SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>{{ reviewKickerPost }}</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">{{ reviewPageTitle }}</h1>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">{{ reviewPageSubtitle }}</p>
     </div>
   </section>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
@@ -1170,7 +1170,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </sc-for>
       </div>
       <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;align-items:center;gap:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:44px;line-height:1;">4,9</span><span style="font-size:13px;line-height:1.4;color:rgba(10,47,79,.7);"><span style="color:#C15C22;letter-spacing:2px;">★★★★★</span><br>128 отзывов · 2ГИС</span></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:44px;line-height:1;">4,9</span><span style="font-size:13px;line-height:1.4;color:rgba(10,47,79,.7);"><span style="color:#C15C22;letter-spacing:2px;">★★★★★</span><br>{{ reviewCountLabel }}</span></div>
       </sc-if>
     </div>
     <div style="display:grid;grid-template-columns:{{ grid2 }};gap:16px;">
@@ -1185,7 +1185,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
       </sc-for>
     </div>
-    <div style="display:flex;justify-content:center;margin-top:40px;"><a href="https://2gis.kz" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Оставить отзыв в 2ГИС</a></div>
+    <div style="display:flex;justify-content:center;margin-top:40px;"><a href="https://2gis.kz" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">{{ leaveReviewLabel }}</a></div>
   </div>
 </main>
 </sc-if>
@@ -1197,9 +1197,9 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <img src="img/h3_acc.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">О нас</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ТЕПЛО БЕЗ ЛИШНЕГО</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> — пространство, где природные материалы и банная традиция возвращают внимание к себе. Восемь домов, один стандарт: приватность, чистота, тёплый свет и заранее согласованный сервис.</p>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ aboutKicker }}</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">{{ aboutPageTitle }}</h1>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>{{ aboutIntroSuffix }}</p>
     </div>
   </section>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
@@ -1214,7 +1214,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     </div>
     <div style="aspect-ratio:21/9;overflow:hidden;margin-top:40px;border-radius:28px;background:rgba(10,47,79,.06);"><image-slot id="about-team" src="img/h5_acc.png" shape="rect" placeholder="Команда SHIPA"></image-slot></div>
     <div style="display:grid;grid-template-columns:{{ gridAside }};gap:40px;margin-top:64px;align-items:start;">
-      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">ЧАСТЫЕ ВОПРОСЫ</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">Не нашли ответ — напишите, ответим за 15 минут.</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Спросить в WhatsApp</a></div>
+      <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">{{ faqTitle }}</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">{{ faqHint }}</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">{{ faqAskLabel }}</a></div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:8px 24px;">
         <sc-for list="{{ faq }}" as="q" hint-placeholder-count="6">
           <div style="border-bottom:1px solid rgba(59,47,42,.1);">
@@ -1239,30 +1239,30 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <img src="img/h6_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Контакты</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">КАК НАС НАЙТИ</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Караганда, микрорайон Кунгей. {{ hoursAbout }} Отвечаем в WhatsApp за 15 минут.</p>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ contactKicker }}</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">{{ contactPageTitle }}</h1>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">{{ contactCityLead }} {{ hoursAbout }} {{ contactResponse }}</p>
     </div>
   </section>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
     <div style="display:grid;grid-template-columns:{{ gridContacts }};gap:24px;align-items:stretch;">
       <div>
       <div data-map="contacts" style="position:relative;height:{{ mapH }};overflow:hidden;border-radius:24px;border:1px solid rgba(59,47,42,.08);background:rgba(10,47,79,.06);">
-        <img src="brand/map.png" alt="Карта с меткой" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <img src="brand/map.png" alt="{{ contactMapAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
         <sc-if value="{{ mapContacts.show }}" hint-placeholder-val="{{ false }}">
-          <iframe src="{{ mapSrc }}" onLoad="{{ mapContacts.loaded }}" title="SHIPA на Яндекс Картах" loading="lazy" style="{{ mapContacts.frameStyle }}"></iframe>
+          <iframe src="{{ mapSrc }}" onLoad="{{ mapContacts.loaded }}" title="{{ contactMapTitle }}" loading="lazy" style="{{ mapContacts.frameStyle }}"></iframe>
         </sc-if>
         <sc-if value="{{ mapContacts.pin }}" hint-placeholder-val="{{ true }}">
           <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);pointer-events:none;"><svg width="28" height="36" viewBox="0 0 28 36" fill="#C15C22"><path d="M14 0a14 14 0 0 0-14 14c0 10 14 22 14 22s14-12 14-22A14 14 0 0 0 14 0zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg></div>
         </sc-if>
         <sc-if value="{{ mapContacts.gate }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ mapContacts.arm }}" aria-label="Включить карту" style="position:absolute;inset:0;background:transparent;display:flex;align-items:flex-start;justify-content:center;padding-top:14px;cursor:pointer;"><span style="height:36px;padding:0 16px;border-radius:999px;background:rgba(10,47,79,.85);color:#F9EFE3;font-size:13px;font-weight:600;display:inline-flex;align-items:center;">Нажмите, чтобы двигать карту</span></button>
+          <button onClick="{{ mapContacts.arm }}" aria-label="{{ contactMapEnable }}" style="position:absolute;inset:0;background:transparent;display:flex;align-items:flex-start;justify-content:center;padding-top:14px;cursor:pointer;"><span style="height:36px;padding:0 16px;border-radius:999px;background:rgba(10,47,79,.85);color:#F9EFE3;font-size:13px;font-weight:600;display:inline-flex;align-items:center;">{{ contactMapTap }}</span></button>
         </sc-if>
         <div style="position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;">
-          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Открыть в 2ГИС</a>
-          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Яндекс Карты</a>
+          <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">{{ contactMapGis }}</a>
+          <a href="{{ mapLinks.ya }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">{{ contactMapYandex }}</a>
           <a href="{{ mapLinks.go }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Google Maps</a>
-          <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><a href="{{ mapLinks.route }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">Маршрут</a></sc-if>
+          <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><a href="{{ mapLinks.route }}" target="_blank" rel="noopener" style="height:40px;padding:0 14px;border-radius:999px;background:#C15C22;color:#F9EFE3;display:flex;align-items:center;font-size:14px;font-weight:600;">{{ contactMapRoute }}</a></sc-if>
         </div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:14px;line-height:1.4;">
@@ -1272,18 +1272,18 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       </div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:32px 24px;display:flex;flex-direction:column;gap:24px;">
         <div>
-          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);margin-bottom:8px;">Телефон и WhatsApp</div>
+          <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);margin-bottom:8px;">{{ contactPhoneLabel }}</div>
           <a href="{{ telHref }}" style="display:block;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(32px,3.2vw,40px);line-height:1;">{{ phoneText }}</a>
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
-            <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;height:48px;padding:0 24px;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">Написать в WhatsApp</a>
+            <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;height:48px;padding:0 24px;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ contactWhatsApp }}</a>
             <a href="https://instagram.com" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:48px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Instagram</a>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:96px 1fr;gap:0 16px;font-size:15px;line-height:1.5;border-top:1px solid rgba(59,47,42,.1);">
-          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Адрес</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242</div>
-          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Режим</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ hoursLine1 }}<br><span style="color:rgba(10,47,79,.7);">{{ hoursLine2 }}</span></div>
-          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">Парковка</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">У каждого дома, бесплатно.</div>
-          <div style="color:rgba(10,47,79,.7);padding:12px 0;">Дорога</div><div style="padding:12px 0;">Микрорайон Кунгей, район Казыбек Би. Указатель SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span> у поворота.</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ contactAddressLabel }}</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ contactAddress }}</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ contactHoursLabel }}</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ hoursLine1 }}<br><span style="color:rgba(10,47,79,.7);">{{ hoursLine2 }}</span></div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ contactParkingLabel }}</div><div style="padding:12px 0;border-bottom:1px solid rgba(59,47,42,.1);">{{ contactParking }}</div>
+          <div style="color:rgba(10,47,79,.7);padding:12px 0;">{{ contactRouteLabel }}</div><div style="padding:12px 0;">{{ contactDirections }}</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
           <a href="{{ mapLinks.gis }}" target="_blank" rel="noopener" style="height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:44px;padding:0 12px;font-size:14px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">2ГИС</a>
@@ -1372,7 +1372,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <div style="display:flex;align-items:center;gap:16px;padding:16px 24px calc(16px + env(safe-area-inset-bottom));border-top:1px solid rgba(59,47,42,.1);background:#F9EFE3;">
     <div style="flex:1 1 auto;min-width:96px;"><div style="font-size:13px;color:#3B2F2A;white-space:nowrap;">{{ pd.meta }}</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;white-space:nowrap;">{{ pd.priceText }}</div></div>
     <sc-if value="{{ pd.avail }}" hint-placeholder-val="{{ true }}"><div style="flex:0 1 240px;min-width:0;"><button onClick="{{ pd.toggle }}" aria-pressed="{{ pd.pressed }}" style="{{ pd.btnStyle }}height:52px;">{{ pd.btnLabel }}</button></div></sc-if>
-    <sc-if value="{{ pd.un }}" hint-placeholder-val="{{ false }}"><a href="{{ pd.wa }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">Спросить в WhatsApp</a></sc-if>
+    <sc-if value="{{ pd.un }}" hint-placeholder-val="{{ false }}"><a href="{{ pd.wa }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">{{ faqAskLabel }}</a></sc-if>
   </div>
 </div>
 </sc-if>
@@ -1431,7 +1431,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-top:32px;border-top:1px solid rgba(249,239,227,.12);">
       <div style="display:flex;flex-wrap:wrap;gap:16px 40px;font-size:14px;line-height:1.5;color:rgba(249,239,227,.75);">
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Телефон</div><a href="{{ telHref }}" style="color:#F9EFE3;font-size:var(--fs-lead);font-weight:600;">{{ phoneText }}</a></div>
-        <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Адрес</div><div style="color:#F9EFE3;">г. Караганда, ул. Жакана Смакова 242</div></div>
+        <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">{{ contactAddressLabel }}</div><div style="color:#F9EFE3;">г. Караганда, ул. Жакана Смакова 242</div></div>
         <div><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;">Режим работы</div><div style="color:#F9EFE3;">{{ hoursLine1 }}</div><div style="color:rgba(249,239,227,.7);">{{ hoursLine2 }}</div></div>
       </div>
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
@@ -1925,7 +1925,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:38px;letter-spacing:.06em;margin:28px 0 12px;line-height:1;">Вы в списке</h2>
         <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(10,47,79,.85);">Напишем первыми, когда откроется бронирование.</p>
         <p style="margin:14px 0 0;font-size:14px;color:rgba(10,47,79,.7);">{{ cName }} · {{ cLine1 }}</p>
-        <a href="{{ waPre }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:52px;margin-top:36px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">Написать в WhatsApp</a>
+        <a href="{{ waPre }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:52px;margin-top:36px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">{{ contactWhatsApp }}</a>
         <button onClick="{{ closeBooking }}" style="width:100%;height:52px;margin-top:8px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">На главную</button>
       </div>
     </sc-if>
@@ -1974,12 +1974,12 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
               <a href="{{ succ.menuLink }}" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Выбрать меню к приезду</a>
             </sc-if>
             <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ true }}">
-              <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Написать в WhatsApp</a>
+              <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">{{ contactWhatsApp }}</a>
             </sc-if>
           </sc-if>
           <div style="display:grid;grid-template-columns:{{ succ.secCols }};gap:8px;">
             <sc-if value="{{ succ.waSecondary }}" hint-placeholder-val="{{ false }}">
-              <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:48px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap;">Написать в WhatsApp</a>
+              <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:48px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap;">{{ contactWhatsApp }}</a>
             </sc-if>
             <div style="position:relative;">
               <button onClick="{{ openCal }}" aria-expanded="{{ calPopOpen }}" style="width:100%;height:48px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap;">Добавить в календарь</button>
@@ -2358,6 +2358,78 @@ const KITCHEN={
  'Десерты':[{name:'Медовик',desc:'сметанный крем, на компанию',price:9000},{name:'Баурсаки с мёдом',desc:'горячие, 12 штук',portion:'Порция: 12 шт.',price:3500},{name:'Сезонные фрукты',desc:'тарелка на 6 гостей',price:8000}],
 };
 const PILLARS=[{n:'01',kind:'СМЫСЛ',name:'Восстановление',desc:'Пар, вода и тишина помогают переключиться с городского ритма.'},{n:'02',kind:'ПОЗИЦИЯ',name:'Приватный отдых',desc:'Премиальный отдых без показной роскоши.'},{n:'03',kind:'ОБЕЩАНИЕ',name:'Продуманная забота',desc:'Чистое тепло, приватность и сервис для семьи и близких.'},{n:'04',kind:'ХАРАКТЕР',name:'Спокойная уверенность',desc:'Тёплый, природный, современный. Говорит ясно и по существу.'}];
+
+// Native RU/KZ page content. Keep both languages in sync when editing copy.
+const PAGE_COPY = {
+ RU: {
+  reviewKickerPre:'Гости о ',reviewKickerPost:'',reviewPageTitle:'ОТЗЫВЫ',
+  reviewPageSubtitle:'Что говорят те, кто уже провёл вечер в наших домах.',
+  reviewCountLabel:'128 отзывов · 2ГИС',leaveReviewLabel:'Оставить отзыв в 2ГИС',
+  aboutKicker:'О нас',aboutPageTitle:'ТЕПЛО БЕЗ ЛИШНЕГО',
+  aboutIntroSuffix:' — пространство, где природные материалы и банная традиция возвращают внимание к себе. Восемь домов, один стандарт: приватность, чистота, тёплый свет и заранее согласованный сервис.',
+  faqTitle:'ЧАСТЫЕ ВОПРОСЫ',faqHint:'Не нашли ответ — напишите, ответим за 15 минут.',faqAskLabel:'Спросить в WhatsApp',
+  contactKicker:'Контакты',contactPageTitle:'КАК НАС НАЙТИ',contactCityLead:'Караганда, микрорайон Кунгей.',contactResponse:'Отвечаем в WhatsApp за 15 минут.',
+  contactMapAlt:'Карта с меткой',contactMapTitle:'SHIPÁ на Яндекс Картах',contactMapEnable:'Включить карту',contactMapTap:'Нажмите, чтобы двигать карту',
+  contactMapGis:'Открыть в 2ГИС',contactMapYandex:'Яндекс Карты',contactMapRoute:'Маршрут',
+  contactPhoneLabel:'Телефон и WhatsApp',contactWhatsApp:'Написать в WhatsApp',
+  contactAddressLabel:'Адрес',contactAddress:'г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242',
+  contactHoursLabel:'Режим',contactParkingLabel:'Парковка',contactParking:'У каждого дома, бесплатно.',
+  contactRouteLabel:'Дорога',contactDirections:'Микрорайон Кунгей, район Казыбек Би. Указатель SHIPÁ у поворота.'
+ },
+ KZ: {
+  reviewKickerPre:'',reviewKickerPost:' қонақтарының пікірлері',reviewPageTitle:'ПІКІРЛЕР',
+  reviewPageSubtitle:'Біздің үйлерде демалып қайтқан қонақтар не дейді?',
+  reviewCountLabel:'128 пікір · 2ГИС',leaveReviewLabel:'2ГИС-те пікір қалдыру',
+  aboutKicker:'Біз туралы',aboutPageTitle:'АРТЫҚ ЕШТЕҢЕСІ ЖОҚ ЖЫЛУ',
+  aboutIntroSuffix:' — табиғи материалдар мен монша дәстүрі өзіңізге көңіл бөлуге мүмкіндік беретін мекен. Сегіз үйге ортақ бір қағида: оңашалық, тазалық, жылы жарық және алдын ала келісілген қызмет.',
+  faqTitle:'ЖИІ ҚОЙЫЛАТЫН СҰРАҚТАР',faqHint:'Жауап таппадыңыз ба? Бізге жазыңыз, 15 минут ішінде жауап береміз.',faqAskLabel:'WhatsApp арқылы сұрау',
+  contactKicker:'Байланыс',contactPageTitle:'БІЗДІ ҚАЛАЙ ТАБУҒА БОЛАДЫ',
+  contactCityLead:'Қарағанды қаласы, Күнгей шағынауданы.',contactResponse:'WhatsApp арқылы 15 минут ішінде жауап береміз.',
+  contactMapAlt:'Картадағы орналасқан жер',contactMapTitle:'SHIPÁ Яндекс Карталарда',contactMapEnable:'Картаны қосу',contactMapTap:'Картаны жылжыту үшін басыңыз',
+  contactMapGis:'2ГИС-те ашу',contactMapYandex:'Яндекс Карталар',contactMapRoute:'Бағыт',
+  contactPhoneLabel:'Телефон және WhatsApp',contactWhatsApp:'WhatsApp арқылы жазу',
+  contactAddressLabel:'Мекенжай',contactAddress:'Қарағанды қ., Күнгей ш/а, Қазыбек би ауданы, Жақан Смақов көшесі, 242',
+  contactHoursLabel:'Жұмыс уақыты',contactParkingLabel:'Тұрақ',contactParking:'Әр үйдің жанында тегін тұрақ бар.',
+  contactRouteLabel:'Жол',contactDirections:'Күнгей шағынауданы, Қазыбек би ауданы. Бұрылыс маңында SHIPÁ көрсеткіші бар.'
+ }
+};
+const KZ_PAGE_HOUSES = ['ТЫНЫС','КҮШ','ТЕПЕ-ТЕҢДІК','ЭНЕРГИЯ','ЕРКІНДІК','ЖЕҢІЛДІК','ТАБИҒАТ КҮШІ','СЕРПІН'];
+const PILLARS_KZ = [
+ {n:'01',kind:'МӘНІ',name:'Күш-қуатты қалпына келтіру',desc:'Бу, су және тыныштық қала қарбаласынан бір сәтке арылуға көмектеседі.'},
+ {n:'02',kind:'ҰСТАНЫМ',name:'Оңаша демалыс',desc:'Көзге түсуге ұмтылмайтын, жайлы әрі сапалы демалыс.'},
+ {n:'03',kind:'УӘДЕ',name:'Ойластырылған қамқорлық',desc:'Отбасыңыз бен жақындарыңызға арналған таза монша, оңашалық және мұқият қызмет.'},
+ {n:'04',kind:'СИПАТ',name:'Сабырлы сенімділік',desc:'Жылы, табиғи әрі заманауи. Қарапайым да түсінікті тілмен сөйлейміз.'}
+];
+const FAQ_KZ = [
+ {q:'Қанша уақыт бұрын брондау қажет?',a:'Жұмыс күндері, әдетте, бір күн бұрын брондасаңыз жеткілікті. Жұма және сенбі кештеріне 3–5 күн бұрын брондауға кеңес береміз. Бос уақыттар сайтта көрсетіледі.'},
+ {q:'Өзіммен бірге не әкелуім керек?',a:'Міндетті түрде ештеңе әкелудің қажеті жоқ: үйде сүлгі, жайма, тәпішке және шай бар. Монша сыпыртқысын, қалпақ пен қолғапты брондауға қосуға болады.'},
+ {q:'Балалармен келуге бола ма?',a:'Иә. 7 жасқа дейінгі балалар тегін және үйдің сыйымдылығына есептелмейді. Чан терең емес, демалыс бөлмесінде ойынға орын бар.'},
+ {q:'Сағат нешеде келуге болады?',a:()=>[
+  `Үйлер күн сайын ${hh(CFG.open)}-ден ${hh(CFG.close)}-ге дейін қонақ қабылдайды.`,
+  `Келу уақыты — ${hh(CFG.open)}-ден ${hh(CFG.lastStart)}-ге дейін. Ең аз брондау мерзімі — ${CFG.minH} сағат. Сондықтан соңғы келу уақыты ${hh(CFG.lastStart)}: үй кемінде ${hh(CFG.lastStart+CFG.minH)}-ге дейін брондалады, ал монша ${hh(CFG.close)}-ге дейін ашық.`,
+  `Мысалы, ${hh(19)}-де келсеңіз, ${hh(CFG.close)}-ге дейін ${CFG.close-19} сағат демала аласыз. ${hh(CFG.lastStart)}-де келсеңіз, кемінде ${hh(CFG.lastStart+CFG.minH)}-ге дейін, ең көбі ${hh(CFG.close)}-ге дейін бола аласыз.`,
+  `VIP үйлерді тәулікке алуға болады: келу — ${hh(CFG.daily.in)}, шығу — келесі күні ${hh(CFG.daily.out)}. Бұл қызметтің бағасы бөлек есептеледі.`
+ ]},
+ {q:'Алдын ала төлем қажет пе?',a:'Иә. Брондау кезінде сайтта алдын ала төлем жасалады: Standard үшін 20 000 ₸, VIP үшін 40 000 ₸. Брондау алдын ала төлеммен расталады. Төлемсіз брондау 6 сағат, ал сол күнгі брондау 1 сағат сақталады.'},
+ {q:'Брондаудан бас тартуға немесе күнін ауыстыруға бола ма?',a:'Келуге 3 күннен көп уақыт қалғанда бас тартсаңыз, алдын ала төлем қайтарылады. 3 күннен аз қалса, ақшаны қайтару қарастырылмайды, бірақ күнін ауыстыруға болады. Келмеген жағдайда алдын ала төлем қайтарылмайды.'},
+ {q:'Кешігіп қалсақ не болады?',a:'Үй брондалған уақыт бойы сізге сақталады. Кешіккен жағдайда басталу және аяқталу уақыты өзгермейді. Келесі уақыт бос болса, әкімшімен келісіп ұзартуға болады.'},
+ {q:'Демалыс уақытын сол жерде ұзартуға бола ма?',a:'Иә, келесі уақыт бос болса, ұзартуға болады. Қосымша уақыт сол кезеңге арналған тарифпен есептеледі. WhatsApp арқылы әкімшіден нақтылаңыз.'}
+];
+const REVIEWS_KZ = [
+ {date:'2 қыр.',visit:'ТЫНЫС үйінде болдым · 4 сағат · тамыз',reply:{date:'3 қыркүйек',text:'Айгерім, рақмет! Қонақтарға алдын ала дастарқан дайындағанды жақсы көреміз. Тағы да күтеміз!'},text:'Жұмыстан кейін кешке келдік. Біз келгенше дастарқан әзірленіп, бу бөлмесі жылытылып, чан ыстық болып тұрды. Ешкім кедергі келтірмеді: өз террасамыз, өз ауламыз болды. Әкімшіге ерекше рақмет: бу бөлмесі мен чан арасындағы уақытты дұрыс жоспарлауға көмектесті, монша сыпыртқысы қажет пе екенін алдын ала сұрады.'},
+ {date:'29 там.',text:'КҮШ үйін он адамға брондадық. Бу бөлмесінен кейінгі чанға түсу керемет әсер қалдырды.'},
+ {date:'24 там.',text:'Екеуміз бардық. Тыныштық, жылы жарық, артық ештеңе жоқ. Жұмсақ булау бағдарламасын таңдадық. Тағы келеміз.'},
+ {date:'17 там.',text:'Үй жақсы, таза, отын алдын ала дайындалған. Тек киім ауыстыратын бөлмеде ілгіш көбірек болса екен.'},
+ {date:'10 там.',text:'WhatsApp-та бес минутта жауап берді. Балалармен демалуға ыңғайлы: демалыс бөлмесі кең, чан аса терең емес.'},
+ {date:'3 там.',text:'КҮШ — ерекше атмосферасы бар үй. Қара тас, су, бу. Кешке алты сағатқа алдық, туған күнге таптырмас орын.'}
+];
+const SVC_FAQ_KZ = [
+ {q:'Алғаш рет моншаға келсем, булауға бола ма?',a:'Иә. Классикалық немесе жұмсақ булаудан бастаңыз. Шебер температура мен қарқынды өзіңізді қалай сезінетініңізге қарай таңдайды.'},
+ {q:'Өзіммен бірге не әкелуім керек?',a:'Міндетті ештеңе жоқ: үйде монша сыпыртқылары, сүлгілер, жаймалар және шай бар. Өз тәпішкеңіз бен қалпағыңызды ала келуге болады.'},
+ {q:'Бағдарлама қанша уақытқа созылады?',a:'40 минуттан екі сағатқа дейін. Бағдарлама ұзақтығы үйді брондаған уақытыңызға кіреді.'},
+ {q:'Бағдарлама қашан расталады?',a:'Брондау өтінімінен кейін әкімші WhatsApp арқылы бағдарлама мен шебердің уақытын растайды.'}
+];
+
 const FULL_DAYS=[3,9];
 // Слайды первого экрана — из админки: картинка, заголовок (две строки), подпись. Пустое поле — берётся HERO_TEXT.
 const HERO_TEXT={kicker:'Пространство для тела и души · Караганда',l1:'ВЫБЕРИ СВОЁ',l2:'СОСТОЯНИЕ',sub:'Восемь домов с парными и чанами. Свой дом, своя терраса, никого рядом.'};
@@ -2394,8 +2466,8 @@ class Component extends DCLogic {
     const src=`https://yandex.ru/map-widget/v1/?ll=${pt}&z=${m.zoom}&pt=${pt},pm2rdm&lang=ru_RU`;
     const one=k=>{const st=this.state.maps[k];const live=st.show&&st.ok;return {show:st.show,loaded:()=>this.setMap(k,{ok:true}),pin:!live,gate:live&&!st.armed,arm:()=>this.setMap(k,{armed:true}),
       frameStyle:`position:absolute;inset:0;width:100%;height:100%;border:0;display:block;opacity:${st.ok?1:0};transition:opacity 300ms ease-out;pointer-events:${st.armed?'auto':'none'};`};};
-    return {mapH:wide?'440px':'320px',mapSrc:src,mapAddr:ADDR,copyAddrLabel:this.state.addrCopied?'Скопировано':'Скопировать адрес',
-      copyAddr:()=>{try{navigator.clipboard&&navigator.clipboard.writeText(ADDR);}catch(e){}this.setState({addrCopied:true});clearTimeout(this._addrT);this._addrT=setTimeout(()=>this.setState({addrCopied:false}),1800);},
+    return {mapH:wide?'440px':'320px',mapSrc:src,mapAddr:this.state.lang==='KZ'?'Қарағанды қ., Жақан Смақов көшесі, 242':ADDR,copyAddrLabel:this.state.lang==='KZ'?(this.state.addrCopied?'Көшірілді':'Мекенжайды көшіру'):(this.state.addrCopied?'Скопировано':'Скопировать адрес'),
+      copyAddr:()=>{try{navigator.clipboard&&navigator.clipboard.writeText(this.state.lang==='KZ'?'Қарағанды қ., Жақан Смақов көшесі, 242':ADDR);}catch(e){}this.setState({addrCopied:true});clearTimeout(this._addrT);this._addrT=setTimeout(()=>this.setState({addrCopied:false}),1800);},
       mapLinks:{gis:`https://2gis.kz/${m.city}/geo/${pt}?m=${pt}/${m.zoom}`,ya:`https://yandex.kz/maps/?pt=${pt}&z=${m.zoom}&l=map`,go:`https://www.google.com/maps?q=${m.lat},${m.lng}`,route:`https://2gis.kz/${m.city}/directions/points/|${pt}`},
       mapHome:one('home'),mapContacts:one('contacts')};}
   carRef=React.createRef();galRef=React.createRef();stripRef=React.createRef();sheetRef=React.createRef();totalRef=React.createRef();
@@ -2950,8 +3022,8 @@ if(s.lang==='KZ'){
         dotStyle:`width:4px;height:4px;border-radius:50%;background:${few?(act?CREAM:BRICK):'transparent'};`,discOn:!full&&this.homeDisc(i)>0,discText:'−'+this.homeDisc(i)+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
         style:`flex:0 0 auto;width:${w}px;height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
-    const faq=FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
-    const reviews=REVIEWS.map((r,i)=>({...r,id:'r'+i,long:r.text.length>200,initial:r.name[0],hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
+    const faq=(s.lang==='KZ'?FAQ_KZ:FAQ).map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
+    const reviews=REVIEWS.map((r,i)=>{const localized=s.lang==='KZ'?REVIEWS_KZ[i]:{};const item={...r,...localized};return {...item,id:'r'+i,long:item.text.length>200,initial:item.name[0],hi:item.house,stars:'★'.repeat(item.stars)+'☆'.repeat(5-item.stars),house:HOUSES[item.house].n+' / '+(s.lang==='KZ'?KZ_PAGE_HOUSES[item.house]:HOUSES[item.house].name)};});
     const PROG_IMG=['img/h1_acc.png','img/h5_art.png','img/h2_int.png','img/h3_art.png','img/h6_acc.png'];
     const programs=PROGRAMS.map((p,i)=>{const un=!!p.unavailable;return {...p,unavailable:un,slot:'prog-'+i,img:PROG_IMG[i],priceText:fmt(p.price),addToBooking:()=>!un&&this.openBooking(null),
       cardStyle:`background:rgba(10,47,79,.06);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;opacity:${un?'.55':'1'};`,
@@ -3008,7 +3080,7 @@ if(s.lang==='KZ'){
     const rf=s.rf;const rfOk=rf.stars>0&&rf.text.trim().length>=20&&!!rf.agree;
     const kitchenTabs=Object.keys(KITCHEN).map(t=>{const a=s.kitchenTab===t;return {label:t,sel:a?'true':'false',select:()=>this.setState({kitchenTab:t}),style:`flex:0 0 auto;height:44px;padding:0 20px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;border:1px solid ${a?NAVY:'rgba(10,47,79,.25)'};background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
     const kitchenItems=(KITCHEN[s.kitchenTab]||[]).map((k,i)=>({...k,priceText:fmt(k.price),slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:'Фото: '+k.name.toLowerCase()+' — '+k.desc.split(',')[0]}));
-    const reviewFilters=[{label:'Все',v:-1},...OPEN_HOUSES.map(h=>({label:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
+    const reviewFilters=[{label:s.lang==='KZ'?'Барлығы':'Все',v:-1},...OPEN_HOUSES.map(h=>({label:s.lang==='KZ'?KZ_PAGE_HOUSES[HOUSES.indexOf(h)]:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
     const filteredReviews=reviews.filter(r=>s.reviewFilter<0||r.hi===s.reviewFilter);
     const catalogHouses=catalogHouses0.map(h=>{const ci=(s.catIdx||{})[h.id]||0;const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
       dots:ph.map((_,i)=>({s:`display:block;height:6px;width:${i===ci?18:6}px;border-radius:999px;background:${i===ci?CREAM:'rgba(249,239,227,.55)'};transition:width 250ms ease-out;`})),
@@ -3369,7 +3441,7 @@ const LANGS=['RU','KZ'];
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
       masters:MASTERS.map((m,i)=>({...m,slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),
-      svcFaq:SVC_FAQ.map((q,i)=>({...q,paras:paras(q.a),open:s.svcFaq===i,toggle:()=>this.setState({svcFaq:s.svcFaq===i?-1:i}),iconStyle:`width:32px;height:32px;border-radius:999px;border:1px solid ${NAVY};display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;transition:transform 200ms ease-out;transform:rotate(${s.svcFaq===i?45:0}deg);`})),
+      svcFaq:(s.lang==='KZ'?SVC_FAQ_KZ:SVC_FAQ).map((q,i)=>({...q,paras:paras(q.a),open:s.svcFaq===i,toggle:()=>this.setState({svcFaq:s.svcFaq===i?-1:i}),iconStyle:`width:32px;height:32px;border-radius:999px;border:1px solid ${NAVY};display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;transition:transform 200ms ease-out;transform:rotate(${s.svcFaq===i?45:0}deg);`})),
       svcHeroH:wide?'60svh':'min(64svh,560px)',svcHeroPad:wide?'120px 40px 56px':'88px 16px 32px',tabsTop:(s.hdrHidden?0:(vw>=768?72:56))+'px',pageSide:wide?'40px':'16px',introMaxH:wide?'520px':'320px',cardGap:wide?'24px':'16px',cardTop:wide?'32px':'20px',cardPad:wide?'20px':'16px',
       secPad:wide?'64px 40px 0':'32px 16px 0',introCols:wide?'minmax(0,5fr) minmax(0,7fr)':'minmax(0,1fr)',introGap:wide?'48px':'16px',introAspect:wide?'4/5':'16/9',
       pdOpen:!!s.pd,pd,pdRef:this.pdRef,pdClose:()=>this.setState({pd:null}),pdDrag:e=>this.dragClose(e,this.pdRef,()=>this.setState({pd:null})),pdContra:!!s.pdContra,pdContraToggle:()=>this.setState({pdContra:!s.pdContra}),
@@ -3421,12 +3493,12 @@ const LANGS=['RU','KZ'];
       quickNext:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       heroSlides,heroDots,heroIsVideo:!!HERO_SLIDES[s.hero].video,
       videoReviews:VREV,
-      phoneText:C.phone,telHref:C.tel,phoneAria:'Позвонить: '+C.phone,waGeneral:C.wa(C.t('waTextGeneral')),waHeader:C.wa(C.t('waTextGeneral')),waHero:C.wa(C.t('waTextHero')),waPre:C.wa(C.t('waTextPre')),waHouse:C.wa(C.t('waTextHouse',{дом:hRaw.name})),waError:(B.waErrorBk)||C.wa(C.t('waTextError')),
+      phoneText:C.phone,telHref:C.tel,phoneAria:'Позвонить: '+C.phone,waGeneral:C.wa(s.lang==='KZ'?'Сәлеметсіз бе! SHIPÁ сайтынан жазып отырмын.':C.t('waTextGeneral')),waHeader:C.wa(s.lang==='KZ'?'Сәлеметсіз бе! SHIPÁ сайтынан жазып отырмын.':C.t('waTextGeneral')),waHero:C.wa(C.t('waTextHero')),waPre:C.wa(C.t('waTextPre')),waHouse:C.wa(C.t('waTextHouse',{дом:hRaw.name})),waError:(B.waErrorBk)||C.wa(C.t('waTextError')),
       stickyHouseWa:inHouse,waTip:!!s.waTip&&(!wide||!!s.pastHero||screen!=='home'),waTipBottom:wide?'32px':'calc(104px + env(safe-area-inset-bottom))',showWa:!bk&&!s.menuOpen&&s.lightbox<0&&(!wide||!!s.pastHero||screen!=='home'),
       phoneMissing:s.form.phone.replace(/\D/g,'').length<10,contactCallLabel:s.inlineSent?'Отправлено':'Отправить',
       contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(s.form.phone.replace(/\D/g,'').length>=10?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
       heroStats,heroFx,
-      hoursLine1:HOURS.line1(),hoursLine2:HOURS.line2(),hoursAbout:HOURS.about(),hoursStep3:HOURS.step3(),
+      hoursLine1:s.lang==='KZ'?`Күн сайын ${hh(CFG.open)}–${hh(CFG.close)}`:HOURS.line1(),hoursLine2:s.lang==='KZ'?`Келу уақыты: ${hh(CFG.open)}–${hh(CFG.lastStart)}`:HOURS.line2(),hoursAbout:s.lang==='KZ'?`Күн сайын ${hh(CFG.open)}-ден ${hh(CFG.close)}-ге дейін жұмыс істейміз. ${hh(CFG.open)}-ден ${hh(CFG.lastStart)}-ге дейін келуге болады, ең аз брондау уақыты — ${CFG.minH} сағат.`:HOURS.about(),hoursStep3:s.lang==='KZ'?`Келу уақыты — ${hh(CFG.open)}–${hh(CFG.lastStart)}. Ең аз брондау мерзімі — ${CFG.minH} сағат.`:HOURS.step3(),
       meaningPins:(this.props.meaningPins||MEANING_PINS).map(p=>({n:p.n,style:`position:absolute;left:${p.x}%;top:${p.y}%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:${BRICK};color:${CREAM};border:2px solid ${CREAM};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;`})),
       ...this.mapVals(wide),
       aboutItems:[{n:'01',img:'img/h5_int.png',title:'Свой дом',sub:'Парная, чан и терраса только для вашей компании. Соседей не видно и не слышно.'},{n:'02',img:'img/h3_acc.png',title:'Материал',sub:'Дуб, лён, камень и керамика. Ничего искусственного на ощупь.'},{n:'03',img:'img/h6_int.png',title:'Тёплый свет',sub:'2700–3000 K во всех домах. Глаза отдыхают вместе с телом.'},{n:'04',img:'img/h1_acc.png',title:'Сервис заранее',sub:'Стол, программа парения и веники согласованы при брони. По приезду — только отдых.'}],
@@ -3441,7 +3513,7 @@ const LANGS=['RU','KZ'];
       dishes:[['Бешбармак','конина, баранина, сорпа',32000,'Фото: бешбармак на большом блюде'],['Шашлык из баранины','корейка на углях, 1 кг',24000,'Фото: шашлык на углях'],['Казы и жая','конские деликатесы',14000,'Фото: нарезка казы'],['Баурсаки с мёдом','горячие, 12 штук',3500,'Фото: баурсаки и мёд'],['Степной сбор','чабрец, душица, самовар',4500,'Фото: чай из самовара'],['Судак на углях','целиком, лимон, травы',18000,'Фото: рыба на углях']].map((d,i)=>({name:d[0],desc:d[1],priceText:fmt(d[2]),photo:d[3],slot:'dish-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png','img/h1_acc.png','img/h6_acc.png','img/h3_acc.png'][i]})),
       atmosphere:ATM,
       atmRef:this.atmRef,atmPrev:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:-300,behavior:'smooth'}),atmNext:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:300,behavior:'smooth'}),
-      homeReviews:HOME_REV,reviews,faq,pillars:PILLARS,
+      homeReviews:HOME_REV,reviews,faq,pillars:s.lang==='KZ'?PILLARS_KZ:PILLARS,
       catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
       house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==this.state.galleryIdx)this.setState({galleryIdx:i});}),
       lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),lightboxStyle:`width:min(96vw,1200px);height:min(90vh,800px);background:url(${gsrc[Math.max(0,s.lightbox)]}) center/contain no-repeat;`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,
@@ -3468,7 +3540,8 @@ const LANGS=['RU','KZ'];
       pre,notPre:!pre,bookLabel,showMeaning:this.props.showMeaning??true,showMerch:this.props.showMerch??false,
       merch:MERCH.map((m,i)=>({...m,name:this.stressText(m.name),priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:C.wa(C.t('waTextMerch',{товар:m.name}))})),
       serviceCats:SERVICE_CATS.map((c,i)=>({...c,soon:!!c.soon,hasImg:!c.soon,slot:'svc-'+i,style:`border-radius:20px;overflow:hidden;display:flex;flex-direction:column;${c.soon?'border:1px dashed rgba(10,47,79,.35);':'background:rgba(10,47,79,.06);'}`})),
-      ...B
+      ...B,
+      ...PAGE_COPY[s.lang]
     };
   }
 }
