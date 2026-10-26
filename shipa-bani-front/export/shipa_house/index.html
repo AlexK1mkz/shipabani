@@ -13,6 +13,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="./image-slot.js"></script>
   <style>
+/* SHIPA footer layout parity with main site (legacy exported page). */
+main[data-screen-label="Главная"]>footer{display:block!important;width:100%!important;max-width:none!important;margin:20px 0 0!important;padding:0!important;background:#0A2F4F!important;border:0!important;border-radius:0!important;}
+main[data-screen-label="Главная"]>footer>div:first-child{width:100%;max-width:1440px;margin:0 auto!important;padding:32px 40px!important;border-radius:0!important;}
+main[data-screen-label="Главная"]>footer>div:last-child{display:none!important;}
+@media(max-width:1180px){main[data-screen-label="Главная"]>footer>div:first-child{padding:30px 24px!important;}}
+@media(max-width:620px){main[data-screen-label="Главная"]>footer{margin-top:16px!important;}}
+@media(max-width:620px){main[data-screen-label="Главная"]>footer>div:first-child{padding:28px 20px 30px!important;}}
+
     html,body{margin:0;padding:0;background:#F9EFE3;color:#0A2F4F;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
     *{box-sizing:border-box;}
     a{color:#0A2F4F;text-decoration:none;}
@@ -40,7 +48,13 @@
     input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#C15C22;margin-top:-13px;border:3px solid #F9EFE3;box-shadow:0 0 0 1px rgba(10,47,79,.25);}
     input[type=range]::-moz-range-track{height:2px;background:rgba(10,47,79,.25);}
     input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#C15C22;border:3px solid #F9EFE3;}
-  </style>
+  
+/* Accessible FAQ accordion animation */
+.shipa-faq-panel{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows 320ms cubic-bezier(.22,1,.36,1),opacity 220ms ease,visibility 320ms}
+.shipa-faq-panel[data-open="true"]{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows 320ms cubic-bezier(.22,1,.36,1),opacity 220ms ease,visibility 0s}
+.shipa-faq-panel-inner{min-height:0;overflow:hidden}
+@media(prefers-reduced-motion:reduce){.shipa-faq-panel,.shipa-faq-panel[data-open="true"]{transition:none}}
+</style>
 </helmet>
 
 <div style="min-height:100vh;background:#F9EFE3;color:#0A2F4F;font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.4;">
@@ -49,7 +63,7 @@
 <sc-if value="{{ showChrome }}" hint-placeholder-val="{{ true }}">
 <header ref="{{ headerRef }}" style="position:fixed;top:0;left:0;right:0;z-index:40;background:#F9EFE3;border-bottom:1px solid #C15C22;transition:transform 300ms ease;">
   <div style="max-width:1200px;margin:0 auto;height:{{ headerH }};display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 20px;">
-    <button onClick="{{ goHome }}" aria-label="SHIPA — на главную" style="display:flex;align-items:center;gap:10px;height:56px;">
+    <button onClick="{{ goHome }}" aria-label="SHIPA - на главную" style="display:flex;align-items:center;gap:10px;height:56px;">
       <img src="brand/logo-navy.png" alt="SHIPA" style="height:{{ logoH }};width:auto;display:block;">
     </button>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}">
@@ -80,7 +94,7 @@
 
 <!-- HOME -->
 <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
-<main data-screen-label="Главная" style="padding-bottom:100px;">
+<main data-screen-label="Главная" style="padding-bottom:0;">
 
   <section style="position:relative;min-height:min(74svh,640px);overflow:hidden;background:#0A2F4F;">
     <sc-for list="{{ heroSlides }}" as="sl" hint-placeholder-count="4">
@@ -120,7 +134,7 @@
   </section>
 
   <section style="max-width:1200px;margin:0 auto;padding:12px 20px 0;">
-    <div style="font-size:13px;color:rgba(10,47,79,.7);text-align:center;">Ответим в WhatsApp за 15 минут. Цены и свободные дома — сразу, без звонков.</div>
+    <div style="font-size:13px;color:rgba(10,47,79,.7);text-align:center;">Ответим в WhatsApp за 15 минут. Цены и свободные дома - сразу, без звонков.</div>
   </section>
   <section style="max-width:1200px;margin:0 auto;padding:28px 20px 0;">
     <div style="border:2px solid #C15C22;border-radius:20px;padding:16px 20px 20px;max-width:720px;margin:0 auto;">
@@ -146,7 +160,7 @@
   </section>
 
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 20px 0;">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIPA — это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIPA - это тепло без лишнего: <span style="color:#C15C22;">свой дом</span>, натуральный материал, тёплый свет и сервис, согласованный заранее</h2>
     <div class="noscroll" style="display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scroll-snap-type:x mandatory;">
       <sc-for list="{{ aboutItems }}" as="a" hint-placeholder-count="4">
         <div style="flex:0 0 66%;max-width:280px;scroll-snap-align:start;aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
@@ -165,7 +179,7 @@
   <section data-reveal style="max-width:1200px;margin:0 auto;padding:56px 0 0;">
     <div style="padding:0 20px;">
       <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,7vw,52px);letter-spacing:.08em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ — <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,7vw,52px);letter-spacing:.08em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ - <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
       <p style="margin:0 0 24px;font-size:16px;color:rgba(10,47,79,.7);text-align:center;">Гость выбирает атмосферу, а не номер.</p>
     </div>
     <div class="noscroll" style="{{ housesRowStyle }}">
@@ -210,7 +224,7 @@
           </div>
         </sc-for>
       </div>
-      <p style="margin:24px 0 0;font-size:13px;opacity:.65;text-align:center;">Комплектация домов отличается — точный состав смотрите на странице дома.</p>
+      <p style="margin:24px 0 0;font-size:13px;opacity:.65;text-align:center;">Комплектация домов отличается - точный состав смотрите на странице дома.</p>
     </div>
   </section>
 
@@ -350,19 +364,19 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px 48px;">
       <div style="max-width:360px;">
         <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,6.5vw,48px);letter-spacing:.08em;line-height:1.05;margin:0;">НАМ ЧАСТО ЗАДАЮТ ЭТИ <span style="color:#C15C22;">ВОПРОСЫ</span></h2>
-        <p style="margin:18px 0 22px;font-size:16px;line-height:1.5;color:rgba(10,47,79,.75);">Не нашли интересующий вас вопрос — задайте его нам</p>
+        <p style="margin:18px 0 22px;font-size:16px;line-height:1.5;color:rgba(10,47,79,.75);">Не нашли интересующий вас вопрос - задайте его нам</p>
         <a href="https://wa.me/77000000000?text={{ waAskText }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:52px;padding:0 26px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:14px;">Задать вопрос</a>
       </div>
       <div style="grid-column:span 2;display:flex;flex-direction:column;gap:10px;min-width:0;">
         <sc-for list="{{ faq }}" as="q" hint-placeholder-count="6">
           <div style="background:rgba(10,47,79,.06);border-radius:20px;">
-            <button onClick="{{ q.toggle }}" style="width:100%;min-height:68px;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:16px 16px 16px 22px;font-size:16px;font-weight:600;">
+            <button onClick="{{ q.toggle }}" aria-expanded="{{ q.open }}" style="width:100%;min-height:68px;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:16px 16px 16px 22px;font-size:16px;font-weight:600;">
               <span>{{ q.q }}</span>
               <span style="{{ q.iconStyle }}">+</span>
             </button>
-            <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
-              <p style="margin:0;padding:0 22px 20px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ q.a }}</p>
-            </sc-if>
+            <div class="shipa-faq-panel" data-open="{{ q.open }}" aria-hidden="{{ q.closed }}">
+              <div class="shipa-faq-panel-inner"><p style="margin:0;padding:0 22px 20px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ q.a }}</p></div>
+            </div>
           </div>
         </sc-for>
       </div>
@@ -383,7 +397,7 @@
           <a href="tel:+77000000000" style="font-weight:600;font-size:17px;">+7 700 000 00 00</a>
           <div style="display:flex;gap:6px;">
             <a href="https://wa.me/77000000000" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#F9EFE3" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#F9EFE3" stroke="none"/></svg></a>
+            <a href="https://www.instagram.com/shipabanya/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="width:44px;height:44px;border-radius:50%;background:#0A2F4F;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#F9EFE3" stroke="none"/></svg></a>
           </div>
         </div>
         <div style="font-weight:600;font-size:17px;margin-top:24px;">Обратный звонок</div>
@@ -537,7 +551,7 @@
         </div>
       </sc-for>
     </div>
-    <p style="margin:12px 0 0;font-size:13px;color:rgba(10,47,79,.7);line-height:1.5;">Минимум {{ house.min }} часа. Цена за час. Свыше 10 гостей — +3 000 ₸ за человека. Дети до 7 лет — бесплатно.</p>
+    <p style="margin:12px 0 0;font-size:13px;color:rgba(10,47,79,.7);line-height:1.5;">Минимум {{ house.min }} часа. Цена за час. Свыше 10 гостей - +3 000 ₸ за человека. Дети до 7 лет - бесплатно.</p>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin:40px 0 14px;gap:8px;">
       <h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.1em;margin:0;">ЗАНЯТОСТЬ</h3>
@@ -571,7 +585,7 @@
     <sc-if value="{{ showRatings }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;">{{ houseRating }}</span><span style="color:#C15C22;letter-spacing:.1em;">★★★★★</span><span style="font-size:13px;color:rgba(10,47,79,.6);">средняя оценка</span></div>
     </sc-if>
-    <sc-if value="{{ houseReviewsEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:15px;color:rgba(10,47,79,.7);">Отзывов об этом доме пока нет — станьте первым.</p></sc-if>
+    <sc-if value="{{ houseReviewsEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:15px;color:rgba(10,47,79,.7);">Отзывов об этом доме пока нет - станьте первым.</p></sc-if>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <sc-for list="{{ houseReviews }}" as="r" hint-placeholder-count="2">
         <div style="background:rgba(10,47,79,.06);border-radius:16px;padding:16px 18px;">
@@ -630,7 +644,7 @@
   <div style="max-width:720px;margin:0 auto;padding:0 20px;">
     <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;">Парение</div>
     <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:44px;letter-spacing:.1em;margin:0 0 10px;line-height:1;">ПАРЕНИЕ И УХОД</h1>
-    <p style="margin:0 0 24px;font-size:16px;color:rgba(10,47,79,.7);line-height:1.5;">Программу добавляете к брони как пожелание — администратор подтвердит её в WhatsApp. Всё, что нужно, — уже в парной.</p>
+    <p style="margin:0 0 24px;font-size:16px;color:rgba(10,47,79,.7);line-height:1.5;">Программу добавляете к брони как пожелание - администратор подтвердит её в WhatsApp. Всё, что нужно, - уже в парной.</p>
   </div>
   <div style="aspect-ratio:4/3;max-height:70vh;overflow:hidden;border-radius:20px;margin:0 20px;"><image-slot id="services-master" src="img/h2_acc.png" shape="rect" placeholder="Парная перед сеансом"></image-slot></div>
   <div style="max-width:720px;margin:0 auto;padding:0 20px;">
@@ -714,7 +728,7 @@
 <main data-screen-label="О нас" style="padding:84px 20px 100px;max-width:720px;margin:0 auto;">
   <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;">О нас</div>
   <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:44px;letter-spacing:.1em;margin:0 0 18px;line-height:1;">ТЕПЛО БЕЗ ЛИШНЕГО</h1>
-  <p style="margin:0 0 32px;font-size:17px;line-height:1.55;">SHIPA — пространство, где природные материалы и банная традиция возвращают внимание к себе. Восемь домов, один стандарт: приватность, чистота, тёплый свет и заранее согласованный сервис.</p>
+  <p style="margin:0 0 32px;font-size:17px;line-height:1.55;">SHIPA - пространство, где природные материалы и банная традиция возвращают внимание к себе. Восемь домов, один стандарт: приватность, чистота, тёплый свет и заранее согласованный сервис.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 24px;border-top:1px solid #0A2F4F;">
     <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4">
       <div style="padding:18px 0;border-bottom:1px solid rgba(10,47,79,.2);">
@@ -732,9 +746,9 @@
       <button onClick="{{ q.toggle }}" style="width:100%;min-height:56px;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:16px 0;font-size:16px;font-weight:500;">
         <span>{{ q.q }}</span><span style="{{ q.iconStyle }}">+</span>
       </button>
-      <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
-        <p style="margin:0;padding:0 40px 18px 0;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ q.a }}</p>
-      </sc-if>
+      <div class="shipa-faq-panel" data-open="{{ q.open }}" aria-hidden="{{ q.closed }}">
+        <div class="shipa-faq-panel-inner"><p style="margin:0;padding:0 40px 18px 0;font-size:15px;line-height:1.55;color:rgba(10,47,79,.85);">{{ q.a }}</p></div>
+      </div>
     </div>
   </sc-for>
   </div>
@@ -753,7 +767,7 @@
   <a href="tel:+77000000000" style="display:block;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:40px;margin-top:28px;line-height:1;">+7 700 000 00 00</a>
   <div style="display:flex;gap:24px;margin-top:12px;font-size:14px;letter-spacing:.04em;">
     <a href="https://wa.me/77000000000" style="border-bottom:1px solid rgba(10,47,79,.5);padding-bottom:2px;">WhatsApp</a>
-    <a href="https://instagram.com" style="border-bottom:1px solid rgba(10,47,79,.5);padding-bottom:2px;">Instagram</a>
+    <a href="https://www.instagram.com/shipabanya/" target="_blank" rel="noopener noreferrer" style="border-bottom:1px solid rgba(10,47,79,.5);padding-bottom:2px;">Instagram</a>
   </div>
   <div style="display:grid;grid-template-columns:100px 1fr;gap:0 16px;margin-top:32px;font-size:16px;line-height:1.5;border-top:1px solid #0A2F4F;">
     <div style="color:rgba(10,47,79,.6);padding:12px 0;border-bottom:1px solid rgba(10,47,79,.15);">Адрес</div><div style="padding:12px 0;border-bottom:1px solid rgba(10,47,79,.15);">г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242</div>
@@ -859,7 +873,7 @@
   <div style="max-width:560px;margin:0 auto;">
 
     <sc-if value="{{ step1 }}" hint-placeholder-val="{{ true }}">
-      <div data-screen-label="Шаг 1 — Когда">
+      <div data-screen-label="Шаг 1 - Когда">
       <sc-if value="{{ bk.houseName }}" hint-placeholder-val="{{ false }}">
         <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;text-align:center;">ДОМ {{ bk.houseName }}</div>
       </sc-if>
@@ -899,7 +913,7 @@
     </sc-if>
 
     <sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}">
-      <div data-screen-label="Шаг 2 — Какой дом">
+      <div data-screen-label="Шаг 2 - Какой дом">
       <button onClick="{{ editSearch }}" style="width:100%;display:grid;grid-template-columns:1fr 1fr auto;border:2px solid #C15C22;border-radius:16px;overflow:hidden;background:#F9EFE3;text-align:left;margin-bottom:20px;">
         <div style="padding:10px 12px;border-right:1px solid rgba(10,47,79,.15);"><div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,47,79,.6);">Дата</div><div style="font-weight:600;font-size:14px;margin-top:2px;white-space:nowrap;">{{ searchDate }}</div></div>
         <div style="padding:10px 12px;"><div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(10,47,79,.6);">Гостей</div><div style="font-weight:600;font-size:14px;margin-top:2px;">{{ bk.guests }}</div></div>
@@ -967,7 +981,7 @@
     </sc-if>
 
     <sc-if value="{{ step3 }}" hint-placeholder-val="{{ false }}">
-      <div data-screen-label="Шаг 3 — Время и дополнительно">
+      <div data-screen-label="Шаг 3 - Время и дополнительно">
       <div style="font-size:11px;letter-spacing:.2em;color:#C15C22;font-weight:600;margin-bottom:8px;">ДОМ {{ bk.houseName }} · {{ searchDate }}</div>
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 16px;">Во сколько начнём?</h2>
       <sc-if value="{{ hasBusy }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:12px;">Занято в этот день: {{ busyText }}. Нужно 3 часа до следующей брони.</div></sc-if>
@@ -978,7 +992,7 @@
       </div>
 
       <div style="font-weight:600;margin:28px 0 4px;font-size:15px;">Длительность</div>
-      <div style="font-size:13px;color:rgba(10,47,79,.65);margin-bottom:10px;line-height:1.45;">Минимум 3 часа, максимум 72 часа — можно взять дом на несколько дней. Цена считается по часам каждого тарифа.</div>
+      <div style="font-size:13px;color:rgba(10,47,79,.65);margin-bottom:10px;line-height:1.45;">Минимум 3 часа, максимум 72 часа - можно взять дом на несколько дней. Цена считается по часам каждого тарифа.</div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
         <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="5">
           <button onClick="{{ c.select }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
@@ -1033,7 +1047,7 @@
     </sc-if>
 
     <sc-if value="{{ step4 }}" hint-placeholder-val="{{ false }}">
-      <div data-screen-label="Шаг 4 — Контакты">
+      <div data-screen-label="Шаг 4 - Контакты">
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.1;margin:0 0 24px;">Как с вами связаться?</h2>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <input value="{{ form.name }}" onChange="{{ setName }}" placeholder="Имя" autoComplete="name" style="height:56px;border:1px solid rgba(10,47,79,.3);border-radius:12px;padding:0 16px;font-size:17px;background:#F9EFE3;color:#0A2F4F;">
@@ -1068,7 +1082,7 @@
           <path d="M28 49l14 14 26-30" stroke="#C15C22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="70" stroke-dashoffset="70" style="animation:drawCheck 600ms ease-out 200ms forwards;"/>
         </svg>
         <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:38px;letter-spacing:.06em;margin:28px 0 12px;line-height:1;">Заявка принята</h2>
-        <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(10,47,79,.85);">Подтверждение придёт в WhatsApp. Администратор свяжется с вами по предоплате — бронь держится 6 часов, без предоплаты она снимается автоматически.</p>
+        <p style="margin:0;font-size:16px;line-height:1.55;color:rgba(10,47,79,.85);">Подтверждение придёт в WhatsApp. Администратор свяжется с вами по предоплате - бронь держится 6 часов, без предоплаты она снимается автоматически.</p>
         <p style="margin:14px 0 0;font-size:14px;color:rgba(10,47,79,.65);">Дом {{ bk.houseName }}, {{ successWhen }}</p>
         <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:56px;margin-top:36px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Написать в WhatsApp</a>
         <button onClick="{{ closeBooking }}" style="width:100%;height:52px;margin-top:8px;border:1px solid #0A2F4F;background:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;">На главную</button>
@@ -1113,28 +1127,28 @@ const HOUSES=[
 ];
 const OPEN_HOUSES=HOUSES.filter(h=>!h.soon);
 const PROGRAMS=[
- {name:'Классическое парение',dur:'1,5 часа',who:'для тех, кто впервые',price:25000,desc:'Прогрев, два захода с веником, отдых с чаем. Темп — по самочувствию.'},
- {name:'Травяное парение',dur:'1,5 часа',who:'для спокойного вечера',price:28000,desc:'Настой степных трав, мягкий пар, медленный ритм. После — чай из тех же трав.'},
+ {name:'Классическое парение',dur:'1,5 часа',who:'для тех, кто впервые',price:25000,desc:'Прогрев, два захода с веником, отдых с чаем. Темп - по самочувствию.'},
+ {name:'Травяное парение',dur:'1,5 часа',who:'для спокойного вечера',price:28000,desc:'Настой степных трав, мягкий пар, медленный ритм. После - чай из тех же трав.'},
  {name:'Хвойное парение с контрастом',dur:'2 часа',who:'для восстановления сил',price:32000,desc:'Кедровый и дубовый веник, три захода, охлаждение в чане между ними.',unavailable:true},
  {name:'Мягкое расслабляющее',dur:'1,5 часа',who:'для пары',price:28000,desc:'Низкая температура, ароматы лаванды и сандала, без резких контрастов.'},
  {name:'Массаж и уход',dur:'1 час',who:'после парения',price:20000,desc:'Массаж тёплым маслом, скраб на основе соли и мёда. В комнате отдыха.'},
 ];
-const EXTRAS=[{id:'program',name:'Парение — программу уточнит администратор',price:25000,from:true},{id:'table',name:'Накрыть стол к приезду',price:40000,from:true},{id:'kit',name:'Набор для парения: шапка, веник, рукавица',price:8000,from:false}];
+const EXTRAS=[{id:'program',name:'Парение - программу уточнит администратор',price:25000,from:true},{id:'table',name:'Накрыть стол к приезду',price:40000,from:true},{id:'kit',name:'Набор для парения: шапка, веник, рукавица',price:8000,from:false}];
 const FEATURES=[{name:'Парная',desc:'дровяная печь, липа и кедр'},{name:'Чан',desc:'горячая вода на дровах'},{name:'Комната отдыха',desc:'стол, диваны, тишина'},{name:'Терраса',desc:'своя, закрытая от соседей'},{name:'Душ и санузел',desc:'в каждом доме'},{name:'Кухонная зона',desc:'можно заказать стол заранее'}];
 const REVIEWS=[
- {name:'Айгерим',date:'2 сент.',stars:5,house:0,text:'Приехали вечером после работы, к нашему приезду уже накрыли стол. Парная прогрета, чан горячий. Никто не мешал — своя терраса, свой двор.'},
- {name:'Дмитрий',date:'29 авг.',stars:5,house:1,text:'Брали СИЛУ на компанию из десяти. Парение с контрастом в чане после — то что нужно.'},
- {name:'Мадина и Тимур',date:'24 авг.',stars:5,house:2,text:'Ездили вдвоём. Тихо, тёплый свет, ничего лишнего. Взяли мягкое парение — вернёмся ещё.'},
- {name:'Сергей',date:'17 авг.',stars:4,house:4,text:'Хороший дом, чистый, дрова уже сложены. Единственное — хотелось бы больше вешалок в раздевалке.'},
+ {name:'Айгерим',date:'2 сент.',stars:5,house:0,text:'Приехали вечером после работы, к нашему приезду уже накрыли стол. Парная прогрета, чан горячий. Никто не мешал - своя терраса, свой двор.'},
+ {name:'Дмитрий',date:'29 авг.',stars:5,house:1,text:'Брали СИЛУ на компанию из десяти. Парение с контрастом в чане после - то что нужно.'},
+ {name:'Мадина и Тимур',date:'24 авг.',stars:5,house:2,text:'Ездили вдвоём. Тихо, тёплый свет, ничего лишнего. Взяли мягкое парение - вернёмся ещё.'},
+ {name:'Сергей',date:'17 авг.',stars:4,house:4,text:'Хороший дом, чистый, дрова уже сложены. Единственное - хотелось бы больше вешалок в раздевалке.'},
  {name:'Алия',date:'10 авг.',stars:5,house:3,text:'Ответили в WhatsApp через пять минут. С детьми удобно: комната отдыха большая, чан неглубокий.'},
- {name:'Руслан',date:'3 авг.',stars:5,house:1,text:'СИЛА — самый атмосферный дом. Тёмный камень, вода, пар. Взяли на шесть часов вечером — идеально на день рождения.'},
+ {name:'Руслан',date:'3 авг.',stars:5,house:1,text:'СИЛА - самый атмосферный дом. Тёмный камень, вода, пар. Взяли на шесть часов вечером - идеально на день рождения.'},
 ];
 const FAQ=[
- {q:'За сколько нужно бронировать?',a:'На будни — обычно за день. На вечер пятницы и субботы — за 3–5 дней. Свободные слоты видны на сайте сразу.'},
- {q:'Что взять с собой?',a:'Ничего обязательного: полотенца, простыни, тапочки и чай — в доме. Веники, шапки и рукавицы можно добавить к брони.'},
- {q:'Можно ли с детьми?',a:'Да. Дети до 7 лет — бесплатно и не считаются в вместимости. Чан неглубокий, в комнате отдыха есть место для игр.'},
- {q:'Есть ли предоплата?',a:'Да. Бронь подтверждается после предоплаты — сумму и способ сообщит администратор в WhatsApp. Без предоплаты бронь держится 6 часов.'},
- {q:'Что если мы опоздали?',a:'Дом ждёт вас всё забронированное время. Начало и окончание не сдвигаются: время опоздания не продлевается и не переносится. Если следующий слот свободен, продление возможно — уточните у администратора.'},
+ {q:'За сколько нужно бронировать?',a:'На будни - обычно за день. На вечер пятницы и субботы - за 3–5 дней. Свободные слоты видны на сайте сразу.'},
+ {q:'Что взять с собой?',a:'Ничего обязательного: полотенца, простыни, тапочки и чай - в доме. Веники, шапки и рукавицы можно добавить к брони.'},
+ {q:'Можно ли с детьми?',a:'Да. Дети до 7 лет - бесплатно и не считаются в вместимости. Чан неглубокий, в комнате отдыха есть место для игр.'},
+ {q:'Есть ли предоплата?',a:'Да. Бронь подтверждается после предоплаты - сумму и способ сообщит администратор в WhatsApp. Без предоплаты бронь держится 6 часов.'},
+ {q:'Что если мы опоздали?',a:'Дом ждёт вас всё забронированное время. Начало и окончание не сдвигаются: время опоздания не продлевается и не переносится. Если следующий слот свободен, продление возможно - уточните у администратора.'},
  {q:'Можно ли продлить на месте?',a:'Да, если следующий слот свободен. Стоимость считается по тарифу того времени, на которое продлеваете. Напишите администратору в WhatsApp.'},
 ];
 const KITCHEN={
@@ -1228,7 +1242,7 @@ class Component extends DCLogic {
       this.setState({sendError:false});this.setBk({step:5});}
   }
 
-  // G1/G2: активное — BRICK; вторичное — кремовое с рамкой NAVY
+  // G1/G2: активное - BRICK; вторичное - кремовое с рамкой NAVY
   chip(active,extra=''){return `height:44px;padding:0 16px;border-radius:999px;border:1px solid ${active?BRICK:'rgba(10,47,79,.3)'};background:${active?BRICK:CREAM};color:${active?CREAM:NAVY};font-size:14px;font-weight:500;white-space:nowrap;letter-spacing:.02em;flex:0 0 auto;${extra}`;}
   dayStyle(active,muted,w){return `flex:0 0 auto;width:${w||'56px'};height:64px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid ${active?BRICK:'rgba(10,47,79,.25)'};background:${active?BRICK:CREAM};color:${active?CREAM:NAVY};opacity:${muted&&!active?'.4':'1'};`;}
 
@@ -1243,7 +1257,7 @@ class Component extends DCLogic {
     const heroSlides=HERO_SLIDES.map((sl,i)=>({style:`position:absolute;inset:0;background:#0A2F4F url(${sl.img}) center 45%/cover no-repeat;opacity:${s.hero===i?1:0};transition:opacity 900ms ease;`}));
     const heroDots=HERO_SLIDES.map((_,i)=>({go:()=>this.setState({hero:i}),style:`width:${s.hero===i?'28px':'8px'};height:8px;border-radius:4px;background:${s.hero===i?BRICK:'rgba(249,239,227,.5)'};transition:width 300ms;padding:0;`}));
     const quickDays=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
-    const faq=FAQ.map((q,i)=>({...q,open:s.faqOpen===i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
+    const faq=FAQ.map((q,i)=>({...q,open:s.faqOpen===i,closed:s.faqOpen!==i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
     const reviews=REVIEWS.map(r=>({...r,hi:r.house,stars:'★'.repeat(r.stars)+'☆'.repeat(5-r.stars),house:HOUSES[r.house].n+' / '+HOUSES[r.house].name}));
     const PROG_IMG=['img/h1_acc.png','img/h5_art.png','img/h2_int.png','img/h3_art.png','img/h6_acc.png'];
     const programs=PROGRAMS.map((p,i)=>{const un=!!p.unavailable;return {...p,unavailable:un,slot:'prog-'+i,img:PROG_IMG[i],priceText:fmt(p.price),addToBooking:()=>!un&&this.openBooking(null),
@@ -1258,7 +1272,7 @@ class Component extends DCLogic {
     // house page
     const hIdx=Math.max(0,HOUSES.findIndex(x=>x.id===s.houseId));const hRaw=HOUSES[hIdx];
     const p=PRICES[hRaw.tier];const prog=PROGRAMS[hRaw.prog];const progUn=!!prog.unavailable;
-    const house={...hRaw,priceShort:(this.fromPrice(hRaw)/1000)+' 000',legend:`${hRaw.mat}. Картина — ${hRaw.art}. Аромат — ${hRaw.aroma}. ${hRaw.ritual}`,
+    const house={...hRaw,priceShort:(this.fromPrice(hRaw)/1000)+' 000',legend:`${hRaw.mat}. Картина - ${hRaw.art}. Аромат - ${hRaw.aroma}. ${hRaw.ritual}`,
       inside:['парная','чан','комната отдыха','терраса','душ и санузел','кухонная зона',...(hRaw.tier==='VIP'?['бассейн','зона барбекю']:[])].map(n=>({name:n})),
       priceRows:[{label:'День',hours:'08:00–17:00',wd:fmt(p.dayWd)+'/ч',we:fmt(p.dayWe)+'/ч'},{label:'Вечер-ночь',hours:'17:00–08:00',wd:fmt(p.eveWd)+'/ч',we:fmt(p.eveWe)+'/ч'}],
       program:{...prog,priceText:fmt(prog.price),kicker:progUn?'На эту дату недоступно':'Подходит по атмосфере',cardStyle:`width:100%;text-align:left;background:#0A2F4F;color:#F9EFE3;padding:22px 20px;border-radius:20px;opacity:${progUn?'.6':'1'};`}};
@@ -1325,7 +1339,7 @@ class Component extends DCLogic {
       const durChips2=[...[8,10,12,24].map(v=>dchip(v+' ч',dur===v&&!bk.durCustom,v>maxD,()=>pick(v))),dchip('Другое',bk.durCustom,false,()=>this.setBk({durCustom:true}))];
       const nxt=this.nextBusy(hi0,bk.date,start);
       const nxtDay=nxt!==undefined?Math.floor(nxt/24):0;
-      const durHint=(nxt!==undefined&&maxD<72)?`Дом свободен до ${hh(nxt)}${nxtDay?' ('+nxtDay+' дн. позже)':''} — максимум ${Math.floor(maxD)} ${plural(Math.floor(maxD),'час','часа','часов')}`:'';
+      const durHint=(nxt!==undefined&&maxD<72)?`Дом свободен до ${hh(nxt)}${nxtDay?' ('+nxtDay+' дн. позже)':''} - максимум ${Math.floor(maxD)} ${plural(Math.floor(maxD),'час','часа','часов')}`:'';
       const extraRows=EXTRAS.map(e=>{const on=bk.extras.includes(e.id);return {...e,priceText:(e.from?'от ':'')+fmt(e.price),toggle:()=>this.setBk({extras:on?bk.extras.filter(x=>x!==e.id):[...bk.extras,e.id]}),
         style:'display:flex;align-items:center;gap:14px;width:100%;padding:16px 0;border-bottom:1px solid rgba(10,47,79,.15);',
         switchStyle:`width:48px;height:28px;border-radius:14px;flex:0 0 auto;background:${on?BRICK:'rgba(10,47,79,.2)'};position:relative;transition:background 200ms;`,
@@ -1339,7 +1353,7 @@ class Component extends DCLogic {
       const endDays=Math.floor(end/24);const whenText=`${WD_NOM[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}, ${hh(start)}–${hh(end)}${endDays===1?' (след. день)':endDays>1?' (+'+endDays+' дн.)':''}`;
       const canNext=bk.step===1?true:bk.step===2?!!bk.houseId:bk.step===3?(bk.start!=null&&dur>=MIN_H):bk.step===4?(s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10&&s.form.agree):false;
       const ctaLabel=bk.step===1?'Показать свободные дома':bk.step===2?(hSel?`Выбрать ${hSel.name}`:'Выберите дом'):bk.step===3?'Продолжить':'Отправить заявку';
-      const extrasNames=bk.extras.map(id=>EXTRAS.find(e=>e.id===id)).map(e=>e.name.split(/[:—]/)[0].trim().toLowerCase()+' (от '+fmt(e.price)+')');
+      const extrasNames=bk.extras.map(id=>EXTRAS.find(e=>e.id===id)).map(e=>e.name.split(/[: - ]/)[0].trim().toLowerCase()+' (от '+fmt(e.price)+')');
       B={stepSegs,weekTitle:`${MON_NOM[first.getMonth()]} ${first.getFullYear()}`,monthDays,wdHead,prevWeek:()=>mo>0&&this.setBk({month:mo-1}),nextWeek:()=>mo<11&&this.setBk({month:mo+1}),
         prevWeekStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${mo===0?'.3':'1'};`,nextWeekStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;opacity:${mo===11?'.3':'1'};`,
         guestsMinus:()=>this.setBk({guests:Math.max(1,bk.guests-1)}),guestsPlus:()=>this.setBk({guests:Math.min(20,bk.guests+1)}),
@@ -1379,7 +1393,7 @@ class Component extends DCLogic {
       phoneMissing:s.form.phone.replace(/\D/g,'').length<10,contactCallLabel:s.inlineSent?'Отправлено':'Отправить',
       contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(s.form.phone.replace(/\D/g,'').length>=10?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
       heroStats:[{n:String(OPEN_HOUSES.length),t:'домов открыто'},{n:'до 14',t:'гостей'},{n:'17 000 ₸',t:'от, за час'},{n:'15 мин',t:'от центра'}],
-      aboutItems:[{n:'01',img:'img/h5_int.png',title:'Свой дом',sub:'Парная, чан и терраса только для вашей компании. Соседей не видно и не слышно.'},{n:'02',img:'img/h3_acc.png',title:'Материал',sub:'Дуб, лён, камень и керамика. Ничего искусственного на ощупь.'},{n:'03',img:'img/h6_int.png',title:'Тёплый свет',sub:'2700–3000 K во всех домах. Глаза отдыхают вместе с телом.'},{n:'04',img:'img/h1_acc.png',title:'Сервис заранее',sub:'Стол, программа парения и веники согласованы при брони. По приезду — только отдых.'}],
+      aboutItems:[{n:'01',img:'img/h5_int.png',title:'Свой дом',sub:'Парная, чан и терраса только для вашей компании. Соседей не видно и не слышно.'},{n:'02',img:'img/h3_acc.png',title:'Материал',sub:'Дуб, лён, камень и керамика. Ничего искусственного на ощупь.'},{n:'03',img:'img/h6_int.png',title:'Тёплый свет',sub:'2700–3000 K во всех домах. Глаза отдыхают вместе с телом.'},{n:'04',img:'img/h1_acc.png',title:'Сервис заранее',sub:'Стол, программа парения и веники согласованы при брони. По приезду - только отдых.'}],
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
       sendCallInline:()=>{if(s.form.phone.replace(/\D/g,'').length<10)return;try{localStorage.setItem('shipa_user',JSON.stringify({name:s.form.name,phone:s.form.phone}));}catch(e){}this.setState({inlineSent:true});},
@@ -1393,7 +1407,7 @@ class Component extends DCLogic {
       catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
       house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>{const el=e.currentTarget;const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==s.galleryIdx)this.setState({galleryIdx:i});},
       lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),lightboxStyle:`width:min(96vw,1200px);height:min(90vh,800px);background:url(${gsrc[Math.max(0,s.lightbox)]}) center/contain no-repeat;`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,
-      houseWeek,hwTitle:`${hwS.getDate()} ${MON[hwS.getMonth()]} — ${hwE.getDate()} ${MON[hwE.getMonth()]}`,hwPrev:()=>this.setState({hw:Math.max(0,s.hw-1)}),hwNext:()=>this.setState({hw:Math.min(51,s.hw+1)}),
+      houseWeek,hwTitle:`${hwS.getDate()} ${MON[hwS.getMonth()]} - ${hwE.getDate()} ${MON[hwE.getMonth()]}`,hwPrev:()=>this.setState({hw:Math.max(0,s.hw-1)}),hwNext:()=>this.setState({hw:Math.min(51,s.hw+1)}),
       hwPrevStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};opacity:${s.hw===0?'.3':'1'};`,hwNextStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};`,
       otherHouses,houseReviews,houseReviewsEmpty:houseReviews.length===0,houseRating:RATING[hIdx],
       rf,reviewFormOpen:rf.open,reviewFormClosed:!rf.open,reviewSent:rf.sent,reviewNotSent:!rf.sent,openReviewForm:()=>this.setState({rf:{...rf,open:true}}),rfName:e=>this.setState({rf:{...rf,name:e.target.value}}),rfText:e=>this.setState({rf:{...rf,text:e.target.value}}),
