@@ -20,6 +20,46 @@
   <script src="./image-slot.js"></script>
   <script defer src="./shipa-carousel-nav.js"></script>
   <style>
+
+    /* SHIPÁ house details: compact photo collage + focused gallery, inspired by OTA listings. */
+    .shipa-house-gallery{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));gap:7px;height:clamp(260px,28vw,365px);padding:0 20px;overflow:hidden;border-radius:18px;}
+    .shipa-house-gallery button{position:relative;display:block;min-width:0;min-height:0;overflow:hidden;border-radius:10px!important;}
+    .shipa-house-gallery button>div{transition:transform .3s ease,filter .3s ease;}
+    .shipa-house-gallery button:hover>div{transform:scale(1.035);filter:brightness(.92);}
+    .shipa-house-mobile-gallery{width:100%;max-height:340px;}
+    .shipa-house-mobile-gallery>button{min-height:0;overflow:hidden;}
+    .shipa-house-mobile-gallery>button>div{height:100%;}
+    .shipa-house-photo-count{position:absolute;left:16px;bottom:14px;background:rgba(10,47,79,.73);color:#fff;border-radius:8px;padding:7px 10px;font-size:13px;font-weight:600;letter-spacing:.03em;pointer-events:none;}
+    .shipa-house-all-photos{position:absolute;right:34px;bottom:18px;z-index:2;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:10px;background:rgba(255,255,255,.96);color:#0A2F4F;box-shadow:0 2px 12px rgba(10,47,79,.18);font-size:13px;font-weight:600;white-space:nowrap;}
+    .shipa-house-all-photos:hover{background:white;box-shadow:0 3px 18px rgba(10,47,79,.25);}
+    .shipa-house-lightbox{position:fixed;inset:0;z-index:var(--z-gallery);background:rgba(10,26,41,.89);padding:16px;display:flex;align-items:center;justify-content:center;animation:fadeIn .18s ease-out;}
+    .shipa-house-photo-viewer{width:min(900px,100%);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:#F9EFE3;color:#0A2F4F;box-shadow:0 22px 60px rgba(0,0,0,.3);}
+    .shipa-house-photo-viewer__header{min-height:62px;padding:10px 16px 10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .shipa-house-photo-viewer__name{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .shipa-house-photo-viewer__count{font-size:12px;margin-top:2px;color:rgba(10,47,79,.7);font-variant-numeric:tabular-nums;}
+    .shipa-house-photo-viewer__close{width:40px;height:40px;flex:0 0 auto;display:grid;place-items:center;border:1px solid rgba(10,47,79,.16);border-radius:50%;}
+    .shipa-house-photo-viewer__media{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;height:min(57vh,560px);background:#142738;overflow:hidden;}
+    .shipa-house-photo-viewer__media>img{width:100%;height:100%;object-fit:contain;display:block;user-select:none;}
+    .shipa-house-photo-viewer__arrow{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(249,239,227,.96);color:#0A2F4F;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+    .shipa-house-photo-viewer__arrow--prev{left:12px;}
+    .shipa-house-photo-viewer__arrow--next{right:12px;}
+    .shipa-house-photo-viewer__arrow:active{transform:translateY(-50%) scale(.97);}
+    .shipa-house-photo-viewer__thumbs{display:flex;align-items:center;gap:9px;overflow-x:auto;padding:12px 18px;justify-content:center;min-height:80px;}
+    .shipa-house-photo-viewer__thumbs button{flex:0 0 78px;width:78px;height:55px;overflow:hidden;border-radius:9px;border:2px solid transparent;transition:border-color .18s,opacity .18s;}
+    .shipa-house-photo-viewer__thumbs img{width:100%;height:100%;object-fit:cover;display:block;}
+    @media(max-width:959px){.shipa-house-all-photos{right:14px;bottom:14px;}.shipa-house-hero{width:100%;}.shipa-house-gallery{display:none;}}
+    @media(min-width:960px){.shipa-house-photo-count{display:none;}}
+    @media(max-width:600px){
+      .shipa-house-photo-viewer{border-radius:14px;}
+      .shipa-house-lightbox{padding:10px;}
+      .shipa-house-photo-viewer__header{min-height:58px;}
+      .shipa-house-photo-viewer__media{height:min(54vh,430px);}
+      .shipa-house-photo-viewer__arrow{width:38px;height:38px;}
+      .shipa-house-photo-viewer__thumbs{padding:10px 12px;min-height:74px;}
+      .shipa-house-photo-viewer__thumbs button{flex-basis:64px;width:64px;height:48px;}
+    }
+    @media(prefers-reduced-motion:reduce){.shipa-house-gallery button>div{transition:none;}.shipa-house-lightbox{animation:none;}}
+
     /* Site footer shares the header's full-width navy background and 1440px content grid. */
     .shipa-site-footer{display:block;width:100%;max-width:none;margin:20px 0 0;padding:0;background:#0A2F4F;color:#F9EFE3;border:0;border-radius:0;box-shadow:none;}
     .shipa-site-footer__inner{width:100%;max-width:1440px;margin:0 auto;padding:32px 40px;display:grid;grid-template-columns:minmax(130px,.7fr) minmax(190px,1fr) minmax(310px,1.5fr) minmax(190px,1.1fr);align-items:center;column-gap:clamp(18px,2vw,36px);row-gap:18px;}
@@ -214,6 +254,21 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     -webkit-overflow-scrolling: touch;
 }
 
+
+    /* FAQ: stable two-column composition that supports long Kazakh words. */
+    .shipa-faq-layout{display:grid;grid-template-columns:minmax(0,350px) minmax(0,1fr);gap:36px 48px;align-items:start;}
+    .shipa-faq-intro,.shipa-faq-items{min-width:0;max-width:100%;}
+    .shipa-faq-heading{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,3vw,46px);text-transform:uppercase;letter-spacing:.035em;line-height:1.12;margin:0;text-wrap:balance;overflow-wrap:anywhere;}
+    .shipa-faq-items button span:first-child{min-width:0;overflow-wrap:break-word;}
+    @media(max-width:900px){
+      .shipa-faq-layout{grid-template-columns:minmax(0,1fr);gap:26px;}
+      .shipa-faq-heading{max-width:680px;font-size:clamp(30px,5.3vw,46px);}
+    }
+    @media(max-width:480px){
+      .shipa-faq-layout{gap:22px;}
+      .shipa-faq-heading{font-size:clamp(29px,8.5vw,38px);line-height:1.09;}
+    }
+
     /* Smooth FAQ expand and collapse, without height:auto jumps. */
     .shipa-faq-panel {
       display:grid;
@@ -234,6 +289,92 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     @media (prefers-reduced-motion:reduce) {
       .shipa-faq-panel,.shipa-faq-panel[data-open="true"] {transition:none;}
     }
+
+
+    /* SHIPÁ — gentle section navigation and progressive content motion. */
+    @keyframes shipaRouteEnter{
+      from{opacity:0;transform:translate3d(0,14px,0)}
+      to{opacity:1;transform:translate3d(0,0,0)}
+    }
+    @keyframes shipaRouteExit{
+      from{opacity:1;transform:translate3d(0,0,0)}
+      to{opacity:0;transform:translate3d(0,-8px,0)}
+    }
+    @keyframes shipaCardEnter{
+      from{opacity:0;transform:translate3d(0,18px,0)}
+      to{opacity:1;transform:translate3d(0,0,0)}
+    }
+    /* The main content animates once on screen mount; no persistent transforms
+       on modal ancestors, so position:fixed and sticky controls keep working. */
+    main.shipa-page-enter{animation:shipaRouteEnter 520ms cubic-bezier(.22,1,.36,1) both;}
+    html[data-shipa-native-vt="1"] main.shipa-page-enter{animation:none;}
+    html[data-shipa-route-transition="1"]::view-transition-old(root){
+      animation:shipaRouteExit 200ms cubic-bezier(.4,0,1,1) both;
+    }
+    html[data-shipa-route-transition="1"]::view-transition-new(root){
+      animation:shipaRouteEnter 410ms cubic-bezier(.22,1,.36,1) both;
+    }
+    /* Cards enter in a short stagger rather than popping all at once. */
+    .shipa-catalog-grid>div{min-width:0;animation:shipaCardEnter 500ms cubic-bezier(.22,1,.36,1) both;}
+    .shipa-catalog-grid>div:nth-child(2){animation-delay:55ms;}
+    .shipa-catalog-grid>div:nth-child(3){animation-delay:110ms;}
+    .shipa-catalog-grid>div:nth-child(4){animation-delay:165ms;}
+    .shipa-catalog-grid>div:nth-child(n+5){animation-delay:210ms;}
+    /* Image hover feedback only where hover is genuine: no sticky hover on iOS. */
+    .shipa-catalog-grid article{transition:transform 250ms cubic-bezier(.22,1,.36,1),box-shadow 250ms ease;}
+    .shipa-catalog-grid article>div:first-child img{transition:transform 420ms cubic-bezier(.22,1,.36,1);}
+    @media (hover:hover) and (pointer:fine){
+      .shipa-catalog-grid article:hover{transform:translateY(-3px);}
+      .shipa-catalog-grid article:hover>div:first-child img{transform:scale(1.045);}
+      .shipa-catalog-grid article:focus-visible{outline:2px solid #C15C22;outline-offset:4px;}
+      main.shipa-page-enter button:not(:disabled){transition-duration:200ms;}
+    }
+    @media (hover:none){.shipa-catalog-grid article:active{transform:scale(.99);}}
+    /* Viewport-specific fixes: avoid width overflow at 320–390px and ensure
+       carousel thumbnails are reachable from the beginning on touch devices. */
+    @media (max-width:599px){
+      .shipa-catalog-grid{grid-template-columns:minmax(0,1fr)!important;gap:30px!important;}
+      .shipa-catalog-grid>div>div:last-child{min-width:0;}
+      .shipa-catalog-grid>div>div:last-child>button{flex:1 1 0!important;min-width:0;padding-inline:10px!important;justify-content:center!important;}
+      main[data-screen-label="Карточка дома"]>div:nth-of-type(2)>div[style*="grid-template-columns:repeat(4,1fr)"]{
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px 12px!important;
+      }
+      .shipa-house-photo-viewer__thumbs{justify-content:flex-start;scroll-padding-inline:12px;}
+      main.shipa-page-enter{overflow-wrap:break-word;}
+    }
+    @media (max-width:374px){
+      main[data-screen-label="Дома"] [style*="grid-template-columns:repeat(4,1fr)"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;}
+      main[data-screen-label="Дома"] [style*="grid-template-columns:repeat(4,1fr)"]>div>div:first-child{font-size:19px!important;}
+      #bk-grid>div{gap:4px!important;}
+      #bk-grid button{min-width:0!important;}
+      .shipa-house-photo-viewer__header{padding-inline:12px;}
+    }
+    @media (prefers-reduced-motion:reduce){
+      main.shipa-page-enter,.shipa-catalog-grid>div{animation:none!important;}
+      .shipa-catalog-grid article,.shipa-catalog-grid article>div:first-child img{transition:none!important;}
+      [data-reveal]{opacity:1!important;transform:none!important;transition:none!important;}
+      html[data-shipa-route-transition="1"]::view-transition-old(root),
+      html[data-shipa-route-transition="1"]::view-transition-new(root){animation:none!important;}
+    }
+
+
+    /* Service, kitchen and review cards cascade gently when a new section/filter appears. */
+    .shipa-stagger-cards > *{
+      min-width:0;animation:shipaCardEnter 470ms cubic-bezier(.22,1,.36,1) both;
+    }
+    .shipa-stagger-cards > :nth-child(2){animation-delay:65ms;}
+    .shipa-stagger-cards > :nth-child(3){animation-delay:130ms;}
+    .shipa-stagger-cards > :nth-child(4){animation-delay:170ms;}
+    .shipa-stagger-cards > :nth-child(n+5){animation-delay:210ms;}
+    @media(max-width:480px){
+      .shipa-stagger-cards [data-pcard] > div:nth-child(2) > div:first-child{
+        flex-wrap:wrap;gap:6px 12px!important;
+      }
+      .shipa-stagger-cards [data-pcard] > div:nth-child(2) > div:first-child > *{min-width:0;}
+      main[data-screen-label="Контакты"] a[href^="tel:"]{overflow-wrap:anywhere;}
+    }
+    @media(prefers-reduced-motion:reduce){.shipa-stagger-cards > *{animation:none!important;}}
+
 </style>
 </helmet>
 
@@ -309,7 +450,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- HOME -->
 <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
-<main data-screen-label="Главная" style="padding-bottom:0;overflow-x:clip;">
+<main class="shipa-page-enter" data-screen-label="Главная" style="padding-bottom:0;overflow-x:clip;">
 
   <section data-screen-label="Первый экран" onPointerDown="{{ heroDown }}" onPointerUp="{{ heroUp }}" onPointerCancel="{{ heroCancel }}" onMouseEnter="{{ heroEnter }}" onMouseLeave="{{ heroLeave }}" style="position:relative;min-height:{{ heroH }};overflow:hidden;background:#0A2F4F;touch-action:pan-y;">
     <div style="position:absolute;inset:0;{{ heroFx.photo }}">
@@ -439,7 +580,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <section data-reveal data-screen-label="Что значит SHIPA" style="max-width:var(--wrap);margin:0 auto;padding:64px 20px 0;">
     <div style="max-width:1000px;margin:0 auto;">
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;text-align:center;">ЧТО ЗНАЧИТ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
-      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.55;max-width:560px;text-align:center;color:rgba(10,47,79,.8);text-wrap:pretty;">«Шип<span data-st-on="1">а́</span><span data-st-off="1">а</span>» по-казахски - восстановление, оздоровление. Слово легко звучит на казахском, русском и английском.</p>
+      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.55;max-width:560px;text-align:center;color:rgba(10,47,79,.8);text-wrap:pretty;">{{ shipaMeaningText }}</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px 48px;align-items:center;margin-top:36px;">
         <div style="padding:48px 28px 40px;background:#F9EFE3;">
           <div style="position:relative;">
@@ -471,7 +612,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:56px 0 0;">
     <div style="padding:0 20px;">
       <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#C15C22;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">ВОСЕМЬ ДОМОВ - <span style="color:#C15C22;">ВОСЕМЬ СОСТОЯНИЙ</span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">{{ houseHeadingStart }}<span style="color:#C15C22;">{{ houseHeadingEnd }}</span></h2>
       <p style="margin:0 0 24px;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);text-align:center;">Гость выбирает атмосферу, а не номер.</p>
     </div>
     <div id="car-houses" class="noscroll lane {{ gridCls }}" style="--kd:4;--kt:2.4;--km:1.2;--gc:4;">
@@ -488,7 +629,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;letter-spacing:.12em;margin-top:16px;line-height:1;">{{ h.name }}</div>
             <div style="font-size:15px;color:rgba(10,47,79,.7);margin-top:6px;">{{ h.slogan }}</div>
             <div style="font-size:13px;margin-top:12px;color:rgba(10,47,79,.85);">{{ h.facts }}</div>
-            <div style="font-weight:600;font-size:15px;margin-top:6px;">от {{ h.priceFrom }} / час</div>
+            <div style="font-weight:600;font-size:15px;margin-top:6px;">{{ h.priceFromLabel }}</div>
           </sc-if>
           <sc-if value="{{ h.soon }}" hint-placeholder-val="{{ false }}">
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;letter-spacing:.12em;margin-top:16px;line-height:1;color:rgba(10,47,79,.35);">· · ·</div>
@@ -696,13 +837,13 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </section>
 
   <section data-reveal data-screen-label="FAQ" style="max-width:var(--wrap);margin:0 auto;padding:64px 20px 0;">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px 48px;">
-      <div style="max-width:360px;">
-        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">НАМ ЧАСТО ЗАДАЮТ ЭТИ <span style="color:#C15C22;">ВОПРОСЫ</span></h2>
+    <div class="shipa-faq-layout">
+      <div class="shipa-faq-intro">
+        <h2 class="shipa-faq-heading">{{ faqHeadingStart }} <span style="color:#C15C22;">{{ faqHeadingEnd }}</span></h2>
         <p style="margin:18px 0 24px;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);">Не нашли интересующий вас вопрос - задайте его нам</p>
         <a href="{{ waGeneral }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:52px;padding:0 26px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:14px;">Задать вопрос</a>
       </div>
-      <div style="grid-column:span 2;display:flex;flex-direction:column;gap:10px;min-width:0;">
+      <div class="shipa-faq-items" style="display:flex;flex-direction:column;gap:10px;min-width:0;">
         <sc-for list="{{ faq }}" as="q" hint-placeholder-count="6">
           <div style="background:rgba(10,47,79,.06);border-radius:20px;">
             <button onClick="{{ q.toggle }}" aria-expanded="{{ q.open }}" style="width:100%;min-height:68px;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:16px 16px 16px 22px;font-size:16px;font-weight:600;">
@@ -815,8 +956,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- CATALOG -->
 <sc-if value="{{ isHouses }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="Дома" style="padding-bottom:100px;">
-  <section data-screen-label="Дома - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
+<main class="shipa-page-enter" data-screen-label="Дома" style="padding-bottom:100px;">
+  <section data-reveal data-screen-label="Дома - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
     <img src="img/h1_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
@@ -831,7 +972,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <button onClick="{{ f.select }}" style="{{ f.style }}">{{ f.label }}</button>
       </sc-for>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:40px 24px;">
+    <div class="shipa-catalog-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:40px 24px;">
       <sc-for list="{{ catalogHouses }}" as="h" hint-placeholder-count="8">
         <div style="display:flex;flex-direction:column;">
           <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="width:100%;text-align:left;border-radius:20px;cursor:pointer;">
@@ -867,25 +1008,29 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- HOUSE -->
 <sc-if value="{{ isHouse }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="Карточка дома" style="padding:61px 0 110px;">
-  <div style="position:relative;max-width:var(--wrap);margin:0 auto;">
+<main class="shipa-page-enter" data-screen-label="Карточка дома" style="padding:61px 0 110px;">
+  <div class="shipa-house-hero" style="position:relative;max-width:1100px;margin:0 auto;">
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}">
-      <div style="display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:520px;padding:0 20px;">
+      <div class="shipa-house-gallery" aria-label="{{ housePhotoLabel }}">
         <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="3">
           <button onClick="{{ g.open }}" aria-label="Открыть фото" style="{{ g.gridStyle }}"><div style="{{ g.style }}"></div></button>
         </sc-for>
       </div>
     </sc-if>
     <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}">
-    <div class="noscroll" onScroll="{{ onGalleryScroll }}" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;background:#3B2F2A;">
+    <div class="noscroll shipa-house-mobile-gallery" onScroll="{{ onGalleryScroll }}" aria-label="{{ housePhotoLabel }}" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;background:#3B2F2A;">
       <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="3">
-        <button onClick="{{ g.open }}" aria-label="Открыть фото" style="flex:0 0 100%;aspect-ratio:4/3;max-height:72vh;scroll-snap-align:start;">
+        <button onClick="{{ g.open }}" aria-label="{{ housePhotoOpenLabel }}" style="flex:0 0 100%;aspect-ratio:16/10;max-height:340px;scroll-snap-align:start;">
           <div style="{{ g.style }}"></div>
         </button>
       </sc-for>
     </div>
-    <div style="position:absolute;right:16px;bottom:14px;color:#F9EFE3;font-size:13px;font-weight:500;letter-spacing:.08em;padding:6px 10px;background:rgba(10,47,79,.6);">{{ galleryCounter }}</div>
+    <div class="shipa-house-photo-count">{{ galleryCounter }}</div>
     </sc-if>
+    <button type="button" class="shipa-house-all-photos" onClick="{{ openAllHousePhotos }}" aria-label="{{ housePhotoOpenLabel }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      {{ houseAllPhotoLabel }}
+    </button>
     <button onClick="{{ goBack }}" aria-label="Назад" style="position:absolute;left:12px;top:12px;width:44px;height:44px;border-radius:50%;background:rgba(249,239,227,.92);display:flex;align-items:center;justify-content:center;">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg>
     </button>
@@ -1058,10 +1203,28 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </div>
 
   <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:var(--z-gallery);background:rgba(10,47,79,.92);display:flex;align-items:center;justify-content:center;animation:fadeIn 200ms ease;">
-      <div style="{{ lightboxStyle }}"></div>
-      <button onClick="{{ closeLightbox }}" aria-label="Закрыть" style="position:absolute;right:16px;top:16px;width:48px;height:48px;border-radius:50%;background:rgba(249,239,227,.15);display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 22 22" stroke="#F9EFE3" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
-      <div style="position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#F9EFE3;font-size:13px;letter-spacing:.08em;">{{ lightboxCounter }}</div>
+    <div role="dialog" aria-modal="true" aria-label="{{ housePhotoLabel }}" class="shipa-house-lightbox" onClick="{{ closeLightbox }}">
+      <div class="shipa-house-photo-viewer" onClick="{{ preventPhotoClose }}">
+        <div class="shipa-house-photo-viewer__header">
+          <div style="min-width:0;">
+            <div class="shipa-house-photo-viewer__name">{{ house.name }}</div>
+            <div class="shipa-house-photo-viewer__count">{{ lightboxCounter }}</div>
+          </div>
+          <button type="button" class="shipa-house-photo-viewer__close" onClick="{{ closeLightbox }}" aria-label="{{ housePhotoCloseLabel }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+          </button>
+        </div>
+        <div class="shipa-house-photo-viewer__media">
+          <img src="{{ lightboxImageSrc }}" alt="{{ lightboxImageAlt }}" draggable="false" decoding="async">
+          <button type="button" class="shipa-house-photo-viewer__arrow shipa-house-photo-viewer__arrow--prev" onClick="{{ lightboxPrev }}" aria-label="{{ housePhotoPrevLabel }}"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button type="button" class="shipa-house-photo-viewer__arrow shipa-house-photo-viewer__arrow--next" onClick="{{ lightboxNext }}" aria-label="{{ housePhotoNextLabel }}"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+        <div class="shipa-house-photo-viewer__thumbs" aria-label="{{ housePhotoLabel }}">
+          <sc-for list="{{ lightboxThumbs }}" as="thumb" hint-placeholder-count="3">
+            <button type="button" onClick="{{ thumb.open }}" aria-label="{{ thumb.alt }}" aria-pressed="{{ thumb.active }}" style="{{ thumb.style }}"><img src="{{ thumb.src }}" alt="" loading="lazy"></button>
+          </sc-for>
+        </div>
+      </div>
     </div>
   </sc-if>
 
@@ -1087,8 +1250,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- SERVICES -->
 <sc-if value="{{ isServices }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="Парение и услуги" style="padding-bottom:140px;">
-  <section data-screen-label="Парение - первый экран" style="position:relative;min-height:{{ svcHeroH }};background:#0A2F4F;color:#F9EFE3;overflow:hidden;display:flex;align-items:flex-end;">
+<main class="shipa-page-enter" data-screen-label="Парение и услуги" style="padding-bottom:140px;">
+  <section data-reveal data-screen-label="Парение - первый экран" style="position:relative;min-height:{{ svcHeroH }};background:#0A2F4F;color:#F9EFE3;overflow:hidden;display:flex;align-items:flex-end;">
     <div style="position:absolute;inset:0;"><image-slot id="svc-hero" src="img/h7_int.png" shape="rect" placeholder="Фото: пармастер с веником в пару, тёплый свет"></image-slot></div>
     <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(10,47,79,.5) 0%,rgba(10,47,79,.1) 100%);pointer-events:none;"></div>
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.55) 0%,rgba(10,47,79,0) 60%);pointer-events:none;"></div>
@@ -1115,7 +1278,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </div>
 
   <sc-for list="{{ svcSections }}" as="c" hint-placeholder-count="3">
-    <section id="{{ c.anchor }}" data-svc="{{ c.id }}" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
+    <section data-reveal id="{{ c.anchor }}" data-svc="{{ c.id }}" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
       <div style="display:grid;grid-template-columns:{{ introCols }};gap:{{ introGap }};align-items:center;">
         <div style="position:relative;aspect-ratio:{{ introAspect }};max-height:{{ introMaxH }};overflow:hidden;border-radius:24px;background:#0A2F4F;color:#F9EFE3;"><image-slot id="{{ c.slot }}" src="{{ c.img }}" shape="rect" placeholder="{{ c.photo }}"></image-slot></div>
         <div>
@@ -1125,7 +1288,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <div style="margin-top:16px;font-size:14px;font-weight:600;color:#3B2F2A;">{{ c.facts }}</div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:{{ grid2 }};gap:{{ cardGap }};margin-top:{{ cardTop }};">
+      <div class="shipa-stagger-cards" style="display:grid;grid-template-columns:{{ grid2 }};gap:{{ cardGap }};margin-top:{{ cardTop }};">
         <sc-for list="{{ c.programs }}" as="p" hint-placeholder-count="2">
           <div data-pcard="1" role="button" tabIndex="0" aria-label="{{ p.name }} - подробнее" onClick="{{ p.open }}" onKeyDown="{{ p.key }}" style="{{ p.cardStyle }}">
             <div style="position:relative;aspect-ratio:{{ p.ratio }};overflow:hidden;border-radius:20px 20px 0 0;background:#0A2F4F;color:#F9EFE3;">
@@ -1150,7 +1313,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </sc-for>
 
   <sc-if value="{{ showMasters }}" hint-placeholder-val="{{ false }}">
-  <section data-screen-label="Мастера" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
+  <section data-reveal data-screen-label="Мастера" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 24px;">
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">НАШИ МАСТЕРА</h2>
       <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><nav class="shipa-carousel-nav" data-carousel-target="car-masters" data-active="0" aria-label="Навигация по карточкам" style="padding:0;"><button type="button" data-carousel-dir="-1" aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" data-carousel-dir="1" aria-label="Вперёд" title="Вперёд"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav></sc-if>
@@ -1167,7 +1330,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </section>
   </sc-if>
 
-  <section data-screen-label="Вопросы про парение" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
+  <section data-reveal data-screen-label="Вопросы про парение" style="max-width:var(--wrap);margin:0 auto;padding:{{ secPad }};">
     <div style="display:grid;grid-template-columns:{{ gridAside }};gap:40px;align-items:start;">
       <div><h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 24px;">{{ faqTitle }}</h2><p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:rgba(10,47,79,.75);">{{ faqHint }}</p><a href="{{ waGeneral }}" target="_blank" rel="noopener" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;transition:background-color 150ms ease-out;height:52px;padding:0 24px;">{{ faqAskLabel }}</a></div>
       <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:8px 24px;">
@@ -1185,8 +1348,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- KITCHEN -->
 <sc-if value="{{ isKitchen }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="Кухня" style="padding-bottom:140px;">
-  <section data-screen-label="Кухня - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
+<main class="shipa-page-enter" data-screen-label="Кухня" style="padding-bottom:140px;">
+  <section data-reveal data-screen-label="Кухня - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
     <img src="img/h4_acc.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
@@ -1204,7 +1367,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     </div>
   </div>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
-    <div style="display:grid;grid-template-columns:{{ grid3 }};gap:24px;">
+    <div class="shipa-stagger-cards" style="display:grid;grid-template-columns:{{ grid3 }};gap:24px;">
       <sc-for list="{{ kitchenCards }}" as="k" hint-placeholder-count="3">
           <div data-pcard="1" role="button" tabIndex="0" aria-label="{{ k.name }} - подробнее" onClick="{{ k.open }}" onKeyDown="{{ k.key }}" style="{{ k.cardStyle }}">
             <div style="position:relative;aspect-ratio:{{ k.ratio }};overflow:hidden;border-radius:20px 20px 0 0;background:#0A2F4F;color:#F9EFE3;">
@@ -1232,8 +1395,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- REVIEWS -->
 <sc-if value="{{ isReviews }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="Отзывы" style="padding-bottom:100px;">
-  <section data-screen-label="Отзывы - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
+<main class="shipa-page-enter" data-screen-label="Отзывы" style="padding-bottom:100px;">
+  <section data-reveal data-screen-label="Отзывы - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
     <img src="img/h5_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
@@ -1253,7 +1416,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <div style="display:flex;align-items:center;gap:12px;"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:44px;line-height:1;">4,9</span><span style="font-size:13px;line-height:1.4;color:rgba(10,47,79,.7);"><span style="color:#C15C22;letter-spacing:2px;">★★★★★</span><br>{{ reviewCountLabel }}</span></div>
       </sc-if>
     </div>
-    <div style="display:grid;grid-template-columns:{{ grid2 }};gap:16px;">
+    <div class="shipa-stagger-cards" style="display:grid;grid-template-columns:{{ grid2 }};gap:16px;">
       <sc-for list="{{ filteredReviews }}" as="r" hint-placeholder-count="6">
         <div style="background:rgba(255,255,255,.5);border:1px solid rgba(59,47,42,.1);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
@@ -1272,8 +1435,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- ABOUT -->
 <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="О нас" style="padding-bottom:100px;">
-  <section data-screen-label="О нас - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
+<main class="shipa-page-enter" data-screen-label="О нас" style="padding-bottom:100px;">
+  <section data-reveal data-screen-label="О нас - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
     <img src="img/h3_acc.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
@@ -1314,8 +1477,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- CONTACTS -->
 <sc-if value="{{ isContacts }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="Контакты" style="padding-bottom:100px;">
-  <section data-screen-label="Контакты - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
+<main class="shipa-page-enter" data-screen-label="Контакты" style="padding-bottom:100px;">
+  <section data-reveal data-screen-label="Контакты - шапка раздела" style="position:relative;background:#0A2F4F;color:#F9EFE3;overflow:hidden;">
     <img src="img/h6_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
@@ -1806,8 +1969,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
       <sc-if value="{{ hoursUI }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;flex-wrap:wrap;gap:6px 16px;margin:4px 0 0;font-size:13px;color:rgba(10,47,79,.8);">
-        <span style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>{{ dayEveHint }}</span>
-        <span style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>{{ eveHint }}</span>
+        <span style="display:inline-flex;align-items:center;gap:7px;"><span aria-hidden="true" style="display:inline-block;width:17px;height:17px;flex:0 0 auto;background:#FFFFFF;border:1px solid rgba(10,47,79,.3);border-radius:4px;"></span>{{ dayEveHint }}</span>
+        <span style="display:inline-flex;align-items:center;gap:7px;"><span aria-hidden="true" style="display:inline-block;width:17px;height:17px;flex:0 0 auto;background:#E5E5E5;border:1px solid rgba(10,47,79,.3);border-radius:4px;"></span>{{ eveHint }}</span>
       </div>
       <div id="bk-grid" style="{{ gridWrapStyle }}">
       <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;">
@@ -1913,16 +2076,16 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div>
           <label for="bk-name" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Имя <span style="color:#C15C22;">*</span></label>
-          <input id="bk-name" name="name" data-field="name" data-err="{{ fbk.nameAttr }}" value="{{ form.name }}" onChange="{{ fbk.setName }}" placeholder="Как к вам обращаться" autoComplete="name" aria-invalid="{{ fbk.nameErr }}" style="{{ fbk.nameStyle }}">
-          <sc-if value="{{ fbk.nameErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">Укажите имя</div></sc-if>
+          <input id="bk-name" name="name" type="text" minLength="2" maxLength="80" data-field="name" data-err="{{ fbk.nameAttr }}" value="{{ form.name }}" onChange="{{ fbk.setName }}" placeholder="Как к вам обращаться" autoComplete="name" aria-invalid="{{ fbk.nameErr }}" style="{{ fbk.nameStyle }}">
+          <sc-if value="{{ fbk.nameErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">{{ fbk.nameHint }}</div></sc-if>
         </div>
         <div>
           <label for="bk-phone" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></label>
           <div style="position:relative;">
-            <input id="bk-phone" name="tel" data-field="phone" data-err="{{ fbk.phoneAttr }}" value="{{ phoneShown }}" onChange="{{ fbk.setPhone }}" placeholder="+7 (___) ___-__-__" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fbk.phoneErr }}" style="{{ fbk.phoneStyle }}">
+            <input id="bk-phone" name="tel" maxLength="18" data-field="phone" data-err="{{ fbk.phoneAttr }}" value="{{ phoneShown }}" onChange="{{ fbk.setPhone }}" placeholder="+7 (___) ___-__-__" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fbk.phoneErr }}" style="{{ fbk.phoneStyle }}">
             <sc-if value="{{ phoneOk }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Номер введён" style="position:absolute;right:16px;top:50%;margin-top:-10px;pointer-events:none;animation:tickIn 200ms ease-out;"><path d="M4 10.5l4 4 8-9"/></svg></sc-if>
           </div>
-          <sc-if value="{{ fbk.phoneErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">Введите номер телефона полностью</div></sc-if>
+          <sc-if value="{{ fbk.phoneErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">{{ fbk.phoneHint }}</div></sc-if>
         </div>
       </div>
       <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
@@ -2051,7 +2214,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           </sc-if>
           <sc-if value="{{ succ.paid }}" hint-placeholder-val="{{ true }}">
             <sc-if value="{{ succ.tableOn }}" hint-placeholder-val="{{ false }}">
-              <a href="{{ succ.menuLink }}" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Выбрать меню к приезду</a>
+              <button onClick="{{ succ.openMenu }}" style="display:flex;align-items:center;justify-content:center;width:100%;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">Выбрать меню к приезду</button>
             </sc-if>
             <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ true }}">
               <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;height:56px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:16px;letter-spacing:.04em;">{{ contactWhatsApp }}</a>
@@ -2074,7 +2237,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           </div>
           <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;">
             <a href="{{ routeLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:44px;font-weight:600;font-size:15px;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Как добраться</span></a>
-            <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ false }}"><a href="{{ succ.menuLink }}" style="display:inline-flex;align-items:center;height:44px;font-weight:600;font-size:15px;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Заказать еду к приезду</span></a></sc-if>
+            <sc-if value="{{ succ.menuOff }}" hint-placeholder-val="{{ false }}"><button onClick="{{ succ.openMenu }}" style="display:inline-flex;align-items:center;min-height:44px;font-weight:600;font-size:15px;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Заказать еду к приезду</span></button></sc-if>
           </div>
         </div>
         <div style="display:flex;justify-content:center;margin-top:12px;"><button onClick="{{ closeBooking }}" style="height:40px;padding:0 12px;font-size:13px;color:rgba(59,47,42,.75);">На главную</button></div>
@@ -2108,10 +2271,6 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <sc-if value="{{ sending }}" hint-placeholder-val="{{ false }}"><span style="width:18px;height:18px;border-radius:50%;border:2px solid rgba(249,239,227,.35);border-top-color:#F9EFE3;animation:spin 800ms linear infinite;flex:0 0 auto;"></span></sc-if>
           <sc-if value="{{ notSending }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><rect x="5" y="2" width="14" height="20" rx="2"></rect><path d="M12 18h.01"></path></svg></sc-if>
           <span style="flex:1;">{{ pay.kaspiLabel }}</span><span style="font-variant-numeric:tabular-nums;">{{ pay.prepay }}</span>
-        </button>
-        <button onClick="{{ pay.card }}" disabled="{{ sending }}" style="height:56px;display:flex;align-items:center;gap:12px;padding:0 20px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:16px;text-align:left;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>
-          <span style="flex:1;">{{ pay.cardLabel }}</span>
         </button>
       </div>
     </sc-if>
@@ -2318,7 +2477,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://alexk1mkz.github.io/shipabani/e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHouseRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;./index.html#sec-kitchen&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHouseRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
 const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22';
 const WD=['вс','пн','вт','ср','чт','пт','сб'];
 const WD_ACC=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
@@ -2347,9 +2506,9 @@ const MAP0={lat:49.7656,lng:73.1716,label:'SHIPA',zoom:16,city:'karaganda'};
 // Выноски на логотипе в % от его ширины/высоты: 1 - над паром между листьями и S, 2 - у нижнего левого листа, 3 - у завитка над А
 const MEANING_PINS=[{n:1,x:5,y:13},{n:2,x:21,y:26},{n:3,x:93,y:10}]; // 1 - начало S-дуги (пар), 2 - внешний край верхнего синего листа, ниже и правее, по диагонали от 1; 3 - завиток над А
 // Настройки из админки (правки 29.09). Часы - от 00:00 дня начала брони: close 26 = 02:00 следующего дня.
-const CFG={open:10,close:26,lastStart:21,tariffs:{day:[10,17],evening:[17,26]},minH:3,maxH:16,prep:2,daily:{in:14,out:12},tubPrice:15000,durs:[3,4,5,6,8],leadH:1,childAge:7,
+const CFG={open:10,close:26,lastStart:21,tariffs:{day:[10,17],evening:[17,26]},minH:3,maxH:16,prep:2,daily:{in:14,out:12},tubPrice:15000,durs:[3,4,5,6,8,10,12],leadH:1,childAge:7,
   weekendDays:[5,6,0],holidays:['01-01','01-02','03-08','03-21','03-22','03-23','05-01','05-07','05-09','07-06','08-30','10-25','12-16'],tubHouses:['energiya'],
-  holdH:6,holdTodayH:1,cancelFreeDays:3,menuUrl:'https://alexk1mkz.github.io/shipabani/e-menu/'};
+  holdH:6,holdTodayH:1,cancelFreeDays:3,menuUrl:'./index.html#sec-kitchen'};
 // Категории домов: гостей в цене и максимум - из админки
 const CATEGORIES={smallStd:{name:'Малый Standard',tier:'STANDARD',guestsIncl:6,maxGuests:10},bigStd:{name:'Большой Standard',tier:'STANDARD',guestsIncl:8,maxGuests:12},
   smallVip:{name:'Малый VIP',tier:'VIP',guestsIncl:6,maxGuests:10},midVip:{name:'Средний VIP',tier:'VIP',guestsIncl:8,maxGuests:12},bigVip:{name:'Большой VIP',tier:'VIP',guestsIncl:12,maxGuests:16}};
@@ -2358,7 +2517,7 @@ const CATEGORIES={smallStd:{name:'Малый Standard',tier:'STANDARD',guestsInc
 const STD_T={from:'2026-10-01',price:{day:25000,evening:30000},weekdayDiscount:15,dailyRent:null,extraGuest:5000,prepay:20000};
 const VIP_T={from:'2026-10-01',price:{day:40000,evening:45000},weekdayDiscount:15,dailyRent:null,extraGuest:8000,prepay:40000};
 const TARIFFS={smallStd:[STD_T],bigStd:[STD_T],smallVip:[VIP_T],midVip:[VIP_T],bigVip:[VIP_T]};
-const PAY_LINKS={kaspi:'',card:''}; // ссылки платёжных систем из админки - заглушки
+const PAY_LINKS={kaspi:''}; // ссылка Kaspi Pay из админки (пока не задана)
 // Особые даты: свой тариф на дату или период. Формат: {from:'2026-12-31',to:'2027-01-01',rates:{VIP:{weNight:{rent,guest}},STANDARD:{…}}}
 const TARIFF_SPECIAL=[];
 const HOUSES=[
@@ -2414,12 +2573,12 @@ const SVC_FAQ=[{q:'Можно, если парюсь впервые?',a:'Да. �
 const EXTRAS=[{id:'program',name:'Парение - программу уточнит администратор',price:25000,from:true},{id:'table',name:'Накрыть стол к приезду',price:40000,from:true},{id:'kit',name:'Набор для парения: шапка, веник, рукавица',price:8000,from:false}];
 const FEATURES=[{name:'Парная',desc:'дровяная печь, липа и кедр'},{name:'Чан',desc:'горячая вода на дровах'},{name:'Комната отдыха',desc:'стол, диваны, тишина'},{name:'Терраса',desc:'своя, закрытая от соседей'},{name:'Душ и санузел',desc:'в каждом доме'},{name:'Кухонная зона',desc:'можно заказать стол заранее'}];
 const REVIEWS=[
- {name:'Айгерим',date:'2 сент.',stars:5,house:0,useful:12,visit:'Была в доме ДЫХАНИЕ · 4 часа · август',photos:['img/h1_int.png','img/h1_acc.png'],reply:{date:'3 сентября',text:'Айгерим, спасибо! Стол к приезду - наша любимая часть. Ждём вас снова.'},text:'Приехали вечером после работы, к нашему приезду уже накрыли стол. Парная прогрета, чан горячий. Никто не мешал - своя терраса, свой двор. Отдельное спасибо администратору: подсказала, как лучше распределить время между парной и чаном, и заранее уточнила, нужен ли нам веник.'},
- {name:'Дмитрий',date:'29 авг.',stars:5,house:1,useful:7,src:'2gis',srcLink:'https://2gis.kz/karaganda',text:'Брали СИЛУ на компанию из десяти. Парение с контрастом в чане после - то что нужно.'},
- {name:'Мадина и Тимур',date:'24 авг.',stars:5,house:2,text:'Ездили вдвоём. Тихо, тёплый свет, ничего лишнего. Взяли мягкое парение - вернёмся ещё.'},
- {name:'Сергей',date:'17 авг.',stars:4,house:4,text:'Хороший дом, чистый, дрова уже сложены. Единственное - хотелось бы больше вешалок в раздевалке.'},
- {name:'Алия',date:'10 авг.',stars:5,house:3,text:'Ответили в WhatsApp через пять минут. С детьми удобно: комната отдыха большая, чан неглубокий.'},
- {name:'Руслан',date:'3 авг.',stars:5,house:1,useful:4,photos:['img/h2_int.png'],text:'СИЛА - самый атмосферный дом. Тёмный камень, вода, пар. Взяли на шесть часов вечером - идеально на день рождения.'},
+ {name:'Айгерим',date:'2 сентября',stars:5,house:0,useful:12,visit:'Была в доме ДЫХАНИЕ · 4 часа · август',photos:['img/h1_int.png','img/h1_acc.png'],reply:{date:'3 сентября',text:'Айгерим, спасибо! Стол к приезду - наша любимая часть. Ждём вас снова.'},text:'Приехали вечером после работы, к нашему приезду уже накрыли стол. Парная прогрета, чан горячий. Никто не мешал - своя терраса, свой двор. Отдельное спасибо администратору: подсказала, как лучше распределить время между парной и чаном, и заранее уточнила, нужен ли нам веник.'},
+ {name:'Дмитрий',date:'29 августа',stars:5,house:1,useful:7,src:'2gis',srcLink:'https://2gis.kz/karaganda',text:'Брали СИЛУ на компанию из десяти. Парение с контрастом в чане после - то что нужно.'},
+ {name:'Мадина и Тимур',date:'24 августа',stars:5,house:2,text:'Ездили вдвоём. Тихо, тёплый свет, ничего лишнего. Взяли мягкое парение - вернёмся ещё.'},
+ {name:'Сергей',date:'17 августа',stars:4,house:4,text:'Хороший дом, чистый, дрова уже сложены. Единственное - хотелось бы больше вешалок в раздевалке.'},
+ {name:'Алия',date:'10 августа',stars:5,house:3,text:'Ответили в WhatsApp через пять минут. С детьми удобно: комната отдыха большая, чан неглубокий.'},
+ {name:'Руслан',date:'3 августа',stars:5,house:1,useful:4,photos:['img/h2_int.png'],text:'СИЛА - самый атмосферный дом. Тёмный камень, вода, пар. Взяли на шесть часов вечером - идеально на день рождения.'},
 ];
 const FAQ=[
  {q:'За сколько нужно бронировать?',a:'На будни - обычно за день. На вечер пятницы и субботы - за 3–5 дней. Свободные слоты видны на сайте сразу.'},
@@ -2500,7 +2659,7 @@ const HOUSE_DETAILS_KZ = [
     "ritual": "Асықпай, жайлы демалдыратын жұмсақ булау."
   },
   {
-    "name": "ЭНЕРГИЯ",
+    "name": "ҚУАТ",
     "slogan": "Күш-қуат жинаңыз",
     "mat": "Жылы реңкті емен, графит және янтарь түсті әйнек",
     "art": "таудағы күннің батуы",
@@ -2540,7 +2699,7 @@ const HOUSE_DETAILS_KZ = [
     "ritual": "Белсенді булау және сергітетін шай."
   }
 ];
-const KZ_PAGE_HOUSES = ['ТЫНЫС','КҮШ','ТЕПЕ-ТЕҢДІК','ЭНЕРГИЯ','ЕРКІНДІК','ЖЕҢІЛДІК','ТАБИҒАТ КҮШІ','СЕРПІН'];
+const KZ_PAGE_HOUSES = ['ТЫНЫС','КҮШ','ТЕПЕ-ТЕҢДІК','ҚУАТ','ЕРКІНДІК','ЖЕҢІЛДІК','ТАБИҒАТ КҮШІ','СЕРПІН'];
 const PILLARS_KZ = [
  {n:'01',kind:'МӘНІ',name:'Күш-қуатты қалпына келтіру',desc:'Бу, су және тыныштық қала қарбаласынан бір сәтке арылуға көмектеседі.'},
  {n:'02',kind:'ҰСТАНЫМ',name:'Оңаша демалыс',desc:'Көзге түсуге ұмтылмайтын, жайлы әрі сапалы демалыс.'},
@@ -2563,12 +2722,12 @@ const FAQ_KZ = [
  {q:'Демалыс уақытын сол жерде ұзартуға бола ма?',a:'Иә, келесі уақыт бос болса, ұзартуға болады. Қосымша уақыт сол кезеңге арналған тарифпен есептеледі. WhatsApp арқылы әкімшіден нақтылаңыз.'}
 ];
 const REVIEWS_KZ = [
- {date:'2 қыр.',visit:'ТЫНЫС үйінде болдым · 4 сағат · тамыз',reply:{date:'3 қыркүйек',text:'Айгерім, рақмет! Қонақтарға алдын ала дастарқан дайындағанды жақсы көреміз. Тағы да күтеміз!'},text:'Жұмыстан кейін кешке келдік. Біз келгенше дастарқан әзірленіп, бу бөлмесі жылытылып, чан ыстық болып тұрды. Ешкім кедергі келтірмеді: өз террасамыз, өз ауламыз болды. Әкімшіге ерекше рақмет: бу бөлмесі мен чан арасындағы уақытты дұрыс жоспарлауға көмектесті, монша сыпыртқысы қажет пе екенін алдын ала сұрады.'},
- {date:'29 там.',text:'КҮШ үйін он адамға брондадық. Бу бөлмесінен кейінгі чанға түсу керемет әсер қалдырды.'},
- {date:'24 там.',text:'Екеуміз бардық. Тыныштық, жылы жарық, артық ештеңе жоқ. Жұмсақ булау бағдарламасын таңдадық. Тағы келеміз.'},
- {date:'17 там.',text:'Үй жақсы, таза, отын алдын ала дайындалған. Тек киім ауыстыратын бөлмеде ілгіш көбірек болса екен.'},
- {date:'10 там.',text:'WhatsApp-та бес минутта жауап берді. Балалармен демалуға ыңғайлы: демалыс бөлмесі кең, чан аса терең емес.'},
- {date:'3 там.',text:'КҮШ - ерекше атмосферасы бар үй. Қара тас, су, бу. Кешке алты сағатқа алдық, туған күнге таптырмас орын.'}
+ {date:'2 қыркүйек',visit:'ТЫНЫС үйінде болдым · 4 сағат · тамыз',reply:{date:'3 қыркүйек',text:'Айгерім, рақмет! Қонақтарға алдын ала дастарқан дайындағанды жақсы көреміз. Тағы да күтеміз!'},text:'Жұмыстан кейін кешке келдік. Біз келгенше дастарқан әзірленіп, бу бөлмесі жылытылып, чан ыстық болып тұрды. Ешкім кедергі келтірмеді: өз террасамыз, өз ауламыз болды. Әкімшіге ерекше рақмет: бу бөлмесі мен чан арасындағы уақытты дұрыс жоспарлауға көмектесті, монша сыпыртқысы қажет пе екенін алдын ала сұрады.'},
+ {date:'29 тамыз',text:'КҮШ үйін он адамға брондадық. Бу бөлмесінен кейінгі чанға түсу керемет әсер қалдырды.'},
+ {date:'24 тамыз',text:'Екеуміз бардық. Тыныштық, жылы жарық, артық ештеңе жоқ. Жұмсақ булау бағдарламасын таңдадық. Тағы келеміз.'},
+ {date:'17 тамыз',text:'Үй жақсы, таза, отын алдын ала дайындалған. Тек киім ауыстыратын бөлмеде ілгіш көбірек болса екен.'},
+ {date:'10 тамыз',text:'WhatsApp-та бес минутта жауап берді. Балалармен демалуға ыңғайлы: демалыс бөлмесі кең, чан аса терең емес.'},
+ {date:'3 тамыз',text:'КҮШ - ерекше атмосферасы бар үй. Қара тас, су, бу. Кешке алты сағатқа алдық, туған күнге таптырмас орын.'}
 ];
 const SVC_FAQ_KZ = [
  {q:'Алғаш рет моншаға келсем, булауға бола ма?',a:'Иә. Классикалық немесе жұмсақ булаудан бастаңыз. Шебер температура мен қарқынды өзіңізді қалай сезінетініңізге қарай таңдайды.'},
@@ -2592,17 +2751,23 @@ const STAR_LABELS=['','Плохо','Так себе','Нормально','Хо�
 const EMPTY_RF={sent:false,name:'',stars:0,text:'',photos:[],agree:false};
 
 const FE0={scope:null,name:false,phone:false,agree:false,n:0};
-const MON_S=['янв','фев','мар','апр','мая','июн','июл','авг','сент','окт','нояб','дек'];
+const MON_S=MON;
 const cap=t=>t?t[0].toUpperCase()+t.slice(1):t;
-const MON_STRIP=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+// Heading labels in date strips use month names in nominative case; full dates keep genitive MON.
+const MON_STRIP=MON_NOM;
 const ADDR='г. Караганда, ул. Жакана Смакова 242';
 const RULES=[{t:'Предоплата',d:'Бронь подтверждается предоплатой: 20 000 ₸ для Standard, 40 000 ₸ для VIP. Вносится на сайте при бронировании. Без предоплаты бронь держится 6 часов, бронь на сегодня - 1 час, затем снимается.'},{t:'Отмена и перенос',d:'Больше 3 дней до начала - отмена с полным возвратом предоплаты. Меньше 3 дней - отмены с возвратом нет, возможен перенос брони. При неявке или поздней отмене предоплата не возвращается.'},{t:'Режим работы',d:'Ежедневно с 10:00 до 02:00. Начать бронь можно с 10:00 до 21:00, по часам - до 02:00 и не больше 16 часов. VIP-дома можно снять на сутки: заезд 14:00, выезд 12:00.'},{t:'Опоздание',d:'Дом ждёт вас всё забронированное время. Начало и окончание не сдвигаются: время опоздания не продлевается и не переносится.'},{t:'Продление',d:'Возможно, если следующее время свободно. Стоимость считается по тарифу того времени, на которое продлеваете.'},{t:'Гости',d:'В цене - число гостей по категории дома, каждый следующий - разовая доплата за визит. Дети до 7 лет - бесплатно и не считаются.'}];
 const EXTRA_SHORT={program:'парение',table:'стол к приезду',kit:'набор для парения'};
 const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}};
-const phoneDigits=v=>{v=String(v||'');let d=v.replace(/\D/g,'');if(v.trim().startsWith('+7'))d=d.slice(1);else if(d.length===11&&/^[78]/.test(d))d=d.slice(1);else if(d[0]==='8')d=d.slice(1);return d.slice(0,10);};
+// Accept Kazakhstan numbers in +7, 8 or local ten-digit notation; never reinterpret +1/+44 as +7.
+const phoneDigits=v=>{const raw=String(v||'').trim();let d=raw.replace(/\D/g,'');if(raw.startsWith('+')){if(!raw.startsWith('+7'))return '';d=d.slice(1);}else if(d.length===11&&/^[78]/.test(d))d=d.slice(1);else if(d.startsWith('8')&&d.length<11)d=d.slice(1);return d.slice(0,10);};
+const phoneValid=v=>{const raw=String(v||'').trim();const digits=raw.replace(/\D/g,'');if(raw.startsWith('+')&&!raw.startsWith('+7'))return false;if(digits.length!==10&&!(digits.length===11&&/^[78]/.test(digits)))return false;return phoneDigits(raw).length===10;};
+// Shared email validator for email inputs (the current booking form only requests name and phone).
+const emailValid=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v||'').trim())&&String(v||'').trim().length<=254;
+const nameValid=v=>/^[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі][A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі\s'’\-]{1,79}$/.test(String(v||'').trim());
 const phoneFmt=d=>{if(!d)return '';let s='+7 ('+d.slice(0,3);if(d.length>3)s+=') '+d.slice(3,6);if(d.length>6)s+='-'+d.slice(6,8);if(d.length>8)s+='-'+d.slice(8,10);return s;};
 class Component extends DCLogic {
-  state={vw:(typeof window!=='undefined'&&(window.innerWidth||document.documentElement.clientWidth))||undefined,isWide:typeof window!=='undefined'&&(window.innerWidth||0)>=960,screen:'home',houseId:null,history:[],isWide:false,menuOpen:false,callOpen:false,callSent:false,
+  state={vw:(typeof window!=='undefined'&&(window.innerWidth||document.documentElement.clientWidth))||undefined,isWide:typeof window!=='undefined'&&(window.innerWidth||0)>=960,screen:'home',houseId:null,history:[],menuOpen:false,callOpen:false,callSent:false,
     form:{name:'',phone:'',agree:false},fe:FE0,faqOpen:-1,catalogFilter:'Все',kitchenTab:'Чайная карта',reviewFilter:-1,
     galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:6},bk:null,savedBk:null,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,hdrLv:0,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,lang:(()=>{try{return localStorage.getItem('shipa-lang')==='KZ'?'KZ':'RU'}catch(e){return 'RU'}})(),hw:0,rf:EMPTY_RF,
     carIdx:0,carPaused:false,gal:-1,sheet:null,s3hint:null,s3n:0,sending:false,returning:null,
@@ -2635,8 +2800,8 @@ class Component extends DCLogic {
     if(p.h!==this._lastH){this._lastH=p.h;this.forceUpdate();}}
   dayLoad(i){let n=0;for(const h of OPEN_HOUSES)if(this.anyFree(HOUSES.indexOf(h),i))n++;return n;}
   firstOpenDay(){for(let i=0;i<60;i++)if(this.dayLoad(i)>0)return i;return 0;}
-  durStep(d){const bk=this.state.bk;if(!bk||bk.start==null)return false;const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const h=HOUSES[hi];if(!h)return false;
-    const max=Math.max(h.min,this.maxFrom(hi,bk.start));const n=(bk.dur||h.min)+d;
+  durStep(d){const bk=this.state.bk;if(!bk||bk.start==null)return false;const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const h=HOUSES[hi];if(!h||!this.canStart(hi,bk.start)||bk.start-bk.date*24>CFG.lastStart)return false;
+    const max=this.maxFrom(hi,bk.start);const n=(bk.dur||h.min)+d;
     if(n<h.min)return false;if(n>max){this.limitBump(max);return false;}vib(8);this.setBk({dur:n,pickEnd:false});return true;}
   limitBump(max){vib(20);clearTimeout(this._limT);this.setState(s=>({limN:(s.limN||0)+1,limHi:true}));this._limT=setTimeout(()=>this.setState({limHi:false}),1500);}
   holdStart(d,e){if(e&&e.button>0)return;this.holdEnd();this.durStep(d);
@@ -2697,7 +2862,7 @@ class Component extends DCLogic {
     this.onVis=()=>{if(document.hidden)this.heroPause(true);else if(!this._hoverHero)this.heroPause(false);};document.addEventListener('visibilitychange',this.onVis);
     this.injectLd();
     try{const c=JSON.parse(localStorage.getItem('shipa_cart')||'[]');if(Array.isArray(c)&&c.length)this.setState({cart:c});}catch(e){}
-    this.onKey=e=>{if(e.key==='Escape'&&this.state.pd)this.setState({pd:null});};document.addEventListener('keydown',this.onKey);
+    this.onKey=e=>{if(this.state.lightbox>=0){if(e.key==='Escape'){e.preventDefault();this.setState({lightbox:-1});return;}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.setState(s=>({lightbox:(s.lightbox+(e.key==='ArrowRight'?1:2))%3}));return;}}if(e.key==='Escape'&&this.state.pd)this.setState({pd:null});};document.addEventListener('keydown',this.onKey);
     this.applyStress();this.onVisSw=()=>{if(document.hidden)this.swReset();};document.addEventListener('visibilitychange',this.onVisSw);this.onPopState=()=>this.onPop();window.addEventListener('popstate',this.onPopState);this._hd=0;
     try{if(!sessionStorage.getItem('shipa_watip')&&!this.hdrDemo&&this.introT==null)this._tipT=setTimeout(()=>{try{sessionStorage.setItem('shipa_watip','1');}catch(e){}this.setState({waTip:true});this._tipT2=setTimeout(()=>this.setState({waTip:false}),5000);},20000);}catch(e){}
     if(this.reduced||(this.hdrDemo&&this.introT==null)){this.setState({intro:false});this.fillStats(1);}
@@ -2820,15 +2985,40 @@ class Component extends DCLogic {
       requestAnimationFrame(()=>requestAnimationFrame(jump));
     }
   }
-  go(screen,houseId=null){this.setState(s=>({screen,houseId,menuOpen:false,history:[...s.history,{screen:s.screen,houseId:s.houseId}].slice(-10),galleryIdx:0,hw:0,rf:EMPTY_RF}),()=>{
-    this.resetPageScroll();
-    if(window.shipaTrack){window.shipaTrack('virtual_page');
-      if(screen==='house'&&houseId){const house=HOUSES.find(h=>h.id===houseId);
-        if(house)window.shipaTrack('view_house',{house_id:house.id,house_name:house.name});}}
-  });}
-  goBack(){this.setState(s=>{const h=s.history.slice();const p=h.pop()||{screen:'home',houseId:null};return {screen:p.screen,houseId:p.houseId,history:h};},()=>{
-    this.resetPageScroll();if(window.shipaTrack)window.shipaTrack('virtual_page');
-  });}
+  // Route-only motion: CSS fallback works on older mobile browsers, native View Transitions
+  // adds a brief outgoing fade when available. Booking step transitions remain unchanged.
+  routeTransition(apply){
+    const root=document.documentElement;
+    if(this.reduced||typeof document.startViewTransition!=='function'){
+      apply(()=>{});return;
+    }
+    root.setAttribute('data-shipa-route-transition','1');
+    this.vt(done=>apply(done));
+    const tx=this._vtx;
+    if(tx&&tx.finished){
+      root.setAttribute('data-shipa-native-vt','1');
+      tx.finished.then(()=>root.removeAttribute('data-shipa-route-transition'),
+        ()=>root.removeAttribute('data-shipa-route-transition'));
+    } else root.removeAttribute('data-shipa-route-transition');
+  }
+  go(screen,houseId=null){
+    if(this.state.screen===screen&&this.state.houseId===houseId){
+      if(this.state.menuOpen)this.setState({menuOpen:false});
+      this.resetPageScroll();return;
+    }
+    this.routeTransition(done=>this.setState(s=>({screen,houseId,menuOpen:false,history:[...s.history,{screen:s.screen,houseId:s.houseId}].slice(-10),galleryIdx:0,hw:0,rf:EMPTY_RF}),()=>{
+      this.resetPageScroll();
+      if(window.shipaTrack){window.shipaTrack('virtual_page');
+        if(screen==='house'&&houseId){const house=HOUSES.find(h=>h.id===houseId);
+          if(house)window.shipaTrack('view_house',{house_id:house.id,house_name:house.name});}}
+      done();
+    }));
+  }
+  goBack(){
+    this.routeTransition(done=>this.setState(s=>{const h=s.history.slice();const p=h.pop()||{screen:'home',houseId:null};return {screen:p.screen,houseId:p.houseId,history:h};},()=>{
+      this.resetPageScroll();if(window.shipaTrack)window.shipaTrack('virtual_page');done();
+    }));
+  }
 
   dateAt(i){const d=new Date(this.today);d.setDate(d.getDate()+i);return d;}
   dkey(di){const d=this.dateAt(di);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -2870,13 +3060,22 @@ class Component extends DCLogic {
   // Для гостя три состояния: свободно, занято (включая 2 часа подготовки после чужой брони), прошло
   cell(hi,H){if(H<this.nowH)return 'past';const d=Math.floor(H/24);const bs=this.abs(hi,d-1,d);if(bs.some(([s,e])=>H>=s&&H<e+CFG.prep))return 'busy';return 'free';}
   nextBusyH(hi,H){for(let k=H;k<H+CFG.maxH+4;k++)if(this.cell(hi,k)==='busy')return k;return null;}
-  // Максимум часов с H: до закрытия, не больше maxH, до следующей брони минус подготовка
-  maxFrom(hi,H){const d=Math.floor(H/24);let m=Math.min(CFG.maxH,d*24+CFG.close-H);const n=this.nextBusyH(hi,H);if(n!=null)m=Math.min(m,n-H-CFG.prep);return m;}
+  // Рабочие сутки идут с 10:00 до 02:00 следующего дня. 00:00 и 01:00
+  // относятся к ПРЕДЫДУЩЕМУ дню: нельзя давать им лимит следующей ночи.
+  maxFrom(hi,H){const workDay=Math.floor((H-CFG.open)/24);const closing=workDay*24+CFG.close;
+    let m=Math.min(CFG.maxH,closing-H);const n=this.nextBusyH(hi,H);
+    if(n!=null)m=Math.min(m,n-H-CFG.prep);return Math.max(0,m);}
   canStart(hi,H){const x=H-Math.floor(H/24)*24;return x>=CFG.open&&x<=CFG.lastStart&&this.cell(hi,H)==='free'&&this.maxFrom(hi,H)>=CFG.minH;}
+  // Единая проверка для отображения, кнопки «Далее» и счётчика часов.
+  validHoursSelection(bk){if(!bk||!Number.isInteger(bk.start)||!Number.isInteger(bk.dur))return false;
+    const hi=HOUSES.findIndex(h=>h.id===bk.houseId);if(hi<0||!Number.isInteger(bk.date))return false;
+    const localHour=bk.start-bk.date*24;
+    return localHour>=CFG.open&&localHour<=CFG.lastStart&&bk.dur>=CFG.minH&&
+      this.cell(hi,bk.start)==='free'&&bk.dur<=this.maxFrom(hi,bk.start);}
   anyFree(hi,di){for(let k=CFG.open;k<=CFG.lastStart;k++)if(this.canStart(hi,di*24+k))return true;return false;}
   firstFreeStart(hi,di){for(let k=CFG.open;k<=CFG.lastStart;k++)if(this.canStart(hi,di*24+k))return di*24+k;return null;}
   // Сутки VIP: дом свободен с 12:00 дня заезда до 14:00 следующего дня
-  dailyOk(hi,di){if(HOUSES[hi].tier!=='VIP')return false;const H0=di*24+CFG.daily.in;if(H0<this.nowH)return false;
+  dailyOk(hi,di){if(hi<0||!HOUSES[hi]||HOUSES[hi].tier!=='VIP')return false;const H0=di*24+CFG.daily.in;if(H0<this.nowH)return false;
     for(let H=H0-CFG.prep;H<di*24+CFG.close;H++)if(this.cell(hi,H)==='busy')return false;
     for(let H=(di+1)*24+CFG.open;H<(di+1)*24+CFG.daily.out+CFG.prep;H++)if(this.cell(hi,H)==='busy')return false;return true;}
   moOf(i){const d=this.dateAt(i);return (d.getFullYear()-this.today.getFullYear())*12+d.getMonth()-this.today.getMonth();}
@@ -2937,10 +3136,10 @@ class Component extends DCLogic {
     if(this.state.menuOpen)this.setState({menuOpen:false});
     if(this.state.screen==='home'){run();return;}
     this._kitchenNavPending=true;this.go('home');setTimeout(()=>{this._kitchenNavPending=false;run();},60);setTimeout(run,300);}
-  openMenuUrl(){const u=this.props.menuUrl||CFG.menuUrl;location.href=u;if(this.state.menuOpen)this.setState({menuOpen:false});}
-  formOk(){const f=this.state.form;return f.name.trim().length>0&&phoneDigits(f.phone).length>=10&&!!f.agree;}
+  openMenuUrl(){this.goKitchenSection();}
+  formOk(){const f=this.state.form;return nameValid(f.name)&&phoneValid(f.phone)&&!!f.agree;}
   // Предоплата: ссылка платёжной системы из админки; результат в прототипе - по демо-переключателю
-  pay(m){const bk=this.state.bk;if(!bk||this.state.sending)return;if(window.shipaTrack)window.shipaTrack('payment_click',{payment_method:m});const link=PAY_LINKS[m];if(link){try{window.open(link,'_blank','noopener');}catch(e){}}
+  pay(m){if(m!=='kaspi')return;const bk=this.state.bk;if(!bk||this.state.sending)return;if(window.shipaTrack)window.shipaTrack('payment_click',{payment_method:m});const link=PAY_LINKS[m];if(link){try{window.open(link,'_blank','noopener');}catch(e){}}
     this.setState({sending:true});setTimeout(()=>{const paid=(this.props.demoPayment??'paid')==='paid';this.setState({sending:false});this.finish(paid,m);},1200);}
   bookingCode(phone){
     const last4=String(phone||'').replace(/\D/g,'').slice(-4).padStart(4,'0');
@@ -2972,7 +3171,7 @@ class Component extends DCLogic {
   closeBooking(){const done=this.state.bk&&this.state.bk.step===6;this.setState({bk:null,savedBk:null});if(done)this.go('home');}
   // Шаги брони: что обязательно на шаге, можно ли вперёд, подсказка
   stepOk(bk){if(!bk)return false;if(bk.pre){if(bk.step===1)return !!bk.houseId;if(bk.step===2)return bk.date!=null;return false;}
-    if(bk.step===1)return bk.date!=null&&bk.guests>0;if(bk.step===2)return !!bk.houseId;if(bk.step===3)return !!(this._s3&&this._s3.ok);if(bk.step===4)return this.formOk();return false;}
+    if(bk.step===1)return bk.date!=null&&bk.guests>0;if(bk.step===2)return !!bk.houseId;if(bk.step===3)return bk.mode==='daily'?this.dailyOk(HOUSES.findIndex(h=>h.id===bk.houseId),bk.date):this.validHoursSelection(bk);if(bk.step===4)return this.formOk();return false;}
   minStep(bk){return bk.pre?(bk.fromHouse?2:1):(bk.fromHouse?3:1);}
   lastStep(bk){return bk.pre?3:5;}
   hint(t,ms){clearTimeout(this._hintT);if(this.state.lang==='KZ'&&window.ShipaBookingI18n)t=window.ShipaBookingI18n.translate(t);this.setState({bkHint:t});vib(20);this._hintT=setTimeout(()=>this.setState({bkHint:null}),ms||2600);}
@@ -3081,7 +3280,7 @@ class Component extends DCLogic {
     if(c==='busy')return b+`background:rgba(193,92,34,.12);color:rgba(193,92,34,.6);border:1px solid transparent;`;
     if(c==='short')return b+`background:transparent;color:rgba(10,47,79,.72);border:1px dashed rgba(10,47,79,.3);`;
     if(c==='past')return b+`background:transparent;color:rgba(10,47,79,.22);border:1px dashed rgba(10,47,79,.14);`;
-    return b+`background:${eve?'#EEE6DC':'rgba(255,255,255,.6)'};color:${late?'rgba(10,47,79,.55)':NAVY};border:1px solid rgba(59,47,42,.15);`;}
+    return b+`background:${eve?'#E5E5E5':'#FFFFFF'};color:${late?'rgba(10,47,79,.55)':NAVY};border:1px solid rgba(59,47,42,.2);`;}
   segStyle(c){const b='flex:1;height:16px;border-radius:3px;';
     if(c==='busy')return b+`background:${BRICK};`;
     if(c==='prep')return b+`background:repeating-linear-gradient(135deg,rgba(59,47,42,.3) 0 3px,rgba(59,47,42,.08) 3px 6px);`;
@@ -3089,7 +3288,7 @@ class Component extends DCLogic {
     return b+`background:${CREAM};box-shadow:inset 0 0 0 1px rgba(10,47,79,.3);`;}
   validate(scope){
     const s=this.state;const needAgree=scope==='bk'&&!(s.bk&&s.bk.pre);
-    const e={name:!s.form.name.trim(),phone:phoneDigits(s.form.phone).length<10,agree:needAgree&&!s.form.agree};
+    const e={name:!nameValid(s.form.name),phone:!phoneValid(s.form.phone),agree:needAgree&&!s.form.agree};
     if(!e.name&&!e.phone&&!e.agree){this.setState({fe:FE0});return true;}
     this.setState({fe:{scope,...e,n:s.fe.n+1}});vib([30,40,30]);
     const el=document.getElementById(scope+'-'+(e.name?'name':e.phone?'phone':'agree'));
@@ -3102,7 +3301,7 @@ class Component extends DCLogic {
   fieldVals(scope,h,fs){
     const s=this.state;const fe=s.fe.scope===scope?s.fe:FE0;const anim=s.fe.n%2?'shakeA':'shakeB';
     const st=(err,pr)=>`width:100%;height:${h}px;border:1px solid ${err?BRICK:'rgba(59,47,42,.15)'};box-shadow:${err?'inset 0 0 0 1px '+BRICK:'none'};border-radius:14px;padding:0 ${pr}px 0 ${h>52?16:14}px;font-size:${fs}px;background:${err?'rgba(193,92,34,.06)':'rgba(255,255,255,.6)'};color:${NAVY};transition:border-color 150ms,background 150ms;${err?`animation:${anim} 300ms ease-out 1;`:''}`;
-    return {nameErr:fe.name,phoneErr:fe.phone,agreeErr:fe.agree,nameAttr:fe.name?'1':'0',phoneAttr:fe.phone?'1':'0',
+    return {nameErr:fe.name,phoneErr:fe.phone,agreeErr:fe.agree,nameAttr:fe.name?'1':'0',phoneAttr:fe.phone?'1':'0',nameHint:s.lang==='KZ'?'Атыңызды кемінде 2 әріппен жазыңыз':'Введите имя буквами (не менее 2 символов)',phoneHint:s.lang==='KZ'?'Нөмірді +7 (XXX) XXX-XX-XX форматында енгізіңіз':'Введите корректный номер в формате +7 (XXX) XXX-XX-XX',
       nameStyle:st(fe.name,h>52?16:14),phoneStyle:st(fe.phone,46),
       setName:e=>this.setState({form:{...this.state.form,name:e.target.value},fe:{...this.state.fe,name:false}}),
       setPhone:e=>{const v=e.target.value;const cur=this.state;const old=phoneDigits(cur.form.phone);let d=phoneDigits(v);if(d===old&&v.length<phoneFmt(old).length)d=d.slice(0,-1);this.setState({form:{...cur.form,phone:phoneFmt(d)},fe:{...cur.fe,phone:false}});}};}
@@ -3140,14 +3339,14 @@ if(s.lang==='KZ'){
     sub:'\u0411\u0443 \u0431\u04e9\u043b\u043c\u0435\u043b\u0435\u0440\u0456 \u043c\u0435\u043d \u044b\u0441\u0442\u044b\u049b \u0447\u0430\u043d\u0434\u0430\u0440\u044b \u0431\u0430\u0440 \u0441\u0435\u0433\u0456\u0437 \u04af\u0439. \u0416\u0435\u043a\u0435 \u04af\u0439, \u0436\u0435\u043a\u0435 \u0442\u0435\u0440\u0440\u0430\u0441\u0430 - \u0430\u0439\u043d\u0430\u043b\u0430\u0434\u0430 \u0431\u04e9\u0433\u0434\u0435 \u0435\u0448\u043a\u0456\u043c \u0436\u043e\u049b.'
   });
 }const SHIPA_BRAND_RU='SHIPÁ - это свой дом, натуральные материалы, тёплый свет и сервис, согласованный заранее.';
-const SHIPA_MEANING_RU='«Шипа» по-казахски означает исцеление и оздоровление. Название легко произносится на казахском, русском и английском языках.';
+const SHIPA_MEANING_RU=(this.props.showStress??true)?'«Шипа́» по-казахски — восстановление, оздоровление.':'«Шипа» по-казахски — восстановление, оздоровление.';
 const SHIPA_BRAND_KZ='SHIPÁ - бұл жеке үй, табиғи материалдар, жылы жарық және алдын ала келісілген қызмет.';
-const SHIPA_MEANING_KZ=JSON.parse('"\u00ab\u0428\u0438\u043f\u0430\u00bb\u0020\u049b\u0430\u0437\u0430\u049b\u0020\u0442\u0456\u043b\u0456\u043d\u0434\u0435\u0020\u0435\u043c\u002c\u0020\u0441\u0430\u0443\u044b\u0493\u0443\u0020\u0434\u0435\u0433\u0435\u043d\u0020\u043c\u0430\u0493\u044b\u043d\u0430\u043d\u044b\u0020\u0431\u0456\u043b\u0434\u0456\u0440\u0435\u0434\u0456\u002e\u0020\u0411\u04b1\u043b\u0020\u0430\u0442\u0430\u0443\u0020\u049b\u0430\u0437\u0430\u049b\u002c\u0020\u043e\u0440\u044b\u0441\u0020\u0436\u04d9\u043d\u0435\u0020\u0430\u0493\u044b\u043b\u0448\u044b\u043d\u0020\u0442\u0456\u043b\u0434\u0435\u0440\u0456\u043d\u0434\u0435\u0020\u0430\u0439\u0442\u0443\u0493\u0430\u0020\u0436\u0435\u04a3\u0456\u043b"');
+const SHIPA_MEANING_KZ='«Шипа» қазақ тілінде «сауығу, емделу» деген мағынаны білдіреді.';
 const shipaBrandText=s.lang==='KZ'?SHIPA_BRAND_KZ:SHIPA_BRAND_RU;
 const shipaMeaningText=s.lang==='KZ'?SHIPA_MEANING_KZ:SHIPA_MEANING_RU;
 const screen=s.screen;const wide=s.isWide;
     const showRatings=this.props.showRatings??false;
-    const houseView=HOUSES.map((h,i)=>({...h,...(s.lang==='KZ'?{name:HOUSE_DETAILS_KZ[i].name,slogan:HOUSE_DETAILS_KZ[i].slogan}:{}),guestsPrefix:s.lang==='KZ'?'':'до',hourShort:s.lang==='KZ'?'сағ':'ч',pricePerHour:s.lang==='KZ'?'₸/сағ':'₸/час',soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:s.lang==='KZ'?`${h.guestsIncl} қонақ бағаға кіреді · ең көбі ${h.maxGuests}${h.tub?' · ыстық чан':''}${h.tier==='VIP'?' · бассейн':''}`:`до ${h.guestsIncl} гостей в цене · максимум ${h.maxGuests}${h.tub?' · горячий чан':''}${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceFromLabel:s.lang==='KZ'?`${fmt(this.fromPrice(h))} ₸/сағ бастап`:`от ${fmt(this.fromPrice(h))}/ч`,priceShort:(this.fromPrice(h)/1000)+' 000',
+    const houseView=HOUSES.map((h,i)=>({...h,...(s.lang==='KZ'?{name:HOUSE_DETAILS_KZ[i].name,slogan:HOUSE_DETAILS_KZ[i].slogan}:{}),guestsPrefix:s.lang==='KZ'?'':'до',hourShort:s.lang==='KZ'?'сағ':'ч',pricePerHour:s.lang==='KZ'?'₸/сағ':'₸/час',soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:s.lang==='KZ'?`${h.guestsIncl} қонақ бағаға кіреді · ең көбі ${h.maxGuests}${h.tub?' · ыстық чан':''}${h.tier==='VIP'?' · бассейн':''}`:`до ${h.guestsIncl} гостей в цене · максимум ${h.maxGuests}${h.tub?' · горячий чан':''}${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceFromLabel:s.lang==='KZ'?`Сағатына ${fmt(this.fromPrice(h))} бастап`:`от ${fmt(this.fromPrice(h))} / час`,priceShort:(this.fromPrice(h)/1000)+' 000',
       open:()=>!h.soon&&this.go('house',h.id),book:()=>this.openBooking(h.id)}));
     const openView=houseView.filter(h=>!h.soon);
     // Ленты (правила качества, п. 3.1): десктоп ≥1024 - сетка, если карточки помещаются (N ≤ K), иначе прокрутка по K; витринные - центрируются
@@ -3177,7 +3376,7 @@ if(s.lang==='KZ'){
 }
     const statsWrap=wide?'display:flex;justify-content:center;gap:48px;margin-bottom:40px;':'display:grid;grid-template-columns:repeat(2,minmax(0,max-content));justify-content:center;gap:24px 40px;margin-bottom:32px;';
     const quickDays=Array.from({length:14},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;const n=this.dayLoad(i);const full=n===0;const few=!full&&n<3;
-      const wd=i===0?(full?'всё занято':'сегодня'):i===1?'завтра':WD[d.getDay()];const w=i===0&&full?100:i<=1?72:56;
+      const wd=i===0?(full?'всё занято':'сегодня'):i===1?'завтра':WD[d.getDay()];const w=i===0&&full?108:i<=1?94:88;
       return {wd,day:d.getDate(),mon:i===0||d.getDate()===1?MON_STRIP[d.getMonth()]:'',line:d.getDate()===1&&i>0,pressed:act?'true':'false',
         label:`${this.dayWords(i)}${full?', всё занято':few?', осталось мало окон':''}`,
         select:()=>{if(full){this.hint(`На ${this.dm(i)} всё занято - выберите другой день`);return;}vib(8);this.setState({quick:{...s.quick,date:i}});},
@@ -3335,7 +3534,7 @@ const LANGS=['RU','KZ'];
     const stickyLabel=pre?(inHouse?(houseKz?`Ашылуға жазылу · ${hk.name}`:`Записаться на открытие · ${hRaw.name}`):bookLabel):inHouse?(houseKz?`${hk.name} үйін брондау · ${fmt(this.fromPrice(hRaw))} ₸/сағ бастап`:`Забронировать ${hRaw.name} · от ${fmt(this.fromPrice(hRaw))}/ч`):bookLabel;
 
     let B={};
-    const okC=s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10;
+    const okC=nameValid(s.form.name)&&phoneValid(s.form.phone);
     const guestsTxt=n=>`${n} ${plural(n,'гость','гостя','гостей')}`;
     if(bk&&bk.pre){
       const hSel=HOUSES.find(x=>x.id===bk.houseId);
@@ -3391,8 +3590,8 @@ const LANGS=['RU','KZ'];
       const T0=this.tariff(h0,bk.date);const disc=this.discOf(h0,bk.date);const wdDisc=T0.weekdayDiscount||0;
       const hourCells=Array.from({length:CFG.close-CFG.open},(_,k)=>{const x=CFG.open+k;const H=D0+x;const c=this.cell(hi0,H);const inSel=hasStart&&(end!=null?(H>=st&&H<end):H===st);
         const late=x>CFG.lastStart;const eve=x>=CFG.tariffs.evening[0];
-        let v=c;if(c==='free'&&!late&&this.maxFrom(hi0,H)<CFG.minH)v='short';
-        const sub=inSel?(H===st?'с '+hh(st):(end!=null&&H===end-1?'до '+hh(end):'')):v==='busy'?'занято':v==='short'?'мало времени':'';
+        let v=c;if(c==='free'&&(late||this.maxFrom(hi0,H)<CFG.minH))v='short';
+        const sub=inSel?(H===st?'с '+hh(st):(end!=null&&H===end-1?'до '+hh(end):'')):v==='busy'?'занято':v==='short'?(late?'заезд до '+hh(CFG.lastStart):'мало времени'):'';
         return {label:hh(H),sub,hasSub:!!sub,disabled:v==='busy'||v==='past',
           select:()=>{if(s.gOpen)this.setState({gOpen:false});
             if(hasStart&&bk.pickEnd&&H>st){const nd=H-st+1;if(nd<CFG.minH){vib(8);this.setBk({dur:CFG.minH,pickEnd:false},()=>this.hint('Минимум '+hrs(CFG.minH)));return;}if(nd<=maxEff){vib(8);this.setBk({dur:nd,pickEnd:false});return;}}
@@ -3405,14 +3604,14 @@ const LANGS=['RU','KZ'];
         dayStrip.push({wd:i===0?'сегодня':i===1?'завтра':WD[dd.getDay()],day:dd.getDate(),mon:i===s0||dd.getDate()===1?MON_STRIP[dd.getMonth()]:'',line:dd.getDate()===1&&i!==s0,
           sel:act?'1':'0',pressed:act?'true':'false',label:this.dayWords(i)+(full?(i===0?', на сегодня всё':', всё занято'):'')+(dc?`, скидка ${dc}%`:''),
           discOn:dc>0&&!full,discText:'−'+dc+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
-          style:this.dayStyle(act,full,i<=1?'72px':'52px',NAVY)+(full&&!act?'text-decoration:line-through;':''),
+          style:this.dayStyle(act,full,i<=1?'98px':'88px',NAVY)+(full&&!act?'text-decoration:line-through;':''),
           select:()=>{if(act)return;
             if(full){if(daily){const near=[];for(let k=i+1;k<i+30&&near.length<2;k++)if(this.dailyOk(hi0,k))near.push(this.dm(k));this.hint(`На ${this.dm(i)} сутки заняты${near.length?' - ближайшие свободные: '+near.join(', '):''}`,3400);}
               else this.hint(i===0?'На сегодня всё занято - выберите другой день':`${this.dm(i)} всё занято - выберите другой день`);return;}
             vib(8);if(daily)this.pickDaily(i);else this.moveDate(i);}});}
       const nb=hasStart?this.nextBusyH(hi0,st):null;
       const toClose=hasStart?D0+CFG.close-st:0;
-      const durChips=[...CFG.durs.map(v=>({v,label:v+' ч',sub:''})),{v:toClose,label:'До закрытия',sub:'до '+hh(D0+CFG.close),close:true}].filter(c=>c.v>=CFG.minH&&(c.close||c.v<toClose)).map(c=>{const off=c.v>maxEff;const act=dur===c.v;
+      const durChips=[...CFG.durs.map(v=>({v,label:v+' ч',sub:''})),{v:toClose,label:'До закрытия',sub:'до '+hh(D0+CFG.close),close:true}].filter(c=>c.v>=CFG.minH&&c.v<=CFG.maxH&&(c.close||c.v<toClose)).map(c=>{const off=c.v>maxEff;const act=dur===c.v;
         return {label:c.label,disabled:off,hasReason:off,reason:off?'до '+hh(st+maxEff):'',hasSub:!off&&!!c.sub,sub:c.sub,
           select:()=>{if(off)return;vib(8);this.setBk({dur:c.v,pickEnd:false});},
           style:`width:100%;height:48px;border-radius:999px;font-size:14px;font-weight:600;line-height:1.1;padding:0 4px;border:1px ${off?'dashed':'solid'} ${act?NAVY:off?'rgba(10,47,79,.22)':'rgba(10,47,79,.4)'};background:${act?NAVY:CREAM};color:${act?CREAM:off?'rgba(10,47,79,.35)':NAVY};`};});
@@ -3448,7 +3647,7 @@ const LANGS=['RU','KZ'];
       const exList=[...(tubOn?['горячий чан']:[]),...(progs.length?['парение']:[]),...(tableOn?['стол к приезду']:[]),...(kitOn?['набор для парения']:[])];
       const tubLine=tubOn?`Горячий чан · ${fmt(CFG.tubPrice)}`:h0.tubIncl?'Горячий чан на дровах - входит в стоимость':'';
       const cLines=[...(tubLine?[{t:tubLine}]:[]),...(exList.length?[{t:'Дополнительно: '+exList.join(', ')}]:[])];
-      const ok3=daily?hasStart:(end!=null&&dur<=maxEff);
+      const ok3=daily?hasStart&&this.dailyOk(hi0,bk.date):this.validHoursSelection(bk);
       const canNext=bk.step===1?true:bk.step===3?ok3:bk.step===4?true:false;
       const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Перейти к предоплате';
       const payTxt=(bk.paid?'оплачено':'ожидает')+' · '+fmt(prepay);
@@ -3506,7 +3705,7 @@ const LANGS=['RU','KZ'];
       const calLine=end!=null?`${dLabel(sd)} · ${hh(st)}–${hh(end)} · ${h0.name}`:'';
       const split=bk.step===3||bk.step===4;
       const holdP=bk.holdAt?kzParts(bk.holdAt):null;const holdUntil=holdP?String(holdP.h).padStart(2,'0')+':'+String(holdP.mi).padStart(2,'0'):'';
-      const menuLink=`${this.props.menuUrl||CFG.menuUrl}?house=${h0.id}&date=${this.dkey(bk.date)}&time=${encodeURIComponent(hh(st??D0+CFG.open))}&guests=${bk.guests}&booking=${encodeURIComponent(bk.id||'')}`;
+      const menuLink='./index.html#sec-kitchen';
       const modeSegs=[['hours','По часам'],['daily','Сутки']].map(([id,label])=>{const a=(bk.mode||'hours')===id;return {label,sel:a?'true':'false',select:()=>this.setMode(id),style:`height:44px;border-radius:999px;font-size:15px;font-weight:600;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
       const dIn=this.dateAt(bk.date),dOut=this.dateAt(bk.date+1);
       const todayNote=bk.date===0;
@@ -3515,7 +3714,7 @@ const LANGS=['RU','KZ'];
         succ:{hasImg:cs!=='none',noImg:cs==='none',img:photos[0].src,n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
           wrapStyle:`position:relative;${wide?'margin:0 0 0;':'margin:-8px -20px 0;'}`,clipStyle:`position:relative;aspect-ratio:4/3;overflow:hidden;background:rgba(10,47,79,.08);border-radius:${wide?24:0}px;`,
           paid:!!bk.paid,pending:!bk.paid,title:bk.paid?'Бронь подтверждена':'Заявка принята - ждём предоплату',sub:bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`,
-          payLine:'Предоплата · '+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:'Оплатить '+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,todayNote,bookingId:bk.id||'',hasId:!!bk.id,
+          payLine:'Предоплата · '+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:'Оплатить '+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,openMenu:()=>{this.closeBooking();this.goKitchenSection();},todayNote,bookingId:bk.id||'',hasId:!!bk.id,
           waSecondary:!bk.paid||tableOn,secCols:wide&&(!bk.paid||tableOn)?'1fr 1fr':'1fr',
           badgeStyle:`position:absolute;left:50%;bottom:-32px;margin-left:-32px;width:64px;height:64px;border-radius:50%;background:${bk.paid?BRICK:NAVY};display:flex;align-items:center;justify-content:center;animation:popIn 300ms ease-out;`},
         stdHeader:!(bk.step===3&&!wide),overlayHdr:bk.step===3&&!wide,
@@ -3535,13 +3734,13 @@ const LANGS=['RU','KZ'];
         editSearch:()=>this.openDateSheet(),openDateSheet:()=>this.openDateSheet(),s3DateText:this.dayWords(bk.date),stripRef:this.stripRef,stripArrows:wide,
         stripScroll:e=>{const el=e.currentTarget;if(el.scrollLeft+el.clientWidth>el.scrollWidth-160&&this._stripN<366&&this._stripReq!==this._stripN){this._stripReq=this._stripN;this.setState(x=>({stripMore:(x.stripMore||0)+1}));}},
         stripPrev:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
-        stripNext:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},searchDate:`${d.getDate()} ${MON[d.getMonth()].slice(0,3)}, ${WD[d.getDay()]}`,
+        stripNext:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},searchDate:`${d.getDate()} ${MON[d.getMonth()]}, ${WD[d.getDay()]}`,
         stripHintOn:wdDisc>0,stripHint:`Пн–чт дешевле на ${wdDisc}%`,
         h3Kicker:`${h0.n} / ${h0.catName}`,dayStrip,hourCells,
         isVipHouse:isVip,modeSegs,hoursUI:!daily,dailyUI:daily,
         dailyIn:`${cap(WD[dIn.getDay()])}, ${this.dm(bk.date)} · ${hh(CFG.daily.in)}`,dailyOut:`${cap(WD[dOut.getDay()])}, ${this.dm(bk.date+1)} · ${hh(CFG.daily.out)}`,
         dailyBusy:daily&&!hasStart,dailyBusyText:`На ${this.dm(bk.date)} сутки заняты - выберите другую дату заезда`,dailyNoteOn:daily&&hasStart&&rentUnknown,dailyNote:'Стоимость суток уточнит администратор. Предоплата - '+fmt(prepay)+'.',
-        dayEveHint:`День ${hh(CFG.tariffs.day[0])}–${hh(CFG.tariffs.day[1])}`,eveHint:`Вечер ${hh(CFG.tariffs.evening[0])}–${hh(CFG.tariffs.evening[1])}`,
+        dayEveHint:`${s.lang==='KZ'?'Күндізгі тариф':'Дневной тариф'} · ${hh(CFG.tariffs.day[0])}–${hh(CFG.tariffs.day[1])}`,eveHint:`${s.lang==='KZ'?'Кешкі тариф':'Вечерний тариф'} · ${hh(CFG.tariffs.evening[0])}–${hh(CFG.tariffs.evening[1])}`,
         hasStart,noStart:!hasStart,durChips,durNote:`Минимум ${hrs(CFG.minH)}, по часам - до ${hh(CFG.close)}.`,
         longIsWa:!isVip,longIsDaily:isVip,longLink:C.wa(C.t('waTextLong')),toDaily:()=>this.setMode('daily'),
         tubOpt,tubIncl:!!h0.tubIncl,tubPriceText:'+'+fmt(CFG.tubPrice),toggleTub:()=>this.setBk({tub:!bk.tub}),
@@ -3582,7 +3781,7 @@ const LANGS=['RU','KZ'];
           line:[dLabel(sd),end!=null?hh(st)+'–'+hh(end)+(cross?' '+WD[endD.getDay()]:''):'',guestsTxt(bk.guests)].filter(Boolean).join(' · '),
           holdText:`Без предоплаты бронь держится ${hrs(CFG.holdH)}, бронь на сегодня - ${hrs(CFG.holdTodayH)}.`,
           cancelText:`Отмена за ${CFG.cancelFreeDays} дня и раньше - предоплату вернём. Позже - только перенос. При неявке предоплата не возвращается.`,
-          kaspi:()=>this.pay('kaspi'),card:()=>this.pay('card'),later:()=>this.finish(false,null),kaspiLabel:'Оплатить через Kaspi',cardLabel:'Банковская карта'},
+          kaspi:()=>this.pay('kaspi'),later:()=>this.finish(false,null),kaspiLabel:'Оплатить через Kaspi'},
         progSheet:{intro:s.lang==='KZ'?'Бірнеше бағдарламаны таңдауға болады. Шебердің уақытын әкімші растайды.':'Можно выбрать несколько. Время мастера подтвердит администратор.',list:P_IDS.map(id=>{const p=PDATA[id];const on=progs.includes(id);const un=!!p.unavailable;const more=s.progMore===id;return {id,name:svcText(p.name,s.lang),meta:`${svcText(p.dur,s.lang)} · ${fmt(p.price)}`,onAttr:on?'true':'false',un,more,moreLabel:more?'Скрыть':'Подробнее',arrow:more?'⌃':'⌄',desc:svcText(p.desc,s.lang),who:svcText(cap(p.who||''),s.lang),whoLabel:s.lang==='KZ'?'Кімге арналған:':'Для кого:',incl:p.incl.map(t=>svcText(t,s.lang)).join(', '),inclLabel:s.lang==='KZ'?'Құрамына кіреді:':'Входит:',contraLabel:s.lang==='KZ'?'Қарсы көрсетілімдер:':'Противопоказания:',contraText:s.lang==='KZ'?'Жүктілік, жоғары қан қысымы, жедел қабыну және дене қызуының көтерілуі.':'беременность, высокое давление, острые воспаления и температура.',unText:svcText(p.reason||'Временно недоступна',s.lang),
             toggle:()=>{if(un)return;vib(8);this.setBk({progs:on?progs.filter(x=>x!==id):[...progs,id]});},toggleMore:()=>this.setState({progMore:more?null:id}),
             radioStyle:`width:22px;height:22px;border-radius:50%;flex:0 0 auto;border:${on?'7px solid '+NAVY:'1.5px solid rgba(10,47,79,.4)'};background:${CREAM};transition:border 150ms;`,
@@ -3598,7 +3797,7 @@ const LANGS=['RU','KZ'];
     const VREV=[{slot:'vr-1',name:'Айгерим',house:'01 / ДЫХАНИЕ',img:'img/h1_int.png'},{slot:'vr-2',name:'Дмитрий',house:'02 / СИЛА',img:'img/h2_int.png'},{slot:'vr-4',name:'Алия',house:'04 / СВЕТ',img:'img/h4_int.png'},{slot:'vr-3',name:'Руслан',house:'02 / СИЛА',img:'img/h7_int.png'},{slot:'vr-4',name:'Мадина и Тимур',house:'03 / БАЛАНС',img:'img/h3_int.png'}];
     const ATM=[{slot:'atm-1',name:'Парная перед сеансом',sub:'дровяная печь, липа',img:'img/h2_int.png'},{slot:'atm-2',name:'Чан на дровах',sub:'горячая вода под открытым небом',img:'img/h7_int.png'},{slot:'atm-3',name:'Терраса вечером',sub:'тёплый свет, тишина',img:'img/h4_int.png'},{slot:'atm-4',name:'Скраб и травы',sub:'уход после парной',img:'img/h3_acc.png'},{slot:'atm-5',name:'Чай после парной',sub:'самовар, степной сбор',img:'img/h1_acc.png'}];
     const HOME_REV=reviews.slice(0,6);
-    const callOk=s.form.name.trim().length>1&&s.form.phone.replace(/\D/g,'').length>=10;
+    const callOk=nameValid(s.form.name)&&phoneValid(s.form.phone);
     return {
       isWide:wide,isNarrow:!wide,showChrome:!bk,showRatings,isHome:screen==='home',isHouses:screen==='houses',isHouse:screen==='house',isServices:screen==='services',isKitchen:screen==='kitchen',isReviews:screen==='reviews',isAbout:screen==='about',isContacts:screen==='contacts',
       headerH:wide?'84px':'68px',logoH:wide?'54px':'44px',
@@ -3634,7 +3833,7 @@ const LANGS=['RU','KZ'];
       sendCall:()=>{if(!this.validate('call'))return;try{localStorage.setItem('shipa_user',JSON.stringify({name:s.form.name,phone:s.form.phone}));}catch(e){}this.setState({callSent:true});},callDisabled:false,
       callBtnStyle:`width:100%;height:52px;margin-top:12px;border-radius:999px;background:${BRICK};color:${CREAM};font-weight:600;font-size:15px;letter-spacing:.04em;`,
       fbk:this.fieldVals('bk',56,17),fcall:this.fieldVals('call',52,16),
-      returning:!!(s.returning&&bk&&!bk.pre&&(s.form.name||'').trim()&&(s.form.phone||'').replace(/\D/g,'').length>=11),returningName:s.returning||'',
+      returning:!!(s.returning&&bk&&!bk.pre&&nameValid(s.form.name)&&phoneValid(s.form.phone)),returningName:s.returning||'',
       notMe:()=>{try{localStorage.removeItem('shipa_user');}catch(e){}this.setState({returning:null,form:{...s.form,name:'',phone:''}},()=>{const el=document.getElementById('bk-name');el&&el.focus();});},
       totalRef:this.totalRef,sending:!!s.sending,notSending:!s.sending,
       carRef:this.carRef,carTouch:()=>{if(!this.state.carPaused)this.setState({carPaused:true});},
@@ -3651,7 +3850,7 @@ const LANGS=['RU','KZ'];
       sheetBoxStyle:wide&&(s.sheet==='date'||s.sheet==='progs'||s.sheet==='review')?'position:fixed;top:0;right:0;bottom:0;z-index:var(--z-sheet);width:'+(s.sheet==='progs'?420:480)+'px;max-width:100vw;display:flex;flex-direction:column;background:#F9EFE3;padding-top:12px;animation:panelIn 280ms cubic-bezier(.2,.8,.2,1);':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sheet);max-width:560px;margin:0 auto;max-height:86vh;display:flex;flex-direction:column;background:#F9EFE3;border-radius:24px 24px 0 0;animation:sheetUp 280ms cubic-bezier(.2,.8,.2,1);',
       sheetRef:this.sheetRef,sheetDown:e=>this.sheetDown(e),closeSheet:()=>this.setState({sheet:null}),
       openRules:e=>{if(e&&e.preventDefault){e.preventDefault();e.stopPropagation();}this.setState({sheet:'rules'});},
-      phoneShown:phoneFmt(phoneDigits(s.form.phone)),phoneOk:phoneDigits(s.form.phone).length===10,
+      phoneShown:phoneFmt(phoneDigits(s.form.phone)),phoneOk:phoneValid(s.form.phone),
       bkFillMsg:!!(bk&&s.fe.scope==='bk'&&(s.fe.name||s.fe.phone||s.fe.agree)),callFillMsg:s.fe.scope==='call'&&(s.fe.name||s.fe.phone),
       setAgree:e=>this.setState({form:{...this.state.form,agree:e.target.checked},fe:{...this.state.fe,agree:false}}),
       agreeBoxStyle:`flex:0 0 24px;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:${s.fe.scope==='bk'&&s.fe.agree?'2px solid '+BRICK:'1px solid rgba(10,47,79,.45)'};background:${s.form.agree?NAVY:(s.fe.scope==='bk'&&s.fe.agree?'rgba(193,92,34,.08)':CREAM)};transition:background 150ms;${s.fe.scope==='bk'&&s.fe.agree?`animation:${s.fe.n%2?'shakeA':'shakeB'} 300ms ease-out 1;`:''}`,
@@ -3664,8 +3863,8 @@ const LANGS=['RU','KZ'];
       videoReviews:VREV,
       phoneText:C.phone,telHref:C.tel,phoneAria:'Позвонить: '+C.phone,waGeneral:C.wa(s.lang==='KZ'?'Сәлеметсіз бе! SHIPÁ сайтынан жазып отырмын.':C.t('waTextGeneral')),waHeader:C.wa(s.lang==='KZ'?'Сәлеметсіз бе! SHIPÁ сайтынан жазып отырмын.':C.t('waTextGeneral')),waHero:C.wa(C.t('waTextHero')),waPre:C.wa(C.t('waTextPre')),waHouse:C.wa(C.t('waTextHouse',{дом:hRaw.name})),waError:(B.waErrorBk)||C.wa(C.t('waTextError')),
       stickyHouseWa:inHouse,waTip:!!s.waTip&&(!wide||!!s.pastHero||screen!=='home'),waTipBottom:wide?'32px':'calc(104px + env(safe-area-inset-bottom))',showWa:!bk&&!s.menuOpen&&s.lightbox<0&&(!wide||!!s.pastHero||screen!=='home'),
-      phoneMissing:s.form.phone.replace(/\D/g,'').length<10,contactCallLabel:s.inlineSent?'Отправлено':'Отправить',
-      contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(s.form.phone.replace(/\D/g,'').length>=10?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
+      phoneMissing:!phoneValid(s.form.phone),contactCallLabel:s.inlineSent?'Отправлено':'Отправить',
+      contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(phoneValid(s.form.phone)?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
       heroStats,heroFx,
       hoursLine1:s.lang==='KZ'?`Күн сайын ${hh(CFG.open)}–${hh(CFG.close)}`:HOURS.line1(),hoursLine2:s.lang==='KZ'?`Келу уақыты: ${hh(CFG.open)}–${hh(CFG.lastStart)}`:HOURS.line2(),hoursAbout:s.lang==='KZ'?`Күн сайын ${hh(CFG.open)}-ден ${hh(CFG.close)}-ге дейін жұмыс істейміз. ${hh(CFG.open)}-ден ${hh(CFG.lastStart)}-ге дейін келуге болады, ең аз брондау уақыты - ${CFG.minH} сағат.`:HOURS.about(),hoursStep3:s.lang==='KZ'?`Келу уақыты - ${hh(CFG.open)}–${hh(CFG.lastStart)}. Ең аз брондау мерзімі - ${CFG.minH} сағат.`:HOURS.step3(),
       meaningPins:(this.props.meaningPins||MEANING_PINS).map(p=>({n:p.n,style:`position:absolute;left:${p.x}%;top:${p.y}%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:${BRICK};color:${CREAM};border:2px solid ${CREAM};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;`})),
@@ -3676,6 +3875,10 @@ const LANGS=['RU','KZ'];
       keyOpen:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click();}},
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
+      houseHeadingStart:s.lang==='KZ'?'СЕГІЗ ҮЙ - ':'ВОСЕМЬ ДОМОВ - ',
+      houseHeadingEnd:s.lang==='KZ'?'СЕГІЗ ТҮРЛІ КҮЙ':'ВОСЕМЬ СОСТОЯНИЙ',
+      faqHeadingStart:s.lang==='KZ'?'ЖИІ ҚОЙЫЛАТЫН':'НАМ ЧАСТО ЗАДАЮТ ЭТИ',
+      faqHeadingEnd:s.lang==='KZ'?'СҰРАҚТАР':'ВОПРОСЫ',
       houses,gridCls:lw?'grid':'',revCls:laneCls(HOME_REV.length,2),
       mastersCls:laneCls(MASTERS.length,4),mastersGc:Math.min(4,Math.max(1,MASTERS.length)),mastersLaneStyle:lw?'margin:0;padding:0 0 8px;scroll-padding-inline:0;':'margin:0 -16px;padding:0 16px 8px;scroll-padding-inline:16px;',
       features:FEATURES,homePrograms:programs.slice(0,3),programs,
@@ -3685,7 +3888,8 @@ const LANGS=['RU','KZ'];
       homeReviews:HOME_REV,reviews,faq,pillars:s.lang==='KZ'?PILLARS_KZ:PILLARS,
       catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
       house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==this.state.galleryIdx)this.setState({galleryIdx:i});}),
-      lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),lightboxStyle:`width:min(96vw,1200px);height:min(90vh,800px);background:url(${gsrc[Math.max(0,s.lightbox)]}) center/contain no-repeat;`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,
+      housePhotoLabel:houseKz?'Үй фотосуреттері':'Фотографии дома',housePhotoOpenLabel:houseKz?'Барлық фотосуреттерді ашу':'Открыть все фотографии',housePhotoCloseLabel:houseKz?'Галереяны жабу':'Закрыть галерею',housePhotoPrevLabel:houseKz?'Алдыңғы фото':'Предыдущее фото',housePhotoNextLabel:houseKz?'Келесі фото':'Следующее фото',houseAllPhotoLabel:houseKz?`Барлық ${gsrc.length} фото`:`Все ${gsrc.length} фото`,openAllHousePhotos:()=>this.setState({lightbox:0}),
+      lightboxOpen:s.lightbox>=0,closeLightbox:()=>this.setState({lightbox:-1}),preventPhotoClose:e=>e.stopPropagation(),lightboxPrev:()=>this.setState(st=>({lightbox:(st.lightbox+gsrc.length-1)%gsrc.length})),lightboxNext:()=>this.setState(st=>({lightbox:(st.lightbox+1)%gsrc.length})),lightboxImageSrc:gsrc[Math.max(0,s.lightbox)],lightboxImageAlt:houseKz?`Үйдің фотосуреті ${Math.max(0,s.lightbox)+1}`:`Фото дома ${Math.max(0,s.lightbox)+1}`,lightboxCounter:`${s.lightbox+1} / ${gsrc.length}`,lightboxThumbs:gsrc.map((src,i)=>({src,alt:houseKz?`Фото ${i+1} ашу`:`Открыть фото ${i+1}`,active:i===s.lightbox?'true':'false',style:`border-color:${i===s.lightbox?BRICK:'transparent'};opacity:${i===s.lightbox?1:.75};`,open:()=>this.setState({lightbox:i})})),
       hvSegs,hvWeek:hvMode==='week',hvMonth:hvMode==='month',hm,openCalcHow:()=>this.setState({sheet:'calcHow'}),sheetCalcHow:s.sheet==='calcHow',calcHow:calcHowRows,
       houseWeek,houseCalendarHint:houseKz?'Уақытты таңдау үшін күнді басыңыз':'нажмите на день, чтобы выбрать время',hwTitle:houseKz?`${hwS.getDate()} ${['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'][hwS.getMonth()]} - ${hwE.getDate()} ${['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'][hwE.getMonth()]}`:`${hwS.getDate()} ${MON[hwS.getMonth()]} - ${hwE.getDate()} ${MON[hwE.getMonth()]}`,hwPrev:()=>this.setState({hw:Math.max(0,s.hw-1)}),hwNext:()=>this.setState({hw:Math.min(51,s.hw+1)}),
       hwPrevStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};opacity:${s.hw===0?'.3':'1'};`,hwNextStyle:`width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.25);background:${CREAM};`,
