@@ -1,0 +1,7 @@
+# Generated and unrelated reference HTML pages are not website assets.
+# One imported HTML file in uploads had a 319-byte filename and broke GitHub Actions checkout.
+**/uploads/*.html
+.DS_Store
+__MACOSX/
+__pycache__/
+*.pyc
