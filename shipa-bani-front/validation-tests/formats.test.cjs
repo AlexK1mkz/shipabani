@@ -21,8 +21,11 @@ test('E-mail validator accepts valid addresses and rejects malformed',()=>{
  for(const bad of ['info','test@','test@example','a@@b.kz','ab cd@example.com'])assert.equal(fns.emailValid(bad),false,bad);
 });
 test('Tariff color legend and full month formats',()=>{
- assert.match(html,/background:#FFFFFF;border:1px/);
- assert.match(html,/background:#E5E5E5;border:1px/);
+ assert.match(html,/shipa-ux-tariff-legend/);
+ assert.match(html,/shipa-ux-legend-title/);
+ assert.match(html,/background:#FFFFFF/);
+ assert.match(html,/background:#E5E5E5/);
+ assert.match(html,/shipa-ux-status-legend/);
  assert.match(html,/dayEveHint:`\$\{s\.lang/);
  assert.match(html,/const MON_S=MON;/);
  assert.match(html,/const MON_STRIP=MON_NOM;/);
