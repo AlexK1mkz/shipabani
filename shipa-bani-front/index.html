@@ -804,7 +804,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     </div>
     <div style="display:flex;justify-content:center;gap:8px;padding:16px 20px 0;flex-wrap:wrap;">
       <button type="button" data-menu-cta="1" aria-label="{{ menuCtaAccessibleLabel }}" onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">Смотреть всё меню</button>
-      <button onClick="{{ beginTableBooking }}" style="min-height:48px;padding:0 12px;font-weight:600;font-size:15px;color:#0A2F4F;text-align:center;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">Добавить стол к бронированию</span><span style="display:block;font-size:12px;font-weight:400;color:rgba(10,47,79,.65);margin-top:3px;">Сначала выберите дату и дом, стол уже отметим</span></button>
+      <button onClick="{{ beginTableBooking }}" style="min-height:48px;padding:0 12px;font-weight:600;font-size:15px;color:#0A2F4F;text-align:center;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">{{ addTableLabel }}</span><span style="display:block;font-size:12px;font-weight:400;color:rgba(10,47,79,.65);margin-top:3px;">{{ addTableHint }}</span></button>
     </div>
   </section>
 
@@ -834,7 +834,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:64px 0 0;">
     <div style="padding:0 20px;text-align:center;">
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;"><span style="color:#C15C22;">ВИДЕО-ОТЗЫВЫ</span> НАШИХ ГОСТЕЙ</h2>
-      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">Настоящие впечатления тех, кто уже побывал в SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></p>
+      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">{{ homeReviewsIntroText }}</p>
     </div>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><nav class="shipa-carousel-nav" data-carousel-target="car-vrev" data-active="0" aria-label="Навигация по карточкам" style="padding:16px 20px 0;"><button type="button" data-carousel-dir="-1" aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" data-carousel-dir="1" aria-label="Вперёд" title="Вперёд"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav></sc-if>
     <div id="car-vrev" class="noscroll lane center" data-cap-desktop="1" style="margin-top:8px;align-items:flex-start;--kd:4.25;--kt:2.6;--km:1.25;">
@@ -999,7 +999,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <a href="{{ legalPrivacyUrl }}" target="_blank" rel="noopener noreferrer" class="shipa-site-footer__muted">{{ legalPrivacyLabel }} ↗</a>
         <a href="{{ legalOfferUrl }}" target="_blank" rel="noopener noreferrer" class="shipa-site-footer__muted">{{ legalOfferLabel }} ↗</a>
         <a href="{{ legalConsentUrl }}" target="_blank" rel="noopener noreferrer" class="shipa-site-footer__muted">{{ legalConsentLabel }} ↗</a>
-        <button type="button" onclick="window.shipaAnalyticsSettings && window.shipaAnalyticsSettings()" class="shipa-site-footer__muted shipa-site-footer__settings">Настройки аналитики и рекламы</button>
+        <button type="button" onclick="window.shipaAnalyticsSettings && window.shipaAnalyticsSettings()" class="shipa-site-footer__muted shipa-site-footer__settings">{{ analyticsSettingsLabel }}</button>
         <div class="shipa-site-footer__bottom">
           <span class="shipa-site-footer__copyright">© SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>, 2026</span>
           <div class="shipa-site-footer__languages" aria-label="Язык сайта">
@@ -1021,7 +1021,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
       <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Каталог</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ДОМА SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Пять открытых домов, у каждого своя парная, чан и терраса. Выберите по числу гостей и настроению.</p>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">{{ catalogIntroText }}</p>
     </div>
   </section>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
@@ -1044,13 +1044,13 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;gap:12px;">
               <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;letter-spacing:.1em;line-height:1;">{{ h.name }}</div>
-              <div style="font-weight:600;font-size:15px;white-space:nowrap;">от {{ h.priceFrom }}/ч</div>
+              <div style="font-weight:600;font-size:15px;white-space:nowrap;">{{ h.priceFromLabel }}</div>
             </div>
             <div style="font-size:15px;color:rgba(10,47,79,.7);margin-top:8px;">{{ h.slogan }}</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(59,47,42,.12);">
               <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">площадь</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.guestsPrefix }} {{ h.guests }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">гостей</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">от {{ h.min }} ч</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">минимум</div></div>
+              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.guestsCountLabel }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">гостей</div></div>
+              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.minHoursLabel }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">минимум</div></div>
               <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">{{ house.perHourCatalog }}</div></div>
             </div>
           </article>
@@ -2702,6 +2702,8 @@ const PILLARS=[{n:'01',kind:'СМЫСЛ',name:'Восстановление',des
 // Native RU/KZ page content. Keep both languages in sync when editing copy.
 const PAGE_COPY = {
  RU: {
+  catalogIntroText:'Пять открытых домов, у каждого своя парная, чан и терраса. Выберите по числу гостей и настроению.',
+  homeReviewsIntroText:'Настоящие впечатления тех, кто уже побывал в SHIPÁ',
   reviewKickerPre:'Гости о ',reviewKickerPost:'',reviewPageTitle:'ОТЗЫВЫ',
   reviewPageSubtitle:'Что говорят те, кто уже провёл вечер в наших домах.',
   reviewCountLabel:'128 отзывов · 2ГИС',leaveReviewLabel:'Оставить отзыв в 2ГИС',
@@ -2717,6 +2719,8 @@ const PAGE_COPY = {
   contactRouteLabel:'Дорога',contactDirections:'Микрорайон Кунгей, район Казыбек Би. Указатель SHIPÁ у поворота.'
  },
  KZ: {
+  catalogIntroText:'Бес үй ашық. Әр үйдің жеке бу бөлмесі, ыстық чаны және террасасы бар. Қонақтар саны мен қалауыңызға сай үйді таңдаңыз.',
+  homeReviewsIntroText:'SHIPÁ-ға келген қонақтардың шынайы әсерлері',
   reviewKickerPre:'',reviewKickerPost:' қонақтарының пікірлері',reviewPageTitle:'ПІКІРЛЕР',
   reviewPageSubtitle:'Біздің үйлерде демалып қайтқан қонақтар не дейді?',
   reviewCountLabel:'128 пікір · 2ГИС',leaveReviewLabel:'2ГИС-те пікір қалдыру',
@@ -3464,7 +3468,7 @@ const shipaBrandText=s.lang==='KZ'?SHIPA_BRAND_KZ:SHIPA_BRAND_RU;
 const shipaMeaningText=s.lang==='KZ'?SHIPA_MEANING_KZ:SHIPA_MEANING_RU;
 const screen=s.screen;const wide=s.isWide;
     const showRatings=this.props.showRatings??false;
-    const houseView=HOUSES.map((h,i)=>({...h,...(s.lang==='KZ'?{name:HOUSE_DETAILS_KZ[i].name,slogan:HOUSE_DETAILS_KZ[i].slogan}:{}),guestsPrefix:s.lang==='KZ'?'':'до',hourShort:s.lang==='KZ'?'сағ':'ч',pricePerHour:s.lang==='KZ'?'₸/сағ':'₸/час',soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:s.lang==='KZ'?`${h.guestsIncl} қонақ бағаға кіреді · ең көбі ${h.maxGuests}${h.tub?' · ыстық чан':''}${h.tier==='VIP'?' · бассейн':''}`:`до ${h.guestsIncl} гостей в цене · максимум ${h.maxGuests}${h.tub?' · горячий чан':''}${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceFromLabel:s.lang==='KZ'?`Сағатына ${fmt(this.fromPrice(h))} бастап`:`от ${fmt(this.fromPrice(h))} / час`,priceShort:(this.fromPrice(h)/1000)+' 000',
+    const houseView=HOUSES.map((h,i)=>({...h,...(s.lang==='KZ'?{name:HOUSE_DETAILS_KZ[i].name,slogan:HOUSE_DETAILS_KZ[i].slogan}:{}),guestsPrefix:s.lang==='KZ'?'':'до',hourShort:s.lang==='KZ'?'сағ':'ч',pricePerHour:s.lang==='KZ'?'₸/сағ':'₸/час',soon:!!h.soon,open_:!h.soon,src:`img/h${h.img}_int.png`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;${h.soon?'filter:blur(6px) brightness(.55);transform:scale(1.06);':''}`,facts:s.lang==='KZ'?`${h.guestsIncl} қонақ бағаға кіреді · ең көбі ${h.maxGuests}${h.tub?' · ыстық чан':''}${h.tier==='VIP'?' · бассейн':''}`:`до ${h.guestsIncl} гостей в цене · максимум ${h.maxGuests}${h.tub?' · горячий чан':''}${h.tier==='VIP'?' · бассейн':''}`,priceFrom:fmt(this.fromPrice(h)),priceFromLabel:s.lang==='KZ'?`Сағатына ${fmt(this.fromPrice(h))} бастап`:`от ${fmt(this.fromPrice(h))} / час`,minHoursLabel:s.lang==='KZ'?`${h.min} сағаттан бастап`:`от ${h.min} ч`,guestsCountLabel:s.lang==='KZ'?`${h.guests} қонаққа дейін`:`до ${h.guests}`,priceShort:(this.fromPrice(h)/1000)+' 000',
       open:()=>!h.soon&&this.go('house',h.id),book:()=>this.openBooking(h.id)}));
     const openView=houseView.filter(h=>!h.soon);
     // Ленты (правила качества, п. 3.1): десктоп ≥1024 - сетка, если карточки помещаются (N ≤ K), иначе прокрутка по K; витринные - центрируются
@@ -3660,7 +3664,7 @@ const LANGS=['RU','KZ'];
     if(bk&&bk.pre){
       const hSel=HOUSES.find(x=>x.id===bk.houseId);
       const d=bk.date!=null?this.dateAt(bk.date):null;
-      const dateText=d?`${WD_NOM[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`:'';
+      const dateText=d?(s.lang==='KZ'?`${['жексенбі','дүйсенбі','сейсенбі','сәрсенбі','бейсенбі','жұма','сенбі'][d.getDay()]} · ${d.getDate()} ${['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'][d.getMonth()]} ${d.getFullYear()}`:`${WD_NOM[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`):'';
       const houseName=bk.houseId==='any'?'Любой дом':hSel?hSel.name:'';
       const canNext=bk.step===2?bk.date!=null:bk.step===3?okC:false;
       const preHouses=[{id:'any',kicker:'ПОДБЕРЁМ',name:'ЛЮБОЙ ДОМ',sub:'По числу гостей и дате',bgStyle:'width:100%;height:100%;background:#0A2F4F url(brand/mark-cream.png) center/46% no-repeat;'},...OPEN_HOUSES.map(h=>({id:h.id,kicker:`${h.n} / ${h.tier}`,name:h.name,sub:`до ${h.guests} гостей · ${h.slogan.toLowerCase()}`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;`}))]
@@ -3753,7 +3757,9 @@ const LANGS=['RU','KZ'];
       const sd=this.dateAt(Math.floor((st??tf)/24));const endD=end!=null?this.dateAt(Math.floor(end/24)):sd;const cross=end!=null&&Math.floor(end/24)!==Math.floor(st/24);
       const durTxt=daily?'сутки':dur?hrs(dur):'';
       const summaryText=end!=null?`${hh(st)}–${hh(end)}${cross?' '+WD[endD.getDay()]:''} · ${durTxt} · ${totalTxt}`:hasStart?`Начало ${hh(st)} · выберите длительность`:'Выберите час начала';
-      const whenText=end!=null?`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}, ${hh(st)} – ${cross?`${WD_NOM[endD.getDay()]} ${endD.getDate()} ${MON[endD.getMonth()]}, `:''}${hh(end)}`:'';
+      const kzDays=['жексенбі','дүйсенбі','сейсенбі','сәрсенбі','бейсенбі','жұма','сенбі'];
+      const kzMonths=['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'];
+      const whenText=end!=null?(s.lang==='KZ'?`${kzDays[sd.getDay()]} ${sd.getDate()} ${kzMonths[sd.getMonth()]} · ${hh(st)}–${cross?`${kzDays[endD.getDay()]} ${endD.getDate()} ${kzMonths[endD.getMonth()]} · `:''}${hh(end)}`:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}, ${hh(st)} – ${cross?`${WD_NOM[endD.getDay()]} ${endD.getDate()} ${MON[endD.getMonth()]}, `:''}${hh(end)}`):'';
       const minProg=Math.min(...P_IDS.filter(id=>!PDATA[id].unavailable).map(id=>PDATA[id].price));
       const progRow={on:progs.length>0,name:progs.length?(s.lang==='KZ'?'Бағдарлама: '+progs.map(id=>svcText(PDATA[id].name,s.lang)).join(', '):'Парение: '+progs.map(id=>PDATA[id].name).join(', ')):'Парение с пармастером',sub:progs.length?fmt(progSum):'от '+fmt(minProg)+' · выберите программу'};
       const tableOn=bk.extras.includes('table');const kitOn=bk.extras.includes('kit');
@@ -3771,7 +3777,7 @@ const LANGS=['RU','KZ'];
       const ok3=daily?hasStart&&this.dailyOk(hi0,bk.date):this.validHoursSelection(bk);
       const canNext=bk.step===1?true:bk.step===3?ok3:bk.step===4?true:false;
       const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Перейти к предоплате';
-      const payTxt=(bk.paid?'оплачено':'ожидает')+' · '+fmt(prepay);
+      const payTxt=(s.lang==='KZ'?(bk.paid?'төленді':'күтілуде'):(bk.paid?'оплачено':'ожидает'))+' · '+fmt(prepay);
       const waVars={бронь:bk.id||'',дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}–${hh(end)}`:'',выезд:end!=null?`${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',гостей:guestsTxt(bk.guests)+kidsTxt,предоплата:payTxt};
       // карусель
       const photos=this.housePhotos(h0);const cs=this.props.carouselState||'normal';
@@ -3834,8 +3840,10 @@ const LANGS=['RU','KZ'];
         routeLink:this.mapVals(false).mapLinks.route,
         succ:{hasImg:cs!=='none',noImg:cs==='none',img:photos[0].src,n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
           wrapStyle:`position:relative;${wide?'margin:0 0 0;':'margin:-8px -20px 0;'}`,clipStyle:`position:relative;aspect-ratio:4/3;overflow:hidden;background:rgba(10,47,79,.08);border-radius:${wide?24:0}px;`,
-          paid:!!bk.paid,pending:!bk.paid,title:bk.paid?'Бронь подтверждена':'Заявка принята - ждём предоплату',sub:bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`,
-          payLine:'Предоплата · '+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:'Оплатить '+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,openMenu:()=>{this.closeBooking();this.goKitchenSection();},todayNote,bookingId:bk.id||'',hasId:!!bk.id,
+          paid:!!bk.paid,pending:!bk.paid,
+          title:s.lang==='KZ'?(bk.paid?'Брондау расталды':'Өтінім қабылданды · алдын ала төлем күтілуде'):(bk.paid?'Бронь подтверждена':'Заявка принята - ждём предоплату'),
+          sub:s.lang==='KZ'?(bk.paid?'Алдын ала төлем алынды. Біз сізге WhatsApp арқылы хабарласамыз және келуіңізді күтеміз.':`${holdUntil}-ге дейін төлеңіз, әйтпесе брондау күші жойылады.`):(bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`),
+          payLine:(s.lang==='KZ'?'Алдын ала төлем · ':'Предоплата · ')+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:(s.lang==='KZ'?'Төлеу: ':'Оплатить ')+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,openMenu:()=>{this.closeBooking();this.goKitchenSection();},todayNote,bookingId:bk.id||'',hasId:!!bk.id,
           waSecondary:!bk.paid||tableOn,secCols:wide&&(!bk.paid||tableOn)?'1fr 1fr':'1fr',
           badgeStyle:`position:absolute;left:50%;bottom:-32px;margin-left:-32px;width:64px;height:64px;border-radius:50%;background:${bk.paid?BRICK:NAVY};display:flex;align-items:center;justify-content:center;animation:popIn 300ms ease-out;`},
         stdHeader:!(bk.step===3&&!wide),overlayHdr:bk.step===3&&!wide,
@@ -3916,7 +3924,15 @@ const LANGS=['RU','KZ'];
     } else B={stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:false,payPanel:false,showPay:false,isVipHouse:false,hoursUI:true,dailyUI:false,todayNote:false,stripHintOn:false,progSheet:{intro:'',list:[]},panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],bk:{houseName:'',guests:6},showCal:false,step2:false,step3:false,showContacts:false,stepDone:false,preStep1:false,preDone:false,bookingCta:false,openDateSheet:()=>this.openBooking(null,s.quick.date,s.quick.guests,1),bkHintOn:!!s.bkHint,bkHint:s.bkHint||'',canBack:false,noBack:true,backLabel:'',hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false};
 
     const VREV=[{slot:'vr-1',name:'Айгерим',house:'01 / ДЫХАНИЕ',img:'img/h1_int.png'},{slot:'vr-2',name:'Дмитрий',house:'02 / СИЛА',img:'img/h2_int.png'},{slot:'vr-4',name:'Алия',house:'04 / СВЕТ',img:'img/h4_int.png'},{slot:'vr-3',name:'Руслан',house:'02 / СИЛА',img:'img/h7_int.png'},{slot:'vr-4',name:'Мадина и Тимур',house:'03 / БАЛАНС',img:'img/h3_int.png'}];
+    if(s.lang==='KZ'){
+      const kzReviewHouses=['01 / ТЫНЫС','02 / КҮШ','04 / ҚУАТ','02 / КҮШ','03 / ТЕПЕ-ТЕҢДІК'];
+      VREV.forEach((r,i)=>{r.house=kzReviewHouses[i];});
+    }
     const ATM=[{slot:'atm-1',name:'Парная перед сеансом',sub:'дровяная печь, липа',img:'img/h2_int.png'},{slot:'atm-2',name:'Чан на дровах',sub:'горячая вода под открытым небом',img:'img/h7_int.png'},{slot:'atm-3',name:'Терраса вечером',sub:'тёплый свет, тишина',img:'img/h4_int.png'},{slot:'atm-4',name:'Скраб и травы',sub:'уход после парной',img:'img/h3_acc.png'},{slot:'atm-5',name:'Чай после парной',sub:'самовар, степной сбор',img:'img/h1_acc.png'}];
+    if(s.lang==='KZ'){
+      const kzAtmosphere=[['Сеанс алдындағы бу бөлмесі','Отын пеші, жөке ағашы'],['Отынмен жылытылатын чан','Ашық аспан астындағы ыстық су'],['Кешкі терраса','Жылы жарық пен тыныштық'],['Скраб пен шөптер','Булаудан кейінгі күтім'],['Моншадан кейінгі шай','Самауыр мен дала шөптері']];
+      ATM.forEach((r,i)=>{r.name=kzAtmosphere[i][0];r.sub=kzAtmosphere[i][1];});
+    }
     const HOME_REV=reviews.slice(0,6);
     const callOk=nameValid(s.form.name)&&phoneValid(s.form.phone);
     return {
@@ -4073,6 +4089,9 @@ const LANGS=['RU','KZ'];
       merch:MERCH.map((m,i)=>({...m,name:this.stressText(m.name),priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:C.wa(C.t('waTextMerch',{товар:m.name}))})),
       serviceCats:SERVICE_CATS.map((c,i)=>({...c,soon:!!c.soon,hasImg:!c.soon,slot:'svc-'+i,style:`border-radius:20px;overflow:hidden;display:flex;flex-direction:column;${c.soon?'border:1px dashed rgba(10,47,79,.35);':'background:rgba(10,47,79,.06);'}`})),
       ...(s.lang==='KZ' && window.ShipaBookingI18n ? window.ShipaBookingI18n.view(B) : B),
+      addTableLabel:s.lang==='KZ'?'Брондауға дастарқан қосу':'Добавить стол к бронированию',
+      addTableHint:s.lang==='KZ'?'Алдымен күн мен үйді таңдаңыз, дастарқанды брондауға қосамыз':'Сначала выберите дату и дом, стол уже отметим',
+      analyticsSettingsLabel:s.lang==='KZ'?'Аналитика және жарнама параметрлері':'Настройки аналитики и рекламы',
       ...PAGE_COPY[s.lang]
     };
   }
