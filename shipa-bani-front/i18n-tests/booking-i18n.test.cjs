@@ -52,12 +52,13 @@ test('visible booking string static dictionary covers all screenshot sections',(
  for(const key of ['Дата','Гостей','Дети до 7 лет не считаются','По часам','Сутки','Свободно','Занято','мало времени','Как с вами связаться?','Имя','Телефон','Бронь подтверждается предоплатой','Согласен с','правилами бронирования'])
   assert.ok(staticText[key],key);
 });
-test('integration: loader order + dynamic B translation call + privacy display',()=>{
+test('integration: loader order + dynamic B translation call + explicit consent checkboxes',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  assert.ok(html.indexOf('shipa-booking-i18n.js')<html.indexOf('shipa-ru-kz.js'));
  assert.ok(html.includes('window.ShipaBookingI18n.view(B)'));
- assert.ok(html.includes('{{ privacyLine }}'));
- assert.ok(html.includes('{{ privacyLineShort }}'));
+ assert.ok(html.includes('id="bk-agree"'));
+ assert.ok(html.includes('id="bk-privacy"'));
+ assert.ok(html.includes('href="{{ legalConsentUrl }}" target="_blank"'));
 });
 
 test('regression: screenshot — programme details and daily booking strings fully translate', () => {
