@@ -1030,37 +1030,47 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <button onClick="{{ f.select }}" style="{{ f.style }}">{{ f.label }}</button>
       </sc-for>
     </div>
-    <div class="shipa-catalog-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:40px 24px;">
-      <sc-for list="{{ catalogHouses }}" as="h" hint-placeholder-count="8">
-        <div style="display:flex;flex-direction:column;">
-          <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="width:100%;text-align:left;border-radius:20px;cursor:pointer;">
-            <div style="aspect-ratio:16/10;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
-              <div class="noscroll" onScroll="{{ h.carScroll }}" style="position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;">
-                <sc-for list="{{ h.photos }}" as="ph" hint-placeholder-count="3"><img decoding="async" src="{{ ph.src }}" alt="{{ ph.alt }}" loading="{{ ph.loading }}" draggable="false" style="flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center;display:block;"></sc-for>
+    <sc-if value="{{ catalogSoonShow }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:40px 32px;border-radius:28px;background:linear-gradient(135deg,rgba(10,47,79,.04) 0%,rgba(193,92,34,.10) 100%);border:1px solid rgba(10,47,79,.08);text-align:center;max-width:760px;margin:0 auto;">
+        <div style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 16px;border-radius:999px;background:rgba(193,92,34,.12);color:#C15C22;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;">{{ catalogSoonKicker }}</div>
+        <h2 style="margin:18px 0 12px;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(34px,4vw,48px);line-height:1.04;letter-spacing:.04em;color:#0A2F4F;">{{ catalogSoonTitle }}</h2>
+        <p style="margin:0 auto;max-width:520px;font-size:17px;line-height:1.6;color:rgba(10,47,79,.78);">{{ catalogSoonText }}</p>
+        <button onClick="{{ catalogSoonCta }}" style="margin-top:24px;height:48px;padding:0 26px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;">{{ catalogSoonCtaLabel }}</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ catalogShowGrid }}" hint-placeholder-val="{{ true }}">
+      <div class="shipa-catalog-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:40px 24px;">
+        <sc-for list="{{ catalogHouses }}" as="h" hint-placeholder-count="8">
+          <div style="display:flex;flex-direction:column;">
+            <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="width:100%;text-align:left;border-radius:20px;cursor:pointer;">
+              <div style="aspect-ratio:16/10;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
+                <div class="noscroll" onScroll="{{ h.carScroll }}" style="position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;">
+                  <sc-for list="{{ h.photos }}" as="ph" hint-placeholder-count="3"><img decoding="async" src="{{ ph.src }}" alt="{{ ph.alt }}" loading="{{ ph.loading }}" draggable="false" style="flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center;display:block;"></sc-for>
+                </div>
+                <button type="button" class="shipa-photo-catalog-action" onClick="{{ h.photoOpen }}" aria-label="{{ h.photoOpenLabel }}" title="{{ h.photoOpenLabel }}">▦ <span>{{ h.photoOpenText }}</span></button>
+                <div style="position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:6px;pointer-events:none;"><sc-for list="{{ h.dots }}" as="dt" hint-placeholder-count="3"><span style="{{ dt.s }}"></span></sc-for></div>
+                <div style="position:absolute;left:16px;top:16px;height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;font-size:12px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
               </div>
-              <button type="button" class="shipa-photo-catalog-action" onClick="{{ h.photoOpen }}" aria-label="{{ h.photoOpenLabel }}" title="{{ h.photoOpenLabel }}">▦ <span>{{ h.photoOpenText }}</span></button>
-              <div style="position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:6px;pointer-events:none;"><sc-for list="{{ h.dots }}" as="dt" hint-placeholder-count="3"><span style="{{ dt.s }}"></span></sc-for></div>
-              <div style="position:absolute;left:16px;top:16px;height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;font-size:12px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;gap:12px;">
+                <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;letter-spacing:.1em;line-height:1;">{{ h.name }}</div>
+                <div style="font-weight:600;font-size:15px;white-space:nowrap;">{{ h.priceFromLabel }}</div>
+              </div>
+              <div style="font-size:15px;color:rgba(10,47,79,.7);margin-top:8px;">{{ h.slogan }}</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(59,47,42,.12);">
+                <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">площадь</div></div>
+                <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.guestsCountLabel }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">гостей</div></div>
+                <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.minHoursLabel }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">минимум</div></div>
+                <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">{{ house.perHourCatalog }}</div></div>
+              </div>
+            </article>
+            <div style="display:flex;gap:8px;margin-top:16px;">
+              <button onClick="{{ h.open }}" style="flex:1;height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:48px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Подробнее</button>
+              <button onClick="{{ h.book }}" style="flex:1;height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;height:48px;justify-content:center;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ bookLabel }}</button>
             </div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;gap:12px;">
-              <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;letter-spacing:.1em;line-height:1;">{{ h.name }}</div>
-              <div style="font-weight:600;font-size:15px;white-space:nowrap;">{{ h.priceFromLabel }}</div>
-            </div>
-            <div style="font-size:15px;color:rgba(10,47,79,.7);margin-top:8px;">{{ h.slogan }}</div>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(59,47,42,.12);">
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.area }} м²</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">площадь</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.guestsCountLabel }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">гостей</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.minHoursLabel }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">минимум</div></div>
-              <div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;">{{ h.priceShort }}</div><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:4px;">{{ house.perHourCatalog }}</div></div>
-            </div>
-          </article>
-          <div style="display:flex;gap:8px;margin-top:16px;">
-            <button onClick="{{ h.open }}" style="flex:1;height:52px;padding:0 24px;border-radius:999px;border:1px solid #0A2F4F;color:#0A2F4F;font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;flex:0 0 auto;transition:background-color 150ms ease-out,transform 150ms ease-out;height:48px;" style-hover="background:rgba(10,47,79,.06);transform:translateY(-1px);">Подробнее</button>
-            <button onClick="{{ h.book }}" style="flex:1;height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;height:48px;justify-content:center;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ bookLabel }}</button>
           </div>
-        </div>
-      </sc-for>
-    </div>
+        </sc-for>
+      </div>
+    </sc-if>
   </div>
 </main>
 </sc-if>
@@ -2627,8 +2637,8 @@ const HOUSES=[
  {id:'dyhanie',n:'01',cat:'bigVip',name:'ДЫХАНИЕ',slogan:'Вдохни глубже',area:120,img:1,mat:'Светлый дуб, лён и матовый камень',art:'туманный хвойный лес',aroma:'эвкалипт и мята',ritual:'Парение здесь свежее и лёгкое, с травяным чаем после.',prog:1},
  {id:'sila',n:'02',cat:'midVip',name:'СИЛА',slogan:'Верни свою энергию',area:110,img:2,mat:'Тёмный дуб, сланец и чёрный металл',art:'скала',aroma:'кедр и можжевельник',ritual:'Хвойное парение и контрастное охлаждение в чане.',prog:2},
  {id:'balans',n:'03',cat:'smallVip',name:'БАЛАНС',slogan:'Найди своё равновесие',area:105,img:3,mat:'Травертин, орех, лён и бронза',art:'круг',aroma:'лаванда и сандал',ritual:'Мягкое расслабляющее парение без спешки.',prog:3},
- {id:'energiya',n:'04',cat:'smallStd',name:'ЭНЕРГИЯ',slogan:'Заряди батарейки',area:80,img:4,mat:'Тёплый дуб, графит и янтарное стекло',art:'горный закат',aroma:'цитрус и хвоя',ritual:'Бодрящее парение с контрастом.',prog:0},
- {id:'svoboda',n:'05',cat:'bigStd',name:'СВОБОДА',slogan:'Оставь город за дверью',area:85,img:5,mat:'Светлое дерево, лён и керамика',art:'степь Сарыарки',aroma:'степные травы и можжевельник',ritual:'Травяное парение и чай на террасе.',prog:1},
+ {id:'energiya',n:'04',cat:'smallStd',name:'ЭНЕРГИЯ',slogan:'Заряди батарейки',area:80,img:4,soon:true,mat:'Тёплый дуб, графит и янтарное стекло',art:'горный закат',aroma:'цитрус и хвоя',ritual:'Бодрящее парение с контрастом.',prog:0},
+ {id:'svoboda',n:'05',cat:'bigStd',name:'СВОБОДА',slogan:'Оставь город за дверью',area:85,img:5,soon:true,mat:'Светлое дерево, лён и керамика',art:'степь Сарыарки',aroma:'степные травы и можжевельник',ritual:'Травяное парение и чай на террасе.',prog:1},
  {id:'lyogkost',n:'06',cat:'smallStd',name:'ЛЁГКОСТЬ',slogan:'Будь здесь и сейчас',area:75,img:6,soon:true,mat:'Ясень, молочный текстиль и светлый камень',art:'облака',aroma:'белый чай и бергамот',ritual:'Деликатное мягкое парение.',prog:3},
  {id:'stihiya',n:'07',cat:'bigStd',name:'СТИХИЯ',slogan:'Почувствуй стихию',area:90,img:7,soon:true,mat:'Сланец, термодерево и тёмная керамика',art:'вода и скалы',aroma:'хвоя и древесные ноты',ritual:'Чередование жара и прохлады.',prog:2},
  {id:'impuls',n:'08',cat:'smallStd',name:'ИМПУЛЬС',slogan:'Переключись на отдых',area:80,img:8,soon:true,mat:'Графит, тёмное дерево и дымчатое стекло',art:'волна',aroma:'грейпфрут и имбирь',ritual:'Активное парение и тонизирующий чай.',prog:0},
@@ -2702,7 +2712,7 @@ const PILLARS=[{n:'01',kind:'СМЫСЛ',name:'Восстановление',des
 // Native RU/KZ page content. Keep both languages in sync when editing copy.
 const PAGE_COPY = {
  RU: {
-  catalogIntroText:'Пять открытых домов, у каждого своя парная, чан и терраса. Выберите по числу гостей и настроению.',
+  catalogIntroText:'Сейчас открыты только три VIP-дома. Остальные категории откроем позже - следите за обновлениями.',
   homeReviewsIntroText:'Настоящие впечатления тех, кто уже побывал в SHIPÁ',
   reviewKickerPre:'Гости о ',reviewKickerPost:'',reviewPageTitle:'ОТЗЫВЫ',
   reviewPageSubtitle:'Что говорят те, кто уже провёл вечер в наших домах.',
@@ -2719,7 +2729,7 @@ const PAGE_COPY = {
   contactRouteLabel:'Дорога',contactDirections:'Микрорайон Кунгей, район Казыбек Би. Указатель SHIPÁ у поворота.'
  },
  KZ: {
-  catalogIntroText:'Бес үй ашық. Әр үйдің жеке бу бөлмесі, ыстық чаны және террасасы бар. Қонақтар саны мен қалауыңызға сай үйді таңдаңыз.',
+  catalogIntroText:'Қазір тек үш VIP үйі ашық. Қалған санаттарды жақын арада ашамыз - жаңартуларды күтіңіз.',
   homeReviewsIntroText:'SHIPÁ-ға келген қонақтардың шынайы әсерлері',
   reviewKickerPre:'',reviewKickerPost:' қонақтарының пікірлері',reviewPageTitle:'ПІКІРЛЕР',
   reviewPageSubtitle:'Біздің үйлерде демалып қайтқан қонақтар не дейді?',
@@ -2871,7 +2881,7 @@ const nameValid=v=>/^[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі][
 const phoneFmt=d=>{if(!d)return '';let s='+7 ('+d.slice(0,3);if(d.length>3)s+=') '+d.slice(3,6);if(d.length>6)s+='-'+d.slice(6,8);if(d.length>8)s+='-'+d.slice(8,10);return s;};
 class Component extends DCLogic {
   state={vw:(typeof window!=='undefined'&&(window.innerWidth||document.documentElement.clientWidth))||undefined,isWide:typeof window!=='undefined'&&(window.innerWidth||0)>=960,screen:'home',houseId:null,history:[],menuOpen:false,callOpen:false,callSent:false,
-    form:{name:'',phone:'',agree:false,privacy:false},fe:FE0,faqOpen:-1,catalogFilter:'Все',kitchenTab:'Горячее',reviewFilter:-1,
+    form:{name:'',phone:'',agree:false,privacy:false},fe:FE0,faqOpen:-1,catalogFilter:'VIP',kitchenTab:'Горячее',reviewFilter:-1,
     galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:2},bk:null,savedBk:null,draftBk:null,exitConfirm:false,extrasExpanded:false,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,hdrLv:0,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,lang:(()=>{try{return localStorage.getItem('shipa-lang')==='KZ'?'KZ':'RU'}catch(e){return 'RU'}})(),hw:0,rf:EMPTY_RF,
     carIdx:0,carPaused:false,gal:-1,sheet:null,s3hint:null,s3n:0,sending:false,returning:null,
     maps:{home:{show:false,ok:false,armed:false,failed:false},contacts:{show:false,ok:false,armed:false,failed:false}},addrCopied:false};
@@ -3516,8 +3526,14 @@ if(s.lang==='KZ'){
       addStyle:`height:44px;padding:0 18px;white-space:nowrap;flex:0 0 auto;border:1px solid ${un?'rgba(10,47,79,.3)':NAVY};background:${CREAM};color:${un?'rgba(10,47,79,.5)':NAVY};border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;`,
       addLabel:'Добавить к брони',note:un?'На эту дату недоступно':'подтвердит администратор',noteColor:un?BRICK:'rgba(10,47,79,.6)'};});
     const progScroll=dir=>{const el=this.progRowRef.current;if(el)el.scrollBy({left:dir*(el.clientWidth*0.8),behavior:'smooth'});};
-    const filters=['Все','VIP','Standard','до 12 гостей','до 16 гостей'];
-    const catalogHouses0=openView.filter(h=>{const f=s.catalogFilter;if(f==='VIP')return h.tier==='VIP';if(f==='Standard')return h.tier==='STANDARD';if(f==='до 12 гостей')return h.maxGuests<=12;if(f==='до 16 гостей')return h.maxGuests>12;return true;});
+    const filters=[
+      {id:'VIP',labelRu:'VIP',labelKz:'VIP',available:true},
+      {id:'Standard',labelRu:'Standard',labelKz:'Standard',available:false},
+      {id:'до 12 гостей',labelRu:'до 12 гостей',labelKz:'12 қонаққа дейін',available:false},
+      {id:'до 16 гостей',labelRu:'до 16 гостей',labelKz:'16 қонаққа дейін',available:false}
+    ];
+    const catalogComingSoon=s.catalogFilter!=='VIP';
+    const catalogHouses0=openView.filter(h=>h.tier==='VIP');
     // house page
     const hIdx=Math.max(0,HOUSES.findIndex(x=>x.id===s.houseId));const hRaw=HOUSES[hIdx];
     const houseKz=s.lang==='KZ';const hk=HOUSE_DETAILS_KZ[hIdx];
@@ -3575,6 +3591,7 @@ if(s.lang==='KZ'){
       carScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==((this.state.catIdx||{})[h.id]||0))this.setState(st=>({catIdx:{...st.catIdx,[h.id]:i}}));}),
       photoOpen:e=>{e?.stopPropagation();window.ShipaPhotoViewer?.open(ph.map(p=>p.src),ci,h.name);},
       photoOpenText:s.lang==='KZ'?'Фотолар':'Фото',photoOpenLabel:s.lang==='KZ'?`${h.name} үйінің фотоларын қарау`:`Посмотреть фотографии дома ${h.name}`};});
+    const catalogSoon={visible:catalogComingSoon,kicker:s.lang==='KZ'?'Жақында':'Скоро открытие',title:s.lang==='KZ'?'Бұл санат жақында ашылады':'Эта категория откроется скоро',text:s.lang==='KZ'?'Қазір брондауға тек VIP үйлері қолжетімді. Қалған үйлер ашылған бойда осы жерде көрсетеміз.':'Сейчас для бронирования доступны только VIP-дома. Остальные категории откроем чуть позже и сразу покажем их здесь.',ctaLabel:s.lang==='KZ'?'VIP үйлерін көрсету':'Показать VIP-дома',cta:()=>this.setState({catalogFilter:'VIP'})};
     const inCart=id=>s.cart.some(x=>x.id===id);
     const mkCard=(o)=>{const added=inCart(o.id);const un=!!o.un;const openFn=()=>this.setState({pd:{type:o.type,id:o.id},pdContra:false});
       return {...o,un,avail:!un,hasDur:!!o.dur,hasWho:!!o.whoText,pressed:added?'true':'false',open:openFn,key:e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();openFn();}},
@@ -3620,7 +3637,7 @@ if(s.lang==='KZ'){
  about:'\u0411\u0456\u0437 \u0442\u0443\u0440\u0430\u043b\u044b',
  contacts:'\u0411\u0430\u0439\u043b\u0430\u043d\u044b\u0441'
 };
-    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'Все'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
+    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
     const ratingOn=!!this.props.showHeaderRating||!!this.ratingDemo;
     const mo=s.menuOpen;const solid=!mo&&(s.hdrScrolled||screen!=='home'||this.hdrDemo==='scrolled'||this.hdrDemo==='block');
     const vw=s.vw??(window.innerWidth||document.documentElement.clientWidth||1440);const hw=vw>=768;const hH=hw?(solid?72:88):(solid?56:64);const lh=hw?(solid?34:40):(solid?28:32);
@@ -3938,7 +3955,7 @@ const LANGS=['RU','KZ'];
     return {
       isWide:wide,isNarrow:!wide,showChrome:!bk,showRatings,isHome:screen==='home',isHouses:screen==='houses',isHouse:screen==='house',isServices:screen==='services',isKitchen:screen==='kitchen',isReviews:screen==='reviews',isAbout:screen==='about',isContacts:screen==='contacts',
       headerH:wide?'84px':'68px',logoH:wide?'54px':'44px',
-      headerRef:this.headerRef,goHome:()=>this.go('home'),goHouses:()=>{this.setState({catalogFilter:'Все'});this.go('houses');},goHousesVip:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesStd:()=>{this.setState({catalogFilter:'Standard'});this.go('houses');},
+      headerRef:this.headerRef,goHome:()=>this.go('home'),goHouses:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesVip:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesStd:()=>{this.setState({catalogFilter:'Standard'});this.go('houses');},
       menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.openMenuUrl(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||CFG.menuUrl,goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
       openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:vw>=1024&&(s.hdrLv||0)<2,hdrNavGap:vw>=1280?'28px':'20px',hdrBookPad:vw>=1280?'24px':'20px',hdrSub:vw>=1440,hdrPhoneText:vw>=1280&&(s.hdrLv||0)<1,hdrPhoneIcon:vw>=380&&!(vw>=1280&&(s.hdrLv||0)<1),hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,hdrLangNext:s.lang==='KZ'?'RU':'KZ',hdrLangToggle:()=>setSiteLanguage(s.lang==='KZ'?'RU':'KZ'),hdrBook:vw>=768,hdrMenuBtn:!(vw>=1024&&(s.hdrLv||0)<2),hdrMenuWord:vw>=768&&!(vw>=1024&&(s.hdrLv||0)<2),hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
@@ -4039,7 +4056,7 @@ const LANGS=['RU','KZ'];
       atmosphere:ATM,
       atmRef:this.atmRef,atmPrev:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:-300,behavior:'smooth'}),atmNext:()=>this.atmRef.current&&this.atmRef.current.scrollBy({left:300,behavior:'smooth'}),
       homeReviews:HOME_REV,reviews,faq,pillars:s.lang==='KZ'?PILLARS_KZ:PILLARS,
-      catalogFilters:filters.map(f=>({label:f,style:this.chip(s.catalogFilter===f),select:()=>this.setState({catalogFilter:f})})),catalogHouses,
+      catalogFilters:filters.map(f=>({label:s.lang==='KZ'?f.labelKz:f.labelRu,style:this.chip(s.catalogFilter===f.id,'height:44px;'+(f.available?'':'opacity:.85;')),select:()=>this.setState({catalogFilter:f.id})})),catalogHouses,catalogSoonShow:catalogSoon.visible,catalogShowGrid:!catalogSoon.visible,catalogSoonKicker:catalogSoon.kicker,catalogSoonTitle:catalogSoon.title,catalogSoonText:catalogSoon.text,catalogSoonCtaLabel:catalogSoon.ctaLabel,catalogSoonCta:catalogSoon.cta,
       openAboutPhoto:()=>window.ShipaPhotoViewer?.open(['img/h5_acc.png','img/h5_int.png','img/h5_art.png'],0,s.lang==='KZ'?'SHIPÁ атмосферасы':'Атмосфера SHIPÁ'),aboutPhotoLabel:s.lang==='KZ'?'Фотосуреттерді ашу':'Посмотреть фотографии',
       house,gallery,galleryCounter:`${s.galleryIdx+1} / ${gallery.length}`,onGalleryScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/el.clientWidth);if(i!==this.state.galleryIdx)this.setState({galleryIdx:i});}),
       housePhotoLabel:houseKz?'Үй фотосуреттері':'Фотографии дома',housePhotoOpenLabel:houseKz?'Барлық фотосуреттерді ашу':'Открыть все фотографии',housePhotoCloseLabel:houseKz?'Галереяны жабу':'Закрыть галерею',housePhotoPrevLabel:houseKz?'Алдыңғы фото':'Предыдущее фото',housePhotoNextLabel:houseKz?'Келесі фото':'Следующее фото',houseAllPhotoLabel:houseKz?`Барлық ${gsrc.length} фото`:`Все ${gsrc.length} фото`,openAllHousePhotos:()=>window.ShipaPhotoViewer?.open(gsrc,0,hk.name),
