@@ -8,8 +8,8 @@ const locale=fs.readFileSync(path.join(__dirname,'../shipa-ru-kz.js'),'utf8');
 
 test('Catalog intro is language-dependent rather than an untranslated Russian text node',()=>{
  assert.match(html,/\{\{ catalogIntroText \}\}/);
- assert.match(html,/catalogIntroText:'Бес үй ашық\./);
- assert.match(html,/catalogIntroText:'Пять открытых домов/);
+ assert.match(html,/catalogIntroText:'Қазір тек үш VIP үйі ашық\./);
+ assert.match(html,/catalogIntroText:'Сейчас открыты только три VIP-дома/);
 });
 test('Kitchen table action and testimonials subtitle are explicitly localized',()=>{
  assert.match(html,/\{\{ addTableLabel \}\}/);
