@@ -116,6 +116,26 @@
     }
     @media(prefers-reduced-motion:reduce){.shipa-house-gallery button>div{transition:none;}.shipa-house-lightbox{animation:none;}}
 
+
+    /* Month-grouped date ribbons: headers never overlap date cards (RU / KZ, desktop / mobile). */
+    .shipa-date-months-scroll{scroll-padding-inline:12px;overscroll-behavior-inline:contain;}
+    .shipa-date-month{flex:0 0 auto;min-width:max-content;display:flex;flex-direction:column;gap:9px;scroll-snap-align:start;}
+    .shipa-date-month + .shipa-date-month{margin-left:5px;padding-left:13px;border-left:1px solid rgba(10,47,79,.20);}
+    .shipa-date-month__heading{display:flex;align-items:center;gap:10px;min-height:26px;white-space:nowrap;}
+    .shipa-date-month__heading span{display:inline-flex;align-items:center;min-height:26px;padding:4px 9px;border-radius:8px;background:#EDE1D2;color:#0A2F4F;font-size:11px;font-weight:800;line-height:1.3;letter-spacing:.08em;text-transform:uppercase;}
+    .shipa-date-month__heading::after{content:'';height:1px;min-width:10px;background:rgba(10,47,79,.20);flex:1;}
+    .shipa-date-month__days{display:flex;align-items:flex-start;gap:8px;}
+    .shipa-date-month__days > button{flex-shrink:0;}
+    .shipa-date-other{display:flex;flex:0 0 auto;flex-direction:column;justify-content:flex-end;min-height:107px;}
+    .shipa-date-months-scroll button:focus-visible{outline:2px solid #C15C22;outline-offset:2px;}
+    @media(max-width:600px){
+      .shipa-date-months-scroll{scroll-snap-type:x proximity;}
+      .shipa-date-month{gap:8px;}
+      .shipa-date-month__days{gap:6px;}
+      .shipa-date-month + .shipa-date-month{margin-left:3px;padding-left:12px;}
+      .shipa-date-month__heading span{font-size:11px;letter-spacing:.055em;}
+    }
+
     /* Site footer shares the header's full-width navy background and 1440px content grid. */
     .shipa-site-footer{display:block;width:100%;max-width:none;margin:20px 0 0;padding:0;background:#0A2F4F;color:#F9EFE3;border:0;border-radius:0;box-shadow:none;}
     .shipa-site-footer__inner{width:100%;max-width:1440px;margin:0 auto;padding:32px 40px;display:grid;grid-template-columns:minmax(130px,.7fr) minmax(190px,1fr) minmax(310px,1.5fr) minmax(190px,1.1fr);align-items:center;column-gap:clamp(18px,2vw,36px);row-gap:18px;}
@@ -573,29 +593,29 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <section style="position:relative;z-index:2;max-width:1200px;margin:-64px auto 0;padding:0 16px;">
     <div data-reveal data-screen-label="{{ quickFindTitle }}" style="background:#F9EFE3;border:1px solid rgba(59,47,42,.1);border-radius:28px;padding:24px;max-width:720px;margin:0 auto;">
       <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3B2F2A;font-weight:600;margin-bottom:16px;text-align:center;">{{ quickFindTitle }}</div>
-      <div data-screen-label="Главная - лента дат" style="display:flex;align-items:flex-end;gap:4px;margin:0 -24px;">
-        <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickPrev }}" aria-label="Предыдущие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 0 10px 24px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"></path></svg></button></sc-if>
-        <div ref="{{ quickRef }}" class="noscroll" style="flex:1 1 auto;min-width:0;display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding:0 24px 2px;scroll-snap-type:x proximity;">
-          <sc-for list="{{ quickDays }}" as="d" hint-placeholder-count="14">
-            <div style="flex:0 0 auto;display:flex;align-items:stretch;gap:8px;scroll-snap-align:start;">
-              <sc-if value="{{ d.line }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="flex:0 0 1px;width:1px;background:rgba(59,47,42,.35);"></div></sc-if>
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div style="height:18px;font-size:13px;line-height:18px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#0A2F4F;padding-left:2px;">{{ d.mon }}</div>
-                <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
-                  <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;white-space:nowrap;">{{ d.wd }}</span>
-                  <span style="{{ d.numStyle }}">{{ d.day }}</span>
-                  <sc-if value="{{ d.discOn }}" hint-placeholder-val="{{ false }}"><span style="{{ d.discStyle }}">{{ d.discText }}</span></sc-if>
-                  <span aria-hidden="true" style="{{ d.dotStyle }}"></span>
-                </button>
+      <div data-screen-label="Главная - лента дат" style="display:flex;align-items:flex-end;gap:4px;margin:0 -16px;">
+        <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickPrev }}" aria-label="Предыдущие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 0 12px 12px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"></path></svg></button></sc-if>
+        <div ref="{{ quickRef }}" class="noscroll shipa-date-months-scroll" style="flex:1 1 auto;min-width:0;display:flex;align-items:flex-start;gap:12px;overflow-x:auto;padding:6px 12px 8px;scroll-snap-type:x proximity;">
+          <sc-for list="{{ quickMonths }}" as="m" hint-placeholder-count="2">
+            <div class="shipa-date-month">
+              <div class="shipa-date-month__heading"><span>{{ m.title }}</span></div>
+              <div class="shipa-date-month__days">
+                <sc-for list="{{ m.days }}" as="d" hint-placeholder-count="7">
+                  <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
+                    <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.76;white-space:nowrap;">{{ d.wd }}</span>
+                    <span style="{{ d.numStyle }}">{{ d.day }}</span>
+                    <sc-if value="{{ d.discOn }}" hint-placeholder-val="{{ false }}"><span style="{{ d.discStyle }}">{{ d.discText }}</span></sc-if>
+                    <span aria-hidden="true" style="{{ d.dotStyle }}"></span>
+                  </button>
+                </sc-for>
               </div>
             </div>
           </sc-for>
-          <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:4px;">
-            <div style="height:16px;"></div>
-            <button onClick="{{ openDateSheet }}" style="width:88px;height:68px;border-radius:16px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>{{ otherDateLabel }}</button>
+          <div class="shipa-date-other">
+            <button onClick="{{ openDateSheet }}" style="width:88px;height:72px;border-radius:16px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>{{ otherDateLabel }}</button>
           </div>
         </div>
-        <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 24px 10px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
+        <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 12px 12px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
       </div>
       <sc-if value="{{ quickDiscOn }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(10,47,79,.7);margin-top:6px;">{{ quickDiscHint }}</div></sc-if>
       <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0;padding-top:16px;border-top:1px solid rgba(59,47,42,.1);">
@@ -2052,28 +2072,30 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <sc-if value="{{ dailyNoteOn }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;color:rgba(10,47,79,.75);margin:0 0 12px;">{{ dailyNote }}</div></sc-if>
         <div style="font-size:13px;color:rgba(10,47,79,.7);margin:0 0 6px;">Дата заезда</div>
       </sc-if>
-      <div style="display:flex;align-items:flex-end;gap:4px;margin:0 -20px 8px;">
-        <sc-if value="{{ stripArrows }}" hint-placeholder-val="{{ false }}"><button onClick="{{ stripPrev }}" aria-label="Предыдущие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 0 10px 20px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"></path></svg></button></sc-if>
-        <div ref="{{ stripRef }}" onScroll="{{ stripScroll }}" class="noscroll" style="flex:1 1 auto;min-width:0;position:relative;display:flex;align-items:stretch;gap:6px;overflow-x:auto;padding:0 20px 2px;scroll-snap-type:x proximity;">
-          <sc-for list="{{ dayStrip }}" as="d" hint-placeholder-count="14">
-            <div data-day="1" data-sel="{{ d.sel }}" style="flex:0 0 auto;display:flex;align-items:stretch;gap:6px;scroll-snap-align:start;">
-              <sc-if value="{{ d.line }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="flex:0 0 1px;width:1px;background:rgba(59,47,42,.35);"></div></sc-if>
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div style="height:18px;font-size:13px;line-height:18px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#0A2F4F;padding-left:2px;">{{ d.mon }}</div>
-                <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
-                  <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
-                  <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1;">{{ d.day }}</span>
-                  <sc-if value="{{ d.discOn }}" hint-placeholder-val="{{ false }}"><span style="{{ d.discStyle }}">{{ d.discText }}</span></sc-if>
-                </button>
+      <div style="display:flex;align-items:flex-end;gap:4px;margin:0 -16px 8px;">
+        <sc-if value="{{ stripArrows }}" hint-placeholder-val="{{ false }}"><button onClick="{{ stripPrev }}" aria-label="Предыдущие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 0 10px 12px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"></path></svg></button></sc-if>
+        <div ref="{{ stripRef }}" onScroll="{{ stripScroll }}" class="noscroll shipa-date-months-scroll" style="flex:1 1 auto;min-width:0;position:relative;display:flex;align-items:flex-start;gap:12px;overflow-x:auto;padding:6px 12px 8px;scroll-snap-type:x proximity;">
+          <sc-for list="{{ dayMonths }}" as="m" hint-placeholder-count="2">
+            <div class="shipa-date-month">
+              <div class="shipa-date-month__heading"><span>{{ m.title }}</span></div>
+              <div class="shipa-date-month__days">
+                <sc-for list="{{ m.days }}" as="d" hint-placeholder-count="7">
+                  <div data-day="1" data-sel="{{ d.sel }}" style="flex:0 0 auto;scroll-snap-align:start;">
+                    <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
+                      <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.76;">{{ d.wd }}</span>
+                      <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1;">{{ d.day }}</span>
+                      <sc-if value="{{ d.discOn }}" hint-placeholder-val="{{ false }}"><span style="{{ d.discStyle }}">{{ d.discText }}</span></sc-if>
+                    </button>
+                  </div>
+                </sc-for>
               </div>
             </div>
           </sc-for>
-          <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:4px;">
-            <div style="height:16px;"></div>
-            <button onClick="{{ openDateSheet }}" style="width:88px;height:64px;border-radius:14px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>{{ otherDateLabel }}</button>
+          <div class="shipa-date-other">
+            <button onClick="{{ openDateSheet }}" style="width:88px;height:72px;border-radius:14px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>{{ otherDateLabel }}</button>
           </div>
         </div>
-        <sc-if value="{{ stripArrows }}" hint-placeholder-val="{{ false }}"><button onClick="{{ stripNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 20px 10px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
+        <sc-if value="{{ stripArrows }}" hint-placeholder-val="{{ false }}"><button onClick="{{ stripNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 12px 10px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
       </div>
       <sc-if value="{{ stripHintOn }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(10,47,79,.7);margin:0 0 12px;">{{ stripHint }}</div></sc-if>
 
@@ -2888,6 +2910,23 @@ const MON_S=MON;
 const cap=t=>t?t[0].toUpperCase()+t.slice(1):t;
 // Heading labels in date strips use month names in nominative case; full dates keep genitive MON.
 const MON_STRIP=MON_NOM;
+const MON_NOM_KZ=['Қаңтар','Ақпан','Наурыз','Сәуір','Мамыр','Маусым','Шілде','Тамыз','Қыркүйек','Қазан','Қараша','Желтоқсан'];
+// Groups months on a shared heading, while keeping date cards selectable.
+function groupDateRibbon(days,startOffset,dateAt,lang){
+  const groups=[];
+  days.forEach((day,index)=>{
+    const date=dateAt(startOffset+index);
+    const key=`${date.getFullYear()}-${date.getMonth()}`;
+    let group=groups[groups.length-1];
+    if(!group||group.key!==key){
+      group={key,title:(lang==='KZ'?MON_NOM_KZ:MON_NOM)[date.getMonth()],days:[]};
+      groups.push(group);
+    }
+    group.days.push(day);
+  });
+  return groups;
+}
+
 const ADDR='г. Караганда, ул. Жакана Смакова 242';
 const RULES=[{t:'Предоплата',d:'Бронь подтверждается предоплатой: 20 000 ₸ для Standard, 40 000 ₸ для VIP. Вносится на сайте при бронировании. Без предоплаты бронь держится 6 часов, бронь на сегодня - 1 час, затем снимается.'},{t:'Отмена и перенос',d:'Больше 3 дней до начала - отмена с полным возвратом предоплаты. Меньше 3 дней - отмены с возвратом нет, возможен перенос брони. При неявке или поздней отмене предоплата не возвращается.'},{t:'Режим работы',d:'Ежедневно с 10:00 до 02:00. Начать бронь можно с 10:00 до 21:00, по часам - до 02:00 и не больше 16 часов. VIP-дома можно снять на сутки: заезд 14:00, выезд 12:00.'},{t:'Опоздание',d:'Дом ждёт вас всё забронированное время. Начало и окончание не сдвигаются: время опоздания не продлевается и не переносится.'},{t:'Продление',d:'Возможно, если следующее время свободно. Стоимость считается по тарифу того времени, на которое продлеваете.'},{t:'Гости',d:'В цене - число гостей по категории дома, каждый следующий - разовая доплата за визит. Дети до 7 лет - бесплатно и не считаются.'}];
 const EXTRA_SHORT={program:'парение',table:'стол к приезду',kit:'набор для парения'};
@@ -3535,6 +3574,7 @@ if(s.lang==='KZ'){
         numStyle:`font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;${full?'text-decoration:line-through;':''}`,
         dotStyle:`width:4px;height:4px;border-radius:50%;background:${few?(act?CREAM:BRICK):'transparent'};`,discOn:!full&&this.homeDisc(i)>0,discText:'−'+this.homeDisc(i)+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
         style:`flex:0 0 auto;width:${w}px;height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
+    const quickMonths=groupDateRibbon(quickDays,0,i=>this.dateAt(i),s.lang);
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
     const faq=(s.lang==='KZ'?FAQ_KZ:FAQ).map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,closed:s.faqOpen!==i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
     const reviews=REVIEWS.map((r,i)=>{const localized=s.lang==='KZ'?REVIEWS_KZ[i]:{};const item={...r,...localized};return {...item,id:'r'+i,long:item.text.length>200,initial:item.name[0],hi:item.house,stars:'★'.repeat(item.stars)+'☆'.repeat(5-item.stars),house:HOUSES[item.house].n+' / '+(s.lang==='KZ'?KZ_PAGE_HOUSES[item.house]:HOUSES[item.house].name)};});
@@ -3785,6 +3825,7 @@ const LANGS=['RU','KZ'];
             if(full){if(daily){const near=[];for(let k=i+1;k<i+30&&near.length<2;k++)if(this.dailyOk(hi0,k))near.push(this.dm(k));this.hint(`На ${this.dm(i)} сутки заняты${near.length?' - ближайшие свободные: '+near.join(', '):''}`,3400);}
               else this.hint(i===0?'На сегодня всё занято - выберите другой день':`${this.dm(i)} всё занято - выберите другой день`);return;}
             vib(8);if(daily)this.pickDaily(i);else this.moveDate(i);}});}
+      const dayMonths=groupDateRibbon(dayStrip,s0,i=>this.dateAt(i),s.lang);
       const nb=hasStart?this.nextBusyH(hi0,st):null;
       const toClose=hasStart?D0+CFG.close-st:0;
       const durChips=[...CFG.durs.map(v=>({v,label:v+' ч',sub:''})),{v:toClose,label:'До закрытия',sub:'до '+hh(D0+CFG.close),close:true}].filter(c=>c.v>=CFG.minH&&c.v<=CFG.maxH&&(c.close||c.v<toClose)).map(c=>{const off=c.v>maxEff;const act=dur===c.v;
@@ -3921,7 +3962,7 @@ const LANGS=['RU','KZ'];
         stripPrev:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
         stripNext:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},searchDate:`${d.getDate()} ${MON[d.getMonth()]}, ${WD[d.getDay()]}`,
         stripHintOn:wdDisc>0,stripHint:`Пн–чт дешевле на ${wdDisc}%`,
-        h3Kicker:`${h0.n} / ${h0.catName}`,dayStrip,hourCells,
+        h3Kicker:`${h0.n} / ${h0.catName}`,dayStrip,dayMonths,hourCells,
         isVipHouse:isVip,modeSegs,hoursUI:!daily,dailyUI:daily,
         dailyIn:`${cap(WD[dIn.getDay()])}, ${this.dm(bk.date)} · ${hh(CFG.daily.in)}`,dailyOut:`${cap(WD[dOut.getDay()])}, ${this.dm(bk.date+1)} · ${hh(CFG.daily.out)}`,
         dailyBusy:daily&&!hasStart,dailyBusyText:`На ${this.dm(bk.date)} сутки заняты - выберите другую дату заезда`,dailyNoteOn:daily&&hasStart&&rentUnknown,dailyNote:'Стоимость суток уточнит администратор. Предоплата - '+fmt(prepay)+'.',
@@ -4065,7 +4106,7 @@ const LANGS=['RU','KZ'];
       agreeBoxStyle:`flex:0 0 24px;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:${s.fe.scope==='bk'&&s.fe.agree?'2px solid '+BRICK:'1px solid rgba(10,47,79,.45)'};background:${s.form.agree?NAVY:(s.fe.scope==='bk'&&s.fe.agree?'rgba(193,92,34,.08)':CREAM)};transition:background 150ms;${s.fe.scope==='bk'&&s.fe.agree?`animation:${s.fe.n%2?'shakeA':'shakeB'} 300ms ease-out 1;`:''}`,
       agreeTickStyle:`opacity:${s.form.agree?1:0};transition:opacity 120ms;`,
       form:s.form,setName:e=>this.setState({form:{...s.form,name:e.target.value}}),setPhone:e=>{let v=e.target.value.replace(/[^\d+]/g,'');if(v&&!v.startsWith('+'))v='+'+v;this.setState({form:{...s.form,phone:v}});},
-      quickDays,quickGuests:s.quick.guests,quickGuestsMinus:()=>this.setState({quick:{...s.quick,guests:Math.max(1,s.quick.guests-1)}}),quickGuestsPlus:()=>this.setState({quick:{...s.quick,guests:Math.min(Math.max(...OPEN_HOUSES.map(h=>h.maxGuests)),s.quick.guests+1)}}),quickGo:()=>this.openBooking(null,s.quick.date,s.quick.guests,2),quickRef:this.quickRef,quickDiscOn:this.homeDisc(1)>0||this.homeDisc(2)>0||this.homeDisc(3)>0||this.homeDisc(4)>0,quickDiscHint:`Пн–чт дешевле на ${Math.max(this.homeDisc(1),this.homeDisc(2),this.homeDisc(3),this.homeDisc(4))}%`,heroTxt,shipaBrandText,shipaMeaningText,quickGuestHintOn:s.quick.guests>this.commonGuestHint().inc,quickGuestHint:this.commonGuestHint().text,
+      quickDays,quickMonths,quickGuests:s.quick.guests,quickGuestsMinus:()=>this.setState({quick:{...s.quick,guests:Math.max(1,s.quick.guests-1)}}),quickGuestsPlus:()=>this.setState({quick:{...s.quick,guests:Math.min(Math.max(...OPEN_HOUSES.map(h=>h.maxGuests)),s.quick.guests+1)}}),quickGo:()=>this.openBooking(null,s.quick.date,s.quick.guests,2),quickRef:this.quickRef,quickDiscOn:this.homeDisc(1)>0||this.homeDisc(2)>0||this.homeDisc(3)>0||this.homeDisc(4)>0,quickDiscHint:`Пн–чт дешевле на ${Math.max(this.homeDisc(1),this.homeDisc(2),this.homeDisc(3),this.homeDisc(4))}%`,heroTxt,shipaBrandText,shipaMeaningText,quickGuestHintOn:s.quick.guests>this.commonGuestHint().inc,quickGuestHint:this.commonGuestHint().text,
       quickPrev:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       quickNext:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       quickFindTitle:s.lang==='KZ'?'Бос үйді табу':'Найти свободный дом',otherDateLabel:s.lang==='KZ'?'Басқа күн':'Другая дата',quickShowLabel:s.lang==='KZ'?'Бос үйлерді көрсету':'Показать свободные дома',
