@@ -571,8 +571,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
   <sc-if value="{{ notPre }}" hint-placeholder-val="{{ true }}">
   <section style="position:relative;z-index:2;max-width:1200px;margin:-64px auto 0;padding:0 16px;">
-    <div data-reveal data-screen-label="Найти свободный дом" style="background:#F9EFE3;border:1px solid rgba(59,47,42,.1);border-radius:28px;padding:24px;max-width:720px;margin:0 auto;">
-      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3B2F2A;font-weight:600;margin-bottom:16px;text-align:center;">Найти свободный дом</div>
+    <div data-reveal data-screen-label="{{ quickFindTitle }}" style="background:#F9EFE3;border:1px solid rgba(59,47,42,.1);border-radius:28px;padding:24px;max-width:720px;margin:0 auto;">
+      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#3B2F2A;font-weight:600;margin-bottom:16px;text-align:center;">{{ quickFindTitle }}</div>
       <div data-screen-label="Главная - лента дат" style="display:flex;align-items:flex-end;gap:4px;margin:0 -24px;">
         <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickPrev }}" aria-label="Предыдущие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 0 10px 24px;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"></path></svg></button></sc-if>
         <div ref="{{ quickRef }}" class="noscroll" style="flex:1 1 auto;min-width:0;display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding:0 24px 2px;scroll-snap-type:x proximity;">
@@ -580,7 +580,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             <div style="flex:0 0 auto;display:flex;align-items:stretch;gap:8px;scroll-snap-align:start;">
               <sc-if value="{{ d.line }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="flex:0 0 1px;width:1px;background:rgba(59,47,42,.35);"></div></sc-if>
               <div style="display:flex;flex-direction:column;gap:4px;">
-                <div style="height:16px;font-size:12px;line-height:16px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(59,47,42,.78);padding-left:2px;">{{ d.mon }}</div>
+                <div style="height:18px;font-size:13px;line-height:18px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#0A2F4F;padding-left:2px;">{{ d.mon }}</div>
                 <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
                   <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;white-space:nowrap;">{{ d.wd }}</span>
                   <span style="{{ d.numStyle }}">{{ d.day }}</span>
@@ -592,7 +592,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           </sc-for>
           <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:4px;">
             <div style="height:16px;"></div>
-            <button onClick="{{ openDateSheet }}" style="width:88px;height:68px;border-radius:16px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Другая дата</button>
+            <button onClick="{{ openDateSheet }}" style="width:88px;height:68px;border-radius:16px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>{{ otherDateLabel }}</button>
           </div>
         </div>
         <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 24px 10px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
@@ -607,7 +607,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
       </div>
       <sc-if value="{{ quickGuestHintOn }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;line-height:1.45;color:rgba(10,47,79,.8);margin:-4px 0 14px;">{{ quickGuestHint }}</div></sc-if>
-      <button onClick="{{ quickGo }}" style="width:100%;height:52px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.02em;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">Показать свободные дома</button>
+      <button onClick="{{ quickGo }}" style="width:100%;height:52px;background:#C15C22;color:#F9EFE3;border-radius:999px;font-weight:600;font-size:15px;letter-spacing:.02em;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ quickShowLabel }}</button>
       <div style="font-size:13px;line-height:1.5;color:#3B2F2A;text-align:center;margin-top:16px;">Ответим в WhatsApp за 15 минут. Цены и свободные дома - сразу, без звонков.</div>
     </div>
   </section>
@@ -1906,6 +1906,25 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             <button onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</button>
           </sc-for>
         </div>
+        <!-- The Standard filter is intentionally viewable, but not bookable until launch. -->
+        <sc-if value="{{ bookingStandardSoon }}" hint-placeholder-val="{{ false }}">
+          <section aria-live="polite" aria-label="{{ bookingSoonHeading }}" style="position:relative;overflow:hidden;border-radius:24px;padding:clamp(24px,5vw,38px) clamp(20px,5vw,32px);background:linear-gradient(142deg,#102F48 0%,#0A2F4F 66%,#204763 100%);color:#F9EFE3;box-shadow:0 12px 32px rgba(10,47,79,.12);text-align:center;">
+            <div aria-hidden="true" style="position:absolute;width:220px;height:220px;border:1px solid rgba(249,239,227,.16);border-radius:50%;right:-94px;top:-108px;"></div>
+            <div aria-hidden="true" style="position:absolute;width:165px;height:165px;border:1px solid rgba(249,239,227,.1);border-radius:50%;left:-90px;bottom:-95px;"></div>
+            <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;">
+              <div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(249,239,227,.2);border-radius:20px;background:rgba(249,239,227,.09);">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#E9B78B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 15.5 16 6l11 9.5V27H5V15.5Z"/><path d="M11.5 27V18h9v9"/><path d="m9 12 7-6 7 6"/>
+                </svg>
+              </div>
+              <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#E9B78B;">{{ bookingSoonKicker }}</div>
+              <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(30px,6vw,40px);font-weight:600;line-height:1.08;letter-spacing:.02em;margin:0;">{{ bookingSoonHeading }}</h3>
+              <p style="margin:0;max-width:420px;font-size:15px;line-height:1.65;color:rgba(249,239,227,.84);">{{ bookingSoonDescription }}</p>
+              <button type="button" onClick="{{ bookingSoonShowVip }}" style="min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;padding:0 24px;border-radius:999px;background:#C15C22;color:#fff;font-size:14px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.12);">{{ bookingSoonVipLabel }} <span aria-hidden="true">→</span></button>
+            </div>
+          </section>
+        </sc-if>
+        <sc-if value="{{ bookingShowVipResults }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:12px;">
           <sc-for list="{{ step2Houses }}" as="h" hint-placeholder-count="4">
             <div style="{{ h.style }}">
@@ -1936,6 +1955,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             </div>
           </sc-for>
         </div>
+        </sc-if>
       </sc-if>
       </div>
     </sc-if>
@@ -2039,7 +2059,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             <div data-day="1" data-sel="{{ d.sel }}" style="flex:0 0 auto;display:flex;align-items:stretch;gap:6px;scroll-snap-align:start;">
               <sc-if value="{{ d.line }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="flex:0 0 1px;width:1px;background:rgba(59,47,42,.35);"></div></sc-if>
               <div style="display:flex;flex-direction:column;gap:4px;">
-                <div style="height:16px;font-size:12px;line-height:16px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(59,47,42,.78);padding-left:2px;">{{ d.mon }}</div>
+                <div style="height:18px;font-size:13px;line-height:18px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#0A2F4F;padding-left:2px;">{{ d.mon }}</div>
                 <button onClick="{{ d.select }}" aria-label="{{ d.label }}" aria-pressed="{{ d.pressed }}" style="{{ d.style }}">
                   <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;">{{ d.wd }}</span>
                   <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1;">{{ d.day }}</span>
@@ -2050,7 +2070,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           </sc-for>
           <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:4px;">
             <div style="height:16px;"></div>
-            <button onClick="{{ openDateSheet }}" style="width:88px;height:64px;border-radius:14px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Другая дата</button>
+            <button onClick="{{ openDateSheet }}" style="width:88px;height:64px;border-radius:14px;border:1px dashed rgba(10,47,79,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#0A2F4F;font-size:12px;font-weight:600;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C15C22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>{{ otherDateLabel }}</button>
           </div>
         </div>
         <sc-if value="{{ stripArrows }}" hint-placeholder-val="{{ false }}"><button onClick="{{ stripNext }}" aria-label="Следующие дни" style="flex:0 0 auto;width:44px;height:44px;margin:0 20px 10px 0;border-radius:50%;border:1px solid rgba(10,47,79,.25);display:flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"></path></svg></button></sc-if>
@@ -3215,10 +3235,10 @@ class Component extends DCLogic {
     this.setState({sheet:null,dsh:null});
     this.setBk({date:d.date,guests:d.guests,month:m},()=>{const el=document.querySelector('[data-screen-label="Шаг 2 - Какой дом"]');if(el&&el.animate&&!this.reduced)el.animate([{opacity:.3},{opacity:1}],{duration:200,easing:'ease-out'});});}
   dateSheetVals(bk,d){const h=bk.step===3?HOUSES.find(x=>x.id===bk.houseId):null;const hi=h?HOUSES.indexOf(h):-1;
-    const set=p=>this.setState(s=>({dsh:{...s.dsh,...p}}));const over=!!h&&d.guests>h.guests;
-    return {...this.calendar({...bk,...d},false,{set,hi}),guests:d.guests,hasLegend:!!h,legend:h?'есть свободное время в доме '+h.name:'',
-      over,overText:h?`Дом ${h.name} вмещает до ${h.guests} ${plural(h.guests,'гостя','гостей','гостей')}`:'',
-      btn:over?'Выбрать другой дом':(h?'Показать время на ':'Показать дома на ')+this.dm(d.date),apply:()=>this.applyDateSheet()};}
+    const set=p=>this.setState(s=>({dsh:{...s.dsh,...p}}));const over=!!h&&d.guests>h.guests;const kz=this.state.lang==='KZ';
+    return {...this.calendar({...bk,...d},false,{set,hi}),guests:d.guests,hasLegend:!!h,legend:h?(kz?('бос уақыт бар үй: '+h.name):('есть свободное время в доме '+h.name)):'',
+      over,overText:h?(kz?`«${h.name}» үйі ${h.guests} ${pluralKz(h.guests,'қонақ','қонақ')} дейін сыйдырады`:`Дом ${h.name} вмещает до ${h.guests} ${plural(h.guests,'гостя','гостей','гостей')}`):'',
+      btn:over?(kz?'Басқа үйді таңдау':'Выбрать другой дом'):((h?(kz?'Уақытты көрсету: ':'Показать время на '):(kz?'Үйлерді көрсету: ':'Показать дома на '))+this.dm(d.date)),apply:()=>this.applyDateSheet()};}
   stripTo(first){const el=this.stripRef.current;if(!el)return;const items=[...el.querySelectorAll('[data-day]')];const ix=items.findIndex(x=>x.getAttribute('data-sel')==='1');if(ix<0)return;
     const t=items[Math.max(0,ix-1)];el.scrollTo({left:Math.max(0,t.offsetLeft-20),behavior:first||this.reduced?'auto':'smooth'});}
   initTime(hi,di){return {start:null,dur:null,tub:false,mode:'hours',pickEnd:false};}
@@ -3705,8 +3725,22 @@ const LANGS=['RU','KZ'];
       const minRate=c=>this.hourPrice(c.h,bk.date,bk.date*24+CFG.open);
       if(sortId==='price')ordered=[...sorted].sort((a,b)=>((a.full||!a.fits)?1:0)-((b.full||!b.fits)?1:0)||minRate(a)-minRate(b));
       if(sortId==='vip')ordered=sorted.filter(c=>c.h.tier==='VIP');
-      if(sortId==='std')ordered=sorted.filter(c=>c.h.tier==='STANDARD');
-      const sortChips=[['fit','Подходящие'],['price','Сначала дешевле'],['vip','VIP'],['std','Standard']].map(([id,label])=>({label,style:this.chip(sortId===id,'height:40px;font-size:13px;'),select:()=>this.setBk({sort:id})}));
+      const bookingStandardSoon=sortId==='std';
+      // Standard is visible as an upcoming category, but cannot be selected for booking.
+      // Filtering to an empty array without an empty state made the interface look broken.
+      if(bookingStandardSoon)ordered=[];
+      const sortChips=[['fit','Подходящие'],['price','Сначала дешевле'],['vip','VIP'],['std','Standard']].map(([id,label])=>({label:s.lang==='KZ'?({'fit':'Сәйкес келетіндер','price':'Алдымен арзандары','vip':'VIP','std':'Standard'}[id]):label,style:this.chip(sortId===id,'height:40px;font-size:13px;'),select:()=>this.setBk({sort:id})}));
+      const bookingSoonText=s.lang==='KZ'?{
+        kicker:'ЖАҚЫНДА АШЫЛАДЫ',
+        heading:'Standard үйлері жақында ашылады',
+        description:'Бұл санат әзірге брондауға қолжетімсіз. Қазір үш VIP үйінің бірін таңдап, демалысыңызды жоспарлай аласыз.',
+        vipLabel:'VIP үйлерін көру'
+      }:{
+        kicker:'СКОРО ОТКРЫТИЕ',
+        heading:'Дома Standard скоро откроются',
+        description:'Эта категория пока недоступна для бронирования. Сейчас можно выбрать один из трёх VIP-домов и запланировать отдых.',
+        vipLabel:'Посмотреть VIP-дома'
+      };
       const tf=bk.date*24;
       const step2Houses=ordered.map(c=>{const dis=!c.fits||c.full;const gx=c.fits&&bk.guests>c.h.guestsIncl;
         return {...c.h,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${c.h.img}_int.png) center/cover no-repeat;`,rating:RATING[c.hi],facts:`${c.h.catName}${c.h.tub?' · горячий чан':''} · от ${c.h.min} ч`,
@@ -3793,7 +3827,7 @@ const LANGS=['RU','KZ'];
       const cLines=[...(tubLine?[{t:tubLine}]:[]),...(exList.length?[{t:'Дополнительно: '+exList.join(', ')}]:[])];
       const ok3=daily?hasStart&&this.dailyOk(hi0,bk.date):this.validHoursSelection(bk);
       const canNext=bk.step===1?true:bk.step===3?ok3:bk.step===4?true:false;
-      const ctaLabel=bk.step===1?(hSel?'Выбрать время':'Показать свободные дома'):bk.step===3?'Продолжить':'Перейти к предоплате';
+      const ctaLabel=bk.step===1?(hSel?(s.lang==='KZ'?'Уақытты таңдау':'Выбрать время'):(s.lang==='KZ'?'Бос үйлерді көрсету':'Показать свободные дома')):bk.step===3?(s.lang==='KZ'?'Жалғастыру':'Продолжить'):(s.lang==='KZ'?'Алдын ала төлемге өту':'Перейти к предоплате');
       const payTxt=(s.lang==='KZ'?(bk.paid?'төленді':'күтілуде'):(bk.paid?'оплачено':'ожидает'))+' · '+fmt(prepay);
       const waVars={бронь:bk.id||'',дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}–${hh(end)}`:'',выезд:end!=null?`${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',гостей:guestsTxt(bk.guests)+kidsTxt,предоплата:payTxt};
       // карусель
@@ -3875,8 +3909,13 @@ const LANGS=['RU','KZ'];
         editTime:()=>this.back(),
         showCal:bk.step===1,step2:bk.step===2,step3:bk.step===3,showContacts:bk.step===4,showPay:bk.step===5,stepDone:bk.step===6,preStep1:false,preDone:false,
         calHouse:hSel?'ДОМ '+hSel.name:'',calTitle:'Когда планируете приехать?',calSub:'Покажем свободные дома и цену за час',calNote:'Бронь открыта на год вперёд. Зачёркнутые дни заняты полностью.',
-        step2Title:`Свободно на ${WD_ACC[d.getDay()]}, ${d.getDate()} · ${guestsTxt(bk.guests)}`,step2Sub:`${free.length} ${plural(free.length,'дом','дома','домов')} · нажмите на дом, чтобы выбрать время`,
-        loadingSlots:s.loadingSlots,noneFree,listFree,nearestDates,step2Houses,sortChips,scaleA:hh(CFG.open),scaleB:hh(18),scaleC:hh(CFG.close),
+        step2Title:bookingStandardSoon?(s.lang==='KZ'?'Standard санатындағы үйлер':'Дома категории Standard'):`Свободно на ${WD_ACC[d.getDay()]}, ${d.getDate()} · ${guestsTxt(bk.guests)}`,
+        step2Sub:bookingStandardSoon?(s.lang==='KZ'?'Бұл санат әзірге брондауға ашылмаған':'Бронирование этой категории пока не открыто'):`${free.length} ${plural(free.length,'дом','дома','домов')} · нажмите на дом, чтобы выбрать время`,
+        loadingSlots:s.loadingSlots,noneFree,listFree,nearestDates,step2Houses,sortChips,
+        bookingStandardSoon,bookingShowVipResults:!bookingStandardSoon,
+        bookingSoonKicker:bookingSoonText.kicker,bookingSoonHeading:bookingSoonText.heading,bookingSoonDescription:bookingSoonText.description,
+        bookingSoonVipLabel:bookingSoonText.vipLabel,bookingSoonShowVip:()=>this.setBk({sort:'vip'}),
+        scaleA:hh(CFG.open),scaleB:hh(18),scaleC:hh(CFG.close),
         editSearch:()=>this.openDateSheet(),openDateSheet:()=>this.openDateSheet(),s3DateText:this.dayWords(bk.date),stripRef:this.stripRef,stripArrows:wide,
         stripScroll:e=>{const el=e.currentTarget;if(el.scrollLeft+el.clientWidth>el.scrollWidth-160&&this._stripN<366&&this._stripReq!==this._stripN){this._stripReq=this._stripN;this.setState(x=>({stripMore:(x.stripMore||0)+1}));}},
         stripPrev:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
@@ -4029,6 +4068,7 @@ const LANGS=['RU','KZ'];
       quickDays,quickGuests:s.quick.guests,quickGuestsMinus:()=>this.setState({quick:{...s.quick,guests:Math.max(1,s.quick.guests-1)}}),quickGuestsPlus:()=>this.setState({quick:{...s.quick,guests:Math.min(Math.max(...OPEN_HOUSES.map(h=>h.maxGuests)),s.quick.guests+1)}}),quickGo:()=>this.openBooking(null,s.quick.date,s.quick.guests,2),quickRef:this.quickRef,quickDiscOn:this.homeDisc(1)>0||this.homeDisc(2)>0||this.homeDisc(3)>0||this.homeDisc(4)>0,quickDiscHint:`Пн–чт дешевле на ${Math.max(this.homeDisc(1),this.homeDisc(2),this.homeDisc(3),this.homeDisc(4))}%`,heroTxt,shipaBrandText,shipaMeaningText,quickGuestHintOn:s.quick.guests>this.commonGuestHint().inc,quickGuestHint:this.commonGuestHint().text,
       quickPrev:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
       quickNext:()=>{const el=this.quickRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
+      quickFindTitle:s.lang==='KZ'?'Бос үйді табу':'Найти свободный дом',otherDateLabel:s.lang==='KZ'?'Басқа күн':'Другая дата',quickShowLabel:s.lang==='KZ'?'Бос үйлерді көрсету':'Показать свободные дома',
       heroSlides,heroDots,heroIsVideo:!!HERO_SLIDES[s.hero].video,
       videoReviews:VREV,
       phoneText:C.phone,telHref:C.tel,phoneAria:'Позвонить: '+C.phone,waGeneral:C.wa(s.lang==='KZ'?'Сәлеметсіз бе! SHIPÁ сайтынан жазып отырмын.':C.t('waTextGeneral')),waHeader:C.wa(s.lang==='KZ'?'Сәлеметсіз бе! SHIPÁ сайтынан жазып отырмын.':C.t('waTextGeneral')),waHero:C.wa(C.t('waTextHero')),waPre:C.wa(C.t('waTextPre')),waHouse:C.wa(C.t('waTextHouse',{дом:hRaw.name})),waError:(B.waErrorBk)||C.wa(C.t('waTextError')),
