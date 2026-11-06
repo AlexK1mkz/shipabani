@@ -5,6 +5,27 @@
   let countEl = null, thumbsEl = null, prevBtn = null, nextBtn = null;
   let lastFocus = null, oldOverflow = '', gesture = null;
   const esc = (s) => String(s == null ? '' : s);
+  // Localize controls even when the viewer is opened after a language switch.
+  const currentLang = () => window.ShipaLocale?.get?.() === 'KZ' ? 'KZ' : 'RU';
+  const photoText = (key) => {
+    const ru = {dialog:'Просмотр фотографий',close:'Закрыть фотографии',prev:'Предыдущее фото',next:'Следующее фото',strip:'Миниатюры фотографий',hint:'← → — листать · Esc — закрыть · на телефоне — свайп',title:'Фотографии SHIPÁ'};
+    const kz = {dialog:'Фотосуреттерді қарау',close:'Фотосуреттерді жабу',prev:'Алдыңғы фото',next:'Келесі фото',strip:'Фотосуреттердің шағын нұсқалары',hint:'← → — парақтау · Esc — жабу · телефонда — сырғыту',title:'SHIPÁ фотосуреттері'};
+    return (currentLang()==='KZ'?kz:ru)[key];
+  };
+  function refreshLocale() {
+    if(!modal)return;
+    modal.setAttribute('aria-label',photoText('dialog'));
+    modal.querySelector('.spv-close').setAttribute('aria-label',photoText('close'));
+    prevBtn.setAttribute('aria-label',photoText('prev'));
+    nextBtn.setAttribute('aria-label',photoText('next'));
+    thumbsEl.setAttribute('aria-label',photoText('strip'));
+    modal.querySelector('.spv-hint').textContent=photoText('hint');
+    for(const [i,btn] of [...thumbsEl.children].entries()){
+      btn.setAttribute('aria-label',currentLang()==='KZ'?`${items.length} фотосуреттің ${i+1}-і`:`Фото ${i+1} из ${items.length}`);
+    }
+  }
+  document.addEventListener('shipa:languagechange',refreshLocale);
+
 
   function initialize() {
     if (modal) return;
@@ -40,6 +61,7 @@
     thumbsEl = modal.querySelector('.spv-strip');
     prevBtn = modal.querySelector('.spv-prev');
     nextBtn = modal.querySelector('.spv-next');
+    refreshLocale();
     modal.querySelector('.spv-close').addEventListener('click', close);
     prevBtn.addEventListener('click', () => show(current - 1));
     nextBtn.addEventListener('click', () => show(current + 1));
@@ -92,7 +114,7 @@
     initialize();
     const wasClosed = modal.hidden;
     if (wasClosed) { lastFocus = document.activeElement; oldOverflow = document.body.style.overflow; }
-    titleEl.textContent = esc(label || 'Фотографии SHIPÁ');
+    titleEl.textContent = esc(label || photoText('title'));
     thumbsEl.replaceChildren();
     items.forEach((item, i) => {
       const btn = document.createElement('button');
@@ -102,6 +124,7 @@
       thumbsEl.appendChild(btn);
     });
     modal.hidden = false;
+    refreshLocale();
     document.body.style.overflow = 'hidden';
     show(Number.isFinite(+index) ? +index : 0);
     modal.querySelector('.spv-close').focus({ preventScroll: true });

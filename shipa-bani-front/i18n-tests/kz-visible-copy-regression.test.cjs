@@ -30,9 +30,11 @@ test('Catalog cards have complete Kazakh prices and guest/minimum labels',()=>{
  assert.match(html,/>\{\{ h.guestsCountLabel \}\}<\/div>/);
  assert.doesNotMatch(html,/>от \{\{ h.priceFrom \}\}\/ч<\/div>/);
 });
-test('Footer analytics settings and testimonial house captions have KZ strings',()=>{
+test('Footer analytics settings and real guest-video review labels have KZ strings',()=>{
  assert.match(html,/>\{\{ analyticsSettingsLabel \}\}<\/button>/);
  assert.match(html,/Аналитика және жарнама параметрлері/);
- assert.match(html,/01 \/ ТЫНЫС/);
+ assert.match(html,/Бейнепікір/);
+ assert.match(html,/Қонақтарымыздың әсерлері/);
+ assert.doesNotMatch(html,/name:'Айгерим',house:/);
  assert.match(locale,/ПІКІРГЕ СІЛТЕМЕ/);
 });

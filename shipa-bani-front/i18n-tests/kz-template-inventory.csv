@@ -1,0 +1,318 @@
+﻿source,tag,text,exact,partial
+aria-label,button,SHIPA - на главную,False,False
+text,span,Банный комплекс,True,False
+text,span,Караганда,False,False
+aria-label,nav,Основное меню,False,False
+aria-label,a,Написать в WhatsApp,True,True
+title,a,Написать в WhatsApp,True,True
+text,div,Открытие в феврале 2027 · открыта предзапись,True,True
+aria-label,h1,Выбери своё состояние,False,False
+text,span,2ГИС · 128 отзывов,True,True
+aria-label,button,Атмосфера - смотреть ролики комплекса,False,False
+text,span,Атмосфера,True,False
+text,span,ролики комплекса,True,False
+text,a,Удобнее в WhatsApp? Напишите нам →,True,True
+text,div,Подробнее ниже,True,False
+aria-label,svg,Прокрутите ниже,False,False
+aria-label,button,Предыдущие дни,False,False
+aria-label,button,Следующие дни,False,False
+text,div,Гостей,True,False
+text,div,Дети до 7 лет не считаются,True,True
+aria-label,button,Меньше,False,False
+aria-label,button,Больше,False,False
+text,div,"Ответим в WhatsApp за 15 минут. Цены и свободные дома - сразу, без звонков.",True,True
+text,h2,"SHIPÁ - это свой дом, натуральные материалы, тёплый свет и сервис, согласованный заранее.",True,True
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,h2,ЧТО ЗНАЧИТ,True,False
+alt,img,SHIPA - банный комплекс,False,False
+text,div,Буква S,True,False
+text,div,Линия пара,True,False
+text,div,Два дубовых листа,True,False
+text,div,Банный веник,True,False
+text,div,Завиток над A,True,False
+text,div,Тепло,True,False
+text,div,Дома,True,False
+text,p,"Гость выбирает атмосферу, а не номер.",True,True
+text,span,Скоро открытие,True,False
+text,div,Дом достраивается. Откроем бронь позже.,True,True
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,button,Все дома →,True,False
+text,div,Дома,True,False
+text,h2,ЧТО ВХОДИТ,True,False
+text,p,Комплектация домов отличается - точный состав смотрите на странице дома.,True,True
+text,div,Парение,True,False
+text,h2,ПРОГРАММЫ,True,False
+text,span,ПАРЕНИЯ,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,div,На эту дату недоступно,True,True
+text,button,Подробнее,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+aria-label,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+text,h2,АТМОСФЕРА БАННЫХ ДОМОВ,True,True
+text,p,"Ни спешки, ни посторонних. Только вы, пар, вода и тишина.",True,True
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+aria-label,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+text,h2,КУХНЯ,True,False
+text,span,И ЧАЙ,True,False
+text,p,"Восточный стол накрываем к вашему приезду: горячий бешбармак, шашлык на углях, баурсаки с мёдом и травяной чай из самовара.",True,True
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,button,Смотреть всё меню,True,False
+text,h2,С СОБОЙ,True,False
+text,span,ИЗ SHIP,False,False
+text,p,"Полотенца, шапки, масла и веники, которыми пользуетесь в доме",False,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,a,Заказать,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,span,ВИДЕО-ОТЗЫВЫ,True,False
+text,h2,НАШИХ ГОСТЕЙ,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,h2,ОТЗЫВЫ НАШИХ ГОСТЕЙ,True,True
+text,span,В 2ГИС,True,False
+text,span,128 оценок,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,button,Читать далее,True,False
+text,span,2Г,False,False
+text,a,ССЫЛКА НА ОТЗЫВ,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,button,Все отзывы,True,False
+text,a,Оставить отзыв,True,False
+text,p,Не нашли интересующий вас вопрос - задайте его нам,True,True
+text,a,Задать вопрос,True,False
+text,h2,НАШИ,True,False
+text,span,КОНТАКТЫ,True,False
+text,div,"г. Караганда, Кунгей м-н, Казыбек Би район, ул. Жакана Смакова 242",True,True
+text,div,Телефон,True,False
+text,p,Поможем подобрать дом и забронируем его для вас,True,True
+alt,img,"Карта: Караганда, ул. Жакана Смакова 242",False,False
+aria-label,footer,Информация и контакты SHIPA,False,False
+aria-label,button,SHIPA - на главную,False,False
+text,strong,ХОРОШЕЕ МЕСТО,True,False
+text,small,оценки гостей в 2ГИС,True,True
+aria-label,nav,Навигация внизу страницы,False,False
+aria-label,div,Язык сайта,False,False
+text,div,Каталог,True,False
+text,h1,ДОМА SHIP,True,False
+text,div,м²,False,False
+text,div,площадь,True,False
+text,div,гостей,True,False
+text,div,минимум,True,False
+text,button,Подробнее,True,False
+text,div,м²,False,False
+text,a,2ГИС ↗,False,False
+text,span,м²,False,False
+aria-label,div,Другие дома,True,False
+placeholder,image-slot,"Фото: пармастер с веником в пару, тёплый свет",False,False
+text,div,Парение и уход,True,False
+text,h1,ПАРЕНИЕ И УХОД,True,False
+text,p,"Пармастер, веники и травы, массаж и уход после парной. Всё, что нужно, - уже в доме.",True,True
+text,div,Программу добавляете к брони как пожелание - администратор подтвердит её в WhatsApp,True,True
+aria-label,div,Категории,False,False
+text,h2,НАШИ МАСТЕРА,True,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+placeholder,image-slot,Фото мастера со спины или в работе,False,False
+aria-label,nav,Навигация по карточкам,False,False
+aria-label,button,Назад,True,False
+title,button,Назад,True,False
+aria-label,button,Вперёд,True,False
+title,button,Вперёд,True,False
+text,div,Кухня и чай,True,False
+text,h1,КУХНЯ И ЧАЙ,True,False
+text,p,"Казахская и узбекская кухня, травяной чай из самовара. Стол накрываем к вашему приезду.",True,True
+text,div,Блюда добавляете к брони - администратор подтвердит заказ в WhatsApp,True,True
+aria-label,div,Разделы меню,False,False
+placeholder,image-slot,Команда SHIPA,False,False
+text,a,2ГИС,False,False
+text,a,Яндекс,True,False
+text,div,Есть вопрос? Ответим в WhatsApp,True,True
+aria-label,a,Написать в WhatsApp,True,True
+text,div,Листайте фото →,True,False
+text,div,Как проходит,True,False
+text,div,Мастер,True,False
+text,div,Наличие мастера и время сеанса уточняйте у администратора,True,True
+text,a,Уточнить в WhatsApp →,True,True
+text,span,Кому стоит быть осторожнее,True,True
+aria-label,div,Выбранное к брони,False,False
+aria-label,button,Очистить выбор,False,False
+text,button,Продолжить бронь,True,False
+aria-label,button,Видео-приветствие от SHIPA,False,False
+aria-label,div,Видео-приветствие,False,False
+text,div,"Здравствуйте, я пармастер SHIP",False,False
+text,div,Видео со звуком · 0:24,True,True
+aria-label,button,Закрыть приветствие,False,False
+text,span,Мы используем cookie для работы брони.,False,False
+text,button,Хорошо,True,False
+aria-label,nav,Меню,False,False
+text,div,Телефон,True,False
+text,div,"г. Караганда, ул. Жакана Смакова 242",False,False
+text,div,Режим работы,True,False
+aria-label,button,Назад,True,False
+aria-label,button,Закрыть,True,False
+text,span,Открытие в феврале 2027 · открыта предзапись,True,True
+text,h2,Какой дом хотите?,False,False
+text,p,"Запишем вас в список и напишем первыми, когда откроем бронирование",True,True
+text,div,Дата,True,False
+aria-label,button,Предыдущий месяц,True,False
+aria-label,button,Следующий месяц,True,False
+text,div,Гостей,True,False
+text,div,Дети до 7 лет не считаются,True,True
+aria-label,button,Меньше,False,False
+aria-label,button,Больше,False,False
+text,div,Дата,True,False
+text,div,Гостей,True,False
+text,div,Изменить,True,False
+text,div,На эту дату всё занято.,True,True
+text,p,Ближайшие свободные:,True,True
+text,button,Посмотреть дом,True,False
+text,div,Ещё  фото,False,False
+aria-label,button,Назад,True,False
+aria-label,button,Закрыть,True,False
+text,button,Изменить,True,False
+aria-label,button,Меньше гостей,False,False
+aria-label,button,Больше гостей,False,False
+text,div,+ Дети до 7 лет:,False,False
+aria-label,button,Меньше детей,False,False
+aria-label,button,Больше детей,False,False
+text,div,Дети до 7 лет не считаются и не влияют на цену,True,True
+aria-label,div,Формат брони,False,False
+text,span,Заезд,True,False
+text,span,Выезд,True,False
+text,div,Дата заезда,True,False
+aria-label,button,Предыдущие дни,False,False
+aria-label,button,Следующие дни,False,False
+text,div,"Нажмите на час начала - покажем, на сколько можно остаться.",True,True
+text,div,Сколько часов?,True,False
+aria-label,button,Меньше на час,False,False
+aria-label,button,Больше на час,False,False
+text,a,Нужно дольше? Напишите нам →,True,True
+text,button,Нужно дольше? Снять на сутки →,True,True
+text,div,Горячий чан,True,False
+text,div,· готовим к вашему приезду,False,False
+text,span,Горячий чан,True,False
+text,div,входит в стоимость дома,True,True
+text,span,"Бронь на сегодня: администратор позвонит и подтвердит, что дом готов к вашему приезду.",True,True
+text,h2,Как с вами связаться?,True,True
+aria-label,button,Изменить время и опции,True,True
+text,div,* - обязательные поля,True,True
+text,span,"С возвращением,",True,False
+text,button,Не вы?,True,False
+text,label,Имя,True,False
+placeholder,input,Как к вам обращаться,True,True
+text,label,Телефон,True,False
+aria-label,svg,Номер введён,True,False
+text,div,Бронь подтверждается предоплатой,True,True
+text,div,- на следующем шаге,False,False
+text,div,Время опоздания не продлевается,True,True
+text,div,"Без предоплаты и обязательств. Когда откроем бронирование, напишем в WhatsApp и предложим время.",True,True
+text,div,Не получилось отправить.,True,True
+text,a,Напишите нам в WhatsApp,True,True
+text,h2,Предоплата,True,False
+text,span,Предоплата,True,False
+text,span,"Бронь на сегодня: администратор позвонит и подтвердит, что дом готов к вашему приезду.",True,True
+text,div,Бронь подтверждается предоплатой.,True,True
+text,button,Оплачу позже,True,False
+text,h2,Вы в списке,True,False
+text,p,"Напишем первыми, когда откроется бронирование.",True,True
+text,button,На главную,True,False
+text,span,"Бронь на сегодня: администратор позвонит и подтвердит, что дом готов к вашему приезду.",True,True
+text,div,Бронь №,True,False
+text,div,назовите его администратору по телефону,True,True
+text,button,Выбрать меню к приезду,True,True
+text,button,Добавить в календарь,True,True
+aria-label,div,Куда добавить?,True,False
+text,span,Как добраться,True,False
+text,span,Заказать еду к приезду,True,True
+text,button,На главную,True,False
+text,div,Заполните отмеченные поля,True,True
+aria-label,button,Показать расчёт,False,False
+aria-label,button,Закрыть,True,False
+text,span,Итого,True,False
+text,div,"Опции «подтвердит администратор» в итог не входят, их стоимость сообщим в WhatsApp.",True,True
+text,div,Событие откроется уже заполненным - останется нажать «Сохранить». Напоминания: за сутки и за 2 часа.,True,True
+text,p,"Цена за час зависит от времени суток и дня недели. Часы считаются по тарифу того периода, в который они попадают. Гости сверх включённых - доплата за визит, не за час.",True,True
+text,div,Пример ·,False,False
+text,span,Итого,True,False
+text,button,Понятно,True,False
+text,div,Спасибо!,True,False
+text,p,Отзыв появится после проверки администратором. Пока он виден только вам - с меткой «На проверке».,True,True
+text,button,Понятно,True,False
+placeholder,textarea,Что понравилось? Что можно улучшить? Хотя бы 20 символов,False,False
+aria-label,button,Убрать фото,False,False
+text,label,Добавить фото,True,False
+text,span,до 3 фото,True,False
+placeholder,input,Как вас зовут,False,False
+text,span,Согласен на публикацию отзыва и фото на сайте SHIPA,True,True
+text,button,Понятно,True,False
+aria-label,button,Предыдущий месяц,True,False
+aria-label,button,Следующий месяц,True,False
+text,div,Зачёркнутые дни заняты полностью.,True,True
+text,div,Гостей,True,False
+text,div,Дети до 7 лет не считаются,True,True
+aria-label,button,Меньше,False,False
+aria-label,button,Больше,False,False
+text,button,Отправить,True,False
+aria-label,button,Закрыть галерею,False,False
