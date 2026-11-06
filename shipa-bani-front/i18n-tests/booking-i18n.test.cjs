@@ -58,7 +58,9 @@ test('integration: loader order + dynamic B translation call + explicit consent 
  assert.ok(html.includes('window.ShipaBookingI18n.view(B)'));
  assert.ok(html.includes('id="bk-agree"'));
  assert.ok(html.includes('id="bk-privacy"'));
- assert.ok(html.includes('href="{{ legalConsentUrl }}" target="_blank"'));
+ assert.ok(html.includes('href="{{ legalConsentUrl }}"'));
+ assert.ok(html.includes("const slugFromLink=(anchor)=>"));
+ assert.ok(html.includes("document.addEventListener('click',function(event)"));
 });
 
 test('regression: screenshot — programme details and daily booking strings fully translate', () => {

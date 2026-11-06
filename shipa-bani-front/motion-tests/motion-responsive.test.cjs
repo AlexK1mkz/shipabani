@@ -5,8 +5,8 @@ const html = fs.readFileSync(require('node:path').join(__dirname, '..', 'index.h
 
 test('all eight site sections have a route-entry animation hook', () => {
   for (const name of ['Главная','Дома','Карточка дома','Парение и услуги','Кухня','Отзывы','О нас','Контакты'])
-    assert.ok(html.includes(`class="shipa-page-enter" data-screen-label="${name}"`), name);
-  assert.equal((html.match(/class="shipa-page-enter"/g)||[]).length, 8);
+    assert.ok(new RegExp(`class=\"shipa-page-enter(?: [^\"]+)?\" data-screen-label=\"${name}\"`).test(html), name);
+  assert.equal((html.match(/class="shipa-page-enter(?: [^"]+)?" data-screen-label=/g)||[]).length, 8);
 });
 test('route animation respects native transition support and reduced-motion', () => {
   for (const token of ['routeTransition(apply)', "data-shipa-native-vt", 'shipaRouteEnter','shipaRouteExit','prefers-reduced-motion:reduce'])

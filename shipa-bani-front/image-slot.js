@@ -1110,7 +1110,7 @@
           y: stored && Number.isFinite(stored.y) ? stored.y : 0,
         };
       }
-      this._cap.textContent = this.getAttribute('placeholder') || 'Drop an image';
+      this._cap.textContent = this.getAttribute('placeholder') || (document.documentElement.lang === 'kk' ? 'Фотосурет әзірге жоқ' : 'Изображение пока недоступно');
       // Toggle via style.display — the [hidden] attribute alone loses to
       // the display:flex / display:block rules in the stylesheet above.
       // An Unsplash src with no credit attribute must NOT render — showing

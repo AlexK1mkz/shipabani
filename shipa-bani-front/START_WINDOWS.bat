@@ -6,7 +6,7 @@ if exist "..\e-menu\index.html" (
   cd ..
   set "SHIPA_PAGE=shipa-bani-front/index.html"
 ) else (
-  echo Note: e-menu must be placed alongside shipa-bani-front to open the full menu locally.
+  echo The built-in Kitchen page will open when external e-menu is not configured.
 )
 echo SHIPA - local development server on http://localhost:8000/%SHIPA_PAGE%
 where py >nul 2>&1

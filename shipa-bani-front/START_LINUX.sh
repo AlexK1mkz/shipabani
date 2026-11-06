@@ -5,7 +5,7 @@ if [ -f '../e-menu/index.html' ]; then
   cd .. || exit 1
   PAGE='shipa-bani-front/index.html'
 else
-  echo 'Note: for local full menu, put e-menu alongside shipa-bani-front.'
+  echo 'Built-in Kitchen page available; no sibling e-menu required.'
 fi
 if command -v python3 >/dev/null 2>&1; then
   (sleep 1; (xdg-open "http://localhost:8000/$PAGE" >/dev/null 2>&1 || true)) &

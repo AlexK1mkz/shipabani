@@ -1,16 +1,5 @@
-repo: AlexK1mkz/vibe
-branch: main
-path: shipa_house
+# SHIPÁ — repository notes
 
-## Last sync
-date: 2026-09-18T15:05:29Z
-### Updated in this project
-- Repo `shipa_house/index.html` is the pre-TZ snapshot of `SHIPA.dc.html`; project version is newer (TZ 16.09 applied, address updated, multi-day duration).
-- Prepared `export/shipa_house/` with updated index.html, SHIPA.dc.html, support.js, image-slot.js, brand/, img/, CHANGELOG.md for commit.
+This release package is a cleaned standalone copy of the current SHIPÁ frontend. It is not a Git checkout; no `.git` history is included. Legacy sync information was removed because it referred to a September 2026 snapshot and an archived `export/` directory absent from this release.
 
-## Screen map
-| Screen | Repo files |
-| --- | --- |
-| SHIPA.dc.html (all screens: home, catalog, house, services, kitchen, reviews, about, contacts, booking) | shipa_house/index.html, shipa_house/support.js, shipa_house/image-slot.js |
-| Logos, map | shipa_house/brand/* |
-| House renders | shipa_house/img/* |
+For changes in the current release, see `README_UPDATES_2026-11-06.md`.
