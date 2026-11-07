@@ -3652,6 +3652,7 @@ class Component extends DCLogic {
   laneTap(e,open){
     const card=e.currentTarget.closest('[data-card]');if(!card)return;
     if(open){
+      if(e.target&&e.target.closest&&e.target.closest('.shipa-inline-video'))return; // clicks inside the running player (stop button) never re-trigger play
       const id=String(card.dataset.videoId||'');
       if(!/^[a-zA-Z0-9_-]{11}$/.test(id))return;
       e.stopPropagation();

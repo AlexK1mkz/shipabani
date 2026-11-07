@@ -39,7 +39,8 @@ test('clicking a clip starts a real Shorts embed inline inside the card, not in 
 test('player starts on intentional click, stops on Escape or the stop button, and does not preload iframes',()=>{
  assert.match(html,/this\.state\.playing&&e\.key==='Escape'/);
  assert.match(html,/stopVideo\(\)\{if\(this\.state\.playing\)this\.setState\(\{playing:null\}\);\}/);
- assert.match(html,/if\(open\)\{\s*const id=String\(card\.dataset\.videoId/);
+ assert.match(html,/if\(open\)\{[^]*?const id=String\(card\.dataset\.videoId/);
+ assert.match(html,/closest\('\.shipa-inline-video'\)\)return;/);
  assert.match(html,/if\(s\.playing&&prev\.screen!==s\.screen\)/);
  assert.match(html,/\.shipa-inline-video\{[^}]*animation:shipaVidIn/);
  assert.match(html,/@media\(prefers-reduced-motion:reduce\)\{\.shipa-inline-video/);
