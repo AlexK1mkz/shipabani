@@ -41,8 +41,8 @@ test('links: no anchors with empty / hash-only / javascript hrefs',()=>{
   }
 });
 
-test('menu CTA is reachable in shipped archive, external URL remains configurable',()=>{
-  assert.match(html,/openMenuUrl\(\)\{[\s\S]*?if\(target\)\{window\.location\.assign\([\s\S]*?this\.go\('kitchen'\)/);
+test('menu CTA opens internal kitchen, including after returning from booking',()=>{
+  assert.match(html,/openMenuUrl\(\)\{this\.goKitchenSection\(\);\}/);
   assert.match(html,/openMenu:\(\)=>\{this\.setState\(\{bk:null,[\s\S]*?this\.goKitchenSection\(\)/);
   assert.match(html,/<sc-if value="\{\{ isKitchen \}\}"/);
 });

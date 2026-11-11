@@ -15,7 +15,7 @@ test('Kitchen table action and testimonials subtitle are explicitly localized',(
  assert.match(html,/\{\{ addTableLabel \}\}/);
  assert.match(html,/\{\{ addTableHint \}\}/);
  assert.match(html,/\{\{ homeReviewsIntroText \}\}/);
- assert.match(html,/addTableLabel:s.lang==='KZ'\?'Брондауға дастарқан қосу'/);
+ assert.match(html,/addTableLabel:s.lang==='KZ'\?'Брондауға тағам таңдау'/);
 });
 test('Booking paid and pending results have native Kazakh wording',()=>{
  assert.match(html,/title:s.lang==='KZ'\?\(bk.paid\?'Брондау расталды'/);

@@ -16,30 +16,24 @@ function method(name,context={}) {
   assert.ok(end>b);
   return vm.runInNewContext(`({${html.slice(start,end)}})`,context)[name];
 }
-test('Full menu CTA navigates to sibling e-menu folder, not internal kitchen screen',()=>{
-  let opened='';
-  const context={URL,window:{location:{href:'https://alexk1mkz.github.io/shipabani/shipa-bani-front/index.html',assign:(href)=>opened=href}}};
-  method('openMenuUrl',context).call({props:{menuUrl:'../e-menu/'}});
-  assert.equal(opened,'https://alexk1mkz.github.io/shipabani/e-menu/');
-  assert.match(html,/<button[^>]+data-menu-cta="1"[^>]+onClick="\{\{ goKitchen \}\}"/);
-  assert.match(html,/goKitchen:\(\)=>this\.openMenuUrl\(\)/);
-  assert.match(html,/menuUrl:'\.\.\/e-menu\/'/);
+test('Full menu CTA uses the internal kitchen screen, even when an old external URL exists',()=>{
+ let screen='';
+ method('openMenuUrl').call({goKitchenSection:()=>screen='kitchen',props:{menuUrl:'../e-menu/'}});
+ assert.equal(screen,'kitchen');
+ assert.match(html,/data-menu-cta="1" data-shipa-kitchen="1"/);
+ assert.match(html,/goKitchen:\(\)=>this\.goKitchenSection\(\)/);
 });
-test('Kitchen links in header, full-screen nav and booking point to e-menu',()=>{
-  let called=0;
-  method('goKitchenSection').call({openMenuUrl:()=>called++});
-  assert.equal(called,1);
-  assert.match(html,/menuItems=MENU\.map[\s\S]*?sc==='kitchen'\?this\.goKitchenSection\(\):this\.go\(sc\)/);
-  assert.match(html,/navItems=\[/);
-  assert.match(html,/openMenu:\(\)=>\{this\.closeBooking\(\);this\.goKitchenSection\(\);\}/);
-  assert.match(html,/const menuLink='\.\.\/e-menu\/'/);
+test('Header, fullscreen mobile nav, footer and kitchen buttons all route internally',()=>{
+ let screen='';method('goKitchenSection').call({go:s=>screen=s});assert.equal(screen,'kitchen');
+ for(const needle of ['data-shipa-nav-screen="{{ n.screen }}"','data-shipa-nav-screen="{{ m.screen }}"','data-shipa-kitchen="1"'])
+   assert.ok(html.includes(needle),needle);
+ assert.match(html,/document\.addEventListener\('click',this\.onKitchenRouteClick,true\)/);
+ assert.match(html,/const navItems=\[\['Дома','houses'\],\['Парение','services'\],\['Кухня','kitchen'\]/);
 });
-test('Menu URL works for repo-root localhost server',()=>{
-  let opened='';
-  const context={URL,window:{location:{href:'http://localhost:8000/shipa-bani-front/index.html',assign:(href)=>opened=href}}};
-  method('openMenuUrl',context).call({props:{menuUrl:'../e-menu/'}});
-  assert.equal(opened,'http://localhost:8000/e-menu/');
-  assert.match(fs.readFileSync(path.join(__dirname,'..','START_WINDOWS.bat'),'utf8'), /\\e-menu\\index\.html/);
+test('Kitchen has a direct-load hash route for old or shared links',()=>{
+ assert.match(html,/window\.location\.hash==='#kitchen'/);
+ assert.match(html,/const hash=screen==='kitchen'\?'#kitchen':''/);
+ assert.ok(html.includes('<sc-if value="{{ isKitchen }}"'));
 });
 test('Menu CTA remains localized and accessible',()=>{
   assert.match(html,/menuCtaAccessibleLabel:s\.lang==='KZ'\?/);

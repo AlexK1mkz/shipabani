@@ -45,9 +45,10 @@ test('Return from house detail keeps step, date and guests and restores route',(
  assert.equal(c.state.bk.step,2);assert.equal(c.state.bk.date,6);assert.equal(c.state.bk.guests,3);
  assert.equal(c.state.savedBk,null);
 });
-test('Kitchen CTA starts a booking with selected table service',()=>{
- const c={openBooking:(...args)=>c.args=args};getMethod('beginTableBooking').call(c);
- assert.deepEqual(Array.from(c.args[4]),['table']);
+test('Kitchen CTA opens dishes first and only later allows selecting a date and house',()=>{
+ const c={goKitchenSection:()=>c.next='kitchen'};getMethod('beginTableBooking').call(c);
+ assert.equal(c.next,'kitchen');
+ assert.match(html,/cartGoLabel:screen==='kitchen'/);
  assert.match(html,/beginTableBooking:.*this\.beginTableBooking/);
 });
 test('Tariff and availability colors are explained separately',()=>{

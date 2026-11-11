@@ -12,10 +12,11 @@ test('full screen viewer script is loaded locally', () => {
 test('viewer has accessible controls, arrows, thumbnails and keyboard', () => {
   for (const pattern of [/aria-modal/, /spv-prev/, /spv-next/, /spv-thumb/, /ArrowLeft/, /ArrowRight/, /Escape/, /aria-current/, /pointerdown/, /pointerup/, /body\.style\.overflow/]) assert.match(viewer, pattern);
 });
-test('house photo collage opens a full gallery', () => {
-  assert.match(html, /gallery=gsrc\.map/);
-  assert.match(html, /ShipaPhotoViewer\?\.open\(gsrc,i,hk\.name\)/);
-  assert.match(html, /openAllHousePhotos:\(\)=>window\.ShipaPhotoViewer\?\.open\(gsrc,0,hk\.name\)/);
+test('house detail has the full three-photo carousel with swipe and arrow navigation', () => {
+ assert.match(html,/gallery=gsrc\.map/);
+ assert.match(html,/class="shipa-house-carousel"/);
+ assert.match(html,/class="shipa-house-carousel__arrow[^"]*shipa-house-carousel__arrow--next"/);
+ assert.match(html,/id="shipa-swipes-inline"/);
 });
 test('catalog has a dedicated photo button without replacing house link', () => {
   assert.match(html, /shipa-photo-catalog-action/);

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="shipa-build" content="2026-11-11-kitchen-sibling-e-menu-v1">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
@@ -77,6 +78,182 @@
   }
   @media(prefers-reduced-motion:reduce){.shipa-legal-dialog__scroll{scroll-behavior:auto}}
 </style>
+<style id="shipa-meaning-number-layout">
+  /* The callouts live in their OWN GRID COLUMNS rather than overlaying the logo.
+     This prevents intersections on iPhone sizes down to 320px. */
+  .shipa-meaning-logo-map{
+    display:grid;
+    grid-template-columns:28px minmax(0,1fr) 28px;
+    grid-template-rows:auto;
+    column-gap:12px;
+    align-items:stretch;
+    position:relative;
+    padding:24px 0 20px;
+    isolation:isolate;
+    width:100%;
+    min-width:0;
+  }
+  .shipa-meaning-logo-image{
+    grid-area:1 / 2;
+    display:block;
+    width:100%;max-width:100%;height:auto;
+    align-self:center;
+    object-fit:contain;
+  }
+  .shipa-meaning-pin{
+    position:relative;z-index:1;
+    display:flex;align-items:center;justify-content:center;
+    width:28px;height:28px;
+    border-radius:999px;
+    background:#C15C22;color:#F9EFE3;
+    font:700 13px/1 Inter,system-ui,sans-serif;
+    pointer-events:none;user-select:none;
+    box-shadow:none;
+    left:auto;right:auto;top:auto;bottom:auto;
+    transform:none;
+    margin:0;
+  }
+  .shipa-meaning-pin::after{
+    content:"";position:absolute;top:50%;width:10px;height:1px;
+    background:#C15C22;transform:translateY(-50%);
+  }
+  .shipa-meaning-pin--1{
+    grid-area:1 / 1;
+    justify-self:center;align-self:start;
+    margin-top:0;
+  }
+  .shipa-meaning-pin--2{
+    grid-area:1 / 1;
+    justify-self:center;align-self:end;
+    margin-bottom:0;
+  }
+  .shipa-meaning-pin--3{
+    grid-area:1 / 3;
+    justify-self:center;align-self:start;
+    margin-top:6px;
+  }
+  .shipa-meaning-pin--1::after,.shipa-meaning-pin--2::after{left:100%;}
+  .shipa-meaning-pin--3::after{right:100%;}
+  @media(max-width:480px){
+    .shipa-meaning-logo-map{grid-template-columns:25px minmax(0,1fr) 25px;column-gap:9px;padding:14px 0 16px;}
+    .shipa-meaning-pin{width:25px;height:25px;font-size:12px;}
+    .shipa-meaning-pin::after{width:7px;}
+    .shipa-meaning-pin--3{margin-top:3px;}
+  }
+  @media(max-width:350px){
+    .shipa-meaning-logo-map{grid-template-columns:23px minmax(0,1fr) 23px;column-gap:6px;}
+    .shipa-meaning-pin{width:23px;height:23px;font-size:11px;}
+    .shipa-meaning-pin::after{width:5px;}
+  }
+</style>
+<style id="shipa-release-gallery-and-brand">
+
+  /* The complete A+steam glyph is cropped directly from the brand-approved logo.
+     No substitute accent marks or fonts. The last A stays orange, the steam
+     is navy on light surfaces and cream on dark ones. */
+  .shipa-brand-wordmark{display:inline;white-space:nowrap;font:inherit;letter-spacing:inherit;text-transform:inherit;}
+  .shipa-brand-steam-a{display:inline-block;position:relative;width:.69em;height:0;vertical-align:baseline;line-height:0;color:transparent!important;white-space:nowrap;font-size:inherit;}
+  .shipa-brand-steam-a::after{content:"";position:absolute;left:-.025em;bottom:-.36em;width:.76em;height:1.075em;background-image:url("data:image/png;base64,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");background-repeat:no-repeat;background-position:center bottom;background-size:contain;pointer-events:none;}
+  .shipa-brand-on-dark .shipa-brand-steam-a::after{background-image:url("data:image/png;base64,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");}
+  /* Preserve the wordmark as one word even at mobile widths. */
+  /* Native horizontal swipe is essential on Mobile Safari. */
+  .shipa-catalog-photo-track{touch-action:auto!important;-webkit-overflow-scrolling:touch!important;scroll-snap-type:x mandatory!important;}
+  .shipa-catalog-photo-track>img{scroll-snap-stop:always;}
+  .shipa-house-carousel{touch-action:pan-y pinch-zoom;}
+</style>
+<script id="shipa-brand-global-fix">(() => {
+  'use strict';
+  /* Dynamic RU/KZ strings and injected dialogs must use the same logo A. */
+  const HAS_BRAND=/SHIP(?:Á|A(?:\u0301)?)/;
+  const BRANDS=/SHIP(?:Á|A(?:\u0301)?)/g;
+  const SKIP=new Set(['SCRIPT','STYLE','NOSCRIPT','TEXTAREA','CODE','PRE','OPTION']);
+  const ATTRS=['aria-label','title','alt','placeholder'];
+  function isDarkText(parent){
+    try {
+      const c=getComputedStyle(parent).color;
+      const m=c.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/);
+      if(!m)return false;
+      const r=Number(m[1]),g=Number(m[2]),b=Number(m[3]);
+      return (.2126*r+.7152*g+.0722*b)>155;
+    } catch (_) {return false;}
+  }
+  function makeWord(doc,parent){
+    const wrap=doc.createElement('span');
+    wrap.className='shipa-brand-wordmark'+(isDarkText(parent)?' shipa-brand-on-dark':'');
+    wrap.innerHTML='SHIP<span class="shipa-brand-steam-a">A</span>';
+    return wrap;
+  }
+  function replaceText(node){
+    const value=node?.nodeValue;
+    if(!value || !HAS_BRAND.test(value))return;
+    const parent=node.parentNode;
+    if(!parent || parent.nodeType!==1 || SKIP.has(parent.tagName) || parent.closest('.shipa-brand-wordmark'))return;
+    const doc=parent.ownerDocument,frag=doc.createDocumentFragment();
+    let end=0;
+    for(const match of value.matchAll(BRANDS)){
+      const i=match.index;
+      if(i>end)frag.appendChild(doc.createTextNode(value.slice(end,i)));
+      frag.appendChild(makeWord(doc,parent));
+      end=i+match[0].length;
+    }
+    if(end<value.length)frag.appendChild(doc.createTextNode(value.slice(end)));
+    parent.replaceChild(frag,node);
+  }
+  function normalizeAttributes(root){
+    const elements=[];
+    if(root.nodeType===1)elements.push(root);
+    if(root.querySelectorAll)elements.push(...root.querySelectorAll('[aria-label],[title],[alt],[placeholder]'));
+    for(const el of elements){
+      for(const name of ATTRS){
+        const val=el.getAttribute?.(name);
+        if(val && /SHIPÁ|SHIPA\u0301/.test(val))el.setAttribute(name,val.replace(/SHIPÁ|SHIPA\u0301/g,'SHIPA'));
+      }
+    }
+    if(document.title.includes('SHIPÁ'))document.title=document.title.replace(/SHIPÁ/g,'SHIPA');
+  }
+  function scan(root){
+    if(!root || !root.isConnected)return;
+    const doc=root.ownerDocument||document;
+    const nodes=[];
+    if(root.nodeType===3)nodes.push(root);
+    else {
+      const walker=doc.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+        acceptNode(node){
+          if(!node.nodeValue || !HAS_BRAND.test(node.nodeValue))return NodeFilter.FILTER_REJECT;
+          const parent=node.parentNode;
+          if(!parent || parent.nodeType!==1 || SKIP.has(parent.tagName) || parent.closest('.shipa-brand-wordmark'))return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      let cur;while((cur=walker.nextNode()))nodes.push(cur);
+    }
+    for(const node of nodes)replaceText(node);
+    if(root.nodeType===1){
+      // Existing, template-authored wordmarks are also themed correctly.
+      const words=[...(root.matches('.shipa-brand-wordmark')?[root]:[]),...root.querySelectorAll('.shipa-brand-wordmark')];
+      for(const word of words)word.classList.toggle('shipa-brand-on-dark',isDarkText(word.parentElement||word));
+      normalizeAttributes(root);
+    }
+  }
+  function start(){
+    scan(document.body);
+    const observer=new MutationObserver(changes=>{
+      const added=new Set();
+      for(const m of changes){
+        if(m.type==='characterData'){if(HAS_BRAND.test(m.target.nodeValue||''))added.add(m.target);}
+        else for(const node of m.addedNodes){
+          if(node.nodeType===3 && HAS_BRAND.test(node.nodeValue||''))added.add(node);
+          else if(node.nodeType===1)added.add(node);
+        }
+      }
+      // Scan newly added roots, not the full application DOM on every render.
+      for(const node of added)scan(node);
+    });
+    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
+  else start();
+})();</script>
 </head>
 <body>
 <x-dc>
@@ -86,6 +263,78 @@
   <script src="./image-slot.js"></script>
   <script defer src="./shipa-photo-viewer.js"></script>
   <script defer src="./shipa-carousel-nav.js"></script>
+  <script id="shipa-swipes-inline">/* SHIPÁ v20261111: swipe catalog and house galleries; native Safari first. */
+(() => {
+ 'use strict';
+ if (window.__SHIPA_GALLERY_SWIPE_V3) return;
+ window.__SHIPA_GALLERY_SWIPE_V3 = true;
+ const CATALOG='.shipa-catalog-photo-track';
+ const DETAIL='.shipa-house-carousel';
+ const selector=CATALOG+','+DETAIL;
+ const minDx=32;
+ let touch=null,mouse=null,suppressUntil=0,suppressLane=null;
+ const getLane=target=>target instanceof Element?target.closest(selector):null;
+ const onButton=target=>target instanceof Element&&!!target.closest('button');
+ function catalogIndex(lane){return Math.round(lane.scrollLeft/Math.max(1,lane.clientWidth));}
+ function catalogGo(lane,direction,originIndex){
+   const items=lane.querySelectorAll(':scope > img');
+   if(items.length<2)return;
+   const next=Math.max(0,Math.min(items.length-1,originIndex+direction));
+   lane.scrollTo({left:next*lane.clientWidth,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+ }
+ function go(lane,direction,index){
+   if(!lane||!lane.isConnected)return;
+   if(lane.matches(DETAIL)){
+     const arrow=lane.querySelector(direction>0?'.shipa-house-carousel__arrow--next':'.shipa-house-carousel__arrow--prev');
+     if(arrow&&!arrow.disabled)arrow.click();
+   }else catalogGo(lane,direction,index);
+ }
+ function complete(g,x,y){
+   if(!g||!g.lane.isConnected)return;
+   const dx=x-g.x,dy=y-g.y;
+   if(Math.abs(dx)<minDx||Math.abs(dx)<Math.abs(dy)*1.3)return;
+   suppressUntil=Date.now()+700;suppressLane=g.lane;
+   const dir=dx<0?1:-1;
+   if(g.lane.matches(DETAIL)){go(g.lane,dir,g.index);return;}
+   // If Safari has performed its own horizontal scroll, do not advance twice.
+   setTimeout(()=>{
+     if(!g.lane.isConnected)return;
+     if(Math.abs(g.lane.scrollLeft-g.left)>6)return;
+     go(g.lane,dir,g.index);
+   },90);
+ }
+ document.addEventListener('touchstart',e=>{
+   if(e.touches.length!==1||onButton(e.target)){touch=null;return;}
+   const lane=getLane(e.target);if(!lane){touch=null;return;}
+   const t=e.changedTouches[0];
+   touch={lane,x:t.clientX,y:t.clientY,left:lane.scrollLeft,index:catalogIndex(lane),id:t.identifier};
+ },{capture:true,passive:true});
+ document.addEventListener('touchend',e=>{
+   const g=touch;touch=null;if(!g)return;
+   for(const t of e.changedTouches)if(t.identifier===g.id){complete(g,t.clientX,t.clientY);break;}
+ },{capture:true,passive:true});
+ document.addEventListener('touchcancel',()=>{touch=null},{capture:true,passive:true});
+ document.addEventListener('pointerdown',e=>{
+   if(e.pointerType!=='mouse'||e.button!==0||onButton(e.target))return;
+   const lane=getLane(e.target);if(lane)mouse={lane,x:e.clientX,y:e.clientY,left:lane.scrollLeft,index:catalogIndex(lane)};
+ },true);
+ document.addEventListener('pointerup',e=>{
+   if(e.pointerType!=='mouse')return;
+   const g=mouse;mouse=null;complete(g,e.clientX,e.clientY);
+ },true);
+ document.addEventListener('pointercancel',()=>{mouse=null},true);
+ document.addEventListener('click',e=>{
+   if(Date.now()>suppressUntil||!suppressLane||!suppressLane.contains(e.target)||onButton(e.target))return;
+   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+ },true);
+ document.addEventListener('keydown',e=>{
+   if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
+   const lane=getLane(e.target);
+   if(!lane||e.target!==lane)return;
+   e.preventDefault();go(lane,e.key==='ArrowRight'?1:-1,catalogIndex(lane));
+ },true);
+})();
+</script>
   <style>
 
     /* User-flow UX: clear exit, resumable draft, intuitive tariff/status legends, compact mobile extras. */
@@ -121,6 +370,7 @@
     .shipa-book-gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:44px;height:44px;border-radius:50%;background:rgba(249,239,227,.94);color:#0A2F4F;display:grid;place-items:center;font-size:30px;cursor:pointer}.shipa-book-gallery-arrow--prev{left:12px}.shipa-book-gallery-arrow--next{right:12px}
     .shipa-book-gallery-arrow:focus-visible{outline:3px solid #C15C22}.shipa-book-gallery-thumbs button{flex-shrink:0}
     @media(max-width:600px){.shipa-photo-catalog-action{right:9px;bottom:10px;min-height:40px}.shipa-book-gallery-arrow{width:38px;height:38px}.shipa-book-gallery-arrow--prev{left:6px}.shipa-book-gallery-arrow--next{right:6px}}
+<<<<<<< HEAD
     /* SHIPÁ YouTube Shorts: click-to-play directly inside the carousel card (no modal). */
     .shipa-inline-video{position:absolute;inset:0;z-index:5;background:#101820;border-radius:inherit;overflow:hidden;animation:shipaVidIn .38s cubic-bezier(.2,.8,.2,1);}
     .shipa-inline-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;z-index:2;}
@@ -140,6 +390,28 @@
     @keyframes shipaSpin{to{transform:rotate(360deg)}}
     @media(prefers-reduced-motion:reduce){.shipa-inline-video,.shipa-inline-video__stop{animation:none;}}
     /* House gallery: one slide at a time, controlled exclusively by arrows. */
+=======
+    /* SHIPÁ actual YouTube Shorts: portrait previews + an accessible click-to-play player. */
+    .shipa-video-overlay{position:fixed;inset:0;z-index:var(--z-gallery);display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(7,24,38,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn .2s ease;}
+    .shipa-video-dialog{width:min(410px,calc(100vw - 36px),44dvh);max-width:100%;display:flex;flex-direction:column;gap:0;border-radius:18px;overflow:hidden;background:#0A2F4F;color:#F9EFE3;box-shadow:0 26px 80px rgba(0,0,0,.4);}
+    .shipa-video-dialog__header{min-height:52px;padding:6px 10px 6px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .shipa-video-dialog__title{font-size:15px;line-height:1.4;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .shipa-video-dialog__close{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:50%;color:#F9EFE3;background:rgba(255,255,255,.14);}
+    .shipa-video-dialog__close:hover{background:rgba(255,255,255,.22);}
+    .shipa-video-dialog__frame{position:relative;aspect-ratio:9/16;background:#101820;}
+    .shipa-video-dialog__frame iframe{position:absolute;inset:0;width:100%;height:100%;display:block;border:0;}
+    .shipa-video-dialog__footer{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 16px;font-size:12px;color:rgba(249,239,227,.78);}
+    .shipa-video-dialog__external{display:inline-flex;align-items:center;min-height:36px;font-size:12px;font-weight:700;color:#F9EFE3;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
+    .shipa-video-dialog__close:focus-visible,.shipa-video-dialog__external:focus-visible{outline:3px solid #C15C22;outline-offset:2px;}
+    @media(max-height:600px){.shipa-video-dialog{width:min(310px,calc(100vw - 36px),39dvh);}.shipa-video-dialog__header,.shipa-video-dialog__footer{min-height:44px;}}
+    @media(prefers-reduced-motion:reduce){.shipa-video-overlay{animation:none;}}
+    /* Swipe gestures on catalog and detail photos, without pagination dots. */
+    .shipa-catalog-photo-track{touch-action:pan-y!important;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;overscroll-behavior-x:contain;}
+    .shipa-catalog-photo-track:focus-visible{outline:3px solid #C15C22;outline-offset:-3px;border-radius:20px;}
+    .shipa-catalog-photo-track>img{-webkit-user-select:none;user-select:none;-webkit-user-drag:none;}
+    @media(prefers-reduced-motion:reduce){.shipa-catalog-photo-track{scroll-behavior:auto;}}
+    /* House gallery: swipe on touch screens, arrows for mouse/keyboard. */
+>>>>>>> e88f576 (fix: SHIPA mobile UI, logo, kitchen navigation and gallery)
     .shipa-house-page{padding:100px 0 110px;}
     @media(max-width:767px){.shipa-house-page{padding-top:82px;}}
     .shipa-house-hero{max-width:1160px;padding:0 20px;display:flex;flex-direction:column;gap:12px;}
@@ -687,7 +959,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <sc-if value="{{ hdrNav }}" hint-placeholder-val="{{ true }}">
         <nav aria-label="Основное меню" style="display:flex;gap:{{ hdrNavGap }};align-items:center;">
           <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
-            <button data-nav="1" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;display:flex;align-items:center;font-size:15px;font-weight:500;letter-spacing:.01em;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
+            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;display:flex;align-items:center;font-size:15px;font-weight:500;letter-spacing:.01em;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
           </sc-for>
         </nav>
       </sc-if>
@@ -849,7 +1121,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   </sc-if>
 
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:56px 20px 0;">
-    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;">SHIPÁ - это свой дом, натуральные материалы, тёплый свет и сервис, согласованный заранее.</h2>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(28px,6.4vw,44px);letter-spacing:.02em;line-height:1.15;margin:0 auto 24px;max-width:760px;text-wrap:balance;text-align:center;"><span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span> — это свой дом, натуральные материалы, тёплый свет и сервис, согласованный заранее.</h2>
     <div id="car-about" class="noscroll lane {{ gridCls }}" style="margin:0 -20px;--kd:4;--kt:2.4;--km:1.2;--gc:4;">
       <sc-for list="{{ aboutItems }}" as="a" hint-placeholder-count="4">
         <div data-card="1" style="aspect-ratio:3/4;overflow:hidden;background:#3B2F2A;position:relative;border-radius:20px;">
@@ -870,14 +1142,14 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <div data-bgmark="1" aria-hidden="true" style="position:relative;height:0;z-index:0;"><div style="position:absolute;left:-140px;top:-20px;width:680px;height:680px;background:rgba(10,47,79,.16);-webkit-mask:url(brand/orn-venik.svg) center/contain no-repeat;mask:url(brand/orn-venik.svg) center/contain no-repeat;pointer-events:none;"></div></div>
   <section data-reveal data-screen-label="Что значит SHIPA" style="max-width:var(--wrap);margin:0 auto;padding:64px 20px 0;">
     <div style="max-width:1000px;margin:0 auto;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;text-align:center;">ЧТО ЗНАЧИТ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;text-align:center;">ЧТО ЗНАЧИТ <span style="color:#C15C22;"><span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span></span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.55;max-width:560px;text-align:center;color:rgba(10,47,79,.8);text-wrap:pretty;">{{ shipaMeaningText }}</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:28px 48px;align-items:center;margin-top:36px;">
         <div style="padding:48px 28px 40px;background:#F9EFE3;">
-          <div style="position:relative;">
-            <img src="brand/logo-navy.png" alt="SHIPA - банный комплекс" style="width:100%;height:auto;display:block;">
+          <div class="shipa-meaning-logo-map" aria-label="Детали фирменного знака SHIPA">
+            <img src="brand/logo-navy.png" alt="Логотип SHIPA: линия пара, дубовые листья и буква A с завитком" class="shipa-meaning-logo-image">
             <sc-for list="{{ meaningPins }}" as="pin" hint-placeholder-count="3">
-              <span style="{{ pin.style }}">{{ pin.n }}</span>
+              <span class="shipa-meaning-pin shipa-meaning-pin--{{ pin.n }}" aria-hidden="true">{{ pin.n }}</span>
             </sc-for>
           </div>
         </div>
@@ -937,21 +1209,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     </div>
   </section>
 
-  <section data-reveal style="background:#0A2F4F;color:#F9EFE3;margin-top:56px;padding:56px 20px 48px;">
-    <div style="max-width:var(--wrap);margin:0 auto;">
-      <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.7;font-weight:600;margin-bottom:12px;text-align:center;">Дома</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;margin:0 0 32px;line-height:1.05;text-align:center;">ЧТО ВХОДИТ</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
-        <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
-          <div style="background:rgba(249,239,227,.08);border-radius:16px;padding:18px 16px;">
-            <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;letter-spacing:.06em;line-height:1;">{{ f.name }}</div>
-            <div style="font-size:14px;opacity:.75;margin-top:6px;line-height:1.4;">{{ f.desc }}</div>
-          </div>
-        </sc-for>
-      </div>
-      <p style="margin:24px 0 0;font-size:13px;opacity:.65;text-align:center;">Комплектация домов отличается - точный состав смотрите на странице дома.</p>
-    </div>
-  </section>
+  
 
   <div data-bgmark="1" aria-hidden="true" style="position:relative;height:0;z-index:0;"><div style="position:absolute;right:-120px;top:-40px;width:680px;height:680px;background:rgba(10,47,79,.16);-webkit-mask:url(brand/orn-shapka.svg) center/contain no-repeat;mask:url(brand/orn-shapka.svg) center/contain no-repeat;pointer-events:none;"></div></div>
   <section data-reveal style="padding:56px 0 0;">
@@ -992,7 +1250,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <section data-reveal id="video" ref="{{ videoRef }}" style="position:relative;background:#0A2F4F;color:#F9EFE3;margin-top:56px;padding:64px 0 64px;overflow:hidden;">
     <img src="img/h7_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;filter:blur(2px);">
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">АТМОСФЕРА БАННЫХ ДОМОВ <span style="color:#C15C22;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">АТМОСФЕРА БАННЫХ ДОМОВ <span style="color:#C15C22;"><span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span></span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);opacity:.85;max-width:560px;line-height:1.5;text-wrap:pretty;">Ни спешки, ни посторонних. Только вы, пар, вода и тишина.</p>
     </div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;">
@@ -1029,7 +1287,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <sc-for list="{{ dishes }}" as="d" hint-placeholder-count="6">
         <div data-card="1" style="position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:20px;background:rgba(10,47,79,.08);">
           <div style="position:absolute;inset:0;"><image-slot id="{{ d.slot }}" src="{{ d.img }}" shape="rect" placeholder="{{ d.photo }}"></image-slot></div>
-          <button onClick="{{ goKitchen }}" style="position:absolute;left:0;right:0;bottom:0;top:40%;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 16px 16px;text-align:left;color:#F9EFE3;background:linear-gradient(180deg,rgba(59,47,42,0) 0%,rgba(59,47,42,.55) 45%,rgba(59,47,42,.92) 100%);">
+          <button type="button" data-shipa-kitchen="1" onClick="{{ goKitchen }}" style="position:absolute;left:0;right:0;bottom:0;top:40%;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 16px 16px;text-align:left;color:#F9EFE3;background:linear-gradient(180deg,rgba(59,47,42,0) 0%,rgba(59,47,42,.55) 45%,rgba(59,47,42,.92) 100%);">
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.04em;line-height:1.1;">{{ d.name }}</div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:4px;gap:8px;"><span style="font-size:13px;opacity:.85;">{{ d.desc }}</span><span style="font-weight:600;font-size:15px;white-space:nowrap;">{{ d.priceText }}</span></div>
           </button>
@@ -1039,15 +1297,15 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><nav class="shipa-carousel-nav" data-carousel-target="car-dishes" data-active="0" aria-label="Навигация по карточкам" style="padding:4px 20px 0;"><button type="button" data-carousel-dir="-1" aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" data-carousel-dir="1" aria-label="Вперёд" title="Вперёд"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav></sc-if>
     </div>
     <div style="display:flex;justify-content:center;gap:8px;padding:16px 20px 0;flex-wrap:wrap;">
-      <button type="button" data-menu-cta="1" aria-label="{{ menuCtaAccessibleLabel }}" onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">Смотреть всё меню</button>
-      <button onClick="{{ beginTableBooking }}" style="min-height:48px;padding:0 12px;font-weight:600;font-size:15px;color:#0A2F4F;text-align:center;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">{{ addTableLabel }}</span><span style="display:block;font-size:12px;font-weight:400;color:rgba(10,47,79,.65);margin-top:3px;">{{ addTableHint }}</span></button>
+      <button type="button" data-menu-cta="1" data-shipa-kitchen="1" aria-label="{{ menuCtaAccessibleLabel }}" onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">Смотреть всё меню</button>
+      <button type="button" data-shipa-kitchen="1" onClick="{{ beginTableBooking }}" style="min-height:48px;padding:0 12px;font-weight:600;font-size:15px;color:#0A2F4F;text-align:center;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">{{ addTableLabel }}</span><span style="display:block;font-size:12px;font-weight:400;color:rgba(10,47,79,.65);margin-top:3px;">{{ addTableHint }}</span></button>
     </div>
   </section>
 
   <sc-if value="{{ showMerch }}" hint-placeholder-val="{{ false }}">
   <section data-reveal data-screen-label="С собой из SHIPA" style="max-width:var(--wrap);margin:0 auto;padding:64px 0 0;">
     <div style="padding:0 20px;text-align:center;">
-      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">С СОБОЙ <span style="color:#C15C22;">ИЗ SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></span></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;">С СОБОЙ <span style="color:#C15C22;">ИЗ <span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span></span></h2>
       <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">Полотенца, шапки, масла и веники, которыми пользуетесь в доме</p>
     </div>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><nav class="shipa-carousel-nav" data-carousel-target="car-merch" data-active="0" aria-label="Навигация по карточкам" style="padding:28px 20px 0;"><button type="button" data-carousel-dir="-1" aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" data-carousel-dir="1" aria-label="Вперёд" title="Вперёд"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav></sc-if>
@@ -1228,7 +1486,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
       <nav class="shipa-site-footer__nav" aria-label="Навигация внизу страницы">
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
-          <button type="button" onClick="{{ n.go }}">{{ n.label }}</button>
+          <button type="button" data-shipa-nav-screen="{{ n.screen }}" onClick="{{ n.go }}">{{ n.label }}</button>
         </sc-for>
       </nav>
 
@@ -1238,7 +1496,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <a href="{{ legalConsentUrl }}" class="shipa-site-footer__muted">{{ legalConsentLabel }}</a>
         <button type="button" onclick="window.shipaAnalyticsSettings && window.shipaAnalyticsSettings()" class="shipa-site-footer__muted shipa-site-footer__settings">{{ analyticsSettingsLabel }}</button>
         <div class="shipa-site-footer__bottom">
-          <span class="shipa-site-footer__copyright">© SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>, 2026</span>
+          <span class="shipa-site-footer__copyright">© <span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span>, 2026</span>
           <div class="shipa-site-footer__languages" aria-label="Язык сайта">
             <sc-for list="{{ langsDark }}" as="l" hint-placeholder-count="2"><button onClick="{{ l.select }}" style="{{ l.style }}">{{ l.code }}</button></sc-for>
           </div>
@@ -1256,8 +1514,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <img src="img/h1_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Каталог</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">ДОМА SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span></h1>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ catalogSectionKicker }}</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">{{ catalogHeadingPrefix }}<span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span>{{ catalogHeadingSuffix }}</h1>
       <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">{{ catalogIntroText }}</p>
     </div>
   </section>
@@ -1281,11 +1539,10 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <div style="display:flex;flex-direction:column;">
             <article role="link" tabindex="0" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="width:100%;text-align:left;border-radius:20px;cursor:pointer;">
               <div style="aspect-ratio:16/10;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
-                <div class="noscroll" onScroll="{{ h.carScroll }}" style="position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;">
+                <div class="noscroll shipa-catalog-photo-track" role="region" aria-roledescription="carousel" aria-label="{{ h.photoOpenLabel }}" tabindex="0" style="position:absolute;inset:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;">
                   <sc-for list="{{ h.photos }}" as="ph" hint-placeholder-count="3"><img decoding="async" src="{{ ph.src }}" alt="{{ ph.alt }}" loading="{{ ph.loading }}" draggable="false" style="flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center;display:block;"></sc-for>
                 </div>
                 <button type="button" class="shipa-photo-catalog-action" onClick="{{ h.photoOpen }}" aria-label="{{ h.photoOpenLabel }}" title="{{ h.photoOpenLabel }}">▦ <span>{{ h.photoOpenText }}</span></button>
-                <div style="position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:6px;pointer-events:none;"><sc-for list="{{ h.dots }}" as="dt" hint-placeholder-count="3"><span style="{{ dt.s }}"></span></sc-for></div>
                 <div style="position:absolute;left:16px;top:16px;height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;font-size:12px;letter-spacing:.18em;color:#F9EFE3;font-weight:600;">{{ h.n }} / {{ h.tier }}</div>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;gap:12px;">
@@ -1721,10 +1978,10 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <img src="img/h4_acc.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">Кухня и чай</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;">КУХНЯ И ЧАЙ</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">Казахская и узбекская кухня, травяной чай из самовара. Стол накрываем к вашему приезду.</p>
-      <div style="margin-top:16px;font-size:14px;line-height:1.5;color:rgba(249,239,227,.75);">Блюда добавляете к брони - администратор подтвердит заказ в WhatsApp</div>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ kitchenSectionKicker }}</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;">{{ kitchenSectionTitle }}</h1>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">{{ kitchenSectionIntro }}</p>
+      <div style="margin-top:16px;font-size:14px;line-height:1.5;color:rgba(249,239,227,.75);">{{ kitchenOrderInstruction }}</div>
     </div>
   </section>
   <div style="position:sticky;top:{{ tabsTop }};z-index:var(--z-tabs);background:rgba(249,239,227,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(59,47,42,.08);transition:top 300ms ease-out;">
@@ -1769,7 +2026,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <img src="img/h5_int.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,47,79,.92) 0%,rgba(10,47,79,.55) 100%);"></div>
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
-      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ reviewKickerPre }}SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>{{ reviewKickerPost }}</div>
+      <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ reviewKickerPre }}<span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span>{{ reviewKickerPost }}</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">{{ reviewPageTitle }}</h1>
       <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">{{ reviewPageSubtitle }}</p>
     </div>
@@ -1832,7 +2089,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <div style="position:relative;max-width:var(--wrap);margin:0 auto;padding:{{ bandPad }};">
       <div style="font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(249,239,227,.75);margin-bottom:16px;">{{ aboutKicker }}</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(40px,5vw,64px);letter-spacing:.03em;line-height:1.05;margin:0;color:#F9EFE3;">{{ aboutPageTitle }}</h1>
-      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;">SHIP<span data-st-on="1">Á</span><span data-st-off="1">A</span>{{ aboutIntroSuffix }}</p>
+      <p style="margin:16px 0 0;font-size:clamp(16px,calc(13px + .5vw),19px);line-height:1.5;color:rgba(249,239,227,.85);max-width:640px;"><span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span>{{ aboutIntroSuffix }}</p>
     </div>
   </section>
   <div style="max-width:var(--wrap);margin:0 auto;padding:{{ pagePad }};">
@@ -2006,7 +2263,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 <div data-screen-label="Выбранное к брони" role="region" aria-label="Выбранное к брони" style="{{ cartWrap }}">
   <div style="flex:1;min-width:0;"><div style="font-size:13px;color:#3B2F2A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ cartLabel }}</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;">{{ cartSum }}</div></div>
   <button onClick="{{ cartClear }}" aria-label="Очистить выбор" style="width:44px;height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><svg width="16" height="16" viewBox="0 0 22 22" stroke="#3B2F2A" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l14 14M18 4L4 18"/></svg></button>
-  <button onClick="{{ cartGo }}" style="height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">Продолжить бронь</button>
+  <button onClick="{{ cartGo }}" style="height:52px;padding:0 28px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;letter-spacing:.01em;display:inline-flex;align-items:center;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-1px);box-shadow:0 6px 16px rgba(193,92,34,.25);">{{ cartGoLabel }}</button>
 </div>
 </sc-if>
 
@@ -2044,7 +2301,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <div style="{{ menuWrap }}">
     <nav aria-label="Меню" style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding-left:{{ menuIndent }};">
       <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
-        <button data-mi="1" onClick="{{ m.go }}" onMouseEnter="{{ m.enter }}" onFocus="{{ m.enter }}" aria-current="{{ m.aria }}" style="{{ m.btnStyle }}"><span style="{{ m.style }}">{{ m.label }}</span></button>
+        <button data-mi="1" data-shipa-nav-screen="{{ m.screen }}" onClick="{{ m.go }}" onMouseEnter="{{ m.enter }}" onFocus="{{ m.enter }}" aria-current="{{ m.aria }}" style="{{ m.btnStyle }}"><span style="{{ m.style }}">{{ m.label }}</span></button>
       </sc-for>
     </nav>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
@@ -2921,7 +3178,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;../e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать ударение в названии (SHIPÁ / Шипа́)&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHouseRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;mapLat&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:49.7656,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLng&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:73.1716,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;mapLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · карта&quot;},&quot;meaningPins&quot;:{&quot;editor&quot;:null,&quot;default&quot;:null,&quot;tsType&quot;:&quot;{n:number,x:number,y:number}[]&quot;},&quot;demoPayment&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;paid&quot;,&quot;options&quot;:[&quot;paid&quot;,&quot;unpaid&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;label&quot;:&quot;Демо: результат оплаты на шаге 5&quot;,&quot;section&quot;:&quot;Демо&quot;},&quot;menuUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;../e-menu/&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · меню&quot;},&quot;showStress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;label&quot;:&quot;Показывать фирменный пар над A в названии&quot;},&quot;sitePhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waPhone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+7 (701) 821-88-83&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · контакты&quot;},&quot;waTextGeneral&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Пишу с сайта SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом в SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextHouse&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Интересует дом {дом}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextLong&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать дом на весь день или дольше&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextStep4&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу забронировать: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextError&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Не получилось отправить заявку на сайте: {дом}, {дата}, {время}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextSuccess&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Я оставил заявку: {дом}, {дата}, {время}, выезд до {выезд}, {гостей}. Предоплата: {предоплата}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextPre&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Записался на открытие SHIPA&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;waTextMerch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Здравствуйте! Хочу заказать: {товар}&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Админка · тексты WhatsApp&quot;},&quot;heroShowSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:3,&quot;max&quot;:10,&quot;step&quot;:0.5,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroFadeSec&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.3,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot; с&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;heroOverlay&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;45&quot;,&quot;60&quot;,&quot;75&quot;],&quot;default&quot;:&quot;45&quot;,&quot;tsType&quot;:&quot;'45'|'60'|'75'&quot;,&quot;section&quot;:&quot;Админка · слайдер&quot;},&quot;preorderMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHeaderRating&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showVideoGreeting&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMeaning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showMerch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;dayStartHour&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:6,&quot;max&quot;:12,&quot;step&quot;:1,&quot;unit&quot;:&quot;:00&quot;,&quot;default&quot;:8,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;availabilityScenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;carouselState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;loading&quot;,&quot;one&quot;,&quot;none&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal'|'loading'|'one'|'none'&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;demoReturningGuest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showCookieBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;},&quot;showMasters&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Админка&quot;},&quot;showHouseRatings&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Демо состояний брони&quot;}}">
 const NAVY='#0A2F4F',CREAM='#F9EFE3',BRICK='#C15C22';
 const WD=['вс','пн','вт','ср','чт','пт','сб'];
 const WD_ACC=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
@@ -2947,12 +3204,13 @@ const HOURS={
 const paras=a=>typeof a==='function'?a():Array.isArray(a)?a:[a];
 // Карта - виджет Яндекс Карт без ключа (2ГИС-виджет без карточки фирмы отдаёт ошибку). Настройки админки: mapLat, mapLng, mapLabel.
 const MAP0={lat:49.7656,lng:73.1716,label:'SHIPA',zoom:16,city:'karaganda'};
-// Выноски на логотипе в % от его ширины/высоты: 1 - над паром между листьями и S, 2 - у нижнего левого листа, 3 - у завитка над А
-const MEANING_PINS=[{n:1,x:5,y:13},{n:2,x:21,y:26},{n:3,x:93,y:10}]; // 1 - начало S-дуги (пар), 2 - внешний край верхнего синего листа, ниже и правее, по диагонали от 1; 3 - завиток над А
+// Фирменный знак: номера 1, 2 и 3 выводятся только во внешнем поле вокруг логотипа,
+// рядом с S-линией пара, дубовыми листьями и завитком над A соответственно.
+const MEANING_PINS=[{n:1},{n:2},{n:3}];
 // Настройки из админки (правки 29.09). Часы - от 00:00 дня начала брони: close 26 = 02:00 следующего дня.
 const CFG={open:10,close:26,lastStart:21,tariffs:{day:[10,17],evening:[17,26]},minH:3,maxH:16,prep:2,daily:{in:14,out:12},tubPrice:15000,durs:[3,4,5,6,8,10,12],leadH:1,childAge:7,
   weekendDays:[5,6,0],holidays:['01-01','01-02','03-08','03-21','03-22','03-23','05-01','05-07','05-09','07-06','08-30','10-25','12-16'],tubHouses:['energiya'],
-  holdH:6,holdTodayH:1,cancelFreeDays:3,menuUrl:''};
+  holdH:6,holdTodayH:1,cancelFreeDays:3,menuUrl:'../e-menu/'};
 // Категории домов: гостей в цене и максимум - из админки
 const CATEGORIES={smallStd:{name:'Малый Standard',tier:'STANDARD',guestsIncl:6,maxGuests:10},bigStd:{name:'Большой Standard',tier:'STANDARD',guestsIncl:8,maxGuests:12},
   smallVip:{name:'Малый VIP',tier:'VIP',guestsIncl:6,maxGuests:10},midVip:{name:'Средний VIP',tier:'VIP',guestsIncl:8,maxGuests:12},bigVip:{name:'Большой VIP',tier:'VIP',guestsIncl:12,maxGuests:16}};
@@ -3351,6 +3609,17 @@ class Component extends DCLogic {
     this._laneT=setInterval(()=>this.attachLanes(),500);this.attachLanes();this.onLaneResize=()=>document.querySelectorAll('.lane.center').forEach(el=>this.paintLane(el));window.addEventListener('resize',this.onLaneResize,{passive:true});
     // Рамка фокуса - только с клавиатуры: после тапа или клика по ссылке фокус снимаем
     this.onLinkTap=e=>{const a=e.target&&e.target.closest&&e.target.closest('a');if(a)setTimeout(()=>a.blur(),0);};document.addEventListener('pointerup',this.onLinkTap,{passive:true});
+    // Direct Kitchen links to sibling e-menu, even when legacy runtime
+    // handlers on a button are stale.
+    this.onKitchenRouteClick=e=>{
+      const el=e.target&&e.target.closest&&e.target.closest('[data-shipa-kitchen], [data-shipa-nav-screen="kitchen"]');
+      if(!el)return;
+      e.preventDefault();e.stopPropagation();
+      if(typeof e.stopImmediatePropagation==='function')e.stopImmediatePropagation();
+      this.goKitchenSection();
+    };
+    document.addEventListener('click',this.onKitchenRouteClick,true);
+    if(!this.hdrDemo&&window.location.hash==='#kitchen')this.goKitchenSection();
     if(this.hdrDemo){this.setState({cookie:false,menuOpen:this.hdrDemo==='menu'});if(this.hdrDemo==='scrolled')this.demoScroll(640);}
     try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):/^\d+$/.test(sy)?+sy:(()=>{const el=document.querySelector(sy);return el?el.getBoundingClientRect().top+window.scrollY-72:0;})());const fq=q.get('faq');if(fq!=null)setTimeout(()=>this.setState({faqOpen:+fq}),200);}catch(e){}
     this.reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -3410,7 +3679,7 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){if(this.state.pd)document.body.style.overflow=this._pdPreviousOverflow??'';try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){if(this.state.pd)document.body.style.overflow=this._pdPreviousOverflow??'';try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
   componentDidUpdate(pp,prev){
     pp=pp||this.props;prev=prev||this.state;
     const s=this.state,b=s.bk;
@@ -3532,6 +3801,10 @@ class Component extends DCLogic {
       this.resetPageScroll();return;
     }
     this.routeTransition(done=>this.setState(s=>({screen,houseId,menuOpen:false,history:[...s.history,{screen:s.screen,houseId:s.houseId}].slice(-10),galleryIdx:0,hw:0,rf:EMPTY_RF}),()=>{
+      try{
+        const hash=screen==='kitchen'?'#kitchen':'';
+        window.history.replaceState(window.history.state,'',window.location.pathname+window.location.search+hash);
+      }catch(e){}
       this.resetPageScroll();
       if(window.shipaTrack){window.shipaTrack('virtual_page');
         if(screen==='house'&&houseId){const house=HOUSES.find(h=>h.id===houseId);
@@ -3682,15 +3955,14 @@ class Component extends DCLogic {
     if(m==='daily'){const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const ok=this.dailyOk(hi,bk.date);this.setBk({mode:'daily',start:ok?bk.date*24+CFG.daily.in:null,dur:ok?24-CFG.daily.in+CFG.daily.out:null,pickEnd:false},()=>{if(!ok)this.hint(`На ${this.dm(bk.date)} сутки заняты - выберите другую дату заезда`,3000);});}
     else this.setBk({mode:'hours',start:null,dur:null,pickEnd:false});}
   pickDaily(di){const bk=this.state.bk;const hi=HOUSES.findIndex(x=>x.id===bk.houseId);if(!this.dailyOk(hi,di))return;this.setState({stripMore:0});this.setBk({date:di,month:this.moOf(di),start:di*24+CFG.daily.in,dur:24-CFG.daily.in+CFG.daily.out,pickEnd:false});}
-  // External menu can be configured as menuUrl; otherwise use the built-in page.
-  // Prefer an explicitly configured external menu. This standalone archive
-  // does not contain ../e-menu/, so default to its own working Kitchen page.
-  goKitchenSection(){this.openMenuUrl();}
-  openMenuUrl(){
-    const target=String(this.props.menuUrl||'').trim();
-    if(target){window.location.assign(new URL(target,window.location.href).href);return;}
-    this.go('kitchen');
+  // e-menu is a sibling of shipa-bani-front in the owner's project tree.
+  // All Kitchen navigation leaves the SPA and opens that actual menu site.
+  // Resolve against this document's URL (not the current SPA hash/route).
+  goKitchenSection(){
+    const target=String(this.props.menuUrl||'../e-menu/').trim()||'../e-menu/';
+    window.location.assign(new URL(target,document.baseURI).href);
   }
+  openMenuUrl(){this.goKitchenSection();}
   formOk(){const f=this.state.form;return nameValid(f.name)&&phoneValid(f.phone)&&!!f.agree&&!!f.privacy;}
   // Предоплата: ссылка платёжной системы из админки; результат в прототипе - по демо-переключателю
   pay(m){if(m!=='kaspi')return;const bk=this.state.bk;if(!bk||this.state.sending)return;if(window.shipaTrack)window.shipaTrack('payment_click',{payment_method:m});const link=PAY_LINKS[m];if(link){try{window.open(link,'_blank','noopener');}catch(e){}}
@@ -3739,7 +4011,9 @@ class Component extends DCLogic {
   returnToBooking(){const bk=this.state.savedBk;if(!bk)return;
     this.setState(s=>{const hist=[...s.history],prev=hist.pop()||{screen:'houses',houseId:null};
       return {screen:prev.screen,houseId:prev.houseId,history:hist,bk:{...bk},savedBk:null};});}
-  beginTableBooking(){this.openBooking(null,undefined,undefined,undefined,['table']);}
+  // Food-first flow: guests choose dishes in the kitchen cart, and only
+  // after pressing Continue do they select their booking date and house.
+  beginTableBooking(){this.goKitchenSection();}
   // Шаги брони: что обязательно на шаге, можно ли вперёд, подсказка
   stepOk(bk){if(!bk)return false;if(bk.pre){if(bk.step===1)return !!bk.houseId;if(bk.step===2)return bk.date!=null;return false;}
     if(bk.step===1)return bk.date!=null&&bk.guests>0;if(bk.step===2)return !!bk.houseId;if(bk.step===3)return bk.mode==='daily'?this.dailyOk(HOUSES.findIndex(h=>h.id===bk.houseId),bk.date):this.validHoursSelection(bk);if(bk.step===4)return this.formOk();return false;}
@@ -4030,10 +4304,8 @@ if(s.lang==='KZ'){
     const kitchenItems=(KITCHEN[s.kitchenTab]||[]).map((_,i)=>{const k=menuDish(s.kitchenTab,i,s.lang);return {...k,priceText:fmt(k.price),slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:(s.lang==='KZ'?'Фото: ':'Фото: ')+k.name+' - '+k.desc.split(',')[0]};});
     const reviewFilters=[{label:s.lang==='KZ'?'Барлығы':'Все',v:-1},...OPEN_HOUSES.map(h=>({label:s.lang==='KZ'?KZ_PAGE_HOUSES[HOUSES.indexOf(h)]:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
     const filteredReviews=reviews.filter(r=>s.reviewFilter<0||r.hi===s.reviewFilter);
-    const catalogHouses=catalogHouses0.map(h=>{const ci=(s.catIdx||{})[h.id]||0;const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
-      dots:ph.map((_,i)=>({s:`display:block;height:6px;width:${i===ci?18:6}px;border-radius:999px;background:${i===ci?CREAM:'rgba(249,239,227,.55)'};transition:width 250ms ease-out;`})),
-      carScroll:e=>this.settle(e.currentTarget,el=>{const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==((this.state.catIdx||{})[h.id]||0))this.setState(st=>({catIdx:{...st.catIdx,[h.id]:i}}));}),
-      photoOpen:e=>{e?.stopPropagation();window.ShipaPhotoViewer?.open(ph.map(p=>p.src),ci,h.name);},
+    const catalogHouses=catalogHouses0.map(h=>{const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
+      photoOpen:e=>{e?.stopPropagation();const lane=e?.currentTarget?.parentElement?.querySelector('.shipa-catalog-photo-track');const active=lane?Math.min(ph.length-1,Math.max(0,Math.round(lane.scrollLeft/Math.max(1,lane.clientWidth)))):0;window.ShipaPhotoViewer?.open(ph.map(p=>p.src),active,h.name);},
       photoOpenText:s.lang==='KZ'?'Фотолар':'Фото',photoOpenLabel:s.lang==='KZ'?`${h.name} үйінің фотоларын қарау`:`Посмотреть фотографии дома ${h.name}`};});
     const catalogSoon={visible:catalogComingSoon,kicker:s.lang==='KZ'?'Жақында':'Скоро открытие',title:s.lang==='KZ'?'Бұл санат жақында ашылады':'Эта категория откроется скоро',text:s.lang==='KZ'?'Қазір брондауға тек VIP үйлері қолжетімді. Қалған үйлер ашылған бойда осы жерде көрсетеміз.':'Сейчас для бронирования доступны только VIP-дома. Остальные категории откроем чуть позже и сразу покажем их здесь.',ctaLabel:s.lang==='KZ'?'VIP үйлерін көрсету':'Показать VIP-дома',cta:()=>this.setState({catalogFilter:'VIP'})};
     const inCart=id=>s.cart.some(x=>x.id===id);
@@ -4072,7 +4344,7 @@ if(s.lang==='KZ'){
     const cartLabel=(s.lang==='KZ'?`${cn} ${cartProgs.length===cn?'бағдарлама':'тауар'}`:(cartProgs.length===cn?`${cn} ${plural(cn,'программа','программы','программ')}`:`${cn} ${plural(cn,'позиция','позиции','позиций')}`))+' · '+s.cart.map(x=>menuItemName(x,s.lang)).join(', ');
     const MENU=[['Дома','houses','img/h1_int.png'],['Парение и услуги','services','img/h2_acc.png'],['Кухня','kitchen','img/h4_acc.png'],['Отзывы','reviews','img/h5_int.png'],['О нас','about','img/h3_acc.png'],['Контакты','contacts','img/h6_int.png']];const MENU_KZ={houses:'Үйлер',services:'Булау және қызметтер',kitchen:'Ас мәзірі',reviews:'Пікірлер',about:'Біз туралы',contacts:'Байланыс'};
     const mh=s.menuHover??0;
-    const menuItems=MENU.map(([label,sc],i)=>({label:s.lang==='KZ'?MENU_KZ[sc]:label,aria:screen===sc?'page':undefined,go:()=>sc==='kitchen'?this.goKitchenSection():this.go(sc),enter:()=>{if(this.state.menuHover!==i)this.setState({menuHover:i});},
+    const menuItems=MENU.map(([label,sc],i)=>({screen:sc,label:s.lang==='KZ'?MENU_KZ[sc]:label,aria:screen===sc?'page':undefined,go:()=>sc==='kitchen'?this.goKitchenSection():this.go(sc),enter:()=>{if(this.state.menuHover!==i)this.setState({menuHover:i});},
       btnStyle:`position:relative;text-align:left;border-radius:8px;transition:transform 250ms ease-out;`,
       style:`display:block;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:${wide?44:32}px;letter-spacing:.06em;text-transform:uppercase;line-height:1.1;color:${screen===sc?BRICK:CREAM};${this.reduced?'':`opacity:0;animation:menuItemIn 400ms cubic-bezier(.2,.8,.2,1) ${120+i*40}ms forwards;`}`}));
     const menuPreview=MENU.map(([,,src],i)=>({src,style:`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${i===mh?1:0};transition:opacity 300ms ease-out;`}));
@@ -4085,7 +4357,7 @@ if(s.lang==='KZ'){
  about:'\u0411\u0456\u0437 \u0442\u0443\u0440\u0430\u043b\u044b',
  contacts:'\u0411\u0430\u0439\u043b\u0430\u043d\u044b\u0441'
 };
-    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
+    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({screen:sc,label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
     const ratingOn=!!this.props.showHeaderRating||!!this.ratingDemo;
     const mo=s.menuOpen;const solid=!mo&&(s.hdrScrolled||screen!=='home'||this.hdrDemo==='scrolled'||this.hdrDemo==='block');
     const vw=s.vw??(window.innerWidth||document.documentElement.clientWidth||1440);const hw=vw>=768;const hH=hw?(solid?72:88):(solid?56:64);const lh=hw?(solid?34:40):(solid?28:32);
@@ -4433,10 +4705,15 @@ const LANGS=['RU','KZ'];
     const HOME_REV=reviews.slice(0,6);
     const callOk=nameValid(s.form.name)&&phoneValid(s.form.phone);
     return {
+      catalogSectionKicker:s.lang==='KZ'?'Үйлер каталогы':'Каталог',
+      catalogHeadingPrefix:s.lang==='KZ'?'':'ДОМА ',catalogHeadingSuffix:s.lang==='KZ'?' ҮЙЛЕРІ':'',
+      kitchenSectionKicker:s.lang==='KZ'?'Ас мәзірі және шай':'Кухня и чай',
+      kitchenSectionTitle:s.lang==='KZ'?'АС МӘЗІРІ ЖӘНЕ ШАЙ':'КУХНЯ И ЧАЙ',
+      kitchenSectionIntro:s.lang==='KZ'?'Қазақ және өзбек тағамдары, самаурындағы шөп шайы. Дастарқанды келгенге дейін дайындаймыз.':'Казахская и узбекская кухня, травяной чай из самовара. Стол накрываем к вашему приезду.',
       isWide:wide,isNarrow:!wide,showChrome:!bk,showRatings,isHome:screen==='home',isHouses:screen==='houses',isHouse:screen==='house',isServices:screen==='services',isKitchen:screen==='kitchen',isReviews:screen==='reviews',isAbout:screen==='about',isContacts:screen==='contacts',
       headerH:wide?'84px':'68px',logoH:wide?'54px':'44px',
       headerRef:this.headerRef,goHome:()=>this.go('home'),goHouses:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesVip:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesStd:()=>{this.setState({catalogFilter:'Standard'});this.go('houses');},
-      menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.openMenuUrl(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
+      menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
       openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:vw>=1024&&(s.hdrLv||0)<2,hdrNavGap:vw>=1280?'28px':'20px',hdrBookPad:vw>=1280?'24px':'20px',hdrSub:vw>=1440,hdrPhoneText:vw>=1280&&(s.hdrLv||0)<1,hdrPhoneIcon:vw>=380&&!(vw>=1280&&(s.hdrLv||0)<1),hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,hdrLangNext:s.lang==='KZ'?'RU':'KZ',hdrLangToggle:()=>setSiteLanguage(s.lang==='KZ'?'RU':'KZ'),hdrBook:vw>=768,hdrMenuBtn:!(vw>=1024&&(s.hdrLv||0)<2),hdrMenuWord:vw>=768&&!(vw>=1024&&(s.hdrLv||0)<2),hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
@@ -4448,6 +4725,7 @@ const LANGS=['RU','KZ'];
       pdContraIcon:`width:28px;height:28px;border-radius:999px;border:1px solid ${NAVY};display:flex;align-items:center;justify-content:center;font-size:16px;transition:transform 200ms ease-out;transform:rotate(${s.pdContra?45:0}deg);`,
       pdStyle:wide?'position:fixed;top:0;right:0;bottom:0;z-index:var(--z-panel);width:min(520px,100vw);background:#F9EFE3;display:flex;flex-direction:column;animation:slideInR 300ms cubic-bezier(.2,.8,.2,1);':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-panel);max-height:92vh;border-radius:24px 24px 0 0;background:#F9EFE3;display:flex;flex-direction:column;animation:sheetUp 300ms cubic-bezier(.2,.8,.2,1);',
       pdHeadPad:wide?'16px 24px':'24px 24px 8px',
+      cartGoLabel:screen==='kitchen'&&s.cart.some(x=>x.type==='dish')?(s.lang==='KZ'?'Күн мен үйді таңдау':'Выбрать дату и дом'):(s.lang==='KZ'?'Брондауды жалғастыру':'Продолжить бронь'),
       cartShow:cn>0&&!bk&&!s.menuOpen&&!s.pd,cartLabel,cartSum:fmt(s.cart.reduce((m,x)=>m+x.price,0)),
       cartWrap:wide?'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:var(--z-bar);width:min(600px,calc(100vw - 48px));display:flex;align-items:center;gap:8px;padding:12px 12px 12px 24px;background:#F9EFE3;border:1px solid rgba(59,47,42,.12);border-radius:20px;animation:fadeIn 250ms ease-out;':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-bar);display:flex;align-items:center;gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#F9EFE3;border-top:1px solid rgba(59,47,42,.1);animation:fadeUp 250ms ease-out;',
       cartClear:()=>{try{localStorage.removeItem('shipa_cart');}catch(e){}this.setState({cart:[]});},
@@ -4522,7 +4800,7 @@ const LANGS=['RU','KZ'];
       contactCallStyle:`flex:0 0 auto;height:52px;padding:0 24px;border-radius:999px;background:${s.inlineSent?NAVY:(phoneValid(s.form.phone)?BRICK:'rgba(10,47,79,.2)')};color:${CREAM};font-weight:600;font-size:14px;`,
       heroStats,heroFx,
       hoursLine1:s.lang==='KZ'?`Күн сайын ${hh(CFG.open)}–${hh(CFG.close)}`:HOURS.line1(),hoursLine2:s.lang==='KZ'?`Келу уақыты: ${hh(CFG.open)}–${hh(CFG.lastStart)}`:HOURS.line2(),hoursAbout:s.lang==='KZ'?`Күн сайын ${hh(CFG.open)}-ден ${hh(CFG.close)}-ге дейін жұмыс істейміз. ${hh(CFG.open)}-ден ${hh(CFG.lastStart)}-ге дейін келуге болады, ең аз брондау уақыты - ${CFG.minH} сағат.`:HOURS.about(),hoursStep3:s.lang==='KZ'?`Келу уақыты - ${hh(CFG.open)}–${hh(CFG.lastStart)}. Ең аз брондау мерзімі - ${CFG.minH} сағат.`:HOURS.step3(),
-      meaningPins:(this.props.meaningPins||MEANING_PINS).map(p=>({n:p.n,style:`position:absolute;left:${p.x}%;top:${p.y}%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:${BRICK};color:${CREAM};border:2px solid ${CREAM};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;`})),
+      meaningPins:(this.props.meaningPins||MEANING_PINS).map(p=>({n:p.n})),
       ...this.mapVals(wide),
       aboutItems:[{n:'01',img:'img/h5_int.png',title:'Свой дом',sub:'Парная, чан и терраса только для вашей компании. Соседей не видно и не слышно.'},{n:'02',img:'img/h3_acc.png',title:'Материал',sub:'Дуб, лён, камень и керамика. Ничего искусственного на ощупь.'},{n:'03',img:'img/h6_int.png',title:'Тёплый свет',sub:'2700–3000 K во всех домах. Глаза отдыхают вместе с телом.'},{n:'04',img:'img/h1_acc.png',title:'Сервис заранее',sub:'Стол, программа парения и веники согласованы при брони. По приезду - только отдых.'}],
       swDown:e=>this.swDown(e),swMove:e=>this.swMove(e),swUp:e=>this.swEnd(e,false),swCancel:e=>this.swEnd(e,true),
@@ -4566,6 +4844,7 @@ const LANGS=['RU','KZ'];
       rfSend:()=>{if(!rfOk)return;const r={id:'p'+Date.now(),name:rf.name.trim()||(s.lang==='KZ'?'Қонақ':'Гость'),date:s.lang==='KZ'?'бүгін':'сегодня',stars:rf.stars,hi:hIdx,text:rf.text.trim(),photos:rf.photos.map(p=>p.src),pending:true,useful:0,initial:(rf.name.trim()||'Г')[0].toUpperCase(),starsTxt:''};
         this.setState(st=>({rf:{...st.rf,sent:true},rfPosted:[{...r,stars:'★'.repeat(rf.stars)+'☆'.repeat(5-rf.stars)},...(st.rfPosted||[])],rvSort:'new',rvShow:Math.max(3,st.rvShow||3)}));},
       rfDisabled:!rfOk,rfBtnStyle:`width:100%;height:56px;border-radius:999px;background:${rfOk?BRICK:'rgba(10,47,79,.15)'};color:${rfOk?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.02em;transition:background-color 200ms ease-out,color 200ms ease-out;`,
+      kitchenOrderInstruction:s.lang==='KZ'?'Алдымен тағамдарды таңдаңыз, содан кейін күн мен үйді таңдаңыз. Тапсырысты әкімші WhatsApp-та растайды.':'Сначала выберите блюда, затем дату и дом. Администратор подтвердит заказ в WhatsApp.',
       kitchenTabs,kitchenItems,reviewFilters,filteredReviews,
       showSticky:(!wide)&&(inHouse||screen!=='home'||!!s.pastHalf)&&!(s.cart.length&&!bk)&&!bk&&!s.menuOpen&&!s.callOpen&&s.lightbox<0,stickyLabel,stickyAction:()=>{if(s.savedBk&&inHouse){this.returnToBooking();return;}this.openBooking(inHouse?hRaw.id:null);},
       showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
@@ -4595,8 +4874,8 @@ const LANGS=['RU','KZ'];
       merch:MERCH.map((m,i)=>({...m,name:s.lang==='KZ'?MERCH_KZ[i]:this.stressText(m.name),priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:C.wa(C.t('waTextMerch',{товар:m.name}))})),
       serviceCats:SERVICE_CATS.map((c,i)=>({...c,...(s.lang==='KZ'?SERVICE_CATS_KZ[i]:{}),soon:!!c.soon,hasImg:!c.soon,slot:'svc-'+i,style:`border-radius:20px;overflow:hidden;display:flex;flex-direction:column;${c.soon?'border:1px dashed rgba(10,47,79,.35);':'background:rgba(10,47,79,.06);'}`})),
       ...(s.lang==='KZ' && window.ShipaBookingI18n ? window.ShipaBookingI18n.view(B) : B),
-      addTableLabel:s.lang==='KZ'?'Брондауға дастарқан қосу':'Добавить стол к бронированию',
-      addTableHint:s.lang==='KZ'?'Алдымен күн мен үйді таңдаңыз, дастарқанды брондауға қосамыз':'Сначала выберите дату и дом, стол уже отметим',
+      addTableLabel:s.lang==='KZ'?'Брондауға тағам таңдау':'Выбрать блюда к бронированию',
+      addTableHint:s.lang==='KZ'?'Алдымен тағамдарды, содан кейін күн мен үйді таңдаңыз':'Сначала блюда, затем дата и дом',
       analyticsSettingsLabel:s.lang==='KZ'?'Аналитика және жарнама параметрлері':'Настройки аналитики и рекламы',
       ...PAGE_COPY[s.lang]
     };

@@ -4,11 +4,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 const html = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
-test('RU and KZ document URLs route to six real pages and open in new tabs',()=>{
+test('RU and KZ documents are available in the accessible internal document viewer',()=>{
   assert.match(html,/legalOfferUrl:s\.lang==='KZ'\?'legal\/offer-kz\.html':'legal\/offer-ru\.html'/);
   assert.match(html,/legalConsentUrl:s\.lang==='KZ'\?'legal\/consent-kz\.html':'legal\/consent-ru\.html'/);
   assert.match(html,/legalPrivacyUrl:s\.lang==='KZ'\?'legal\/privacy-kz\.html':'legal\/privacy-ru\.html'/);
-  assert.match(html,/href="\{\{ legalOfferUrl \}\}" target="_blank" rel="noopener noreferrer"/);
+  assert.match(html,/href="\{\{ legalOfferUrl \}\}" class="shipa-legal-terms"/);
+  assert.match(html,/id="shipa-legal-overlay"/);
+  assert.match(html,/open\(slug,link\)/);
   for(const lang of ['ru','kz']) for (const type of ['offer','consent','privacy']) {
     const f=path.join(__dirname,'..','legal',`${type}-${lang}.html`);
     assert.ok(fs.existsSync(f),f);
