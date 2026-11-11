@@ -79,14 +79,27 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <div data-scroll-main="1" style="flex:1;min-height:0;overflow:auto;padding:8px 32px 32px;">
 
-  <!-- ===== СЕГОДНЯ ===== -->
+  <!-- ===== ДАШБОРД ===== -->
   <sc-if value="{{ is.today }}" hint-placeholder-val="{{ true }}">
-    <section data-screen-label="Сегодня" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;">
+    <section data-screen-label="Дашборд" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;">
+      <div style="grid-column:span 12;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border-radius:16px;padding:10px 12px;">
+        <div style="display:flex;gap:2px;background:#F6F3EE;border-radius:12px;padding:3px;">
+          <sc-for list="{{ dashSeg }}" as="d" hint-placeholder-count="3"><button onClick="{{ d.go }}" style="height:34px;padding:0 14px;border-radius:9px;font-size:13px;font-weight:600;background:{{ d.bg }};color:{{ d.fg }};">{{ d.name }}</button></sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button onClick="{{ dashPrev }}" aria-label="Предыдущий день" title="Предыдущий день" style="width:34px;height:34px;border-radius:10px;border:1px solid rgba(10,47,79,.12);font-size:16px;" style-hover="background:rgba(10,47,79,.06);">‹</button>
+          <input type="date" value="{{ dashKey }}" onChange="{{ dashPick }}" aria-label="Выбрать дату" style="height:34px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;">
+          <button onClick="{{ dashNext }}" aria-label="Следующий день" title="Следующий день" style="width:34px;height:34px;border-radius:10px;border:1px solid rgba(10,47,79,.12);font-size:16px;" style-hover="background:rgba(10,47,79,.06);">›</button>
+        </div>
+        <span style="font-weight:600;font-size:15px;">{{ dashLabel }}</span>
+        <span style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ dashModeBg }};color:{{ dashModeFg }};">{{ dashMode }}</span>
+        <sc-if value="{{ dashNotNow }}" hint-placeholder-val="{{ false }}"><button onClick="{{ dashBack }}" style="margin-left:auto;height:34px;padding:0 14px;border-radius:10px;color:#C15C22;font-weight:600;font-size:13px;" style-hover="background:rgba(193,92,34,.08);">← Вернуться к сегодня</button></sc-if>
+      </div>
       <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
         <div style="grid-column:span 3;background:#fff;border-radius:20px;padding:20px 24px;min-height:128px;display:flex;flex-direction:column;">
           <div style="font-size:13px;color:rgba(59,47,42,.7);">{{ t.label }}</div>
-          <div style="display:flex;align-items:baseline;gap:10px;margin-top:auto;">
-            <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;color:{{ t.color }};">{{ t.value }}</span>
+          <div style="display:flex;align-items:baseline;flex-wrap:wrap;column-gap:10px;row-gap:4px;margin-top:auto;">
+            <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;white-space:nowrap;color:{{ t.color }};">{{ t.value }}</span>
             <span style="font-size:13px;color:rgba(59,47,42,.7);">{{ t.sub }}</span>
           </div>
         </div>
@@ -95,9 +108,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <div style="grid-column:span 7;background:#fff;border-radius:20px;padding:24px;">
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;">
           <h2 style="font-size:17px;font-weight:600;margin:0;">Лента дня</h2>
-          <span style="font-size:13px;color:rgba(59,47,42,.7);">10:00 — 02:00 · заезды и выезды</span>
+          <span style="font-size:13px;color:rgba(59,47,42,.7);">{{ feedSub }}</span>
         </div>
         <div style="display:flex;flex-direction:column;">
+          <sc-if value="{{ feedEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:20px 0;color:rgba(59,47,42,.7);">На этот день броней нет.</div></sc-if>
           <sc-for list="{{ feed }}" as="e" hint-placeholder-count="6">
             <sc-if value="{{ e.nowBefore }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;align-items:center;gap:10px;height:24px;color:#C15C22;font-size:12px;font-weight:600;"><span style="width:56px;text-align:right;">{{ nowText }}</span><span style="flex:1;height:2px;background:#C15C22;border-radius:2px;"></span><span>сейчас</span></div>
@@ -141,9 +155,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         </div>
         <div style="background:#fff;border-radius:20px;padding:24px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
-            <h2 style="font-size:17px;font-weight:600;margin:0;">Подготовка домов</h2>
-            <span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">топить за 2 ч · готов за 20 мин</span>
+            <h2 style="font-size:17px;font-weight:600;margin:0;">{{ prepTitle }}</h2>
+            <span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ prepSub }}</span>
           </div>
+          <sc-if value="{{ noPrep }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 0;color:rgba(59,47,42,.7);">Домов к подготовке нет.</div></sc-if>
           <div style="display:flex;flex-direction:column;">
           <sc-for list="{{ prepList }}" as="q" hint-placeholder-count="3">
             <div style="display:flex;align-items:center;gap:10px;height:52px;border-top:1px solid rgba(10,47,79,.08);min-width:0;">
@@ -1242,7 +1257,7 @@ for(const b of DATA){const c=CLIENTS0.find(x=>normP(x.phone)===normP(b.phone));i
 
 
 class Component extends DCLogic {
- state={screen:'today',role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reviews:REVIEWS,templates:TEMPLATES,tar:TAR0,cats:CATS0,cfg:CFG0,specials:[],view:'kanban',calMode:'day',calDay:0,openId:null,tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',day:0,start:15,dur:4,guests:8},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all'};
+ state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reviews:REVIEWS,templates:TEMPLATES,tar:TAR0,cats:CATS0,cfg:CFG0,specials:[],view:'kanban',calMode:'day',calDay:0,openId:null,tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',day:0,start:15,dur:4,guests:8},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all'};
  drag=null;
  // --- движок цены (как на сайте) ---
  isWeekend(di){return isWE(this.state,di);}
@@ -1287,25 +1302,26 @@ class Component extends DCLogic {
   const s=this.state,cfg=s.cfg;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=num=>()=>this.setState({openId:num,tab:'compose',search:'',rs:null,clientId:null,pf:{sum:'',type:'Остаток',method:'Kaspi'}});
-  const B=s.bookings;const todayB=B.filter(b=>b.day===0&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
+  const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
   const newCount=B.filter(b=>b.stage==='new').length;
-  const navItems=[{id:'today',name:'Сегодня',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
+  const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
   const nav=navItems.map(n=>({...n,go:go(n.id),bg:s.screen===n.id?'#0A2F4F':'transparent',fg:s.screen===n.id?'#fff':'#0A2F4F',badge:n.badge||false,badgeShow:!!n.badge&&s.navOpen}));
-  const titles={today:'Сегодня',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления'};
+  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления'};
   const is={[s.screen]:true};
   // поиск
   const q=s.search.trim().toLowerCase();const norm=x=>(x||'').toLowerCase().replace(/[\s()+-]/g,'');
   const searchRes=q?B.filter(b=>norm(b.guest).includes(norm(q))||norm(b.phone).includes(norm(q))||norm(b.num).includes(norm(q))||(H[b.house]&&norm(H[b.house].name).includes(norm(q)))).slice(0,6).map(b=>({num:b.num,guest:b.guest,phone:b.phone,meta:(H[b.house]?H[b.house].name+' · ':'')+ST[b.stage].name,color:ST[b.stage].color,open:open(b.num)})):[];
   // сегодня
-  const tiles=[{label:'Заездов сегодня',value:openT.length,sub:`из них ${todayB.filter(b=>b.stage==='inhouse').length} в доме`,color:'#0A2F4F'},{label:'Выездов сегодня',value:openT.filter(b=>b.start+b.dur<=26).length,sub:`${todayB.filter(b=>b.stage==='done').length} уже уехали`,color:'#0A2F4F'},{label:'Необработанных заявок',value:newCount,sub:newCount?'требуют реакции':'всё разобрано',color:newCount?'#C15C22':'#0A2F4F'},{label:'Домов в подготовке',value:todayB.filter(b=>b.stage==='prep').length,sub:'буфер 2 часа',color:'#0A2F4F'}];
-  if(owner)tiles[1]={label:'Выручка сегодня',value:fmt(todayB.reduce((a,b)=>a+this.paid(b),0)),sub:'по оплатам дня',color:'#0A2F4F'};
+  const dWord=isNowDay?' сегодня':dd===-1?' вчера':dd===1?' завтра':'';const liveB=todayB.filter(b=>ST[b.stage].type!=='fail');const failN=todayB.length-liveB.length;
+  const tiles=[{label:'Заездов'+dWord,value:dd<0?liveB.length:openT.length,sub:isNowDay?`из них ${todayB.filter(b=>b.stage==='inhouse').length} в доме`:dd<0?(failN?`отмен и неявок: ${failN}`:'без отмен'):`гостей ${openT.reduce((a,b)=>a+(b.guests||0),0)}`,color:'#0A2F4F'},{label:'Выездов'+dWord,value:dd<0?liveB.length:openT.filter(b=>b.start+b.dur<=26).length,sub:dd>0?'по плану':`${todayB.filter(b=>['done','review'].includes(b.stage)).length} уже уехали`,color:'#0A2F4F'},{label:'Необработанных заявок',value:newCount,sub:newCount?'требуют реакции':'всё разобрано',color:newCount?'#C15C22':'#0A2F4F'},isNowDay?{label:'Домов в подготовке',value:todayB.filter(b=>b.stage==='prep').length,sub:'буфер 2 часа',color:'#0A2F4F'}:{label:dd<0?'Оплачено за день':'Ждём оплату',value:dd<0?fmt(todayB.reduce((a,b)=>a+this.paid(b),0)):fmt(liveB.reduce((a,b)=>a+Math.max(0,this.price(b).total-this.paid(b)),0)),sub:dd<0?'по броням дня':'остатки по броням',color:'#0A2F4F'}];
+  if(owner)tiles[1]={label:'Выручка'+(dWord||' за день'),value:fmt(todayB.reduce((a,b)=>a+this.paid(b),0)),sub:dd>0?'внесено заранее':'по оплатам дня',color:'#0A2F4F'};
   const feedRaw=[];for(const b of todayB){if(ST[b.stage].type==='fail')continue;const p=this.pill(b.stage);const base={house:H[b.house].name,guest:b.guest,stage:ST[b.stage].name,pillBg:p.bg,pillFg:p.fg,color:ST[b.stage].color,open:open(b.num)};feedRaw.push({...base,t:b.start*60,time:hh(b.start),kind:'заезд',meta:`${b.guests} гостей · ${b.dur} ч${b.services.length?' · '+b.services.length+' услуги':''}`});feedRaw.push({...base,t:(b.start+b.dur)*60,time:hh(b.start+b.dur),kind:'выезд',meta:this.payInfo(b).t});}
-  feedRaw.sort((a,b)=>a.t-b.t);let nowPlaced=false;const feed=feedRaw.map(e=>{const nb=!nowPlaced&&e.t>NOW_MIN;if(nb)nowPlaced=true;return {...e,nowBefore:nb,opacity:e.t<NOW_MIN?.55:1};});
+  feedRaw.sort((a,b)=>a.t-b.t);let nowPlaced=false;const feed=feedRaw.map(e=>{const nb=isNowDay&&!nowPlaced&&e.t>NOW_MIN;if(nb)nowPlaced=true;return {...e,nowBefore:nb,opacity:isNowDay&&e.t<NOW_MIN?.55:1};});
   const nowText=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;
   const pendingB=B.filter(b=>b.stage==='new');
   const pending=pendingB.map(b=>{const over=b.stageAt>15;return {guest:b.guest,initial:b.guest[0],phone:b.phone,source:b.source,wish:b.wish||'',wait:ago(b.stageAt),timerColor:over?'#B8432F':'#0A2F4F',bg:over?'rgba(184,67,47,.06)':'#fff',tel:'tel:'+b.phone.replace(/\s/g,''),wa:'https://wa.me/'+b.phone.replace(/\D/g,''),take:()=>{this.move(b.num,'contact');this.toast(`${b.num} взята в работу`);this.setState({openId:b.num,tab:'compose'});}};});
-  const prepList=todayB.filter(b=>['confirmed','prep','inhouse'].includes(b.stage)&&b.start*60>NOW_MIN-60).sort((a,b)=>a.start-b.start).map(b=>{const startAt=b.start-cfg.prep;const left=startAt*60-NOW_MIN;const st=b.stage==='prep'?'Топим':b.stage==='inhouse'?'Принят':'Запланирована';const bg=b.stage==='prep'?'rgba(217,164,65,.22)':b.stage==='inhouse'?'rgba(94,140,97,.15)':'rgba(10,47,79,.08)';return {house:H[b.house].name,startAt:hh(startAt),stage:st,bg,fg:'#0A2F4F',countdown:left>0?`через ${ago(left)}`:b.stage==='inhouse'?'гость в доме':`заезд через ${ago(b.start*60-NOW_MIN)}`,cdColor:left<=0&&b.stage!=='inhouse'?'#C15C22':'#0A2F4F'};});
+  const prepList=!isNowDay?liveB.slice().sort((a,b)=>a.start-b.start).map(b=>({house:H[b.house].name,startAt:hh(b.start-cfg.prep),stage:ST[b.stage].name,bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',countdown:`заезд ${hh(b.start)}`,cdColor:'#0A2F4F'})):todayB.filter(b=>['confirmed','prep','inhouse'].includes(b.stage)&&b.start*60>NOW_MIN-60).sort((a,b)=>a.start-b.start).map(b=>{const startAt=b.start-cfg.prep;const left=startAt*60-NOW_MIN;const st=b.stage==='prep'?'Топим':b.stage==='inhouse'?'Принят':'Запланирована';const bg=b.stage==='prep'?'rgba(217,164,65,.22)':b.stage==='inhouse'?'rgba(94,140,97,.15)':'rgba(10,47,79,.08)';return {house:H[b.house].name,startAt:hh(startAt),stage:st,bg,fg:'#0A2F4F',countdown:left>0?`через ${ago(left)}`:b.stage==='inhouse'?'гость в доме':`заезд через ${ago(b.start*60-NOW_MIN)}`,cdColor:left<=0&&b.stage!=='inhouse'?'#C15C22':'#0A2F4F'};});
   // календарь
   const hours=[];for(let x=cfg.open;x<cfg.close;x++)hours.push(x);const span=cfg.close-cfg.open;const pct=h=>((h-cfg.open)/span*100).toFixed(2)+'%';
   const legend=[{name:'новая',color:'#C15C22',border:'0'},{name:'в работе',color:'#D9A441',border:'0'},{name:'подтверждена',color:'#0A2F4F',border:'0'},{name:'в доме',color:'#5E8C61',border:'0'},{name:'завершена',color:GR(.4),border:'0'},{name:'отмена/неявка',color:'transparent',border:`1.5px dashed ${GR(.4)}`}];
@@ -1547,7 +1563,7 @@ class Component extends DCLogic {
   return {nav,navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinFg:pinned?'#fff':'rgba(10,47,79,.6)',pinBg:pinned?'#0A2F4F':'transparent',
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen})),
-   screenTitle:titles[s.screen],todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
+   screenTitle:titles[s.screen],dashSeg:[[-1,'Вчера'],[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashPrev:()=>this.setState({dashDay:dd-1}),dashNext:()=>this.setState({dashDay:dd+1}),dashKey:dkey(dd),dashPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({dashDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':dd<0?'прошедший день · итоги':'будущий день · план',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',dashNotNow:!isNowDay,dashBack:()=>this.setState({dashDay:0}),feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
    viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
