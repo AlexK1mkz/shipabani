@@ -298,7 +298,10 @@
     height:36px;min-width:54px;padding:0 8px;border-radius:999px;border:1px solid rgba(249,239,227,.38);
     background:rgba(10,47,79,.42);color:#F9EFE3;font:700 12px/1 Inter,sans-serif;
     letter-spacing:.04em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-  .shipa-mobile-language__caret{font-size:15px;opacity:.85;transform:translateY(-2px)}
+  /* SVG chevron: exact centering with no font-dependent baseline. */
+  .shipa-mobile-language__caret{display:block;width:10px;height:10px;flex:0 0 10px;
+    color:inherit;opacity:.9;transform:none;transition:transform .18s ease}
+  .shipa-mobile-language__trigger[aria-expanded="true"] .shipa-mobile-language__caret{transform:rotate(180deg)}
   .shipa-mobile-language__panel{position:absolute;top:calc(100% + 10px);right:0;width:174px;z-index:1000;
     background:#F9EFE3;color:#0A2F4F;border:1px solid rgba(10,47,79,.12);
     box-shadow:0 16px 42px rgba(4,19,31,.26);border-radius:17px;padding:6px;
@@ -971,6 +974,18 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     @media(prefers-reduced-motion:reduce){.shipa-stagger-cards > *{animation:none!important;}}
 
 </style>
+<style id="shipa-desktop-header-refinement">
+/* Keep in-page navigation targets visible below the fixed header. */
+@media (min-width: 768px) {
+  html {scroll-padding-top: 96px;}
+  [data-screen-label]:not([data-screen-label="Главная"]),
+  [id^="section-"] {scroll-margin-top: 96px;}
+  [data-shipa-header-row] {width:100%;}
+  [data-shipa-header-actions] {white-space:nowrap;}
+  [data-shipa-header-nav] nav {max-width:100%;}
+  [data-shipa-header-nav] button {flex:0 0 auto;}
+}
+</style>
 </helmet>
 
 <div style="min-height:100vh;background:#F9EFE3;color:#0A2F4F;font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.4;">
@@ -978,26 +993,26 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 <!-- HEADER -->
 <sc-if value="{{ showChrome }}" hint-placeholder-val="{{ true }}">
 <header ref="{{ headerRef }}" data-hdr="1" data-solid="{{ hdr.solid }}" style="{{ hdr.style }}">
-  <div style="{{ hdr.rowStyle }}">
-    <div style="justify-self:start;display:flex;align-items:center;gap:16px;min-width:0;">
-      <button onClick="{{ goHome }}" aria-label="SHIPA - на главную" style="display:flex;align-items:center;height:44px;border-radius:8px;">
+  <div data-shipa-header-row="1" style="{{ hdr.rowStyle }}">
+    <div data-shipa-header-brand="1" style="justify-self:start;display:flex;align-items:center;gap:16px;min-width:0;">
+      <button onClick="{{ goHome }}" aria-label="{{ headerHomeAria }}" style="display:flex;align-items:center;height:44px;border-radius:8px;">
         <img src="brand/logo-h-cream.png" alt="SHIPA" style="{{ hdr.logo }}">
       </button>
       <sc-if value="{{ hdrSub }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;flex-direction:column;gap:2px;padding-left:16px;border-left:1px solid rgba(249,239,227,.3);font-size:13px;line-height:1.3;color:rgba(249,239,227,.8);white-space:nowrap;"><span>Банный комплекс</span><span>Караганда</span></div>
+        <div style="display:flex;flex-direction:column;gap:2px;padding-left:16px;border-left:1px solid rgba(249,239,227,.3);font-size:13px;line-height:1.3;color:rgba(249,239,227,.8);white-space:nowrap;"><span>{{ headerBrandType }}</span><span>{{ headerBrandCity }}</span></div>
       </sc-if>
     </div>
-    <div style="justify-self:center;display:flex;align-items:center;min-width:0;">
+    <div data-shipa-header-nav="1" style="justify-self:center;display:flex;align-items:center;min-width:0;">
       <sc-if value="{{ hdrNav }}" hint-placeholder-val="{{ true }}">
-        <nav aria-label="Основное меню" style="display:flex;gap:{{ hdrNavGap }};align-items:center;">
+        <nav aria-label="{{ headerNavAria }}" style="display:flex;gap:{{ hdrNavGap }};align-items:center;">
           <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
-            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;display:flex;align-items:center;font-size:15px;font-weight:500;letter-spacing:.01em;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
+            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;display:flex;align-items:center;font-size:{{ hdrNavFont }};font-weight:500;letter-spacing:0;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
           </sc-for>
         </nav>
       </sc-if>
     </div>
-    <div style="justify-self:end;display:flex;align-items:center;gap:{{ hdrGap }};">
-      <a data-wa="1" href="{{ waHeader }}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp" title="Написать в WhatsApp" style="width:{{ hdrIcon }};height:{{ hdrIcon }};border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:#F9EFE3;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
+    <div data-shipa-header-actions="1" style="justify-self:end;display:flex;align-items:center;min-width:0;gap:{{ hdrGap }};">
+      <a data-wa="1" href="{{ waHeader }}" target="_blank" rel="noopener" aria-label="{{ whatsappAria }}" title="{{ whatsappAria }}" style="width:{{ hdrIcon }};height:{{ hdrIcon }};border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:#F9EFE3;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.15);"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
       <sc-if value="{{ hdrPhoneText }}" hint-placeholder-val="{{ true }}">
         <a href="{{ telHref }}" style="font-size:16px;font-weight:600;line-height:1;color:#F9EFE3;white-space:nowrap;border-radius:8px;padding:0 4px;">{{ phoneText }}</a>
       </sc-if>
@@ -1008,7 +1023,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <sc-if value="{{ hdrLangDesktop }}" hint-placeholder-val="{{ true }}">
         <div data-shipa-header-lang="desktop"
              role="group"
-             aria-label="RU / KZ"
+             aria-label="RU / KZ / EN"
              style="display:flex;align-items:center;gap:4px;
                     padding:4px;flex:0 0 auto;border-radius:999px;
                     background:rgba(10,47,79,.50);border:1px solid rgba(249,239,227,.20);
@@ -1026,7 +1041,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <button type="button" class="shipa-mobile-language__trigger"
                   onClick="{{ hdrLangToggle }}" aria-expanded="{{ hdrLangMenuOpen }}"
                   aria-label="Choose language">
-            <span>{{ langActive }}</span><span class="shipa-mobile-language__caret" aria-hidden="true">⌄</span>
+            <span>{{ langActive }}</span><svg class="shipa-mobile-language__caret" aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.25 4.25L6 7.75L9.75 4.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <sc-if value="{{ hdrLangMenuOpen }}" hint-placeholder-val="{{ false }}">
             <div class="shipa-mobile-language__panel" role="group" aria-label="Select language">
@@ -1340,8 +1355,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ true }}"><nav class="shipa-carousel-nav" data-carousel-target="car-dishes" data-active="0" aria-label="Навигация по карточкам" style="padding:4px 20px 0;"><button type="button" data-carousel-dir="-1" aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" data-carousel-dir="1" aria-label="Вперёд" title="Вперёд"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav></sc-if>
     </div>
     <div style="display:flex;justify-content:center;gap:8px;padding:16px 20px 0;flex-wrap:wrap;">
-      <button type="button" data-menu-cta="1" data-shipa-kitchen="1" aria-label="{{ menuCtaAccessibleLabel }}" onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">Смотреть всё меню</button>
-      <button type="button" data-shipa-kitchen="1" onClick="{{ beginTableBooking }}" style="min-height:48px;padding:0 12px;font-weight:600;font-size:15px;color:#0A2F4F;text-align:center;"><span style="border-bottom:1px solid rgba(10,47,79,.4);">{{ addTableLabel }}</span><span style="display:block;font-size:12px;font-weight:400;color:rgba(10,47,79,.65);margin-top:3px;">{{ addTableHint }}</span></button>
+      <button type="button" data-menu-cta="1" data-shipa-kitchen="1" aria-label="{{ menuCtaAccessibleLabel }}" onClick="{{ goKitchen }}" style="height:48px;padding:0 24px;border-radius:999px;background:#C15C22;color:#F9EFE3;font-weight:600;font-size:15px;">{{ kitchenMenuFullLabel }}</button>
+      <span style="width:100%;font-size:13px;line-height:1.4;color:rgba(10,47,79,.67);text-align:center;">{{ kitchenHouseAfterOrderHint }}</span>
     </div>
   </section>
 
@@ -3308,7 +3323,7 @@ const P_IDS=['classic','herbal','conifer','soft','massage'];
 // Service-page content is translated at the data-source level.
 // This avoids the RU/KZ race between React renders and DOM text observers.
 const SERVICE_TEXT_KZ={"Парение":"Булау","Массаж":"Уқалау","Пилинг":"Дене скрабы","Массаж и уход":"Уқалау және күтім","Массаж тёплым маслом, скраб на основе соли и мёда. В комнате отдыха.":"Демалыс бөлмесінде жылы маймен денені уқалау және тұз бен балдан жасалған скрабпен күтім жасау.","Пилинг на соли и мёде":"Тұз бен балдан жасалған дене скрабы","Пармастер ведёт сеанс от прогрева до чая: веники, травяные настои, контраст с чаном. Подходит и тем, кто парится впервые, и тем, кто любит жар.":"Монша шебері денені жылытудан бастап шай ішуге дейінгі сеансты жүргізеді: сыпыртқылар, шөп тұнбалары және чанға түсу. Алғаш рет моншаға келгендерге де, ыстық буды ұнататындарға да лайық.","Массаж тёплым маслом в комнате отдыха, когда мышцы уже прогреты парной. Спокойный темп, без спешки.":"Бу бөлмесінде бұлшықеттер жылынғаннан кейін демалыс бөлмесінде жылы маймен денеге уқалау жасалады. Бәрі асықпай, жайлы қарқынмен өтеді.","Скраб на соли и мёде после прогрева: кожа мягкая, дыхание лёгкое.":"Дене жылынғаннан кейін тұз бен балдан жасалған скрабпен күтім жасалады: тері жұмсарып, бой сергиді.","Классическое парение":"Классикалық булау","Травяное парение":"Шөппен булау","Хвойное парение с контрастом":"Қылқанжапырақты сыпыртқымен булау","Мягкое расслабляющее":"Босаңсытатын жұмсақ булау","Для восстановления сил":"Күш-қуатты қалпына келтіру үшін","Для пары":"Жұптарға арналған","Для тех, кто впервые":"Алғаш рет моншаға келетіндерге","Для спокойного вечера":"Жайлы, тыныш кеш үшін","После парения":"Булаудан кейін","После прогрева":"Дене жылынғаннан кейін","для восстановления сил":"күш-қуатты қалпына келтіру үшін","для пары":"жұптарға арналған","для тех, кто впервые":"алғаш рет моншаға келетіндерге","для спокойного вечера":"жайлы, тыныш кеш үшін","после парения":"булаудан кейін","после прогрева":"дене жылынғаннан кейін","1,5 часа":"1,5 сағат","2 часа":"2 сағат","1 час":"1 сағат","40 минут":"40 минут","Временно недоступна":"Уақытша қолжетімсіз","Только в VIP-домах":"Тек VIP үйлерде","Прогрев, два захода с веником, отдых с чаем. Темп - по самочувствию.":"Денені жылыту, сыпыртқымен екі рет булау және шай ішіп демалу. Қарқыны өз жағдайыңызға қарай таңдалады.","Настой степных трав, мягкий пар, медленный ритм. После - чай из тех же трав.":"Дала шөптерінің тұнбасы, жұмсақ бу және баяу қарқын. Соңында сол шөптерден дайындалған шай беріледі.","Кедровый и дубовый веник, три захода, охлаждение в чане между ними.":"Балқарағай мен емен сыпыртқылары арқылы үш рет булау, арасында чанға түсіп салқындау.","Низкая температура, ароматы лаванды и сандала, без резких контрастов.":"Төмен температура, лаванда мен сандал ағашының хош иісі. Температура күрт өзгермейді.","Мягкий скраб из соли и мёда по всему телу, затем тёплый душ и отдых. Можно добавить к любой программе парения.":"Бүкіл денеге тұз бен балдан жасалған жұмсақ скраб жағылады. Одан кейін жылы душ пен демалыс. Кез келген булау бағдарламасына қосуға болады.","Прогрев":"Жылыту","Первый заход с веником":"Сыпыртқымен бірінші булау","Чан":"Чан","Второй заход":"Екінші булау","Чай и отдых":"Шай ішіп демалу","Запарка трав, первый заход":"Шөптерді дайындау, бірінші булау","Чай из тех же трав":"Сол шөптерден дайындалған шай","Заход с кедровым веником":"Балқарағай сыпыртқысымен булау","Третий заход":"Үшінші булау","Мягкий прогрев":"Ақырын жылыту","Заход без веника, ароматы":"Сыпыртқысыз булау, хош иістер","Разогрев мышц":"Бұлшықеттерді жылыту","Спина и плечи":"Арқа мен иық","Ноги":"Аяқтар","Отдых и чай":"Демалыс және шай","Прогрев в парной":"Бу бөлмесінде жылыту","Нанесение скраба":"Скраб жағу","Тёплый душ":"Жылы душ","Отдых":"Демалыс","Берёзовый и дубовый веники":"Қайың және емен сыпыртқылары","Травяной настой для пара":"Буға арналған шөп тұнбасы","Чай после парной":"Булаудан кейінгі шай","Полотенца и простыни":"Сүлгілер мен жаймалар","Сбор степных трав":"Дала шөптерінің жинағы","Дубовый веник":"Емен сыпыртқысы","Травяной чай":"Шөп шайы","Кедровый и дубовый веники":"Балқарағай мен емен сыпыртқылары","Горячий чан":"Ыстық чан","Масла лаванды и сандала":"Лаванда және сандал майлары","Чай":"Шай","Тёплое масло":"Жылы май","Полотенца":"Сүлгілер","Соль и мёд":"Тұз бен бал","Что входит":"Не кіреді","Беременность, высокое давление, болезни сердца и сосудов, острые воспаления и температура, недавние травмы. Если сомневаетесь - посоветуйтесь с врачом или напишите нам, подберём мягкую программу.":"Жүктілік, жоғары қан қысымы, жүрек-қан тамырлары аурулары, жедел қабыну, дене қызуының көтерілуі және жақында алған жарақаттар кезінде дәрігермен кеңесіңіз. Күмәндансаңыз, бізге жазыңыз."};
-const svcText=(value,lang)=>lang==='KZ'?(SERVICE_TEXT_KZ[value]||value):value;
+const svcText=(value,lang)=>lang==='KZ'?(SERVICE_TEXT_KZ[value]||value):lang==='EN'?(window.ShipaEnText?.[value]||window.ShipaLocale?.translate?.(value,'EN')||value):value;
 
 const PDATA={
  classic:{photo:'Фото: мастер с берёзовым веником в пару, спина гостя на полке',steps:[['Прогрев','15 мин'],['Первый заход с веником','20 мин'],['Чан','10 мин'],['Второй заход','20 мин'],['Чай и отдых','25 мин']],incl:['Берёзовый и дубовый веники','Травяной настой для пара','Чай после парной','Полотенца и простыни']},
@@ -3387,7 +3402,8 @@ const MASTERS_KZ=[
  {name:'Айжан',spec:'Уқалау және күтім',exp:'8 жыл тәжірибесі бар',story:'Жұмсақ уқалау тәсілдері, майлар және тұзды скрабтармен жұмыс істейді.'},
  {name:'Тимур',spec:'Шөппен және жұмсақ булау',exp:'Булау ісінде 6 жыл тәжірибесі бар',story:'Шөптерді өзі жинайды. Жұптар мен алғаш рет келген қонақтарға арналған жайлы бағдарламаларды жүргізеді.'}
 ];
-const menuDish=(category,index,lang)=>{const item=(KITCHEN[category]||[])[index];const kk=(KITCHEN_KZ[category]||[])[index]||{};return lang==='KZ'?{...item,...kk}:item;};
+const KITCHEN_LABEL_EN={'Чайная карта':'Tea selection','Закуски':'Starters','Горячее':'Main courses','Десерты':'Desserts'};
+const menuDish=(category,index,lang)=>{const item=(KITCHEN[category]||[])[index];const kk=(KITCHEN_KZ[category]||[])[index]||{};if(lang==='KZ')return {...item,...kk};if(lang==='EN')return {...item,name:svcText(item.name,'EN'),desc:svcText(item.desc,'EN'),...(item.portion?{portion:svcText(item.portion,'EN')}:{})};return item;};
 const menuItemName=(item,lang)=>{if(item.type==='prog')return PDATA[item.id]?svcText(PDATA[item.id].name,lang):item.name;
  if(item.type==='dish'){for(const key of Object.keys(KITCHEN)){const start='dish-'+key+'-';if(String(item.id).startsWith(start)){const index=Number(String(item.id).slice(start.length));if(Number.isInteger(index)&&KITCHEN[key]?.[index])return menuDish(key,index,lang).name;}}}return item.name;};
 const PILLARS=[{n:'01',kind:'СМЫСЛ',name:'Восстановление',desc:'Пар, вода и тишина помогают переключиться с городского ритма.'},{n:'02',kind:'ПОЗИЦИЯ',name:'Приватный отдых',desc:'Премиальный отдых без показной роскоши.'},{n:'03',kind:'ОБЕЩАНИЕ',name:'Продуманная забота',desc:'Чистое тепло, приватность и сервис для семьи и близких.'},{n:'04',kind:'ХАРАКТЕР',name:'Спокойная уверенность',desc:'Тёплый, природный, современный. Говорит ясно и по существу.'}];
@@ -3641,7 +3657,7 @@ function groupDateRibbon(days,startOffset,dateAt,lang){
     const key=`${date.getFullYear()}-${date.getMonth()}`;
     let group=groups[groups.length-1];
     if(!group||group.key!==key){
-      group={key,title:(lang==='KZ'?MON_NOM_KZ:MON_NOM)[date.getMonth()],days:[]};
+      group={key,title:(lang==='KZ'?MON_NOM_KZ:lang==='EN'?['January','February','March','April','May','June','July','August','September','October','November','December']:MON_NOM)[date.getMonth()],days:[]};
       groups.push(group);
     }
     group.days.push(day);
@@ -3672,7 +3688,7 @@ class Component extends DCLogic {
     const src=`https://yandex.ru/map-widget/v1/?ll=${pt}&z=${m.zoom}&pt=${pt},pm2rdm&lang=ru_RU`;
     const one=k=>{const st=this.state.maps[k];const live=st.show&&st.ok;return {show:st.show,loaded:()=>this.setMap(k,{ok:true}),pin:!live,gate:live&&!st.armed,arm:()=>this.setMap(k,{armed:true}),
       frameStyle:`position:absolute;inset:0;width:100%;height:100%;border:0;display:block;opacity:${st.ok?1:0};transition:opacity 300ms ease-out;pointer-events:${st.armed?'auto':'none'};`};};
-    return {mapH:wide?'440px':'320px',mapSrc:src,mapAddr:this.state.lang==='KZ'?'Қарағанды қ., Жақан Смақов көшесі, 242':ADDR,copyAddrLabel:this.state.lang==='KZ'?(this.state.addrCopied?'Көшірілді':'Мекенжайды көшіру'):(this.state.addrCopied?'Скопировано':'Скопировать адрес'),
+    return {mapH:wide?'440px':'320px',mapSrc:src,mapAddr:this.state.lang==='KZ'?'Қарағанды қ., Жақан Смақов көшесі, 242':this.state.lang==='EN'?'242 Zhakan Smakov Street, Karaganda':ADDR,copyAddrLabel:this.state.lang==='KZ'?(this.state.addrCopied?'Көшірілді':'Мекенжайды көшіру'):(this.state.addrCopied?'Скопировано':'Скопировать адрес'),
       copyAddr:()=>{try{navigator.clipboard&&navigator.clipboard.writeText(this.state.lang==='KZ'?'Қарағанды қ., Жақан Смақов көшесі, 242':ADDR);}catch(e){}this.setState({addrCopied:true});clearTimeout(this._addrT);this._addrT=setTimeout(()=>this.setState({addrCopied:false}),1800);},
       mapLinks:{gis:`https://2gis.kz/${m.city}/geo/${pt}?m=${pt}/${m.zoom}`,ya:`https://yandex.kz/maps/?pt=${pt}&z=${m.zoom}&l=map`,go:`https://www.google.com/maps?q=${m.lat},${m.lng}`,route:`https://2gis.kz/${m.city}/directions/points/|${pt}`},
       mapHome:one('home'),mapContacts:one('contacts')};}
@@ -3787,8 +3803,26 @@ class Component extends DCLogic {
   goSvc(id){const sec=document.querySelector('[data-svc="'+id+'"]');if(!sec)return;const hh=(window.innerWidth>=768?72:56);const y=sec.getBoundingClientRect().top+window.scrollY-hh-72;this._spyLock=Date.now()+1200;clearTimeout(this._spyT);this._spyT=setTimeout(()=>{this._spyLock=0;},1200);window.scrollTo({top:y,behavior:this.reduced?'auto':'smooth'});this.setState({svcCat:id});
     const box=this.svcTabsRef.current;const b=box&&box.querySelector('[data-tab="'+id+'"]');if(box&&b)box.scrollTo({left:Math.max(0,b.offsetLeft-box.clientWidth/2+b.offsetWidth/2),behavior:'smooth'});}
   toggleCart(it){this.setState(s=>{const has=s.cart.some(x=>x.id===it.id);const cart=has?s.cart.filter(x=>x.id!==it.id):[...s.cart,it];try{localStorage.setItem('shipa_cart',JSON.stringify(cart));}catch(e){}return {cart};});}
-  checkHdr(){const h=this.headerRef.current;const row=h&&h.firstElementChild;if(!row)return;const over=row.scrollWidth>row.clientWidth+1;const vw=window.innerWidth;const lv=this.state.hdrLv||0;
-    if(over&&lv<2)this.setState({hdrLv:lv+1,hdrLvAt:vw});else if(!over&&lv>0&&vw>(this.state.hdrLvAt||0)+48)this.setState({hdrLv:lv-1,hdrLvAt:vw});}
+  checkHdr(){
+    const h=this.headerRef.current, row=h&&h.firstElementChild;
+    if(!row)return;
+    const vw=window.innerWidth;
+    if(vw<768)return;
+    const brand=row.querySelector('[data-shipa-header-brand]');
+    const nav=row.querySelector('[data-shipa-header-nav] nav');
+    const actions=row.querySelector('[data-shipa-header-actions]');
+    const left=brand?.getBoundingClientRect(), middle=nav?.getBoundingClientRect();
+    const right=actions?.getBoundingClientRect(), bounds=row.getBoundingClientRect();
+    // Real element bounds catch collisions even when CSS grid reports no overflow.
+    const collision=!!(left&&middle&&right&&(middle.left<left.right+16||middle.right>right.left-16));
+    const overflow=!!(right&&(right.right>bounds.right+1||right.left<bounds.left))||row.scrollWidth>row.clientWidth+1;
+    const lv=this.state.hdrLv||0;
+    if((collision||overflow)&&lv<2){
+      this.setState({hdrLv:2,hdrLvAt:vw});
+    }else if(!collision&&!overflow&&lv>0&&vw>(this.state.hdrLvAt||0)+72){
+      this.setState({hdrLv:0,hdrLvAt:vw});
+    }
+  }
   dragClose(e,ref,close){const el=ref.current;if(!el||window.innerWidth>=960)return;const y0=e.clientY;
     const mv=ev=>{const dy=Math.max(0,ev.clientY-y0);el.style.transition='none';el.style.transform='translateY('+dy+'px)';};
     const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cn);const dy=ev.clientY-y0;el.style.transition='transform 200ms ease-out';el.style.transform='';if(dy>80)close();};
@@ -4046,14 +4080,14 @@ class Component extends DCLogic {
     const iframe=e.currentTarget.closest('.shipa-inline-video')?.querySelector('iframe');
     if(iframe?.contentWindow){iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'unMute',args:[]}), '*');}
     const btn=e.currentTarget;
-    btn.textContent=this.state.lang==='KZ'?'Дыбыс қосылды':'Звук включён';
+    btn.textContent=this.state.lang==='KZ'?'Дыбыс қосылды':this.state.lang==='EN'?'Sound on':'Звук включён';
   }
   videoAttrs(id,s){return {
     playing:s.playing===id,playingAttr:s.playing===id?'1':'0',
     // iPhone Safari permits reliable one-tap autoplay when the iframe starts muted.
     embed:`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&enablejsapi=1`,
-    stopLabel:s.lang==='KZ'?'Бейнені тоқтату':'Остановить видео',
-    soundLabel:s.lang==='KZ'?'Дыбысты қосу':'Включить звук',
+    stopLabel:s.lang==='KZ'?'Бейнені тоқтату':s.lang==='EN'?'Stop video':'Остановить видео',
+    soundLabel:s.lang==='KZ'?'Дыбысты қосу':s.lang==='EN'?'Turn on sound':'Включить звук',
     stop:e=>{e.preventDefault();e.stopPropagation();this.stopVideo();},
     sound:e=>this.unmuteVideo(e),
     stopProp:e=>e.stopPropagation()
@@ -4098,13 +4132,10 @@ class Component extends DCLogic {
   // Resolve against this document's URL (not the current SPA hash/route).
   goKitchenSection(){
     const target=String(this.props.menuUrl||'../e-menu/').trim()||'../e-menu/';
-    if(this.state?.lang==='EN'){
-      const menuPage=new URL(target,document.baseURI);
-      menuPage.searchParams.set('lang','EN');
-      window.location.assign(menuPage.href);
-      return;
-    }
-    window.location.assign(new URL(target,document.baseURI).href);
+    const menuPage=new URL(target,document.baseURI);
+    const language=String(this.state?.lang||'RU').toUpperCase();
+    menuPage.searchParams.set('lang',['RU','KZ','EN'].includes(language)?language:'RU');
+    window.location.assign(menuPage.href);
   }
   openMenuUrl(){this.goKitchenSection();}
   formOk(){const f=this.state.form;return nameValid(f.name)&&phoneValid(f.phone)&&!!f.agree&&!!f.privacy;}
@@ -4163,7 +4194,7 @@ class Component extends DCLogic {
     if(bk.step===1)return bk.date!=null&&bk.guests>0;if(bk.step===2)return !!bk.houseId;if(bk.step===3)return bk.mode==='daily'?this.dailyOk(HOUSES.findIndex(h=>h.id===bk.houseId),bk.date):this.validHoursSelection(bk);if(bk.step===4)return this.formOk();return false;}
   minStep(bk){return bk.pre?(bk.fromHouse?2:1):(bk.fromHouse?3:1);}
   lastStep(bk){return bk.pre?3:5;}
-  hint(t,ms){clearTimeout(this._hintT);if(this.state.lang==='KZ'&&window.ShipaBookingI18n)t=window.ShipaBookingI18n.translate(t);this.setState({bkHint:t});vib(20);this._hintT=setTimeout(()=>this.setState({bkHint:null}),ms||2600);}
+  hint(t,ms){clearTimeout(this._hintT);if(this.state.lang==='KZ'&&window.ShipaBookingI18n)t=window.ShipaBookingI18n.translate(t);else if(this.state.lang==='EN')t=window.ShipaLocale?.translate?.(t,'EN')||t;this.setState({bkHint:t});vib(20);this._hintT=setTimeout(()=>this.setState({bkHint:null}),ms||2600);}
   showStepHint(bk){if(bk.pre){this.hint(bk.step===1?'Выберите дом':'Выберите дату');return;}
     if(bk.step===3){const c=this._s3||{};this.setState(s=>({s3hint:c.hasStart?'dur':'start',s3n:s.s3n+1}));vib(20);this.scrollToEl(document.getElementById(c.hasStart?'bk-durs':'bk-grid'));return;}
     this.hint(bk.step===1?'Выберите дату':'Выберите дом');}
@@ -4172,7 +4203,7 @@ class Component extends DCLogic {
     if(!this.stepOk(bk)){this.showStepHint(bk);return;}if(i>(bk.maxStep||bk.step))return;
     if(i===4||i===5)this.vt(done=>this.setState(s=>({bk:{...s.bk,step:i},s3hint:null,sheet:null,bkHint:null}),()=>{if(window.shipaTrack)window.shipaTrack('booking_step',{booking_step:'step_'+i});done();}));else this.setBk({step:i});}
   segNav(bk,i,pre){const mx=Math.max(bk.maxStep||0,bk.step);const vis=i>=this.minStep(bk)&&i<=mx&&bk.step<6;const cur=i===bk.step;const names=pre?['Дом','Дата','Контакты']:['Дата и гости','Дом','Время','Контакты','Предоплата'];
-    return {off:!vis||cur,cur:cur?'step':undefined,label:this.state.lang==='KZ'?'Қадам '+i+': '+(window.ShipaBookingI18n?.translate(names[i-1])||names[i-1]):'Шаг '+i+': '+names[i-1],cursor:vis&&!cur?'pointer':'default',go:()=>this.goStep(i)};}
+    return {off:!vis||cur,cur:cur?'step':undefined,label:this.state.lang==='KZ'?'Қадам '+i+': '+(window.ShipaBookingI18n?.translate(names[i-1])||names[i-1]):this.state.lang==='EN'?`Step ${i}: ${window.ShipaLocale?.translate?.(names[i-1],'EN')||names[i-1]}`:'Шаг '+i+': '+names[i-1],cursor:vis&&!cur?'pointer':'default',go:()=>this.goStep(i)};}
   canSwipeBack(bk){return bk.step>=2&&bk.step<6;}
   // Свайп между шагами: вправо - назад, влево - только на уже пройденный шаг с заполненными полями
   swOverlay(){return document.querySelector('[data-screen-label="Бронирование"]');}
@@ -4180,7 +4211,7 @@ class Component extends DCLogic {
     const el=document.getElementById('bk-scroll');if(el){el.style.transition='';el.style.transform='';}
     const ov=this.swOverlay();if(ov&&ov.dataset.swiping)delete ov.dataset.swiping;const u=document.getElementById('bk-under');if(u){u.style.opacity='0';u.textContent='';}}
   swLabel(bk,dir){const pre=!!bk.pre;const names=pre?['Дом','Дата','Контакты']:['Дата и гости','Дом','Время','Контакты','Предоплата'];
-    const kz=this.state.lang==='KZ'&&window.ShipaBookingI18n;const text=x=>kz?window.ShipaBookingI18n.translate(x):x;
+    const kz=this.state.lang==='KZ'&&window.ShipaBookingI18n;const text=x=>kz?window.ShipaBookingI18n.translate(x):this.state.lang==='EN'?(window.ShipaLocale?.translate?.(x,'EN')||x):x;
     if(dir>0){if(bk.step<=this.minStep(bk))return kz?'← Брондауды жабу':'← Закрыть бронь';const i=bk.step-1;return '← '+(kz?'Қадам':'Шаг')+' '+i+' · '+text(names[i-1]);}
     const i=bk.step+1;return (kz?'Қадам':'Шаг')+' '+i+' · '+text(names[i-1])+' →';}
   // Свайп между шагами: вправо - назад, влево - только на уже пройденный шаг с заполненными полями
@@ -4317,7 +4348,7 @@ class Component extends DCLogic {
     const PH=this.props.sitePhone||'+7 (701) 821-88-83',WP=this.props.waPhone||PH;
     const dig=x=>{let d=String(x).replace(/\D/g,'');if(d.length===11&&d[0]==='8')d='7'+d.slice(1);return d;};
     const C=this.C={phone:PH,tel:'tel:+'+dig(PH),wa:tx=>'https://wa.me/'+dig(WP)+(tx?'?text='+encodeURIComponent(tx):'')};
-    const P=this.props;const WT=(k,vars)=>String((this.state.lang==='KZ'&&(P[k]==null||P[k]===WA_TEXT[k]))?WA_TEXT_KZ[k]:(this.state.lang==='EN'&&(P[k]==null||P[k]===WA_TEXT[k]))?WA_TEXT_EN[k]:(P[k]??WA_TEXT[k])).replace(/\{(дом|дата|время|выезд|гостей|товар|предоплата|бронь)\}/g,(_,n)=>vars&&vars[n]!=null?vars[n]:'').replace(/\s+,/g,',').replace(/,\s*$/,'');C.t=WT;
+    const P=this.props;const WT=(k,vars)=>String((this.state.lang==='KZ'&&(P[k]==null||P[k]===WA_TEXT[k]))?WA_TEXT_KZ[k]:(this.state.lang==='EN'&&(/[А-Яа-яЁё]/.test(String(P[k]??WA_TEXT[k]))||P[k]==null))?WA_TEXT_EN[k]:(P[k]??WA_TEXT[k])).replace(/\{(дом|дата|время|выезд|гостей|товар|предоплата|бронь)\}/g,(_,n)=>vars&&vars[n]!=null?vars[n]:'').replace(/\s+,/g,',').replace(/,\s*$/,'');C.t=WT;
     const pre=!!this.props.preorderMode;
     const s=this.state,bk=s.bk;const heroTxt={...HERO_TEXT,...HERO_SLIDES[s.hero||0]};
 /* SHIPA_KZ_HERO */
@@ -4486,13 +4517,13 @@ if(s.lang==='EN'){
       dist:rst.dist.map((c,i)=>({n:5-i,c,fill:`display:block;height:100%;width:${Math.round(100*c/rsMax)}%;border-radius:3px;background:${BRICK};`}))};
     const rvSorts=[['new','Сначала новые'],['useful','Сначала полезные'],['photo','С фото']].map(([id,label])=>({label:houseKz?({'new':'Алдымен жаңалары','useful':'Алдымен пайдалы пікірлер','photo':'Фотосы бар'})[id]:label,sel:rvSort===id?'true':'false',select:()=>this.setState({rvSort:id,rvShow:3}),style:this.chip(rvSort===id)}));
     const rf=s.rf;const rfOk=rf.stars>0&&rf.text.trim().length>=20&&!!rf.agree;
-    const kitchenTabs=Object.keys(KITCHEN).map(t=>{const a=s.kitchenTab===t;return {label:s.lang==='KZ'?KITCHEN_LABEL_KZ[t]:t,sel:a?'true':'false',select:()=>this.setState({kitchenTab:t}),style:`flex:0 0 auto;height:44px;padding:0 20px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;border:1px solid ${a?NAVY:'rgba(10,47,79,.25)'};background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
-    const kitchenItems=(KITCHEN[s.kitchenTab]||[]).map((_,i)=>{const k=menuDish(s.kitchenTab,i,s.lang);return {...k,priceText:fmt(k.price),slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:(s.lang==='KZ'?'Фото: ':'Фото: ')+k.name+' - '+k.desc.split(',')[0]};});
-    const reviewFilters=[{label:s.lang==='KZ'?'Барлығы':'Все',v:-1},...OPEN_HOUSES.map(h=>({label:s.lang==='KZ'?KZ_PAGE_HOUSES[HOUSES.indexOf(h)]:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
+    const kitchenTabs=Object.keys(KITCHEN).map(t=>{const a=s.kitchenTab===t;return {label:s.lang==='KZ'?KITCHEN_LABEL_KZ[t]:s.lang==='EN'?KITCHEN_LABEL_EN[t]:t,sel:a?'true':'false',select:()=>this.setState({kitchenTab:t}),style:`flex:0 0 auto;height:44px;padding:0 20px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;border:1px solid ${a?NAVY:'rgba(10,47,79,.25)'};background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
+    const kitchenItems=(KITCHEN[s.kitchenTab]||[]).map((_,i)=>{const k=menuDish(s.kitchenTab,i,s.lang);return {...k,priceText:fmt(k.price),slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:(s.lang==='KZ'?'Фото: ':s.lang==='EN'?'Photo: ':'Фото: ')+k.name+' - '+k.desc.split(',')[0]};});
+    const reviewFilters=[{label:s.lang==='KZ'?'Барлығы':s.lang==='EN'?'All':'Все',v:-1},...OPEN_HOUSES.map(h=>({label:s.lang==='KZ'?KZ_PAGE_HOUSES[HOUSES.indexOf(h)]:s.lang==='EN'?HOUSE_DETAILS_EN[HOUSES.indexOf(h)].name:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
     const filteredReviews=reviews.filter(r=>s.reviewFilter<0||r.hi===s.reviewFilter);
-    const catalogHouses=catalogHouses0.map(h=>{const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
+    const catalogHouses=catalogHouses0.map(h=>{const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:s.lang==='EN'?`${h.name}, photo ${i+1}`:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
       photoOpen:e=>{e?.stopPropagation();const lane=e?.currentTarget?.parentElement?.querySelector('.shipa-catalog-photo-track');const active=lane?Math.min(ph.length-1,Math.max(0,Math.round(lane.scrollLeft/Math.max(1,lane.clientWidth)))):0;window.ShipaPhotoViewer?.open(ph.map(p=>p.src),active,h.name);},
-      photoOpenText:s.lang==='KZ'?'Фотолар':'Фото',photoOpenLabel:s.lang==='KZ'?`${h.name} үйінің фотоларын қарау`:`Посмотреть фотографии дома ${h.name}`};});
+      photoOpenText:s.lang==='KZ'?'Фотолар':s.lang==='EN'?'Photos':'Фото',photoOpenLabel:s.lang==='KZ'?`${h.name} үйінің фотоларын қарау`:s.lang==='EN'?`View photos of ${h.name}`:`Посмотреть фотографии дома ${h.name}`};});
     const catalogSoon={visible:catalogComingSoon,kicker:s.lang==='KZ'?'Жақында':'Скоро открытие',title:s.lang==='KZ'?'Бұл санат жақында ашылады':'Эта категория откроется скоро',text:s.lang==='KZ'?'Қазір брондауға тек VIP үйлері қолжетімді. Қалған үйлер ашылған бойда осы жерде көрсетеміз.':'Сейчас для бронирования доступны только VIP-дома. Остальные категории откроем чуть позже и сразу покажем их здесь.',ctaLabel:s.lang==='KZ'?'VIP үйлерін көрсету':'Показать VIP-дома',cta:()=>this.setState({catalogFilter:'VIP'})};
     const inCart=id=>s.cart.some(x=>x.id===id);
     const mkCard=(o)=>{const added=inCart(o.id);const un=!!o.un;const isProg=o.type==='prog';
@@ -4527,10 +4558,11 @@ if(s.lang==='EN'){
       pd.masterWa=C.wa((s.lang==='KZ'?'Сәлеметсіз бе! Монша шебері мен бос уақытын нақтылағым келеді. Бағдарлама: ':'Здравствуйте! Подскажите, какие мастера свободны и на какое время? Программа: ')+progTitle);
     }
     const cartProgs=s.cart.filter(x=>x.type==='prog');const cn=s.cart.length;
-    const cartLabel=(s.lang==='KZ'?`${cn} ${cartProgs.length===cn?'бағдарлама':'тауар'}`:(cartProgs.length===cn?`${cn} ${plural(cn,'программа','программы','программ')}`:`${cn} ${plural(cn,'позиция','позиции','позиций')}`))+' · '+s.cart.map(x=>menuItemName(x,s.lang)).join(', ');
+    const cartLabel=(s.lang==='EN'?`${cn} ${cn===1?'item':'items'}`:s.lang==='KZ'?`${cn} ${cartProgs.length===cn?'бағдарлама':'тауар'}`:(cartProgs.length===cn?`${cn} ${plural(cn,'программа','программы','программ')}`:`${cn} ${plural(cn,'позиция','позиции','позиций')}`))+' · '+s.cart.map(x=>menuItemName(x,s.lang)).join(', ');
     const MENU=[['Дома','houses','img/h1_int.png'],['Парение и услуги','services','img/h2_acc.png'],['Кухня','kitchen','img/h4_acc.png'],['Отзывы','reviews','img/h5_int.png'],['О нас','about','img/h3_acc.png'],['Контакты','contacts','img/h6_int.png']];const MENU_KZ={houses:'Үйлер',services:'Булау және қызметтер',kitchen:'Ас мәзірі',reviews:'Пікірлер',about:'Біз туралы',contacts:'Байланыс'};
     const mh=s.menuHover??0;
-    const menuItems=MENU.map(([label,sc],i)=>({screen:sc,label:s.lang==='KZ'?MENU_KZ[sc]:label,aria:screen===sc?'page':undefined,go:()=>sc==='kitchen'?this.goKitchenSection():this.go(sc),enter:()=>{if(this.state.menuHover!==i)this.setState({menuHover:i});},
+    const MENU_EN={houses:'Houses',services:'Steam rituals & services',kitchen:'Dining',reviews:'Reviews',about:'About us',contacts:'Contact'};
+    const menuItems=MENU.map(([label,sc],i)=>({screen:sc,label:s.lang==='KZ'?MENU_KZ[sc]:s.lang==='EN'?MENU_EN[sc]:label,aria:screen===sc?'page':undefined,go:()=>sc==='kitchen'?this.goKitchenSection():this.go(sc),enter:()=>{if(this.state.menuHover!==i)this.setState({menuHover:i});},
       btnStyle:`position:relative;text-align:left;border-radius:8px;transition:transform 250ms ease-out;`,
       style:`display:block;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:${wide?44:32}px;letter-spacing:.06em;text-transform:uppercase;line-height:1.1;color:${screen===sc?BRICK:CREAM};${this.reduced?'':`opacity:0;animation:menuItemIn 400ms cubic-bezier(.2,.8,.2,1) ${120+i*40}ms forwards;`}`}));
     const menuPreview=MENU.map(([,,src],i)=>({src,style:`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${i===mh?1:0};transition:opacity 300ms ease-out;`}));
@@ -4543,14 +4575,19 @@ if(s.lang==='EN'){
  about:'\u0411\u0456\u0437 \u0442\u0443\u0440\u0430\u043b\u044b',
  contacts:'\u0411\u0430\u0439\u043b\u0430\u043d\u044b\u0441'
 };
-    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({screen:sc,label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
+    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({screen:sc,label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):s.lang==='EN'?MENU_EN[sc]:label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
     const ratingOn=!!this.props.showHeaderRating||!!this.ratingDemo;
     const mo=s.menuOpen;const solid=!mo&&(s.hdrScrolled||screen!=='home'||this.hdrDemo==='scrolled'||this.hdrDemo==='block');
-    const vw=s.vw??(window.innerWidth||document.documentElement.clientWidth||1440);const hw=vw>=768;const hH=hw?(solid?72:88):(solid?56:64);const lh=hw?(solid?34:40):(solid?28:32);
+    const vw=s.vw??(window.innerWidth||document.documentElement.clientWidth||1440);
+    // Full navigation is shown only when it actually fits the English labels.
+    // At intermediate desktop widths, the hamburger menu preserves every link.
+    const fullNav=vw>=1400&&(s.hdrLv||0)<2;
+    const headerPhoneInline=vw>=1850&&(s.hdrLv||0)<1;
+    const hw=vw>=768;const hH=hw?(solid?72:88):(solid?56:64);const lh=hw?(solid?34:40):(solid?28:32);
     const line=(top,w)=>`position:absolute;left:0;top:${top}px;width:${w}px;height:1.5px;border-radius:999px;background:${CREAM};transition:transform 250ms ease-out,top 250ms ease-out,width 250ms ease-out;`;
-    const hdr={solid:solid?'1':'0',burgerLabel:mo?'Закрыть меню':'Открыть меню',menuWord:mo?'Закрыть':'Меню',
+    const hdr={solid:solid?'1':'0',burgerLabel:s.lang==='EN'?(mo?'Close menu':'Open menu'):s.lang==='KZ'?(mo?'Мәзірді жабу':'Мәзірді ашу'):(mo?'Закрыть меню':'Открыть меню'),menuWord:s.lang==='EN'?(mo?'Close':'Menu'):s.lang==='KZ'?(mo?'Жабу':'Мәзір'):(mo?'Закрыть':'Меню'),
       style:`position:fixed;top:0;left:0;right:0;z-index:var(--z-header);background:${solid?'rgba(10,47,79,.92)':'rgba(10,47,79,0)'};${solid?'-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);':''}border-bottom:1px solid ${solid?'rgba(249,239,227,.1)':'rgba(249,239,227,0)'};transition:transform 300ms ease-out,background-color 300ms ease-out,border-color 300ms ease-out;`,
-      rowStyle:`max-width:1440px;margin:0 auto;height:${hH}px;padding:0 ${vw>=1280?40:hw?24:16}px;display:grid;grid-template-columns:${vw>=1024&&(s.hdrLv||0)<2?'minmax(max-content,1fr) auto minmax(max-content,1fr)':'auto minmax(0,1fr) auto'};align-items:center;gap:${vw>=1280?24:16}px;transition:height 300ms ease-out;${screen==='home'?heroFx.hdr:''}`,
+      rowStyle:`max-width:1760px;margin:0 auto;height:${hH}px;padding:0 ${vw>=1280?40:hw?24:16}px;display:grid;grid-template-columns:${fullNav?'minmax(0,1fr) max-content minmax(0,1fr)':'auto minmax(0,1fr) auto'};align-items:center;gap:${vw>=1600?24:vw>=1280?18:16}px;transition:height 300ms ease-out;${screen==='home'?heroFx.hdr:''}`,
       menuBtnStyle:vw<768?`width:40px;height:40px;border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:${CREAM};`:`display:flex;align-items:center;gap:12px;height:44px;padding:0 4px;border-radius:8px;color:${CREAM};font-size:15px;font-weight:500;`,
       logo:`height:${lh}px;width:auto;display:block;transition:height 300ms ease-out;`,
       l1:line(mo?7:3,22)+(mo?'transform:rotate(45deg);':''),l2:line(mo?7:11,mo?22:14)+(mo?'transform:rotate(-45deg);':'')};
@@ -4585,14 +4622,14 @@ const LANGS=['RU','KZ','EN'];
 
     let B={};
     const okC=nameValid(s.form.name)&&phoneValid(s.form.phone);
-    const guestsTxt=n=>`${n} ${plural(n,'гость','гостя','гостей')}`;
+    const guestsTxt=n=>s.lang==='EN'?`${n} ${n===1?'guest':'guests'}`:`${n} ${plural(n,'гость','гостя','гостей')}`;
     if(bk&&bk.pre){
       const hSel=HOUSES.find(x=>x.id===bk.houseId);
       const d=bk.date!=null?this.dateAt(bk.date):null;
       const dateText=d?(s.lang==='KZ'?`${['жексенбі','дүйсенбі','сейсенбі','сәрсенбі','бейсенбі','жұма','сенбі'][d.getDay()]} · ${d.getDate()} ${['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'][d.getMonth()]} ${d.getFullYear()}`:`${WD_NOM[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`):'';
       const houseName=bk.houseId==='any'?'Любой дом':hSel?hSel.name:'';
       const canNext=bk.step===2?bk.date!=null:bk.step===3?okC:false;
-      const preHouses=[{id:'any',kicker:'ПОДБЕРЁМ',name:'ЛЮБОЙ ДОМ',sub:'По числу гостей и дате',bgStyle:'width:100%;height:100%;background:#0A2F4F url(brand/mark-cream.png) center/46% no-repeat;'},...OPEN_HOUSES.map(h=>({id:h.id,kicker:`${h.n} / ${h.tier}`,name:h.name,sub:`до ${h.guests} гостей · ${h.slogan.toLowerCase()}`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;`}))]
+      const preHouses=[{id:'any',kicker:s.lang==='EN'?'WE WILL FIND IT':'ПОДБЕРЁМ',name:s.lang==='EN'?'ANY HOUSE':'ЛЮБОЙ ДОМ',sub:s.lang==='EN'?'Based on your group size and date':'По числу гостей и дате',bgStyle:'width:100%;height:100%;background:#0A2F4F url(brand/mark-cream.png) center/46% no-repeat;'},...OPEN_HOUSES.map(h=>({id:h.id,kicker:`${h.n} / ${h.tier}`,name:h.name,sub:`до ${h.guests} гостей · ${h.slogan.toLowerCase()}`,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${h.img}_int.png) center/cover no-repeat;`}))]
         .map(x=>({...x,select:()=>this.setBk({houseId:x.id,step:2}),style:`display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:10px 14px 10px 10px;border-radius:18px;border:${bk.houseId===x.id?`2px solid ${BRICK}`:'1px solid rgba(10,47,79,.2)'};background:${CREAM};`}));
       B={...this.calendar(bk,true),stepSegs:[1,2,3].map(i=>({...this.segNav(bk,i,true),style:`display:block;width:100%;height:2px;background:${i<=Math.min(bk.step,3)?BRICK:'rgba(10,47,79,.15)'};`})),
         preStep1:bk.step===1,showCal:bk.step===2,showContacts:bk.step===3,preDone:bk.step===6,step2:false,step3:false,stepDone:false,showPay:false,payPanel:false,isVipHouse:false,hoursUI:true,dailyUI:false,todayNote:false,stripHintOn:false,progSheet:{intro:'',list:[]},
@@ -4617,8 +4654,8 @@ const LANGS=['RU','KZ','EN'];
       // Standard is visible as an upcoming category, but cannot be selected for booking.
       // Filtering to an empty array without an empty state made the interface look broken.
       if(bookingStandardSoon)ordered=[];
-      const sortChips=[['fit','Подходящие'],['price','Сначала дешевле'],['vip','VIP'],['std','Standard']].map(([id,label])=>({label:s.lang==='KZ'?({'fit':'Сәйкес келетіндер','price':'Алдымен арзандары','vip':'VIP','std':'Standard'}[id]):label,style:this.chip(sortId===id,'height:40px;font-size:13px;'),select:()=>this.setBk({sort:id})}));
-      const bookingSoonText=s.lang==='KZ'?{
+      const sortChips=[['fit','Подходящие'],['price','Сначала дешевле'],['vip','VIP'],['std','Standard']].map(([id,label])=>({label:s.lang==='KZ'?({'fit':'Сәйкес келетіндер','price':'Алдымен арзандары','vip':'VIP','std':'Standard'}[id]):s.lang==='EN'?({'fit':'Best match','price':'Lowest price first','vip':'VIP','std':'Standard'}[id]):label,style:this.chip(sortId===id,'height:40px;font-size:13px;'),select:()=>this.setBk({sort:id})}));
+      const bookingSoonText=s.lang==='EN'?{kicker:'OPENING SOON',heading:'Standard houses are opening soon',description:'Booking is not available for this category yet. You can choose one of our three VIP houses and plan your visit.',vipLabel:'View VIP houses'}:s.lang==='KZ'?{
         kicker:'ЖАҚЫНДА АШЫЛАДЫ',
         heading:'Standard үйлері жақында ашылады',
         description:'Бұл санат әзірге брондауға қолжетімсіз. Қазір үш VIP үйінің бірін таңдап, демалысыңызды жоспарлай аласыз.',
@@ -4631,16 +4668,16 @@ const LANGS=['RU','KZ','EN'];
       };
       const tf=bk.date*24;
       const step2Houses=ordered.map(c=>{const dis=!c.fits||c.full;const gx=c.fits&&bk.guests>c.h.guestsIncl;
-        return {...c.h,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${c.h.img}_int.png) center/cover no-repeat;`,rating:RATING[c.hi],facts:`${c.h.catName}${c.h.tub?' · горячий чан':''} · от ${c.h.min} ч`,
-          priceText:'от '+fmt(minRate(c))+'/час',priceSub:gx?`+${fmt(this.extraGuestFee(c.h,bk.date)*(bk.guests-c.h.guestsIncl))} за ${bk.guests-c.h.guestsIncl} ${plural(bk.guests-c.h.guestsIncl,'гостя','гостей','гостей')} сверх ${c.h.guestsIncl}`:`до ${c.h.guestsIncl} гостей в цене · максимум ${c.h.maxGuests}`,
+        return {...c.h,bgStyle:`width:100%;height:100%;background:#3B2F2A url(img/h${c.h.img}_int.png) center/cover no-repeat;`,rating:RATING[c.hi],facts:s.lang==='EN'?`${c.h.catName}${c.h.tub?' · outdoor hot tub':''} · from ${c.h.min} hours`:`${c.h.catName}${c.h.tub?' · горячий чан':''} · от ${c.h.min} ч`,
+          priceText:(s.lang==='EN'?'from ':'от ')+fmt(minRate(c))+(s.lang==='EN'?'/hour':'/час'),priceSub:s.lang==='EN'?(gx?`+${fmt(this.extraGuestFee(c.h,bk.date)*(bk.guests-c.h.guestsIncl))} for ${bk.guests-c.h.guestsIncl} additional guests above ${c.h.guestsIncl}`:`Up to ${c.h.guestsIncl} guests included · maximum ${c.h.maxGuests}`):gx?`+${fmt(this.extraGuestFee(c.h,bk.date)*(bk.guests-c.h.guestsIncl))} за ${bk.guests-c.h.guestsIncl} ${plural(bk.guests-c.h.guestsIncl,'гостя','гостей','гостей')} сверх ${c.h.guestsIncl}`:`до ${c.h.guestsIncl} гостей в цене · максимум ${c.h.maxGuests}`,
           segs:Array.from({length:CFG.close-CFG.open},(_,k)=>({style:this.segStyle(this.cell(c.hi,tf+CFG.open+k))})),
-          note:!c.fits?`Вмещает до ${c.h.maxGuests} ${plural(c.h.maxGuests,'гостя','гостей','гостей')}`:c.full?'На эту дату нет подходящего окна':'Свободно: '+this.freeRuns(c.hi,bk.date),noteColor:dis?'rgba(10,47,79,.55)':NAVY,disabled:dis,
+          note:s.lang==='EN'?(!c.fits?`Accommodates up to ${c.h.maxGuests} guests`:c.full?'No suitable time slots on this date':'Available: '+this.freeRuns(c.hi,bk.date)):!c.fits?`Вмещает до ${c.h.maxGuests} ${plural(c.h.maxGuests,'гостя','гостей','гостей')}`:c.full?'На эту дату нет подходящего окна':'Свободно: '+this.freeRuns(c.hi,bk.date),noteColor:dis?'rgba(10,47,79,.55)':NAVY,disabled:dis,
           style:`padding:14px;border-radius:20px;border:1px solid rgba(10,47,79,.2);background:rgba(10,47,79,.04);opacity:${dis?'.5':'1'};`,
-          btnLabel:dis?'Недоступно':'Выбрать время',btnStyle:`height:44px;padding:0 20px;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;background:${dis?'transparent':BRICK};color:${dis?'rgba(10,47,79,.5)':CREAM};border:${dis?'1px solid rgba(10,47,79,.25)':'0'};`,
+          btnLabel:dis?(s.lang==='EN'?'Unavailable':'Недоступно'):(s.lang==='EN'?'Choose a time':'Выбрать время'),btnStyle:`height:44px;padding:0 20px;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:.02em;background:${dis?'transparent':BRICK};color:${dis?'rgba(10,47,79,.5)':CREAM};border:${dis?'1px solid rgba(10,47,79,.25)':'0'};`,
           select:()=>!dis&&this.pickHouse(c.h.id),view:()=>{this.setState({savedBk:{...bk},bk:null});this.go('house',c.h.id);}};});
       const noneFree=!s.loadingSlots&&free.length===0;const listFree=!s.loadingSlots&&free.length>0;
       const nearOrder=[];for(let k=1;k<=30;k++){nearOrder.push(bk.date+k);if(bk.date-k>=0)nearOrder.push(bk.date-k);}
-      const nearestDates=[];for(const i of nearOrder){if(nearestDates.length>=2)break;if(OPEN_HOUSES.some(h=>h.guests>=bk.guests&&this.anyFree(HOUSES.indexOf(h),i))){const dd=this.dateAt(i);nearestDates.push({label:`${WD_NOM[dd.getDay()]}, ${dd.getDate()} ${MON[dd.getMonth()]}`,select:()=>this.setBk({date:i})});}}
+      const nearestDates=[];for(const i of nearOrder){if(nearestDates.length>=2)break;if(OPEN_HOUSES.some(h=>h.guests>=bk.guests&&this.anyFree(HOUSES.indexOf(h),i))){const dd=this.dateAt(i);nearestDates.push({label:s.lang==='EN'?dd.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}):`${WD_NOM[dd.getDay()]}, ${dd.getDate()} ${MON[dd.getMonth()]}`,select:()=>this.setBk({date:i})});}}
       // шаг 3
       const h0=hSel||OPEN_HOUSES[0];const hi0=HOUSES.indexOf(h0);const isVip=h0.tier==='VIP';
       const daily=isVip&&bk.mode==='daily';
@@ -4650,12 +4687,12 @@ const LANGS=['RU','KZ','EN'];
       const maxEff=hasStart&&!daily?this.maxFrom(hi0,st):0;
       const dur=bk.dur;const end=hasStart&&dur?st+dur:null;
       const stepMs=this.reduced?0:Math.round(200/Math.max(1,Math.min(12,dur||1)));
-      const hrs=n=>`${n} ${plural(n,'час','часа','часов')}`;
+      const hrs=n=>s.lang==='EN'?`${n} ${n===1?'hour':'hours'}`:`${n} ${plural(n,'час','часа','часов')}`;
       const T0=this.tariff(h0,bk.date);const disc=this.discOf(h0,bk.date);const wdDisc=T0.weekdayDiscount||0;
       const hourCells=Array.from({length:CFG.close-CFG.open},(_,k)=>{const x=CFG.open+k;const H=D0+x;const c=this.cell(hi0,H);const inSel=hasStart&&(end!=null?(H>=st&&H<end):H===st);
         const late=x>CFG.lastStart;const eve=x>=CFG.tariffs.evening[0];
         let v=c;if(c==='free'&&(late||this.maxFrom(hi0,H)<CFG.minH))v='short';
-        const sub=inSel?(H===st?'с '+hh(st):(end!=null&&H===end-1?'до '+hh(end):'')):v==='busy'?'занято':v==='short'?(late?'заезд до '+hh(CFG.lastStart):'мало времени'):'';
+        const sub=inSel?(H===st?(s.lang==='EN'?'from ':'с ')+hh(st):(end!=null&&H===end-1?(s.lang==='EN'?'until ':'до ')+hh(end):'')):v==='busy'?(s.lang==='EN'?'booked':'занято'):v==='short'?(late?(s.lang==='EN'?'check-in until ':'заезд до ')+hh(CFG.lastStart):s.lang==='EN'?'not enough time':'мало времени'):'';
         return {label:hh(H),sub,hasSub:!!sub,disabled:v==='busy'||v==='past',
           select:()=>{if(s.gOpen)this.setState({gOpen:false});
             if(hasStart&&bk.pickEnd&&H>st){const nd=H-st+1;if(nd<CFG.minH){vib(8);this.setBk({dur:CFG.minH,pickEnd:false},()=>this.hint('Минимум '+hrs(CFG.minH)));return;}if(nd<=maxEff){vib(8);this.setBk({dur:nd,pickEnd:false});return;}}
@@ -4665,7 +4702,7 @@ const LANGS=['RU','KZ','EN'];
           style:this.cellStyle(inSel?'sel':v,inSel?(H-st)*stepMs:0,eve,late)};});
       const s0=Math.max(0,bk.date-3);const sN=Math.min(366,s0+21*(1+(s.stripMore||0)));this._stripN=sN;
       const dayStrip=[];for(let i=s0;i<sN;i++){const dd=this.dateAt(i);const full=daily?!this.dailyOk(hi0,i):!this.anyFree(hi0,i);const act=bk.date===i;const dc=this.discOf(h0,i);
-        dayStrip.push({wd:i===0?'сегодня':i===1?'завтра':WD[dd.getDay()],day:dd.getDate(),mon:i===s0||dd.getDate()===1?MON_STRIP[dd.getMonth()]:'',line:dd.getDate()===1&&i!==s0,
+        dayStrip.push({wd:s.lang==='EN'?(i===0?'today':i===1?'tomorrow':['sun','mon','tue','wed','thu','fri','sat'][dd.getDay()]):i===0?'сегодня':i===1?'завтра':WD[dd.getDay()],day:dd.getDate(),mon:i===s0||dd.getDate()===1?(s.lang==='EN'?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dd.getMonth()]:MON_STRIP[dd.getMonth()]):'',line:dd.getDate()===1&&i!==s0,
           sel:act?'1':'0',pressed:act?'true':'false',label:this.dayWords(i)+(full?(i===0?', на сегодня всё':', всё занято'):'')+(dc?`, скидка ${dc}%`:''),
           discOn:dc>0&&!full,discText:'−'+dc+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
           style:this.dayStyle(act,full,i<=1?'98px':'88px',NAVY)+(full&&!act?'text-decoration:line-through;':''),
@@ -4676,7 +4713,7 @@ const LANGS=['RU','KZ','EN'];
       const dayMonths=groupDateRibbon(dayStrip,s0,i=>this.dateAt(i),s.lang);
       const nb=hasStart?this.nextBusyH(hi0,st):null;
       const toClose=hasStart?D0+CFG.close-st:0;
-      const durChips=[...CFG.durs.map(v=>({v,label:v+' ч',sub:''})),{v:toClose,label:'До закрытия',sub:'до '+hh(D0+CFG.close),close:true}].filter(c=>c.v>=CFG.minH&&c.v<=CFG.maxH&&(c.close||c.v<toClose)).map(c=>{const off=c.v>maxEff;const act=dur===c.v;
+      const durChips=[...CFG.durs.map(v=>({v,label:v+(s.lang==='EN'?' hr':' ч'),sub:''})),{v:toClose,label:s.lang==='EN'?'Until closing':'До закрытия',sub:(s.lang==='EN'?'until ':'до ')+hh(D0+CFG.close),close:true}].filter(c=>c.v>=CFG.minH&&c.v<=CFG.maxH&&(c.close||c.v<toClose)).map(c=>{const off=c.v>maxEff;const act=dur===c.v;
         return {label:c.label,disabled:off,hasReason:off,reason:off?'до '+hh(st+maxEff):'',hasSub:!off&&!!c.sub,sub:c.sub,
           select:()=>{if(off)return;vib(8);this.setBk({dur:c.v,pickEnd:false});},
           style:`width:100%;height:48px;border-radius:999px;font-size:14px;font-weight:600;line-height:1.1;padding:0 4px;border:1px ${off?'dashed':'solid'} ${act?NAVY:off?'rgba(10,47,79,.22)':'rgba(10,47,79,.4)'};background:${act?NAVY:CREAM};color:${act?CREAM:off?'rgba(10,47,79,.35)':NAVY};`};});
@@ -4693,15 +4730,15 @@ const LANGS=['RU','KZ','EN'];
       const total=known?rentFull-discSum+gSum+tubCost+progSum:null;const totalTxt=total!=null?fmt(total):'стоимость суток сообщит администратор';
       const prepay=this.prepayOf(h0,bk.date);
       const priceBreak=[...rentSeg,...(discSum?[{l:`Скидка пн-чт −${disc}%`,v:'−'+fmt(discSum)}]:[]),...(daily&&rentUnknown&&hasStart?[{l:'Стоимость суток',v:'уточнит администратор'}]:[]),...(gx?[{l:`Гости сверх ${h0.guestsIncl} · ${gx} × ${fmt(gFee)}`,v:fmt(gSum)}]:[]),...(tubCost?[{l:'Горячий чан',v:fmt(tubCost)}]:[]),...progs.map(id=>({l:s.lang==='KZ'?'Бағдарлама: '+svcText(PDATA[id].name,s.lang):'Парение: '+PDATA[id].name,v:fmt(PDATA[id].price)}))];
-      const kids=bk.kids||0;const kidsTxt=kids?` + ${kids} ${plural(kids,'ребёнок','ребёнка','детей')} до ${CFG.childAge} лет`:'';
+      const kids=bk.kids||0;const kidsTxt=kids?(s.lang==='EN'?` + ${kids} ${kids===1?'child':'children'} under ${CFG.childAge}`:` + ${kids} ${plural(kids,'ребёнок','ребёнка','детей')} до ${CFG.childAge} лет`):'';
       const sd=this.dateAt(Math.floor((st??tf)/24));const endD=end!=null?this.dateAt(Math.floor(end/24)):sd;const cross=end!=null&&Math.floor(end/24)!==Math.floor(st/24);
-      const durTxt=daily?'сутки':dur?hrs(dur):'';
-      const summaryText=end!=null?`${hh(st)}-${hh(end)}${cross?' '+WD[endD.getDay()]:''} · ${durTxt} · ${totalTxt}`:hasStart?`Начало ${hh(st)} · выберите длительность`:'Выберите час начала';
+      const durTxt=daily?(s.lang==='EN'?'full day':'сутки'):dur?hrs(dur):'';
+      const summaryText=end!=null?`${hh(st)}-${hh(end)}${cross?' '+(s.lang==='EN'?['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][endD.getDay()]:WD[endD.getDay()]):''} · ${durTxt} · ${totalTxt}`:hasStart?(s.lang==='EN'?`Start ${hh(st)} · choose duration`:`Начало ${hh(st)} · выберите длительность`):s.lang==='EN'?'Choose a start time':'Выберите час начала';
       const kzDays=['жексенбі','дүйсенбі','сейсенбі','сәрсенбі','бейсенбі','жұма','сенбі'];
       const kzMonths=['қаңтар','ақпан','наурыз','сәуір','мамыр','маусым','шілде','тамыз','қыркүйек','қазан','қараша','желтоқсан'];
-      const whenText=end!=null?(s.lang==='KZ'?`${kzDays[sd.getDay()]} ${sd.getDate()} ${kzMonths[sd.getMonth()]} · ${hh(st)}-${cross?`${kzDays[endD.getDay()]} ${endD.getDate()} ${kzMonths[endD.getMonth()]} · `:''}${hh(end)}`:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}, ${hh(st)} - ${cross?`${WD_NOM[endD.getDay()]} ${endD.getDate()} ${MON[endD.getMonth()]}, `:''}${hh(end)}`):'';
+      const whenText=end!=null?(s.lang==='EN'?`${sd.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · ${hh(st)}-${cross?`${endD.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · `:''}${hh(end)}`:s.lang==='KZ'?`${kzDays[sd.getDay()]} ${sd.getDate()} ${kzMonths[sd.getMonth()]} · ${hh(st)}-${cross?`${kzDays[endD.getDay()]} ${endD.getDate()} ${kzMonths[endD.getMonth()]} · `:''}${hh(end)}`:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}, ${hh(st)} - ${cross?`${WD_NOM[endD.getDay()]} ${endD.getDate()} ${MON[endD.getMonth()]}, `:''}${hh(end)}`):'';
       const minProg=Math.min(...P_IDS.filter(id=>!PDATA[id].unavailable).map(id=>PDATA[id].price));
-      const progRow={on:progs.length>0,name:progs.length?(s.lang==='KZ'?'Бағдарлама: '+progs.map(id=>svcText(PDATA[id].name,s.lang)).join(', '):'Парение: '+progs.map(id=>PDATA[id].name).join(', ')):'Парение с пармастером',sub:progs.length?fmt(progSum):'от '+fmt(minProg)+' · выберите программу'};
+      const progRow={on:progs.length>0,name:progs.length?(s.lang==='KZ'?'Бағдарлама: '+progs.map(id=>svcText(PDATA[id].name,s.lang)).join(', '):(s.lang==='EN'?'Steam ritual: ':'Парение: ')+progs.map(id=>svcText(PDATA[id].name,s.lang)).join(', ')):(s.lang==='EN'?'Guided steam ritual':'Парение с пармастером'),sub:progs.length?fmt(progSum):(s.lang==='EN'?'from ':'от ')+fmt(minProg)+(s.lang==='EN'?' · choose a programme':' · выберите программу')};
       const tableOn=bk.extras.includes('table');const kitOn=bk.extras.includes('kit');
       const sw=on=>({switchStyle:`width:48px;height:28px;border-radius:14px;flex:0 0 auto;background:${on?NAVY:'rgba(10,47,79,.2)'};position:relative;transition:background 200ms;`,knobStyle:`position:absolute;top:3px;left:${on?23:3}px;width:22px;height:22px;border-radius:50%;background:${CREAM};transition:left 200ms;`,ariaOn:on?'true':'false'});
       const rowSt='display:flex;align-items:center;gap:14px;width:100%;padding:12px 0;border-bottom:1px solid rgba(10,47,79,.15);';
@@ -4709,16 +4746,20 @@ const LANGS=['RU','KZ','EN'];
       const openProgs=()=>this.setState({sheet:'progs',progMore:null});
       const extraRows=[
         {id:'program',name:progRow.name,sub:progRow.sub,style:rowSt,...sw(progRow.on),open:openProgs,toggle:()=>{if(progRow.on)this.setBk({progs:[]});else openProgs();}},
-        {id:'table',name:'Накрыть стол к приезду',sub:'Меню выберете сразу после брони',style:rowSt,...sw(tableOn),open:flipX('table'),toggle:flipX('table')},
-        {id:'kit',name:'Набор для парения: шапка, веник, рукавица',sub:'от '+fmt(8000)+' · подтвердит администратор',style:rowSt,...sw(kitOn),open:flipX('kit'),toggle:flipX('kit')}];
+        {id:'table',name:s.lang==='EN'?'Prepare dining for your arrival':'Накрыть стол к приезду',sub:s.lang==='EN'?'Choose dishes right after booking':'Меню выберете сразу после брони',style:rowSt,...sw(tableOn),open:flipX('table'),toggle:flipX('table')},
+        {id:'kit',name:s.lang==='EN'?'Bath kit: hat, whisk and mitten':'Набор для парения: шапка, веник, рукавица',sub:(s.lang==='EN'?'from ':'от ')+fmt(8000)+(s.lang==='EN'?' · confirmation by our host':' · подтвердит администратор'),style:rowSt,...sw(kitOn),open:flipX('kit'),toggle:flipX('kit')}];
       const exList=[...(tubOn?['горячий чан']:[]),...(progs.length?['парение']:[]),...(tableOn?['стол к приезду']:[]),...(kitOn?['набор для парения']:[])];
       const tubLine=tubOn?`Горячий чан · ${fmt(CFG.tubPrice)}`:h0.tubIncl?'Горячий чан входит в стоимость':'';
       const cLines=[...(tubLine?[{t:tubLine}]:[]),...(exList.length?[{t:'Дополнительно: '+exList.join(', ')}]:[])];
       const ok3=daily?hasStart&&this.dailyOk(hi0,bk.date):this.validHoursSelection(bk);
       const canNext=bk.step===1?true:bk.step===3?ok3:bk.step===4?true:false;
       const ctaLabel=bk.step===1?(hSel?(s.lang==='KZ'?'Уақытты таңдау':'Выбрать время'):(s.lang==='KZ'?'Бос үйлерді көрсету':'Показать свободные дома')):bk.step===3?(s.lang==='KZ'?'Жалғастыру':'Продолжить'):(s.lang==='KZ'?'Алдын ала төлемге өту':'Перейти к предоплате');
-      const payTxt=(s.lang==='KZ'?(bk.paid?'төленді':'күтілуде'):(bk.paid?'оплачено':'ожидает'))+' · '+fmt(prepay);
-      const waVars={бронь:bk.id||'',дом:h0.name,дата:`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`,время:end!=null?`${hh(st)}-${hh(end)}`:'',выезд:end!=null?`${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',гостей:guestsTxt(bk.guests)+kidsTxt,предоплата:payTxt};
+      const payTxt=(s.lang==='EN'?(bk.paid?'paid':'pending'):s.lang==='KZ'?(bk.paid?'төленді':'күтілуде'):(bk.paid?'оплачено':'ожидает'))+' · '+fmt(prepay);
+      const waEn=s.lang==='EN';
+      const waHouse=waEn?(HOUSE_DETAILS_EN[HOUSES.indexOf(h0)]?.name||h0.name):h0.name;
+      const waDate=waEn?sd.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}):`${WD_NOM[sd.getDay()]} ${sd.getDate()} ${MON[sd.getMonth()]}`;
+      const waDeparture=end!=null?`${cross?(waEn?endD.toLocaleDateString('en-GB',{weekday:'short'}) : WD[endD.getDay()])+' ':''}${hh(end)}`:'';
+      const waVars={бронь:bk.id||'',дом:waHouse,дата:waDate,время:end!=null?`${hh(st)}-${hh(end)}`:'',выезд:waDeparture,гостей:guestsTxt(bk.guests)+kidsTxt,предоплата:payTxt};
       // карусель
       const photos=this.housePhotos(h0);const cs=this.props.carouselState||'normal';
       const shownP=cs==='one'?photos.slice(0,1):(cs==='none'||cs==='loading')?[]:photos;
@@ -4737,10 +4778,10 @@ const LANGS=['RU','KZ','EN'];
       const galThumbs=shownP.map((p,i)=>({src:p.src,alt:`Фото ${i+1}`,go:()=>{const el=this.galRef.current;if(el)el.scrollTo({left:i*el.clientWidth,behavior:this.reduced?'auto':'smooth'});},
         style:`flex:0 0 56px;width:56px;height:56px;border-radius:10px;overflow:hidden;padding:0;border:2px solid ${i===gi?CREAM:'transparent'};opacity:${i===gi?1:.6};`}));
       // нижняя панель, карточка
-      const dLabel=dd=>`${cap(WD[dd.getDay()])} ${dd.getDate()} ${MON_S[dd.getMonth()]}`;
+      const dLabel=dd=>s.lang==='EN'?dd.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long'}):`${cap(WD[dd.getDay()])} ${dd.getDate()} ${MON_S[dd.getMonth()]}`;
       this._s3={ok:ok3,hasStart};
       this._panelTotal=(bk.step===3||bk.step===4)&&known?total:null;this._panelDash=daily&&hasStart&&rentUnknown?'уточнит администратор':' - ';
-      const panelLine=daily?(hasStart?`${dLabel(sd)} ${hh(st)} → ${dLabel(endD)} ${hh(end)} · сутки`:`${dLabel(d)} · выберите дату заезда`):end!=null?`${dLabel(sd)} · ${hh(st)}-${hh(end)}${cross?' '+WD[endD.getDay()]:''} · ${dur} ч`:hasStart?`${dLabel(sd)} · с ${hh(st)}`:`${dLabel(d)} · выберите время`;
+      const panelLine=s.lang==='EN'?(daily?(hasStart?`${dLabel(sd)} ${hh(st)} → ${dLabel(endD)} ${hh(end)} · full day`:`${dLabel(d)} · choose a check-in date`):end!=null?`${dLabel(sd)} · ${hh(st)}-${hh(end)}${cross?' '+endD.toLocaleDateString('en-GB',{weekday:'short'}):''} · ${dur} ${dur===1?'hour':'hours'}`:hasStart?`${dLabel(sd)} · from ${hh(st)}`:`${dLabel(d)} · choose a time`):daily?(hasStart?`${dLabel(sd)} ${hh(st)} → ${dLabel(endD)} ${hh(end)} · сутки`:`${dLabel(d)} · выберите дату заезда`):end!=null?`${dLabel(sd)} · ${hh(st)}-${hh(end)}${cross?' '+WD[endD.getDay()]:''} · ${dur} ч`:hasStart?`${dLabel(sd)} · с ${hh(st)}`:`${dLabel(d)} · выберите время`;
       const pulse=`animation:${s.s3n%2?'pulseA':'pulseB'} 900ms ease-out 1;`;
       const card={img:(slidesP[ci]||photos[0]).src,hasImg:cs!=='none',noImg:cs==='none',n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
         when:end!=null?`${dLabel(sd)} · ${hh(st)} → ${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',meta:`${guestsTxt(bk.guests)}${kidsTxt} · ${durTxt}`,total:totalTxt,out:end!=null?`Выезд до ${cross?WD[endD.getDay()]+' ':''}${hh(end)}`:'',
@@ -4755,7 +4796,7 @@ const LANGS=['RU','KZ','EN'];
         const loc=`${ADDR} (${this.props.mapLat??MAP0.lat}, ${this.props.mapLng??MAP0.lng})`;
         const esc=t=>t.replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;');
         const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//SHIPA//RU','X-WR-TIMEZONE:Asia/Almaty','BEGIN:VEVENT','UID:'+(bid||Date.now())+'@shipa','DTSTAMP:'+f(new Date())+'Z','DTSTART;TZID=Asia/Almaty:'+f(a),'DTEND;TZID=Asia/Almaty:'+f(b2),'SUMMARY:'+esc(title),'LOCATION:'+esc(loc),'DESCRIPTION:'+esc(details.join('\\n')),
-          'BEGIN:VALARM','TRIGGER:-PT24H','ACTION:DISPLAY','DESCRIPTION:SHIPA завтра','END:VALARM','BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:SHIPA через 2 часа','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+          'BEGIN:VALARM','TRIGGER:-PT24H','ACTION:DISPLAY',(s.lang==='EN'?'DESCRIPTION:SHIPA tomorrow':'DESCRIPTION:SHIPA завтра'),'END:VALARM','BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY',(s.lang==='EN'?'DESCRIPTION:SHIPA in 2 hours':'DESCRIPTION:SHIPA через 2 часа'),'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
         const q=o=>Object.entries(o).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
         const google='https://calendar.google.com/calendar/render?'+q({action:'TEMPLATE',text:title,dates:f(a)+'/'+f(b2),ctz:'Asia/Almaty',details:details.join('\n'),location:loc});
         const outlook='https://outlook.live.com/calendar/0/action/compose?'+q({rru:'addevent',subject:title,startdt:iso(a),enddt:iso(b2),body:details.join('\n'),location:loc});
@@ -4763,17 +4804,17 @@ const LANGS=['RU','KZ','EN'];
         const dl=e=>{e.preventDefault();const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));const l=document.createElement('a');l.href=url;l.download='shipa-'+h0.id+'.ics';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
         const close=()=>setTimeout(()=>this.setState({sheet:null,calPop:false}),150);
         const dot=c=>`width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:${c};`;
-        const O={google:{label:'Google Календарь',hint:'откроется в браузере',href:google,target:'_blank',dotStyle:dot('#4285F4'),pick:close},
-          outlook:{label:'Outlook',hint:'личный и рабочий',href:outlook,target:'_blank',dotStyle:dot('#0F6CBD'),pick:close},
-          apple:{label:'Apple Календарь',hint:'iPhone и Mac',href:apple,dotStyle:dot(NAVY),pick:close},
-          other:{label:'Другой календарь',hint:'файл .ics',href:'#',dotStyle:dot('rgba(10,47,79,.35)'),pick:e=>{dl(e);close();}}};
+        const O={google:{label:s.lang==='EN'?'Google Calendar':'Google Календарь',hint:s.lang==='EN'?'Opens in your browser':'откроется в браузере',href:google,target:'_blank',dotStyle:dot('#4285F4'),pick:close},
+          outlook:{label:'Outlook',hint:s.lang==='EN'?'Personal or work calendar':'личный и рабочий',href:outlook,target:'_blank',dotStyle:dot('#0F6CBD'),pick:close},
+          apple:{label:s.lang==='EN'?'Apple Calendar':'Apple Календарь',hint:s.lang==='EN'?'iPhone and Mac':'iPhone и Mac',href:apple,dotStyle:dot(NAVY),pick:close},
+          other:{label:s.lang==='EN'?'Other calendar':'Другой календарь',hint:s.lang==='EN'?'Download .ics file':'файл .ics',href:'#',dotStyle:dot('rgba(10,47,79,.35)'),pick:e=>{dl(e);close();}}};
         const pl=this.plat||'other';const order=pl==='apple'?['apple','google','outlook']:['google','outlook','other'];return order.map(k=>O[k]);})();
       const openCal=()=>{if(!calOpts.length)return;if(wide)this.setState({calPop:!s.calPop});else this.setState({sheet:'cal'});};
-      const calLine=end!=null?`${dLabel(sd)} · ${hh(st)}-${hh(end)} · ${h0.name}`:'';
+      const calLine=end!=null?`${dLabel(sd)} · ${hh(st)}-${hh(end)} · ${s.lang==='EN'?(HOUSE_DETAILS_EN[HOUSES.indexOf(h0)]?.name||h0.name):h0.name}`:'';
       const split=bk.step===3||bk.step===4;
       const holdP=bk.holdAt?kzParts(bk.holdAt):null;const holdUntil=holdP?String(holdP.h).padStart(2,'0')+':'+String(holdP.mi).padStart(2,'0'):'';
       const menuLink=this.props.menuUrl||'';
-      const modeSegs=[['hours','По часам'],['daily','Сутки']].map(([id,label])=>{const a=(bk.mode||'hours')===id;return {label,sel:a?'true':'false',select:()=>this.setMode(id),style:`height:44px;border-radius:999px;font-size:15px;font-weight:600;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
+      const modeSegs=[['hours',s.lang==='EN'?'Hourly':'По часам'],['daily',s.lang==='EN'?'Full day':'Сутки']].map(([id,label])=>{const a=(bk.mode||'hours')===id;return {label,sel:a?'true':'false',select:()=>this.setMode(id),style:`height:44px;border-radius:999px;font-size:15px;font-weight:600;background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
       const dIn=this.dateAt(bk.date),dOut=this.dateAt(bk.date+1);
       const todayNote=bk.date===0;
       B={...this.calendar(bk,false),stepSegs,car,card,galSlides,galThumbs,galCounter:`${gi+1} / ${shownP.length}`,calcRows,calOpts,openCal,calLine,calPopOpen:!!s.calPop&&wide,sheetCal:s.sheet==='cal',
@@ -4781,9 +4822,9 @@ const LANGS=['RU','KZ','EN'];
         succ:{hasImg:cs!=='none',noImg:cs==='none',img:photos[0].src,n:h0.n,kicker:`${h0.n} / ${h0.tier}`,name:h0.name,
           wrapStyle:`position:relative;${wide?'margin:0 0 0;':'margin:-8px -20px 0;'}`,clipStyle:`position:relative;aspect-ratio:4/3;overflow:hidden;background:rgba(10,47,79,.08);border-radius:${wide?24:0}px;`,
           paid:!!bk.paid,pending:!bk.paid,
-          title:s.lang==='KZ'?(bk.paid?'Брондау расталды':'Өтінім қабылданды · алдын ала төлем күтілуде'):(bk.paid?'Бронь подтверждена':'Заявка принята - ждём предоплату'),
-          sub:s.lang==='KZ'?(bk.paid?'Алдын ала төлем алынды. Біз сізге WhatsApp арқылы хабарласамыз және келуіңізді күтеміз.':`${holdUntil}-ге дейін төлеңіз, әйтпесе брондау күші жойылады.`):(bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`),
-          payLine:(s.lang==='KZ'?'Алдын ала төлем · ':'Предоплата · ')+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:(s.lang==='KZ'?'Төлеу: ':'Оплатить ')+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,openMenu:()=>{this.setState({bk:null,savedBk:null,exitConfirm:false,draftBk:null},()=>{try{localStorage.removeItem('shipa_draft');}catch(e){}this.goKitchenSection();});},todayNote,bookingId:bk.id||'',hasId:!!bk.id,
+          title:s.lang==='KZ'?(bk.paid?'Брондау расталды':'Өтінім қабылданды · алдын ала төлем күтілуде'):s.lang==='EN'?(bk.paid?'Booking confirmed':'Request received - awaiting deposit'):(bk.paid?'Бронь подтверждена':'Заявка принята - ждём предоплату'),
+          sub:s.lang==='KZ'?(bk.paid?'Алдын ала төлем алынды. Біз сізге WhatsApp арқылы хабарласамыз және келуіңізді күтеміз.':`${holdUntil}-ге дейін төлеңіз, әйтпесе брондау күші жойылады.`):s.lang==='EN'?(bk.paid?'Deposit received. We will contact you on WhatsApp before your arrival.':holdUntil?`Pay by ${holdUntil} or your booking will be released.`:'Complete the deposit payment to confirm your booking.'):(bk.paid?'Предоплата получена. Мы напишем в WhatsApp и будем ждать вас.':`Оплатите до ${holdUntil}, иначе бронь снимется`),
+          payLine:(s.lang==='KZ'?'Алдын ала төлем · ':s.lang==='EN'?'Deposit · ':'Предоплата · ')+payTxt,subWeight:bk.paid?'400':'600',prepayBtn:(s.lang==='EN'?'Pay ':s.lang==='KZ'?'Төлеу: ':'Оплатить ')+fmt(prepay),toPay:()=>this.setBk({step:5}),tableOn,menuOff:!tableOn,menuLink,openMenu:()=>{this.setState({bk:null,savedBk:null,exitConfirm:false,draftBk:null},()=>{try{localStorage.removeItem('shipa_draft');}catch(e){}this.goKitchenSection();});},todayNote,bookingId:bk.id||'',hasId:!!bk.id,
           waSecondary:!bk.paid||tableOn,secCols:wide&&(!bk.paid||tableOn)?'1fr 1fr':'1fr',
           badgeStyle:`position:absolute;left:50%;bottom:-32px;margin-left:-32px;width:64px;height:64px;border-radius:50%;background:${bk.paid?BRICK:NAVY};display:flex;align-items:center;justify-content:center;animation:popIn 300ms ease-out;`},
         stdHeader:!(bk.step===3&&!wide),overlayHdr:bk.step===3&&!wide,
@@ -4797,9 +4838,9 @@ const LANGS=['RU','KZ','EN'];
         panelBtnStyle:`flex:0 0 auto;height:52px;padding:0 22px;border-radius:999px;background:${BRICK};color:${CREAM};font-weight:600;font-size:15px;letter-spacing:.02em;display:flex;align-items:center;gap:8px;white-space:nowrap;`,
         editTime:()=>this.back(),
         showCal:bk.step===1,step2:bk.step===2,step3:bk.step===3,showContacts:bk.step===4,showPay:bk.step===5,stepDone:bk.step===6,preStep1:false,preDone:false,
-        calHouse:hSel?'ДОМ '+hSel.name:'',calTitle:'Когда планируете приехать?',calSub:'Покажем свободные дома и цену за час',calNote:'Бронь открыта на год вперёд. Зачёркнутые дни заняты полностью.',
-        step2Title:bookingStandardSoon?(s.lang==='KZ'?'Standard санатындағы үйлер':'Дома категории Standard'):`Свободно на ${WD_ACC[d.getDay()]}, ${d.getDate()} · ${guestsTxt(bk.guests)}`,
-        step2Sub:bookingStandardSoon?(s.lang==='KZ'?'Бұл санат әзірге брондауға ашылмаған':'Бронирование этой категории пока не открыто'):`${free.length} ${plural(free.length,'дом','дома','домов')} · нажмите на дом, чтобы выбрать время`,
+        calHouse:hSel?(s.lang==='EN'?'HOUSE ':'ДОМ ')+(s.lang==='EN'?HOUSE_DETAILS_EN[HOUSES.indexOf(hSel)]?.name||hSel.name:hSel.name):'',calTitle:s.lang==='EN'?'When would you like to visit?':'Когда планируете приехать?',calSub:s.lang==='EN'?'See available houses and hourly rates':'Покажем свободные дома и цену за час',calNote:s.lang==='EN'?'You can book up to a year ahead. Crossed-out dates are fully booked.':'Бронь открыта на год вперёд. Зачёркнутые дни заняты полностью.',
+        step2Title:s.lang==='EN'?(bookingStandardSoon?'Standard houses':`Available on ${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})} · ${bk.guests} guests`):bookingStandardSoon?(s.lang==='KZ'?'Standard санатындағы үйлер':'Дома категории Standard'):`Свободно на ${WD_ACC[d.getDay()]}, ${d.getDate()} · ${guestsTxt(bk.guests)}`,
+        step2Sub:s.lang==='EN'?(bookingStandardSoon?'Booking for this category is not open yet':`${free.length} ${free.length===1?'house':'houses'} · tap a house to choose a time`):bookingStandardSoon?(s.lang==='KZ'?'Бұл санат әзірге брондауға ашылмаған':'Бронирование этой категории пока не открыто'):`${free.length} ${plural(free.length,'дом','дома','домов')} · нажмите на дом, чтобы выбрать время`,
         loadingSlots:s.loadingSlots,noneFree,listFree,nearestDates,step2Houses,sortChips,
         bookingStandardSoon,bookingShowVipResults:!bookingStandardSoon,
         bookingSoonKicker:bookingSoonText.kicker,bookingSoonHeading:bookingSoonText.heading,bookingSoonDescription:bookingSoonText.description,
@@ -4808,14 +4849,14 @@ const LANGS=['RU','KZ','EN'];
         editSearch:()=>this.openDateSheet(),openDateSheet:()=>this.openDateSheet(),s3DateText:this.dayWords(bk.date),stripRef:this.stripRef,stripArrows:wide,
         stripScroll:e=>{const el=e.currentTarget;if(el.scrollLeft+el.clientWidth>el.scrollWidth-160&&this._stripN<366&&this._stripReq!==this._stripN){this._stripReq=this._stripN;this.setState(x=>({stripMore:(x.stripMore||0)+1}));}},
         stripPrev:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:-el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},
-        stripNext:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},searchDate:`${d.getDate()} ${MON[d.getMonth()]}, ${WD[d.getDay()]}`,
-        stripHintOn:wdDisc>0,stripHint:`Пн-чт дешевле на ${wdDisc}%`,
+        stripNext:()=>{const el=this.stripRef.current;if(el)el.scrollBy({left:el.clientWidth*.7,behavior:this.reduced?'auto':'smooth'});},searchDate:s.lang==='EN'?d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long'}):`${d.getDate()} ${MON[d.getMonth()]}, ${WD[d.getDay()]}`,
+        stripHintOn:wdDisc>0,stripHint:s.lang==='EN'?`${wdDisc}% off Monday through Thursday`:`Пн-чт дешевле на ${wdDisc}%`,
         h3Kicker:`${h0.n} / ${h0.catName}`,dayStrip,dayMonths,hourCells,
         isVipHouse:isVip,modeSegs,hoursUI:!daily,dailyUI:daily,
         dailyIn:`${cap(WD[dIn.getDay()])}, ${this.dm(bk.date)} · ${hh(CFG.daily.in)}`,dailyOut:`${cap(WD[dOut.getDay()])}, ${this.dm(bk.date+1)} · ${hh(CFG.daily.out)}`,
-        dailyBusy:daily&&!hasStart,dailyBusyText:`На ${this.dm(bk.date)} сутки заняты - выберите другую дату заезда`,dailyNoteOn:daily&&hasStart&&rentUnknown,dailyNote:'Стоимость суток уточнит администратор. Предоплата - '+fmt(prepay)+'.',
-        dayEveHint:`${s.lang==='KZ'?'Күндізгі тариф':'Дневной тариф'} · ${hh(CFG.tariffs.day[0])}-${hh(CFG.tariffs.day[1])}`,eveHint:`${s.lang==='KZ'?'Кешкі тариф':'Вечерний тариф'} · ${hh(CFG.tariffs.evening[0])}-${hh(CFG.tariffs.evening[1])}`,
-        hasStart,noStart:!hasStart,durChips,durNote:`Минимум ${hrs(CFG.minH)}, по часам - до ${hh(CFG.close)}.`,
+        dailyBusy:daily&&!hasStart,dailyBusyText:s.lang==='EN'?`Full-day bookings are unavailable on ${this.dateAt(bk.date).toLocaleDateString('en-GB',{day:'numeric',month:'long'})}. Please choose another arrival date.`:`На ${this.dm(bk.date)} сутки заняты - выберите другую дату заезда`,dailyNoteOn:daily&&hasStart&&rentUnknown,dailyNote:s.lang==='EN'?`Our host will confirm the full-day rate. Deposit: ${fmt(prepay)}.`:'Стоимость суток уточнит администратор. Предоплата - '+fmt(prepay)+'.',
+        dayEveHint:`${s.lang==='KZ'?'Күндізгі тариф':s.lang==='EN'?'Day rate':'Дневной тариф'} · ${hh(CFG.tariffs.day[0])}-${hh(CFG.tariffs.day[1])}`,eveHint:`${s.lang==='KZ'?'Кешкі тариф':s.lang==='EN'?'Evening rate':'Вечерний тариф'} · ${hh(CFG.tariffs.evening[0])}-${hh(CFG.tariffs.evening[1])}`,
+        hasStart,noStart:!hasStart,durChips,durNote:s.lang==='EN'?`Minimum ${hrs(CFG.minH)}. Hourly bookings are available until ${hh(CFG.close)}.`:`Минимум ${hrs(CFG.minH)}, по часам - до ${hh(CFG.close)}.`,
         longIsWa:!isVip,longIsDaily:isVip,longLink:C.wa(C.t('waTextLong')),toDaily:()=>this.setMode('daily'),
         tubOpt,tubIncl:!!h0.tubIncl,tubPriceText:'+'+fmt(CFG.tubPrice),toggleTub:()=>this.setBk({tub:!bk.tub}),
         cnt:(()=>{const dv=dur||CFG.minH;const atMin=dv<=CFG.minH;const plusOff=dv>=maxEff;
@@ -4834,8 +4875,8 @@ const LANGS=['RU','KZ','EN'];
           const bigger=OPEN_HOUSES.filter(x=>x.maxGuests>max);const vipB=h0.tier!=='VIP'&&bigger.some(x=>x.tier==='VIP');const bMax=bigger.length?Math.max(...bigger.map(x=>x.maxGuests)):0;
           const bs=off=>`flex:0 0 auto;width:48px;height:48px;border-radius:50%;border:1px solid rgba(10,47,79,.3);font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;touch-action:manipulation;user-select:none;-webkit-user-select:none;opacity:${off?.35:1};`;
           const ks=off=>`flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid rgba(10,47,79,.3);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;opacity:${off?.35:1};`;
-          return {row:open?'Гостей':gx?`${guestsTxt(G)} · +${fmt(gSum)} за ${gx} ${plural(gx,'гостя','гостей','гостей')}`:`${guestsTxt(G)} · включены в цену`,
-            btn:open?'Готово':'Изменить',expAttr:open?'true':'false',toggle:()=>{this._gY=null;this.setState({gOpen:!open,gMaxMsg:false});},
+          return {row:s.lang==='EN'?(open?'Guests':gx?`${G} guests · +${fmt(gSum)} for ${gx} extra ${gx===1?'guest':'guests'}`:`${G} guests · included in price`):open?'Гостей':gx?`${guestsTxt(G)} · +${fmt(gSum)} за ${gx} ${plural(gx,'гостя','гостей','гостей')}`:`${guestsTxt(G)} · включены в цену`,
+            btn:open?(s.lang==='EN'?'Done':'Готово'):(s.lang==='EN'?'Edit':'Изменить'),expAttr:open?'true':'false',toggle:()=>{this._gY=null;this.setState({gOpen:!open,gMaxMsg:false});},
             wrapStyle:`display:grid;grid-template-rows:${open?'1fr':'0fr'};transition:grid-template-rows ${this.reduced?0:250}ms ease;`,
             innerStyle:`overflow:hidden;min-height:0;visibility:${open?'visible':'hidden'};transition:visibility ${this.reduced?0:250}ms;`,
             num:G,atMin:G<=1,plusOffAttr:atMax?'true':'false',minusStyle:bs(G<=1),plusStyle:bs(atMax),
@@ -4843,27 +4884,27 @@ const LANGS=['RU','KZ','EN'];
             plus:()=>{if(atMax){vib(20);this.setState({gMaxMsg:true});return;}vib(8);
               if(G>=inc&&known&&!this._gFlashDone){this._gFlashDone=true;clearTimeout(this._tfT);this.setState({totFlash:'+'+fmt(gFee)});this._tfT=setTimeout(()=>this.setState({totFlash:null}),1500);}
               this.setBk({guests:G+1});},
-            rule:`До ${inc} гостей - в цене. Каждый следующий - ${fmt(gFee)} за визит. Максимум ${max}`,
-            extraText:gx?'+'+fmt(gSum):'в цене',extraStyle:`font-size:14px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;color:${gx?'#9A4518':NAVY};`,
+            rule:s.lang==='EN'?`Up to ${inc} guests included. Each additional guest: ${fmt(gFee)} per visit. Maximum ${max} guests`:`До ${inc} гостей - в цене. Каждый следующий - ${fmt(gFee)} за визит. Максимум ${max}`,
+            extraText:gx?'+'+fmt(gSum):s.lang==='EN'?'included':'в цене',extraStyle:`font-size:14px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;color:${gx?'#9A4518':NAVY};`,
             scale:Array.from({length:max},(_,i)=>({style:`flex:1;height:6px;border-radius:2px;${i<Math.min(G,inc)?`background:${NAVY};`:i<G?`background:${BRICK};`:'border:1px solid rgba(10,47,79,.3);'}`})),
-            maxOn:atMax&&!!s.gMaxMsg,maxText:`${h0.name} вмещает до ${max} ${plural(max,'гостя','гостей','гостей')}.`,
+            maxOn:atMax&&!!s.gMaxMsg,maxText:s.lang==='EN'?`${HOUSE_DETAILS_EN[HOUSES.indexOf(h0)]?.name||h0.name} accommodates up to ${max} guests.`:`${h0.name} вмещает до ${max} ${plural(max,'гостя','гостей','гостей')}.`,
             hasBigger:bigger.length>0,biggerText:vipB?`Для большой компании - VIP-дома до ${bMax} гостей →`:`Дома до ${bMax} гостей →`,
             toBigger:()=>{this.setState({gOpen:false,gMaxMsg:false,loadingSlots:true});this.setBk({step:2,houseId:null,start:null,dur:null,sort:vipB?'vip':'fit'});setTimeout(()=>this.setState({loadingSlots:false}),700);},
             kids,kidsMinusStyle:ks(kids<=0),kidsPlusStyle:ks(kids>=10),kidsMinusOff:kids<=0,
             kidsMinus:()=>{if(kids<=0)return;vib(8);this.setBk({kids:kids-1});},kidsPlus:()=>{if(kids>=10)return;vib(8);this.setBk({kids:kids+1});}};})(),
-        pay:{prepay:fmt(prepay),hasRest:total!=null,rest:total!=null?fmt(Math.max(0,total-prepay)):'',restLabel:total!=null?'Остаток на месте':'Остаток сообщит администратор',
-          line:[dLabel(sd),end!=null?hh(st)+'-'+hh(end)+(cross?' '+WD[endD.getDay()]:''):'',guestsTxt(bk.guests)].filter(Boolean).join(' · '),
-          holdText:`Без предоплаты бронь держится ${hrs(CFG.holdH)}, бронь на сегодня - ${hrs(CFG.holdTodayH)}.`,
-          cancelText:`Отмена за ${CFG.cancelFreeDays} дня и раньше - предоплату вернём. Позже - только перенос. При неявке предоплата не возвращается.`,
-          kaspi:()=>this.pay('kaspi'),later:()=>this.finish(false,null),kaspiLabel:'Оплатить через Kaspi'},
-        progSheet:{intro:s.lang==='KZ'?'Бірнеше бағдарламаны таңдауға болады. Шебердің уақытын әкімші растайды.':'Можно выбрать несколько. Время мастера подтвердит администратор.',list:P_IDS.map(id=>{const p=PDATA[id];const on=progs.includes(id);const un=!!p.unavailable;const more=s.progMore===id;return {id,name:svcText(p.name,s.lang),meta:`${svcText(p.dur,s.lang)} · ${fmt(p.price)}`,onAttr:on?'true':'false',un,more,moreLabel:more?'Скрыть':'Подробнее',arrow:more?'⌃':'⌄',desc:svcText(p.desc,s.lang),who:svcText(cap(p.who||''),s.lang),whoLabel:s.lang==='KZ'?'Кімге арналған:':'Для кого:',incl:p.incl.map(t=>svcText(t,s.lang)).join(', '),inclLabel:s.lang==='KZ'?'Құрамына кіреді:':'Входит:',contraLabel:s.lang==='KZ'?'Қарсы көрсетілімдер:':'Противопоказания:',contraText:s.lang==='KZ'?'Жүктілік, жоғары қан қысымы, жедел қабыну және дене қызуының көтерілуі.':'беременность, высокое давление, острые воспаления и температура.',unText:svcText(p.reason||'Временно недоступна',s.lang),
+        pay:{prepay:fmt(prepay),hasRest:total!=null,rest:total!=null?fmt(Math.max(0,total-prepay)):'',restLabel:total!=null?(s.lang==='EN'?'Balance due on arrival':'Остаток на месте'):(s.lang==='EN'?'Our host will confirm the balance':'Остаток сообщит администратор'),
+          line:[dLabel(sd),end!=null?hh(st)+'-'+hh(end)+(cross?' '+(s.lang==='EN'?endD.toLocaleDateString('en-GB',{weekday:'short'}):WD[endD.getDay()]):''):'',guestsTxt(bk.guests)].filter(Boolean).join(' · '),
+          holdText:s.lang==='EN'?`Without a deposit, your booking is held for ${hrs(CFG.holdH)}, or ${hrs(CFG.holdTodayH)} for same-day reservations.`:`Без предоплаты бронь держится ${hrs(CFG.holdH)}, бронь на сегодня - ${hrs(CFG.holdTodayH)}.`,
+          cancelText:s.lang==='EN'?`Cancel at least ${CFG.cancelFreeDays} days before arrival for a deposit refund. Later cancellations may only be rescheduled. Deposits are non-refundable for no-shows.`:`Отмена за ${CFG.cancelFreeDays} дня и раньше - предоплату вернём. Позже - только перенос. При неявке предоплата не возвращается.`,
+          kaspi:()=>this.pay('kaspi'),later:()=>this.finish(false,null),kaspiLabel:s.lang==='EN'?'Pay with Kaspi':'Оплатить через Kaspi'},
+        progSheet:{intro:s.lang==='KZ'?'Бірнеше бағдарламаны таңдауға болады. Шебердің уақытын әкімші растайды.':'Можно выбрать несколько. Время мастера подтвердит администратор.',list:P_IDS.map(id=>{const p=PDATA[id];const on=progs.includes(id);const un=!!p.unavailable;const more=s.progMore===id;return {id,name:svcText(p.name,s.lang),meta:`${svcText(p.dur,s.lang)} · ${fmt(p.price)}`,onAttr:on?'true':'false',un,more,moreLabel:s.lang==='EN'?(more?'Hide details':'Details'):(more?'Скрыть':'Подробнее'),arrow:more?'⌃':'⌄',desc:svcText(p.desc,s.lang),who:svcText(cap(p.who||''),s.lang),whoLabel:s.lang==='EN'?'Suitable for:':s.lang==='KZ'?'Кімге арналған:':'Для кого:',incl:p.incl.map(t=>svcText(t,s.lang)).join(', '),inclLabel:s.lang==='EN'?'Includes:':s.lang==='KZ'?'Құрамына кіреді:':'Входит:',contraLabel:s.lang==='EN'?'Contraindications:':s.lang==='KZ'?'Қарсы көрсетілімдер:':'Противопоказания:',contraText:s.lang==='KZ'?'Жүктілік, жоғары қан қысымы, жедел қабыну және дене қызуының көтерілуі.':'беременность, высокое давление, острые воспаления и температура.',unText:svcText(p.reason||'Временно недоступна',s.lang),
             toggle:()=>{if(un)return;vib(8);this.setBk({progs:on?progs.filter(x=>x!==id):[...progs,id]});},toggleMore:()=>this.setState({progMore:more?null:id}),
             radioStyle:`width:22px;height:22px;border-radius:50%;flex:0 0 auto;border:${on?'7px solid '+NAVY:'1.5px solid rgba(10,47,79,.4)'};background:${CREAM};transition:border 150ms;`,
             rowStyle:`display:flex;align-items:center;gap:14px;width:100%;min-height:56px;padding:12px 0 6px;text-align:left;opacity:${un?'.5':'1'};`};}),
-          doneLabel:progs.length?`Готово · ${fmt(progSum)}`:'Готово',done:()=>this.setState({sheet:null})},
+          doneLabel:s.lang==='EN'?(progs.length?`Done · ${fmt(progSum)}`:'Done'):(progs.length?`Готово · ${fmt(progSum)}`:'Готово'),done:()=>this.setState({sheet:null})},
         sendError:s.sendError,successWhen:whenText,waLink:C.wa(C.t('waTextSuccess',waVars)),waStep4:C.wa(C.t('waTextStep4',waVars)),waErrorBk:C.wa(C.t('waTextError',waVars)),step4Wa:bk.step===4,
         canBack:bk.step>=2&&bk.step<=5,noBack:!(bk.step>=2&&bk.step<=5),bookingBack:()=>this.back(),
-        backLabel:bk.step===5?'К контактам':bk.step===4?'К времени':bk.step===3?(bk.fromHouse?'К дому':'К выбору дома'):'К дате',
+        backLabel:s.lang==='EN'?(bk.step===5?'Back to contact details':bk.step===4?'Back to time selection':bk.step===3?(bk.fromHouse?'Back to the house':'Back to house selection'):'Back to date selection'):bk.step===5?'К контактам':bk.step===4?'К времени':bk.step===3?(bk.fromHouse?'К дому':'К выбору дома'):'К дате',
         bookingCta:bk.step!==2&&bk.step<6,...this.cta(canNext,ctaLabel),
         bk:{...bk,houseName:h0.name}};
     } else B={stdHeader:true,overlayHdr:false,splitPanel:false,singlePanel:false,payPanel:false,showPay:false,isVipHouse:false,hoursUI:true,dailyUI:false,todayNote:false,stripHintOn:false,progSheet:{intro:'',list:[]},panelHint:false,car:{},card:{},succ:{},galSlides:[],galThumbs:[],calcRows:[],bk:{houseName:'',guests:6},showCal:false,step2:false,step3:false,showContacts:false,stepDone:false,preStep1:false,preDone:false,bookingCta:false,openDateSheet:()=>this.openBooking(null,s.quick.date,s.quick.guests,1),bkHintOn:!!s.bkHint,bkHint:s.bkHint||'',canBack:false,noBack:true,backLabel:'',hasStart:false,noStart:true,tubOpt:false,tubIncl:false,startedDay:false,contNight:false,contNext:false,showSummary:false,hasTotal:false};
@@ -4890,6 +4931,8 @@ const LANGS=['RU','KZ','EN'];
       img:`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
       ...this.videoAttrs(videoId,s)
     }));
+    const EN_BOOKING_VIEW=(source)=>{const visited=new WeakSet();const tx=window.ShipaLocale?.translate;const go=(v,depth=0)=>{if(depth>8||v===null||v===undefined)return v;if(typeof v==='string')return /[\u0400-\u04FF]/.test(v)&&typeof tx==='function'?tx(v,'EN'):v;if(typeof v==='function'||typeof v!=='object'||visited.has(v))return v;visited.add(v);if(Array.isArray(v))return v.map(x=>go(x,depth+1));if(Object.getPrototypeOf(v)!==Object.prototype)return v;const out={};for(const [k,val] of Object.entries(v))out[k]=(k==='ref'||/^(src|url|href|link|style|class|id)$/i.test(k))?val:go(val,depth+1);return out;};return go(source);};
+    if(s.lang==='EN')B=EN_BOOKING_VIEW(B);
     const HOME_REV=reviews.slice(0,6);
     const callOk=nameValid(s.form.name)&&phoneValid(s.form.phone);
     return {
@@ -4900,9 +4943,11 @@ const LANGS=['RU','KZ','EN'];
       kitchenSectionIntro:s.lang==='KZ'?'Қазақ және өзбек тағамдары, самаурындағы шөп шайы. Дастарқанды келгенге дейін дайындаймыз.':'Казахская и узбекская кухня, травяной чай из самовара. Стол накрываем к вашему приезду.',
       isWide:wide,isNarrow:!wide,showChrome:!bk,showRatings,isHome:screen==='home',isHouses:screen==='houses',isHouse:screen==='house',isServices:screen==='services',isKitchen:screen==='kitchen',isReviews:screen==='reviews',isAbout:screen==='about',isContacts:screen==='contacts',
       headerH:wide?'84px':'68px',logoH:wide?'54px':'44px',
-      headerRef:this.headerRef,goHome:()=>this.go('home'),goHouses:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesVip:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesStd:()=>{this.setState({catalogFilter:'Standard'});this.go('houses');},
-      menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
-      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:vw>=1024&&(s.hdrLv||0)<2,hdrNavGap:vw>=1280?'28px':'20px',hdrBookPad:vw>=1280?'24px':'20px',hdrSub:vw>=1440,hdrPhoneText:vw>=1280&&(s.hdrLv||0)<1,hdrPhoneIcon:vw>=380&&!(vw>=1280&&(s.hdrLv||0)<1),hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!(vw>=1024&&(s.hdrLv||0)<2),hdrMenuWord:vw>=768&&!(vw>=1024&&(s.hdrLv||0)<2),hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':'12px',
+      headerRef:this.headerRef,headerNavAria:s.lang==='EN'?'Main navigation':s.lang==='KZ'?'Негізгі мәзір':'Основное меню',headerHomeAria:s.lang==='EN'?'SHIPÁ - go to home':s.lang==='KZ'?'SHIPÁ - басты бет':'SHIPÁ - на главную',whatsappAria:s.lang==='EN'?'Message us on WhatsApp':s.lang==='KZ'?'WhatsApp арқылы жазу':'Написать в WhatsApp',headerBrandType:s.lang==='EN'?'Private bathhouse retreat':s.lang==='KZ'?'Монша кешені':'Банный комплекс',headerBrandCity:s.lang==='EN'?'Karaganda':s.lang==='KZ'?'Қарағанды':'Караганда',goHome:()=>this.go('home'),goHouses:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesVip:()=>{this.setState({catalogFilter:'VIP'});this.go('houses');},goHousesStd:()=>{this.setState({catalogFilter:'Standard'});this.go('houses');},
+      kitchenMenuFullLabel:s.lang==='EN'?'View full menu':s.lang==='KZ'?'Толық мәзірді көру':'Смотреть всё меню',
+      kitchenHouseAfterOrderHint:s.lang==='EN'?'Choose your house when placing your order':s.lang==='KZ'?'Үйді тапсырысты рәсімдегенде таңдайсыз':'Дом выберете при оформлении заказа',
+      menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':s.lang==='EN'?'Open the full dining menu':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
+      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:vw>=1850?'20px':vw>=1600?'16px':'10px',hdrNavFont:vw<1600?'14px':'15px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:vw>=1770,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
       masters:MASTERS.map((m,i)=>({...m,...(s.lang==='KZ'?MASTERS_KZ[i]:{}),slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),

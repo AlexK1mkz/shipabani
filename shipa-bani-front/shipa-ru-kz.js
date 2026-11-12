@@ -337,16 +337,41 @@ const ruFallback=new Map([...exact.entries()].filter(([ru,kz])=>ru!==kz&&kz.leng
 for(const [kk,ru] of Object.entries({'16 қонаққа дейін':'до 16 гостей','сыйымдылығы':'вместимость','үй ашық':'домов открыто','сағатына':'за час','қала орталығынан':'от центра'}))ruFallback.set(kk,ru);
 const enExact=new Map(Object.entries(window.ShipaEnText || {}));
 const enCache=new Map();
+const enFromKz=new Map([...exact.entries()].filter(([ru,kz])=>ru!==kz&&enExact.has(ru)).map(([ru,kz])=>[kz,enExact.get(ru)]));
 const enPairs=[...enExact.entries()].filter(([ru,en])=>ru.length>=2 && ru!==en && /[А-Яа-яЁё]/.test(ru)).sort((a,b)=>b[0].length-a[0].length);
 function translateEnglish(source){
-  if(!source || !/[А-Яа-яЁё]/.test(source))return source;
+  if(!source || !/[\u0400-\u04FF]/.test(source))return source;
   if(enCache.has(source))return enCache.get(source);
   const trimmed=source.trim();
   if(enExact.has(trimmed))return source.replace(trimmed,enExact.get(trimmed));
+  if(enFromKz.has(trimmed))return source.replace(trimmed,enFromKz.get(trimmed));
   let translated=source;
+  // Translate common dynamic sentences atomically; preserve numbers, dates and amounts.
+  const enDate=(value)=>String(value).replace(/января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря/gi,m=>({'января':'January','февраля':'February','марта':'March','апреля':'April','мая':'May','июня':'June','июля':'July','августа':'August','сентября':'September','октября':'October','ноября':'November','декабря':'December'})[m.toLowerCase()]||m);
+  const dynamic=[
+    [/^Фото: (.+)$/i,(_m,desc)=>`Photo: ${translateEnglish(desc)}`],
+    [/^Гостей (\d+) \u00b7 \+(.+) за (\d+) гост(?:я|ей)$/i,(_m,n,fee,extra)=>`${n} guests · +${fee} for ${extra} extra ${Number(extra)===1?'guest':'guests'}`],
+    [/^Парение: (.+)$/i,(_m,name)=>`Steam ritual: ${translateEnglish(name)}`],
+    [/^С (\d\d:\d\d) до (\d\d:\d\d)$/i,(_m,a,b)=>`From ${a} to ${b}`],
+    [/^Заезд возможен с (\d\d:\d\d) до (\d\d:\d\d)\.?$/i,(_m,a,b)=>`Check-in is available from ${a} to ${b}.`],
+    [/^На (.+) сутки заняты - выберите другую дату заезда$/i,(_m,date)=>`Full-day bookings are unavailable on ${enDate(date)}. Please choose another arrival date.`],
+    [/^(\d+) (гост(?:ей|я|ь)) \u00b7 включены в цену$/i,(_m,n)=>`${n} guests · included in the rate`],
+    [/^Ещё (\d+) фото$/i,(_m,n)=>`View ${n} more photos`],
+    [/^С возвращением, (.+)$/i,(_m,name)=>`Welcome back, ${name}`],
+    [/^Нажмите на час начала - покажем, на сколько можно остаться\.\s*(.*)$/i,(_m,tail)=>'Tap a start time to see how long you can stay.'+(tail?' '+translateEnglish(tail.trim()):'')],
+    [/^Пример \u00b7 (.*)$/i,(_m,tail)=>`Example · ${tail}`],
+    [/^(\d+) м²$/,(_m,n)=>`${n} m²`],
+    [/^\+(.*) \u00b7 готовим к вашему приезду$/i,(_m,amt)=>`+${amt} · prepared for your arrival`],
+    [/^(\d+) (?:гост(?:ей|я|ь)) \u00b7 включены в цену$/i,(_m,n)=>`${n} guests · included in the price`],
+    [/^Минимум (\d+) час(?:ов|а)?$/i,(_m,n)=>`Minimum ${n} hours`],
+    [/^До (\d+) гостей - в цене\. Каждый следующий - (.+) за визит\. Максимум (\d+)$/i,(_m,n,fee,max)=>`Up to ${n} guests included. Each additional guest: ${fee} per visit. Maximum ${max} guests.`],
+    [/^На (.+) всё занято - выберите другой день$/i,(_m,date)=>`${enDate(date)} is fully booked. Please choose another date.`],
+    [/^С (\d\d:\d\d) можно только до (\d\d:\d\d) - это меньше (.+)$/i,(_m,a,b,min)=>`From ${a} you can stay only until ${b}, which is less than ${min}.`],
+  ];
+  for(const [rx,render] of dynamic){const match=translated.trim().match(rx);if(match){const out=render(...match);enCache.set(source,out);return out.trim();}}
   // First translate editorial sentences, then standalone words in dynamic prices, dates and labels.
   for(const [ru,en] of enPairs){
-    if(!/[А-Яа-яЁё]/.test(translated))break;
+    if(!/[\u0400-\u04FF]/.test(translated))break;
     if(!translated.includes(ru))continue;
     let start=0;
     while(start<translated.length){
@@ -440,5 +465,5 @@ function set(next){if(!['RU','KZ','EN'].includes(next))return;lang=next;document
 function init(){set(lang);const observer=new MutationObserver(records=>{if(busy)return;busy=true;try{for(const m of records){if(m.type==='characterData')setNode(m.target);else if(m.type==='attributes')setAttrs(m.target);else if(m.type==='childList')m.addedNodes.forEach(scan)}}finally{busy=false}});observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','alt','aria-label','placeholder']})}
 document.addEventListener('click',e=>{const btn=e.target.closest&&e.target.closest('button');if(!btn)return;const choice=btn.getAttribute('data-shipa-lang')||(btn.textContent||'').trim();if(['RU','KZ','EN'].includes(choice))setTimeout(()=>set(choice),0)},true);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-window.ShipaLocale={set,get:()=>lang};window.ShipaContentLocale=window.ShipaLocale;window.ShipaBookingLocale=window.ShipaLocale;window.ShipaExtraLocale=window.ShipaLocale;
+window.ShipaLocale={set,get:()=>lang,translate:(value,target)=>target==='EN'?translateEnglish(value):target==='KZ'?translate(value):value};window.ShipaContentLocale=window.ShipaLocale;window.ShipaBookingLocale=window.ShipaLocale;window.ShipaExtraLocale=window.ShipaLocale;
 })();
