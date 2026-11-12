@@ -13,10 +13,10 @@ function meth(name){
   }
   assert.ok(end>start);return vm.runInNewContext(`({${html.slice(i,end)}})`)[name];
 }
-test('Kitchen route goes to internal kitchen, never house catalogue',()=>{
- let screen=null; meth('goKitchenSection').call({go:s=>screen=s});assert.equal(screen,'kitchen');
+test('Kitchen route navigates externally and never opens house catalogue',()=>{
+ assert.match(html,/goKitchenSection\(\)\{[\s\S]*?window\.location\.assign\(new URL\(target,document\.baseURI\)\.href\)/);
+ assert.doesNotMatch(html,/goKitchenSection\(\)\{this\.go\('kitchen'\);\}/);
  assert.match(html,/goKitchen:\(\)=>this\.goKitchenSection\(\)/);
- assert.match(html,/goKitchenSection\(\)\{this\.go\('kitchen'\);\}/);
 });
 test('Native click capture marks mobile/header/footer routes',()=>{
  assert.match(html,/data-mi="1" data-shipa-nav-screen="\{\{ m\.screen \}\}"/);
@@ -32,7 +32,7 @@ test('Both main kitchen CTAs open the menu before booking',()=>{
  assert.match(html,/data-shipa-kitchen="1" onClick="\{\{ beginTableBooking \}\}"/);
  assert.match(html,/Сначала блюда, затем дата и дом/);
 });
-test('Kitchen page has food cards and cart continues to date / house selection',()=>{
+test('Legacy internal kitchen page and cart remain intact without changing booking logic',()=>{
  assert.match(html,/isKitchen:screen==='kitchen'/);
  assert.match(html,/onClick="\{\{ k\.toggle \}\}"/);
  assert.match(html,/cartGoLabel:screen==='kitchen'/);
@@ -47,5 +47,5 @@ test('Prior fixes retained',()=>{
  assert.ok(!html.includes('ЧТО ВХОДИТ</h2>'));
  assert.match(html,/id="shipa-swipes-inline"/);
  assert.match(html,/data-shipa-kitchen="1"/);
- assert.match(html,/content="2026-11-11-full-qa-v3"/);
+ assert.match(html,/content="2026-11-11-kitchen-sibling-e-menu-v1"/);
 });

@@ -16,23 +16,27 @@ function method(name,context={}) {
   assert.ok(end>b);
   return vm.runInNewContext(`({${html.slice(start,end)}})`,context)[name];
 }
-test('Full menu CTA uses the internal kitchen screen, even when an old external URL exists',()=>{
- let screen='';
- method('openMenuUrl').call({goKitchenSection:()=>screen='kitchen',props:{menuUrl:'../e-menu/'}});
- assert.equal(screen,'kitchen');
+test('Kitchen links open sibling e-menu rather than the internal kitchen page',()=>{
+ let opened='';
+ const fn=method('goKitchenSection',{window:{location:{assign:u=>opened=u}},document:{baseURI:'https://example.com/shipa-bani-front/index.html'},URL});
+ fn.call({props:{menuUrl:''}});
+ assert.equal(opened,'https://example.com/e-menu/');
+ opened='';
+ fn.call({props:{menuUrl:'../e-menu/'}});
+ assert.equal(opened,'https://example.com/e-menu/');
+ assert.doesNotMatch(html,/goKitchenSection\(\)\{this\.go\('kitchen'\);\}/);
  assert.match(html,/data-menu-cta="1" data-shipa-kitchen="1"/);
  assert.match(html,/goKitchen:\(\)=>this\.goKitchenSection\(\)/);
 });
-test('Header, fullscreen mobile nav, footer and kitchen buttons all route internally',()=>{
- let screen='';method('goKitchenSection').call({go:s=>screen=s});assert.equal(screen,'kitchen');
- for(const needle of ['data-shipa-nav-screen="{{ n.screen }}"','data-shipa-nav-screen="{{ m.screen }}"','data-shipa-kitchen="1"'])
-   assert.ok(html.includes(needle),needle);
+test('Header, mobile menu, footer and kitchen cards route to the external menu',()=>{
+ assert.match(html,/data-shipa-nav-screen="\{\{ n.screen \}\}"/);
+ assert.match(html,/data-shipa-nav-screen="\{\{ m.screen \}\}"/);
+ assert.match(html,/data-shipa-kitchen="1"/);
  assert.match(html,/document\.addEventListener\('click',this\.onKitchenRouteClick,true\)/);
- assert.match(html,/const navItems=\[\['Дома','houses'\],\['Парение','services'\],\['Кухня','kitchen'\]/);
+ assert.match(html,/this\.goKitchenSection\(\)/);
 });
-test('Kitchen has a direct-load hash route for old or shared links',()=>{
- assert.match(html,/window\.location\.hash==='#kitchen'/);
- assert.match(html,/const hash=screen==='kitchen'\?'#kitchen':''/);
+test('Old shared #kitchen links redirect to sibling e-menu',()=>{
+ assert.match(html,/window\.location\.hash==='#kitchen'\)this\.goKitchenSection\(\)/);
  assert.ok(html.includes('<sc-if value="{{ isKitchen }}"'));
 });
 test('Menu CTA remains localized and accessible',()=>{

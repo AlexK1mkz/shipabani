@@ -41,7 +41,7 @@ test('links: no anchors with empty / hash-only / javascript hrefs',()=>{
   }
 });
 
-test('menu CTA opens internal kitchen, including after returning from booking',()=>{
+test('menu CTA opens sibling e-menu, including after returning from booking',()=>{
   assert.match(html,/openMenuUrl\(\)\{this\.goKitchenSection\(\);\}/);
   assert.match(html,/openMenu:\(\)=>\{this\.setState\(\{bk:null,[\s\S]*?this\.goKitchenSection\(\)/);
   assert.match(html,/<sc-if value="\{\{ isKitchen \}\}"/);

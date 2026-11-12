@@ -6,11 +6,12 @@
   let lastFocus = null, oldOverflow = '', gesture = null;
   const esc = (s) => String(s == null ? '' : s);
   // Localize controls even when the viewer is opened after a language switch.
-  const currentLang = () => window.ShipaLocale?.get?.() === 'KZ' ? 'KZ' : 'RU';
+  const currentLang = () => ['RU','KZ','EN'].includes(window.ShipaLocale?.get?.()) ? window.ShipaLocale.get() : 'RU';
   const photoText = (key) => {
-    const ru = {dialog:'Просмотр фотографий',close:'Закрыть фотографии',prev:'Предыдущее фото',next:'Следующее фото',strip:'Миниатюры фотографий',hint:'← → — листать · Esc — закрыть · на телефоне — свайп',title:'Фотографии SHIPÁ'};
-    const kz = {dialog:'Фотосуреттерді қарау',close:'Фотосуреттерді жабу',prev:'Алдыңғы фото',next:'Келесі фото',strip:'Фотосуреттердің шағын нұсқалары',hint:'← → — парақтау · Esc — жабу · телефонда — сырғыту',title:'SHIPÁ фотосуреттері'};
-    return (currentLang()==='KZ'?kz:ru)[key];
+    const ru = {dialog:'Просмотр фотографий',close:'Закрыть фотографии',prev:'Предыдущее фото',next:'Следующее фото',strip:'Миниатюры фотографий',hint:'← → - листать · Esc - закрыть · на телефоне - свайп',title:'Фотографии SHIPÁ'};
+    const kz = {dialog:'Фотосуреттерді қарау',close:'Фотосуреттерді жабу',prev:'Алдыңғы фото',next:'Келесі фото',strip:'Фотосуреттердің шағын нұсқалары',hint:'← → - парақтау · Esc - жабу · телефонда - сырғыту',title:'SHIPÁ фотосуреттері'};
+    const en = {dialog:'Photo viewer',close:'Close photos',prev:'Previous photo',next:'Next photo',strip:'Photo thumbnails',hint:'← → - browse · Esc - close · swipe on mobile',title:'SHIPÁ photos'};
+    return (currentLang()==='KZ'?kz:currentLang()==='EN'?en:ru)[key];
   };
   function refreshLocale() {
     if(!modal)return;
@@ -21,7 +22,7 @@
     thumbsEl.setAttribute('aria-label',photoText('strip'));
     modal.querySelector('.spv-hint').textContent=photoText('hint');
     for(const [i,btn] of [...thumbsEl.children].entries()){
-      btn.setAttribute('aria-label',currentLang()==='KZ'?`${items.length} фотосуреттің ${i+1}-і`:`Фото ${i+1} из ${items.length}`);
+      btn.setAttribute('aria-label',currentLang()==='KZ'?`${items.length} фотосуреттің ${i+1}-і`:currentLang()==='EN'?`Photo ${i+1} of ${items.length}`:`Фото ${i+1} из ${items.length}`);
     }
   }
   document.addEventListener('shipa:languagechange',refreshLocale);
@@ -39,7 +40,7 @@
       .spv-main{position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-height:0;width:min(1200px,100%);touch-action:pan-y;user-select:none;overflow:hidden}
       .spv-image{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;-webkit-user-drag:none;user-select:none}
       .spv-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;background:rgba(10,47,79,.8)}.spv-prev{left:8px}.spv-next{right:8px}
-      .spv-arrow[hidden]{display:none!important}.spv-strip{width:min(1200px,100%);display:flex;justify-content:flex-start;align-items:center;gap:9px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:rgba(249,239,227,.4) transparent;min-height:92px;padding:12px 4px;box-sizing:border-box;scroll-snap-type:x proximity}
+      .spv-arrow[hidden]{display:none!important}.spv-strip{width:min(1200px,100%);display:flex;justify-content:center;justify-content:safe center;align-items:center;gap:9px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:rgba(249,239,227,.4) transparent;min-height:92px;padding:12px 4px;box-sizing:border-box;scroll-snap-type:x proximity}
       .spv-thumb{flex:0 0 76px;width:76px;height:58px;padding:0;border:2px solid transparent;border-radius:9px;background:#22374b;overflow:hidden;cursor:pointer;opacity:.65;scroll-snap-align:center}.spv-thumb[aria-current=true]{opacity:1;border-color:#C15C22}.spv-thumb img{display:block;width:100%;height:100%;object-fit:cover}
       .spv-close:focus-visible,.spv-arrow:focus-visible,.spv-thumb:focus-visible{outline:3px solid #F9EFE3;outline-offset:3px}
       .spv-hint{font-size:11px;opacity:.7;white-space:nowrap;margin:0 0 4px}
@@ -53,7 +54,7 @@
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-label', 'Просмотр фотографий');
-    modal.innerHTML = '<div class="spv-top"><div class="spv-caption"><div class="spv-title"></div><div class="spv-count" aria-live="polite"></div></div><button class="spv-close" type="button" aria-label="Закрыть фотографии">×</button></div><div class="spv-main"><button type="button" class="spv-arrow spv-prev" aria-label="Предыдущее фото">‹</button><img class="spv-image" alt="" draggable="false" decoding="async"><button type="button" class="spv-arrow spv-next" aria-label="Следующее фото">›</button></div><div class="spv-strip" aria-label="Миниатюры фотографий"></div><div class="spv-hint">← → — листать · Esc — закрыть · на телефоне — свайп</div>';
+    modal.innerHTML = '<div class="spv-top"><div class="spv-caption"><div class="spv-title"></div><div class="spv-count" aria-live="polite"></div></div><button class="spv-close" type="button" aria-label="Закрыть фотографии">×</button></div><div class="spv-main"><button type="button" class="spv-arrow spv-prev" aria-label="Предыдущее фото">‹</button><img class="spv-image" alt="" draggable="false" decoding="async"><button type="button" class="spv-arrow spv-next" aria-label="Следующее фото">›</button></div><div class="spv-strip" aria-label="Миниатюры фотографий"></div><div class="spv-hint">← → - листать · Esc - закрыть · на телефоне - свайп</div>';
     document.body.appendChild(modal);
     mainImg = modal.querySelector('.spv-image');
     titleEl = modal.querySelector('.spv-title');
@@ -96,7 +97,7 @@
     if (!items.length) return;
     current = (index % items.length + items.length) % items.length;
     mainImg.src = items[current].src;
-    mainImg.alt = items[current].alt || (titleEl.textContent + ' — ' + (current + 1));
+    mainImg.alt = items[current].alt || (titleEl.textContent + ' - ' + (current + 1));
     countEl.textContent = `${current + 1} / ${items.length}`;
     prevBtn.hidden = nextBtn.hidden = items.length < 2;
     [...thumbsEl.children].forEach((btn, i) => {
