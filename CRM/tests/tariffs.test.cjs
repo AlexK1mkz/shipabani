@@ -688,3 +688,18 @@ test('bookings Excel exports the selected board, preset, assignee and list order
   crm.renderVals().exportBookings();
   assert.equal(downloads.length, 1);
 });
+
+test('dashboard preparation rows show the guest and open the correct visit without changing the day', () => {
+  const { crm } = demo();
+  crm.renderVals().dashSeg[1].go();
+  const planned = crm.renderVals().prepList[0];
+  assert.ok(planned.guest);
+  assert.match(planned.arrival, /сб 17 окт · 12:00/);
+  assert.equal(planned.startAt, '10:00');
+  planned.open();
+  const ui = crm.renderVals();
+  assert.equal(ui.ob.guest, planned.guest);
+  assert.equal(ui.tab.visit, true);
+  assert.equal(crm.state.screen, 'today');
+  assert.equal(crm.state.dashDay, 1);
+});
