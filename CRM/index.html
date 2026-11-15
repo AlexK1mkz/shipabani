@@ -29,6 +29,9 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-nav-label{flex:1;min-width:0;overflow-wrap:anywhere;}
   .crm-nav-badge{flex-shrink:0;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#9D481A;color:#fff;font-size:12px;font-weight:600;display:grid;place-items:center;}
   .crm-nav-item[aria-current="page"] .crm-nav-badge{background:#F9EFE3;color:#0A2F4F;}
+  .crm-nav-brand{display:flex;align-items:center;gap:8px;height:48px;flex:0 0 auto;padding:0 8px;margin-bottom:12px;white-space:nowrap;}
+  .crm-nav-wordmark{display:block;width:142px;height:auto;flex:0 0 auto;}
+  .crm-nav-brand-label{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:600;letter-spacing:.06em;}
   .crm-nav-links{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;overflow:auto;padding:2px;}
   .crm-nav-footer{flex:0 0 auto;margin-top:auto;padding-top:8px;border-top:1px solid rgba(10,47,79,.08);}
   .crm-nav-pin{width:calc(100% - 4px);margin:0 2px 4px;font-size:13px;}
@@ -61,9 +64,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
 <!-- Боковое меню -->
 <nav onMouseEnter="{{ navEnter }}" onMouseLeave="{{ navLeave }}" style="width:{{ navW }};flex:0 0 auto;background:#fff;border-right:1px solid rgba(10,47,79,.08);display:flex;flex-direction:column;padding:16px 12px;gap:4px;transition:width 200ms ease-out;overflow:hidden;z-index:5;">
-  <div style="display:flex;align-items:center;gap:12px;height:48px;flex:0 0 auto;padding:0 8px;margin-bottom:12px;">
-    <img src="brand/mark-navy.png" alt="SHIPA" style="width:32px;height:32px;object-fit:contain;flex:0 0 auto;">
-    <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.08em;white-space:nowrap;">SHIPÁ CRM</div></sc-if>
+  <div class="crm-nav-brand">
+    <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+      <img class="crm-nav-wordmark" src="../shipa-bani-front/brand/logo-h-navy.png" alt="SHIPÁ" width="782" height="231">
+      <span class="crm-nav-brand-label">CRM</span>
+    </sc-if>
+    <sc-if value="{{ navCollapsed }}" hint-placeholder-val="{{ false }}">
+      <img src="brand/mark-navy.png" alt="SHIPÁ CRM" width="32" height="32" style="object-fit:contain;flex:0 0 auto;">
+    </sc-if>
   </div>
   <div class="crm-nav-links">
     <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
@@ -1960,7 +1968,7 @@ class Component extends DCLogic {
   const bdays=s.clients.map(c=>({c,n:bdNext(c.birthday)})).filter(x=>x.n!=null&&x.n<=7).sort((p,q)=>p.n-q.n).map(({c,n})=>{const age=bdAge(c.birthday);let st,col;if(!c.consent){st='нет согласия на рассылку — поздравьте лично';col=GR(.65);}else if(!bdC){st='автопоздравление выключено';col=GR(.65);}else if(n===0&&NOW_MIN>=tmin(bdC.time)){st=`поздравили в ${bdC.time} · скидка ${s.loyalty.bdayPct}% на визит`;col='#3F6B43';}else{st=`поздравим ${n===0?'сегодня':n===1?'завтра':dlabel(n)} в ${bdC.time}`;col='#0A2F4F';}
    return {name:c.name,initial:c.name[0],when:whenDays(n),age:age?`${age} ${pl(age,'год','года','лет')}`:'',st,stColor:col,open:()=>this.setState({clientId:c.id,ctab:'profile'}),wa:'https://wa.me/'+normP(c.phone)};});
   const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen;
-  return {nav,navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
+  return {nav,navOpen,navCollapsed:!navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
