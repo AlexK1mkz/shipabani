@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-stage-picker"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-calendar-move"></script>
 </head>
 <body>
 <x-dc>
@@ -74,6 +74,15 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     .crm-stage-select option:hover,.crm-stage-select option:focus-visible{background:#DAE8F2;}
     .crm-stage-select option::checkmark{order:1;margin-inline-start:auto;color:#0A2F4F;}
   }
+  .crm-cal-filter{position:relative;margin-left:auto;font-size:13px;}
+  .crm-cal-filter summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;padding:0 12px;border:1px solid #D5E0E7;border-radius:10px;background:#fff;cursor:pointer;font-weight:600;list-style:none;}
+  .crm-cal-filter summary::-webkit-details-marker{display:none;}
+  .crm-cal-filter-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:5;min-width:200px;padding:5px;background:#fff;border:1px solid #D5E0E7;border-radius:12px;box-shadow:0 10px 26px rgba(10,47,79,.16);}
+  .crm-cal-filter-menu button{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:5px 8px;text-align:left;border-radius:7px;white-space:nowrap;}
+  .crm-cal-filter-menu button:hover,.crm-cal-filter-menu button[aria-pressed="true"]{background:#EAF1F6;}
+  .crm-cal-swatch{width:12px;height:12px;border-radius:3px;flex:none;}
+  .crm-cal-drop-error{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid #E7B4AB;border-radius:12px;background:#FBEAE7;color:#862D22;font-size:13px;line-height:1.4;}
+  .crm-cal-drop-error button{margin-left:auto;padding:0 7px;font-size:18px;}
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
   .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
@@ -292,7 +301,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   <!-- ===== КАЛЕНДАРЬ ===== -->
   <sc-if value="{{ is.calendar }}" hint-placeholder-val="{{ false }}">
     <section data-screen-label="Календарь домов" style="max-width:1440px;display:flex;flex-direction:column;gap:16px;">
-      <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <div style="display:flex;background:#fff;border-radius:12px;padding:4px;border:1px solid rgba(10,47,79,.08);">
           <button onClick="{{ calDayMode }}" style="height:36px;padding:0 16px;border-radius:9px;font-weight:500;background:{{ calSeg.day.bg }};color:{{ calSeg.day.fg }};">День</button>
           <button onClick="{{ calWeekMode }}" style="height:36px;padding:0 16px;border-radius:9px;font-weight:500;background:{{ calSeg.week.bg }};color:{{ calSeg.week.fg }};">Неделя</button>
@@ -303,11 +312,21 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <span style="font-size:17px;font-weight:600;white-space:nowrap;">{{ calTitle }}</span>
         <button onClick="{{ calToday }}" style="height:36px;padding:0 12px;border-radius:10px;color:#C15C22;font-weight:600;font-size:13px;">Сегодня</button>
         <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}"><input type="date" value="{{ calKey }}" onChange="{{ calPick }}" aria-label="Перейти к дате" title="Перейти к дате" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"></sc-if>
-        <div style="margin-left:auto;display:flex;gap:6px 14px;font-size:12px;color:rgba(59,47,42,.7);align-items:center;flex-wrap:wrap;justify-content:flex-end;">
-          <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5"><span style="display:flex;align-items:center;gap:6px;white-space:nowrap;"><span style="width:12px;height:12px;border-radius:3px;background:{{ l.color }};border:{{ l.border }};"></span>{{ l.name }}</span></sc-for>
-          <span style="display:flex;align-items:center;gap:6px;white-space:nowrap;"><span style="width:12px;height:12px;border-radius:3px;background:repeating-linear-gradient(135deg,rgba(10,47,79,.25) 0 2px,transparent 2px 5px);"></span>подготовка</span>
-        </div>
+        <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}">
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;"><span class="crm-cal-swatch" style="background:repeating-linear-gradient(135deg,rgba(10,47,79,.25) 0 2px,transparent 2px 5px);"></span>подготовка</span>
+        </sc-if>
+        <details class="crm-cal-filter">
+          <summary><span>{{ calStatusLabel }}</span><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg></summary>
+          <div class="crm-cal-filter-menu">
+            <sc-for list="{{ legend }}" as="l" hint-placeholder-count="7">
+              <button type="button" onClick="{{ l.select }}" aria-pressed="{{ l.active }}"><span class="crm-cal-swatch" style="background:{{ l.color }};border:{{ l.border }};"></span>{{ l.name }}</button>
+            </sc-for>
+          </div>
+        </details>
       </div>
+      <sc-if value="{{ hasCalDropError }}" hint-placeholder-val="{{ false }}">
+        <div class="crm-cal-drop-error" role="alert"><div><b>Не удалось перенести бронь</b><div>{{ calDropTarget }}</div><div>{{ calDropMessage }}</div></div><button type="button" aria-label="Закрыть" onClick="{{ clearCalDropError }}">×</button></div>
+      </sc-if>
 
       <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;gap:12px;margin-bottom:12px;">
@@ -332,12 +351,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                 <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:19px;letter-spacing:.06em;line-height:1;">{{ row.n }} {{ row.name }}</span>
                 <span style="font-size:12px;color:rgba(59,47,42,.7);margin-top:4px;">{{ row.cat }}</span>
               </div>
-              <div style="flex:1;position:relative;">
+              <div class="crm-day-timeline" onDragOver="{{ allowDrop }}" onDrop="{{ row.drop }}" style="flex:1;position:relative;">
                 <div style="position:absolute;inset:0;display:flex;">
-                  <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="16"><button onClick="{{ c.click }}" onDragOver="{{ allowDrop }}" onDrop="{{ c.drop }}" title="{{ c.title }}" style="flex:1;border-left:1px solid rgba(10,47,79,.06);height:100%;cursor:{{ c.cursor }};" style-hover="background:rgba(193,92,34,.06);"></button></sc-for>
+                  <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="16"><button onClick="{{ c.click }}" title="{{ c.title }}" style="flex:1;border-left:1px solid rgba(10,47,79,.06);height:100%;cursor:{{ c.cursor }};" style-hover="background:rgba(193,92,34,.06);"></button></sc-for>
                 </div>
                 <sc-for list="{{ row.blocks }}" as="b" hint-placeholder-count="0">
-                  <button onClick="{{ b.open }}" draggable="{{ b.dr }}" onDragStart="{{ b.drag }}" title="{{ b.title }}" style="position:absolute;top:8px;bottom:8px;left:{{ b.left }};width:{{ b.width }};border-radius:10px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};padding:6px 10px;text-align:left;overflow:hidden;font-size:12px;line-height:1.3;display:flex;flex-direction:column;justify-content:center;transition:transform 150ms ease-out;pointer-events:{{ b.pe }};" style-hover="transform:translateY(-1px);">
+                  <button onClick="{{ b.open }}" draggable="{{ b.dr }}" onDragStart="{{ b.drag }}" onDragEnd="{{ clearCalendarDrag }}" title="{{ b.title }}" style="position:absolute;top:8px;bottom:8px;left:{{ b.left }};width:{{ b.width }};border-radius:10px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};padding:6px 10px;text-align:left;overflow:hidden;font-size:12px;line-height:1.3;display:flex;flex-direction:column;justify-content:center;transition:transform 150ms ease-out;pointer-events:{{ b.pe }};" style-hover="transform:translateY(-1px);">
                     <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ b.l1 }}</span>
                     <span style="opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ b.l2 }}</span>
                   </button>
@@ -360,7 +379,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               <sc-for list="{{ row.days }}" as="d" hint-placeholder-count="7">
                 <div onClick="{{ d.go }}" onDragOver="{{ allowDrop }}" onDrop="{{ d.drop }}" style="border-top:1px solid rgba(10,47,79,.08);border-left:1px solid rgba(10,47,79,.08);padding:6px;min-height:72px;display:flex;flex-direction:column;gap:4px;cursor:pointer;opacity:{{ row.opacity }};" style-hover="background:rgba(193,92,34,.04);">
                   <sc-for list="{{ d.items }}" as="b" hint-placeholder-count="0">
-                    <button onClick="{{ b.open }}" draggable="true" onDragStart="{{ b.drag }}" style="height:24px;padding:0 8px;border-radius:6px;cursor:grab;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};font-size:12px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><b>{{ b.time }}</b> {{ b.guest }}</button>
+                    <button onClick="{{ b.open }}" draggable="{{ b.dr }}" onDragStart="{{ b.drag }}" onDragEnd="{{ clearCalendarDrag }}" style="height:24px;padding:0 8px;border-radius:6px;cursor:grab;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};font-size:12px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><b>{{ b.time }}</b> {{ b.guest }}</button>
                   </sc-for>
                 </div>
               </sc-for>
@@ -387,7 +406,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                 </div>
                 <div title="{{ c.loadTitle }}" style="height:4px;border-radius:4px;background:rgba(10,47,79,.08);overflow:hidden;"><div style="height:100%;width:{{ c.load }};background:{{ c.loadColor }};border-radius:4px;"></div></div>
                 <sc-for list="{{ c.items }}" as="b" hint-placeholder-count="2">
-                  <button onClick="{{ b.open }}" draggable="true" onDragStart="{{ b.drag }}" title="{{ b.title }}" style="height:20px;padding:0 6px;border-radius:5px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};font-size:11px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab;flex:0 0 auto;"><b>{{ b.time }}</b> {{ b.label }}</button>
+                  <button onClick="{{ b.open }}" draggable="{{ b.dr }}" onDragStart="{{ b.drag }}" onDragEnd="{{ clearCalendarDrag }}" title="{{ b.title }}" style="height:20px;padding:0 6px;border-radius:5px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};font-size:11px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab;flex:0 0 auto;"><b>{{ b.time }}</b> {{ b.label }}</button>
                 </sc-for>
                 <sc-if value="{{ c.more }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:rgba(10,47,79,.7);padding-left:2px;">ещё {{ c.more }}</span></sc-if>
                 <sc-if value="{{ c.bd }}" hint-placeholder-val="{{ false }}"><span style="margin-top:auto;font-size:11px;color:#8E5BA8;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>ДР: {{ c.bd }}</span></sc-if>
@@ -946,6 +965,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <sc-if value="{{ rsOn }}" hint-placeholder-val="{{ false }}">
         <div style="border:1.5px solid #C15C22;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;margin-bottom:16px;background:#FFFAF5;">
           <div style="display:flex;align-items:baseline;gap:12px;"><b style="font-size:16px;">{{ rsv.title }}</b><span style="margin-left:auto;font-size:12px;color:rgba(59,47,42,.7);text-align:right;">было: {{ rsv.was }}</span></div>
+          <sc-if value="{{ rsv.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="background:rgba(184,67,47,.1);border-radius:12px;padding:10px 12px;font-size:13px;color:#B8432F;">{{ rsv.err }}</div></sc-if>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ rsv.house }}" onChange="{{ rsSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
             <label style="font-size:12px;color:rgba(59,47,42,.7);">Дата · {{ rsv.dayHint }}<input type="date" value="{{ rsv.date }}" min="{{ rsv.minDate }}" onChange="{{ rsSet.date }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"></label>
@@ -955,16 +975,22 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             </div>
           </div>
           <div>
-            <div style="font-size:12px;color:rgba(59,47,42,.7);margin-bottom:6px;">Свободное начало в {{ rsv.houseName }} на эту дату</div>
+            <div style="display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:8px;font-size:13px;"><span>Выбранный интервал</span><b>{{ rsv.selectedInterval }}</b></div>
+            <div style="font-size:12px;color:rgba(59,47,42,.7);margin-bottom:6px;">Свободные интервалы на выбранную длительность</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <sc-for list="{{ rsv.slots }}" as="x" hint-placeholder-count="6"><button onClick="{{ x.pick }}" style="height:32px;padding:0 10px;border-radius:8px;border:1px solid rgba(10,47,79,.15);font-size:13px;font-weight:600;background:{{ x.bg }};color:{{ x.fg }};">{{ x.t }}</button></sc-for>
               <sc-if value="{{ rsv.noSlots }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:rgba(59,47,42,.7);">Свободных окон на {{ rsv.dur }} ч нет — выберите другую дату, дом или меньше часов.</span></sc-if>
             </div>
           </div>
+          <div style="padding:10px 12px;border-radius:10px;background:#F0EBE5;font-size:12px;line-height:1.5;">
+            <b>Занятые интервалы</b>
+            <sc-if value="{{ rsv.noOccupancy }}" hint-placeholder-val="{{ false }}"><div>На эту дату других броней нет.</div></sc-if>
+            <sc-for list="{{ rsv.occupancy }}" as="o" hint-placeholder-count="2"><div style="margin-top:4px;"><b>{{ o.when }}</b> · {{ o.booking }}<sc-if value="{{ o.prep }}" hint-placeholder-val="{{ true }}"><div style="color:#526271;">Подготовка: {{ o.prep }}</div></sc-if></div></sc-for>
+            <div style="margin-top:4px;color:#526271;">Буфер подготовки между бронями: {{ rsv.prep }} ч</div>
+          </div>
           <sc-if value="{{ rsv.hasAlt }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:rgba(59,47,42,.7);">В это же время свободны:<sc-for list="{{ rsv.alt }}" as="a" hint-placeholder-count="2"><button onClick="{{ a.pick }}" style="height:28px;padding:0 10px;border-radius:8px;background:rgba(10,47,79,.06);font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;letter-spacing:.06em;color:#0A2F4F;">{{ a.name }}</button></sc-for></div>
           </sc-if>
-          <sc-if value="{{ rsv.hasErr }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(184,67,47,.1);border-radius:12px;padding:10px 12px;font-size:13px;color:#B8432F;">{{ rsv.err }}</div></sc-if>
           <div style="display:flex;justify-content:space-between;gap:12px;background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;"><span>Цена: {{ rsv.priceText }}</span><b style="color:{{ rsv.diffColor }};white-space:nowrap;">{{ rsv.diffText }}</b></div>
           <label style="font-size:12px;color:rgba(59,47,42,.7);">Причина переноса<select value="{{ rsv.reason }}" onChange="{{ rsSet.reason }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><option value="guest">Попросил гость</option><option value="admin">Решение администратора</option><option value="tech">Технические причины в доме</option></select></label>
           <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" checked="{{ rsv.notify }}" onChange="{{ rsSet.notify }}" style="width:18px;height:18px;accent-color:#C15C22;">Сообщить гостю в WhatsApp</label>
@@ -1589,6 +1615,24 @@ function seeded(x){return ()=>{x=(x*16807)%2147483647;return (x-1)/2147483646;};
 for(const b of DATA){const c=CLIENTS0.find(x=>normP(x.phone)===normP(b.phone));if(c){b.guest=c.name;b.first=c.first;}}
 
 
+const CAL_STATUS=[
+  {id:'all',name:'Все статусы',color:'transparent',border:'1px solid #BAC8D1'},
+  {id:'new',name:'новая',color:'#C15C22',border:'0'},
+  {id:'work',name:'в работе',color:'#D9A441',border:'0'},
+  {id:'confirmed',name:'подтверждена',color:'#0A2F4F',border:'0'},
+  {id:'inhouse',name:'в доме',color:'#5E8C61',border:'0'},
+  {id:'done',name:'завершена',color:GR(.4),border:'0'},
+  {id:'fail',name:'отмена/неявка',color:'transparent',border:`1.5px dashed ${GR(.4)}`},
+];
+function calendarStatus(b){
+  const stage=ST[b.stage];
+  if(stage.type==='fail')return 'fail';
+  if(stage.type==='success'||b.stage==='done')return 'done';
+  if(b.stage==='inhouse')return 'inhouse';
+  if(stage.color==='#C15C22')return 'new';
+  if(stage.color==='#0A2F4F')return 'confirmed';
+  return 'work';
+}
 const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif'];
 function crmHash(s){
   const params=new URLSearchParams();
@@ -1597,6 +1641,7 @@ function crmHash(s){
     if(s.calDay)params.set('date',dkey(s.calDay));
     if(s.calMode!=='day')params.set('mode',s.calMode);
     if(s.calHouse!=='all')params.set('house',s.calHouse);
+    if(s.calStatus!=='all')params.set('status',s.calStatus);
   }
   if(s.screen==='bookings'){
     if(s.board)params.set('board',s.board);
@@ -1632,7 +1677,7 @@ function crmRoute(hash,s){
   if(screen==='calendar'){
     const day=keyOff(params.get('date')||'');
     Object.assign(route,{calDay:Number.isInteger(day)?day:0,calMode:pick('mode',['day','week','month'],'day'),
-      calHouse:pick('house',HOUSES.filter(h=>!h.soon).map(h=>h.id),'all')});
+      calHouse:pick('house',HOUSES.filter(h=>!h.soon).map(h=>h.id),'all'),calStatus:pick('status',CAL_STATUS.map(o=>o.id),'all')});
   }
   if(screen==='bookings')Object.assign(route,{board:pick('board',s.boards.map(b=>b.id),null),
     view:pick('view',['kanban','list'],'kanban'),savedView:pick('filter',['today','unpaid','vip'],null)});
@@ -1642,7 +1687,7 @@ function crmRoute(hash,s){
 }
 
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -1669,7 +1714,7 @@ class Component extends DCLogic {
    this.navHash=crmHash({...s,...route});
    if(this.navHash!==hash)window.history.replaceState(window.history.state,'',this.navHash);
    const payment=route.openId===s.openId?s.pf:{sum:'',type:'Остаток',method:'Kaspi'};
-   this.setState({...route,search:'',nb:null,rs:null,reasonDialog:null,boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
+   this.setState({...route,calDropError:null,search:'',nb:null,rs:null,reasonDialog:null,boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
      if(route.screen!==s.screen){
        const main=document.querySelector('[data-scroll-main]');
        if(main)main.scrollTop=0;
@@ -1864,9 +1909,56 @@ class Component extends DCLogic {
  bestDisc(list){if(!list.length)return null;const b=list.reduce((a,x)=>x.pct>a.pct?x:a,list[0]);return {label:b.label,pct:b.pct,kind:b.id};}
  clientOf(phone){return this.state.clients.find(c=>normP(c.phone)===normP(phone));}
  addMsg(phone,text,st='отправлено'){const at=stamp(0,NOW.getHours(),NOW.getMinutes());this.setState(S=>({clients:S.clients.map(c=>normP(c.phone)===normP(phone)?{...c,msgs:[{at:at.slice(0,5)+'.'+NOW.getFullYear()+at.slice(5),text,st},...c.msgs]}:c)}));}
- startRs(num,over={}){const b=this.state.bookings.find(x=>x.num===num);if(!b)return;if(['inhouse','done'].includes(b.stage)){this.toast('Гость уже в доме — используйте «Продлить на 1 ч» во вкладке «Визит»');return;}if(!ST[b.stage]||ST[b.stage].type!=='open'){this.toast(`Стадия «${ST[b.stage]?ST[b.stage].name:''}» закрыта — перенос недоступен`);return;}
-  const house=over.house||b.house||HOUSES.find(h=>!h.soon).id;const day=over.day!=null?over.day:Math.max(0,b.day||0);const cfg=this.rules(day).cfg;const start=over.start!=null?over.start:(b.start!=null?b.start:Math.max(cfg.open,Math.min(cfg.lastStart,NOW.getHours()+2)));
-  this.setState({openId:num,tab:'compose',search:'',rs:{house,date:dkey(day),start:Math.min(start,cfg.lastStart),dur:b.dur||cfg.minH,reason:'guest',notify:true,msg:null}});}
+ rescheduleRestriction(b){
+   if(b.stage==='inhouse')return 'Гость уже в доме — используйте «Продлить на 1 ч» во вкладке «Визит»';
+   if(b.stage==='done'||ST[b.stage]?.type!=='open')return 'Перенос недоступен для текущего статуса брони.';
+   return '';
+ }
+ rescheduleSlot(b,over={}){
+   const house=over.house||b.house||HOUSES.find(h=>!h.soon).id;
+   const day=over.day??Math.max(0,b.day||0);
+   const {cfg,cats}=this.rules(day);
+   const start=over.start??Math.min(b.start??Math.max(cfg.open,NOW.getHours()+2),cfg.lastStart);
+   return {...b,house,day,start,dur:b.dur||cfg.minH,guests:b.guests||Math.min(4,cats[H[house].cat].max)};
+ }
+ rescheduleConflict(slot,other){
+   const start=slot.day*24+slot.start,end=start+slot.dur;
+   const otherStart=other.day*24+other.start,otherEnd=otherStart+other.dur;
+   const booked=`${other.num} ${other.guest} · ${dlabel(other.day)} ${hh(other.start)}–${hh(other.start+other.dur)}`;
+   if(start<otherEnd&&otherStart<end)return 'Занято: '+booked;
+   const prep=this.rules(end<=otherStart?other.day:slot.day).cfg.prep;
+   const gap=Math.max(otherStart-end,start-otherEnd);
+   return `Не хватает ${prep-gap} ч на подготовку между бронями. Соседняя бронь: ${booked}`;
+ }
+ calendarDrop(event,day,house,start){
+   event.preventDefault();
+   event.stopPropagation();
+   const num=this.dragB;
+   this.dragB=null;
+   const b=this.state.bookings.find(x=>x.num===num);
+   if(!b)return;
+   const slot=this.rescheduleSlot(b,{day,house,start:start??b.start});
+   const restriction=this.rescheduleRestriction(b);
+   const invalid=restriction||slotError(this.rules(day),slot,{future:true});
+   const conflict=invalid?null:this.conflict(slot,b.num);
+   const same=slot.day===b.day&&slot.house===b.house&&slot.start===b.start;
+   const message=invalid||(conflict?this.rescheduleConflict(slot,conflict):same?'Вы выбрали текущее время и дом этой брони.':'');
+   if(message){
+     const target=`${num} → ${H[slot.house].name} · ${dlabel(day)} ${hh(slot.start)}–${hh(slot.start+slot.dur)}`;
+     this.setState({calDropError:{target,message}},()=>document.querySelector('.crm-cal-drop-error')?.scrollIntoView({block:'nearest'}));
+     return;
+   }
+   this.startRs(num,{house:slot.house,day,start:slot.start});
+ }
+ startRs(num,over={}){
+   const b=this.state.bookings.find(x=>x.num===num);
+   if(!b)return;
+   const restriction=this.rescheduleRestriction(b);
+   if(restriction){this.toast(restriction);return;}
+   const {house,day,start,dur}=this.rescheduleSlot(b,over);
+   this.setState({openId:num,detailsLast:'booking',tab:'compose',search:'',calDropError:null,
+     rs:{house,date:dkey(day),start,dur,reason:'guest',notify:true,msg:null}});
+ }
  toggleExtra(b,id,q){if(id==='tub'){b.tub=!b.tub;return b;}b.qty={...(b.qty||{})};if(q!=null){b.qty[id]=Math.max(1,Math.min(QTY_MAX,q));return b;}if(b.services.includes(id)){b.services=b.services.filter(s=>s!==id);delete b.qty[id];}else{b.services.push(id);b.qty[id]=1;}return b;}
 
  renderVals(){
@@ -1895,27 +1987,64 @@ class Component extends DCLogic {
   const prepList=!isNowDay?liveB.slice().sort((a,b)=>a.start-b.start).map(b=>({house:H[b.house].name,startAt:hh(b.start-cfg.prep),stage:ST[b.stage].name,bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',countdown:`заезд ${hh(b.start)}`,cdColor:'#0A2F4F'})):todayB.filter(b=>['confirmed','prep','inhouse'].includes(b.stage)&&b.start*60>NOW_MIN-60).sort((a,b)=>a.start-b.start).map(b=>{const startAt=b.start-cfg.prep;const left=startAt*60-NOW_MIN;const st=b.stage==='prep'?'Топим':b.stage==='inhouse'?'Принят':'Запланирована';const bg=b.stage==='prep'?'rgba(217,164,65,.22)':b.stage==='inhouse'?'rgba(94,140,97,.15)':'rgba(10,47,79,.08)';return {house:H[b.house].name,startAt:hh(startAt),stage:st,bg,fg:'#0A2F4F',countdown:left>0?`через ${ago(left)}`:b.stage==='inhouse'?'гость в доме':`заезд через ${ago(b.start*60-NOW_MIN)}`,cdColor:left<=0&&b.stage!=='inhouse'?'#C15C22':'#0A2F4F'};});
   // календарь
   const calCfg=this.rules(s.calDay).cfg;const hours=[];for(let x=calCfg.open;x<calCfg.close;x++)hours.push(x);const span=calCfg.close-calCfg.open;const pct=h=>((h-calCfg.open)/span*100).toFixed(2)+'%';
-  const legend=[{name:'новая',color:'#C15C22',border:'0'},{name:'в работе',color:'#D9A441',border:'0'},{name:'подтверждена',color:'#0A2F4F',border:'0'},{name:'в доме',color:'#5E8C61',border:'0'},{name:'завершена',color:GR(.4),border:'0'},{name:'отмена/неявка',color:'transparent',border:`1.5px dashed ${GR(.4)}`}];
-  const blockStyle=b=>{const st=ST[b.stage];const isNow=b.day===0&&b.start*60<=NOW_MIN&&(b.start+b.dur)*60>NOW_MIN;if(st.type==='fail')return {bg:'transparent',fg:GR(.6),border:`1.5px dashed ${GR(.35)}`};if(b.stage==='prepay'||b.stage==='contact')return {bg:'rgba(217,164,65,.25)',fg:'#0A2F4F',border:'1.5px dashed #D9A441'};if(b.stage==='done'||b.stage==='review')return {bg:'rgba(59,47,42,.12)',fg:'#0A2F4F',border:'0'};return {bg:st.color,fg:'#fff',border:'0'};};
+  const legend=CAL_STATUS.map(o=>({...o,active:String(s.calStatus===o.id),select:e=>{
+    const filter=e.currentTarget.closest('details');
+    filter?.removeAttribute('open');
+    filter?.querySelector('summary')?.focus();
+    this.setState({calStatus:o.id,calDropError:null});
+  }}));
+  const matchesStatus=b=>b.stage!=='moved'&&ST[b.stage]&&(s.calStatus==='all'||s.calStatus===calendarStatus(b));
+  const canDrag=b=>!this.rescheduleRestriction(b);
+  const drag=b=>e=>{e.stopPropagation();if(!canDrag(b)){e.preventDefault();return;}this.dragB=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);};
+  const blockStyle=b=>{
+    const status=calendarStatus(b);
+    if(status==='fail')return {bg:'transparent',fg:GR(.6),border:`1.5px dashed ${GR(.35)}`};
+    if(status==='work')return {bg:'rgba(217,164,65,.25)',fg:'#0A2F4F',border:'1.5px dashed #D9A441'};
+    if(status==='done')return {bg:'rgba(59,47,42,.12)',fg:'#0A2F4F',border:'0'};
+    return {bg:CAL_STATUS.find(o=>o.id===status).color,fg:'#fff',border:'0'};
+  };
   const openNewAt=(house,day,start)=>()=>this.setState({nb:this.newNb({house,day,start})});
-  const calRows=HOUSES.map(h=>{const bs=B.filter(b=>b.house===h.id&&b.start!=null&&b.day===s.calDay&&b.stage!=='moved');const blocks=[];for(const b of bs){const sty=blockStyle(b);if(ST[b.stage].type==='open'&&b.stage!=='done'){blocks.push({left:pct(b.start-calCfg.prep),width:(calCfg.prep/span*100).toFixed(2)+'%',bg:'repeating-linear-gradient(135deg,rgba(10,47,79,.18) 0 3px,transparent 3px 8px)',fg:'transparent',border:'0',l1:'',l2:'',title:`Подготовка ${calCfg.prep} ч`,pe:'none',dr:false,drag:()=>{},open:()=>{}});}
-    blocks.push({left:pct(b.start),width:(b.dur/span*100).toFixed(2)+'%',...sty,l1:`${b.guest} · ${b.guests}`,l2:`${ST[b.stage].name} · ${fmt(this.price(b).total)}`,title:`${b.num} ${b.guest} — перетащите, чтобы перенести`,pe:'auto',dr:!!(ST[b.stage]&&ST[b.stage].type==='open'),drag:e=>{this.dragB=b.num;e.dataTransfer.effectAllowed='move';},open:open(b.num)});}
-    const cells=hours.map(x=>{const candidate={house:h.id,day:s.calDay,start:x,dur:calCfg.minH,guests:1};const can=!slotError(this.rules(s.calDay),candidate,{future:true})&&!this.conflict(candidate);return {click:can?openNewAt(h.id,s.calDay,x):()=>{},title:can?`Новая бронь · ${h.name} · ${hh(x)}`:'',cursor:can?'pointer':'default',drop:e=>{e.preventDefault();const n=this.dragB;this.dragB=null;if(!n)return;if(h.soon){this.toast(`${h.name} ещё не открыт`);return;}this.startRs(n,{house:h.id,day:s.calDay,start:x});}};});
-    return {n:h.n,name:h.name,cat:cats[h.cat].name+(h.soon?' · скоро открытие':''),opacity:h.soon?.4:1,cells,blocks,showNow:s.calDay===0};});
+  const calRows=HOUSES.map(h=>{
+    const bs=B.filter(b=>b.house===h.id&&b.start!=null&&b.day===s.calDay&&matchesStatus(b));
+    const blocks=[];
+    for(const b of bs){
+      const prepStart=Math.max(calCfg.open,b.start-calCfg.prep);
+      if(ST[b.stage].type==='open'&&b.stage!=='done'&&prepStart<b.start){
+        blocks.push({left:pct(prepStart),width:((b.start-prepStart)/span*100).toFixed(2)+'%',bg:'repeating-linear-gradient(135deg,rgba(10,47,79,.18) 0 3px,transparent 3px 8px)',fg:'transparent',border:'0',l1:'',l2:'',title:`Подготовка ${calCfg.prep} ч`,pe:'none',dr:false,drag:()=>{},open:()=>{}});
+      }
+      blocks.push({left:pct(b.start),width:(b.dur/span*100).toFixed(2)+'%',...blockStyle(b),l1:`${b.guest} · ${b.guests}`,l2:`${ST[b.stage].name} · ${fmt(this.price(b).total)}`,title:`${b.num} ${b.guest}`,pe:'auto',dr:canDrag(b),drag:drag(b),open:open(b.num)});
+    }
+    const cells=hours.map(start=>{
+      const candidate={house:h.id,day:s.calDay,start,dur:calCfg.minH,guests:1};
+      const can=!slotError(this.rules(s.calDay),candidate,{future:true})&&!this.conflict(candidate);
+      return {click:can?openNewAt(h.id,s.calDay,start):()=>{},title:can?`Новая бронь · ${h.name} · ${hh(start)}`:'',cursor:can?'pointer':'default'};
+    });
+    const drop=e=>{
+      const rect=e.currentTarget.getBoundingClientRect();
+      const index=Math.max(0,Math.min(hours.length-1,Math.floor((e.clientX-rect.left)/rect.width*hours.length)));
+      this.calendarDrop(e,s.calDay,h.id,hours[index]);
+    };
+    return {n:h.n,name:h.name,cat:cats[h.cat].name+(h.soon?' · скоро открытие':''),opacity:h.soon?.4:1,cells,blocks,drop,showNow:s.calDay===0};
+  });
   const nowLeft=((NOW_MIN/60-calCfg.open)/span*100).toFixed(2)+'%';
   const weekStart=s.calDay-((dateAt(s.calDay).getDay()+6)%7);const weekDays=[];for(let i=0;i<7;i++){const di=weekStart+i;weekDays.push({di,label:dlabel(di),color:di===0?'#C15C22':this.isWeekend(di)?'#0A2F4F':GR(.7),weight:di===0?600:500,go:()=>this.setState({calMode:'day',calDay:di})});}
-  const weekRows=HOUSES.map(h=>({n:h.n,name:h.name,cat:cats[h.cat].name,opacity:h.soon?.4:1,days:weekDays.map(d=>({go:()=>this.setState({calMode:'day',calDay:d.di}),drop:e=>{e.preventDefault();e.stopPropagation();const n=this.dragB;this.dragB=null;if(!n)return;if(h.soon){this.toast(`${h.name} ещё не открыт`);return;}this.startRs(n,{house:h.id,day:d.di});},items:B.filter(b=>b.house===h.id&&b.start!=null&&b.day===d.di&&ST[b.stage]&&ST[b.stage].type!=='fail').sort((a,b)=>a.start-b.start).map(b=>({...blockStyle(b),time:hh(b.start),guest:b.guest,drag:e=>{e.stopPropagation();this.dragB=b.num;e.dataTransfer.effectAllowed='move';},open:e=>{e.stopPropagation();open(b.num)();}}))}))}));
+  const weekRows=HOUSES.map(h=>({n:h.n,name:h.name,cat:cats[h.cat].name,opacity:h.soon?.4:1,days:weekDays.map(d=>({
+    go:()=>this.setState({calMode:'day',calDay:d.di}),
+    drop:e=>this.calendarDrop(e,d.di,h.id),
+    items:B.filter(b=>b.house===h.id&&b.start!=null&&b.day===d.di&&matchesStatus(b)).sort((a,b)=>a.start-b.start)
+      .map(b=>({...blockStyle(b),time:hh(b.start),guest:b.guest,dr:canDrag(b),drag:drag(b),open:e=>{e.stopPropagation();open(b.num)();}}))
+  }))}));
 
   const MONF=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
   const mBase=dateAt(s.calDay);const mFirst=new Date(mBase.getFullYear(),mBase.getMonth(),1);const mLast=new Date(mBase.getFullYear(),mBase.getMonth()+1,0);const gStart=offOf(mFirst)-((mFirst.getDay()+6)%7);const gEnd=offOf(mLast)+(6-((mLast.getDay()+6)%7));
   const actH=HOUSES.filter(h=>!h.soon&&(s.calHouse==='all'||h.id===s.calHouse));const monthCells=[];let mBooked=0,mCap=0,mCnt=0,mRev=0;
-  for(let di=gStart;di<=gEnd;di++){const d=dateAt(di);const inM=d.getMonth()===mBase.getMonth();const bs=B.filter(b=>b.start!=null&&b.day===di&&b.house&&actH.some(h=>h.id===b.house)&&ST[b.stage]&&ST[b.stage].type!=='fail').sort((a,b)=>a.start-b.start);const mCfg=this.rules(di).cfg;const capDay=actH.length*(mCfg.close-mCfg.open);const hrs=bs.reduce((a,b)=>a+b.dur,0);const load=capDay?Math.min(1,hrs/capDay):0;const rev=bs.reduce((a,b)=>a+this.price(b).total,0);
-   if(inM){mBooked+=hrs;mCap+=capDay;mCnt+=bs.length;mRev+=rev;}const hol=holOn(s.holidays,di);const bd=s.clients.filter(c=>c.birthday&&c.birthday.slice(5)===dkey(di).slice(5)).map(c=>c.name);const we=this.isWeekend(di);
+  for(let di=gStart;di<=gEnd;di++){const d=dateAt(di);const inM=d.getMonth()===mBase.getMonth();const bs=B.filter(b=>b.start!=null&&b.day===di&&b.house&&actH.some(h=>h.id===b.house)&&ST[b.stage]).sort((a,b)=>a.start-b.start);const visible=bs.filter(matchesStatus), counted=bs.filter(b=>ST[b.stage].type!=='fail');const mCfg=this.rules(di).cfg;const capDay=actH.length*(mCfg.close-mCfg.open);const hrs=counted.reduce((a,b)=>a+b.dur,0);const load=capDay?Math.min(1,hrs/capDay):0;const rev=counted.reduce((a,b)=>a+this.price(b).total,0);
+   if(inM){mBooked+=hrs;mCap+=capDay;mCnt+=counted.length;mRev+=rev;}const hol=holOn(s.holidays,di);const bd=s.clients.filter(c=>c.birthday&&c.birthday.slice(5)===dkey(di).slice(5)).map(c=>c.name);const we=this.isWeekend(di);
    monthCells.push({num:d.getDate(),hol:hol?hol.name:'',rev:owner&&rev?fmtK(rev)+' ₸':'',load:Math.round(load*100)+'%',loadColor:'#0A2F4F',loadTitle:`Загрузка ${Math.round(load*100)}% · ${hrs} ч из ${capDay}`,
-    items:bs.slice(0,3).map(b=>({...blockStyle(b),time:hh(b.start),label:`${H[b.house].name} · ${b.guest}`,title:`${b.num} · ${H[b.house].name} · ${hh(b.start)}–${hh(b.start+b.dur)} · ${b.guest}`,open:e=>{e.stopPropagation();open(b.num)();},drag:e=>{e.stopPropagation();this.dragB=b.num;e.dataTransfer.effectAllowed='move';}})),
-    more:bs.length>3?bs.length-3:0,bd:bd.join(', '),bg:di===0?'rgba(193,92,34,.06)':we?'rgba(10,47,79,.025)':'#fff',opacity:inM?(di<0?.62:1):.35,numBg:di===0?'#C15C22':'transparent',numFg:di===0?'#fff':we?'#0A2F4F':GR(.8),
+    items:visible.slice(0,3).map(b=>({...blockStyle(b),time:hh(b.start),label:`${H[b.house].name} · ${b.guest}`,title:`${b.num} · ${H[b.house].name} · ${hh(b.start)}–${hh(b.start+b.dur)} · ${b.guest}`,open:e=>{e.stopPropagation();open(b.num)();},dr:canDrag(b),drag:drag(b)})),
+    more:Math.max(0,visible.length-3),bd:bd.join(', '),bg:di===0?'rgba(193,92,34,.06)':we?'rgba(10,47,79,.025)':'#fff',opacity:inM?(di<0?.62:1):.35,numBg:di===0?'#C15C22':'transparent',numFg:di===0?'#fff':we?'#0A2F4F':GR(.8),
     title:`${dlabel(di)}${hol?' · '+hol.name:''} · ${bs.length} брон. · клик — расписание дня`,go:()=>this.setState({calMode:'day',calDay:di}),
-    drop:e=>{e.preventDefault();const n=this.dragB;this.dragB=null;if(!n)return;const x=B.find(q=>q.num===n);this.startRs(n,{house:s.calHouse!=='all'?s.calHouse:x&&x.house,day:di});}});}
+    drop:e=>this.calendarDrop(e,di,s.calHouse==='all'?undefined:s.calHouse)});}
   const monthHead=['пн','вт','ср','чт','пт','сб','вс'].map((n,i)=>({name:n,color:i>=4?'#0A2F4F':GR(.7)}));
   const monthStats=[{l:'Загрузка месяца',v:mCap?Math.round(mBooked/mCap*100)+'%':'—'},{l:'Броней',v:String(mCnt)}];if(owner)monthStats.push({l:'Сумма броней',v:fmt(mRev)});
   const monthShift=dir=>()=>this.setState({calDay:offOf(new Date(mBase.getFullYear(),mBase.getMonth()+dir,1))});
@@ -2197,7 +2326,7 @@ class Component extends DCLogic {
      tub:!!(h2.tub&&b.tub)};
    let err=slotError(rsRules,nbx,{future:true});
    const cf=err?null:this.conflict(nbx,b.num);
-   if(cf)err=`Занято: ${cf.num} ${cf.guest} · ${dlabel(cf.day)} ${hh(cf.start)}–${hh(cf.start+cf.dur)}. Учтён буфер подготовки.`;
+   if(cf)err=this.rescheduleConflict(nbx,cf);
    const slots=startOptions(rsRules).map(o=>o.v).filter(x=>{
      const candidate={...nbx,start:x};
      return !slotError(rsRules,candidate,{future:true})&&!this.conflict(candidate,b.num);
@@ -2207,15 +2336,26 @@ class Component extends DCLogic {
      return h.id!==rs.house&&!slotError(rsRules,candidate,{future:true})&&!this.conflict(candidate,b.num);
    });
    const oldP=this.price(b).total;
-   const newP=err&&!cf?oldP:calcPrice(rsRules,nbx).total;
-   const paidS=this.paid(b),diff=newP-oldP;
    const same=rs.house===b.house&&nd===b.day&&+rs.start===b.start&&+rs.dur===b.dur;
+   const newP=err||same?oldP:calcPrice(rsRules,nbx).total;
+   const paidS=this.paid(b),diff=newP-oldP;
    const tpl=s.templates.find(t=>t.id==='moved');const rcl=this.clientOf(b.phone);const autoMsg=fillT(tpl?((rcl&&rcl.lang==='KZ'&&tpl.kz)?tpl.kz:tpl.ru):'',{имя:b.guest,дом:h2.name,дата:isNaN(nd)?'':dlabel(nd),время:hh(+rs.start),сумма:fmt(newP)});const msg=rs.msg!=null?rs.msg:autoMsg;
    const diffText=err?'':!oldP?fmt(newP):diff>0?`доплата ${fmt(diff)}`:diff<0?(paidS>newP?`переплата ${fmt(paidS-newP)} — оформите возврат`:`дешевле на ${fmt(-diff)}`):'цена не меняется';
    if(same)err='';const cant=!!err||same;
-   rsv={title:b.start!=null?`Перенос ${b.num}`:`Дата и время ${b.num}`,was:b.start!=null?`${H[b.house]?H[b.house].name:''}, ${this.whenText(b)}`:'время не выбрано',house:rs.house,houseName:h2.name,date:rs.date,minDate:dkey(0),start:String(rs.start),dur:String(rs.dur),
+   const opening=nd*24+rsRules.cfg.open,closing=nd*24+rsRules.cfg.close;
+   const occupancy=B.filter(other=>{
+     const start=other.day*24+other.start;
+     return other.num!==b.num&&other.house===rs.house&&other.start!=null&&ST[other.stage]?.type==='open'&&
+       start-this.rules(other.day).cfg.prep<closing&&start+other.dur+rsRules.cfg.prep>opening;
+   }).sort((a,b)=>a.day-b.day||a.start-b.start).map(o=>{
+     const prep=this.rules(o.day).cfg.prep;
+     return {when:`${dlabel(o.day)} ${hh(o.start)}–${hh(o.start+o.dur)} · ${o.dur} ч`,booking:`${o.num} ${o.guest}`,
+       prep:prep?`${hh(o.start-prep)}–${hh(o.start)}`:''};
+   });
+   rsv={occupancy,noOccupancy:!occupancy.length,prep:rsRules.cfg.prep,
+    selectedInterval:`${hh(+rs.start)}–${hh(+rs.start+ +rs.dur)} · ${rs.dur} ч`,title:b.start!=null?`Перенос ${b.num}`:`Дата и время ${b.num}`,was:b.start!=null?`${H[b.house]?H[b.house].name:''}, ${this.whenText(b)}`:'время не выбрано',house:rs.house,houseName:h2.name,date:rs.date,minDate:dkey(0),start:String(rs.start),dur:String(rs.dur),
     dayHint:isNaN(nd)?'—':(nd===0?'сегодня':nd>0?`через ${nd} дн.`:'прошла')+(isNaN(nd)?'':' · версия от '+ddmm(rsRules.from)),
-    slots:slots.map(x=>({t:hh(x),pick:()=>this.setState({rs:{...s.rs,start:x}}),bg:x===+rs.start?'#0A2F4F':'#fff',fg:x===+rs.start?'#fff':'#0A2F4F'})),noSlots:!slots.length,
+    slots:slots.map(x=>({t:`${hh(x)}–${hh(x+nbx.dur)}`,pick:()=>this.setState({rs:{...s.rs,start:x}}),bg:x===+rs.start?'#0A2F4F':'#fff',fg:x===+rs.start?'#fff':'#0A2F4F'})),noSlots:!slots.length,
     alt:alt.map(h=>({name:h.name,pick:()=>this.setState({rs:{...s.rs,house:h.id}})})),hasAlt:!!alt.length&&!!cf,err,hasErr:!!err,
     priceText:oldP?`${fmt(oldP)} → ${fmt(newP)}`:fmt(newP),diffText,diffColor:diff>0?'#C15C22':diff<0?'#5E8C61':'#0A2F4F',reason:rs.reason,notify:!!rs.notify,msg,msgEdited:rs.msg!=null,resetMsg:()=>this.setState({rs:{...s.rs,msg:null}}),
     saveLabel:same?'Ничего не изменилось':b.start!=null?'Сохранить перенос':'Сохранить время',cantSave:cant,saveOp:cant?.45:1,cancel:()=>this.setState({rs:null}),
@@ -2347,6 +2487,9 @@ class Component extends DCLogic {
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
+   calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
+   hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
+   clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
    viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,
