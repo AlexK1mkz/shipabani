@@ -466,7 +466,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             </div>
           </sc-for>
         </div>
-        <div style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
+        <div data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
           <div style="display:flex;height:28px;">
             <div style="width:168px;flex:0 0 auto;"></div>
             <div style="flex:1;display:flex;">
@@ -498,7 +498,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </sc-if>
 
       <sc-if value="{{ calIsWeek }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
+        <div data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
           <div style="display:grid;grid-template-columns:168px repeat(7,minmax(0,1fr));">
             <div></div>
             <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.go }}" style="height:44px;text-align:left;padding:0 8px;border-left:1px solid rgba(10,47,79,.08);font-size:13px;color:{{ d.color }};font-weight:{{ d.weight }};" style-hover="background:rgba(10,47,79,.04);">{{ d.label }}</button></sc-for>
@@ -518,7 +518,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </sc-if>
 
       <sc-if value="{{ calIsMonth }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
+        <div data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
             <select value="{{ calHouse }}" onChange="{{ setCalHouse }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><option value="all">Все дома</option><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select>
             <sc-for list="{{ monthStats }}" as="m" hint-placeholder-count="3"><span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ m.l }} <b style="color:#0A2F4F;">{{ m.v }}</b></span></sc-for>
@@ -615,7 +615,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </div>
 
       <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;flex:1;min-height:0;align-items:flex-start;">
+        <div data-crm-view-motion="bookings" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;flex:1;min-height:0;align-items:flex-start;">
           <sc-for list="{{ columns }}" as="col" hint-placeholder-count="8">
             <div onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="width:264px;flex:0 0 auto;background:{{ col.bg }};border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;border:{{ col.border }};box-shadow:{{ col.shadow }};">
               <sc-if value="{{ !boardEdit }}" hint-placeholder-val="{{ true }}">
@@ -693,7 +693,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </sc-if>
 
       <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border-radius:20px;padding:8px 24px 16px;">
+        <div data-crm-view-motion="bookings" style="background:#fff;border-radius:20px;padding:8px 24px 16px;">
           <div style="display:grid;grid-template-columns:72px 1fr 1.2fr 1fr 1fr 1fr 1fr 110px;height:44px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
             <button onClick="{{ sortNum }}" style="text-align:left;font-weight:600;">№ {{ sortMark.num }}</button><span>Гость</span><span>Дом</span>
             <button onClick="{{ sortDate }}" style="text-align:left;font-weight:600;">Дата и время {{ sortMark.date }}</button>
@@ -736,28 +736,30 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <div style="display:flex;gap:6px;">
           <sc-for list="{{ rvFilters }}" as="f" hint-placeholder-count="4"><button onClick="{{ f.go }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ f.bg }};color:{{ f.fg }};font-weight:500;">{{ f.name }}</button></sc-for>
         </div>
-        <sc-for list="{{ reviewsView }}" as="r" hint-placeholder-count="3">
-          <div style="background:#fff;border-radius:20px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
-            <div style="display:flex;align-items:center;gap:12px;">
-              <span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">{{ r.initial }}</span>
-              <div><div style="font-weight:600;">{{ r.guest }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ r.house }} · {{ r.num }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ r.date }} · {{ r.source }}</div></div>
-              <span style="margin-left:auto;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;color:{{ r.ratingColor }};">{{ r.rating }}<span style="font-size:18px;color:#C15C22;"> ★</span></span>
-              <span style="padding:4px 10px;border-radius:999px;background:{{ r.stBg }};color:{{ r.stFg }};font-size:12px;font-weight:600;">{{ r.status }}</span>
+        <div data-crm-view-motion="reviews" style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{ reviewsView }}" as="r" hint-placeholder-count="3">
+            <div style="background:#fff;border-radius:20px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">{{ r.initial }}</span>
+                <div><div style="font-weight:600;">{{ r.guest }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ r.house }} · {{ r.num }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ r.date }} · {{ r.source }}</div></div>
+                <span style="margin-left:auto;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;color:{{ r.ratingColor }};">{{ r.rating }}<span style="font-size:18px;color:#C15C22;"> ★</span></span>
+                <span style="padding:4px 10px;border-radius:999px;background:{{ r.stBg }};color:{{ r.stFg }};font-size:12px;font-weight:600;">{{ r.status }}</span>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;"><sc-for list="{{ r.cats }}" as="c" hint-placeholder-count="2"><span style="padding:3px 10px;border-radius:999px;background:rgba(10,47,79,.06);font-size:12px;">{{ c }}</span></sc-for></div>
+              <p data-shipa-no-translate style="margin:0;font-size:15px;line-height:1.5;">{{ r.text }}</p>
+              <sc-if value="{{ r.hasReply }}" hint-placeholder-val="{{ false }}"><div style="border-left:2px solid #0A2F4F;padding:4px 0 4px 14px;font-size:14px;color:rgba(59,47,42,.9);"><b style="color:#0A2F4F;">Ответ SHIPÁ:</b> <span data-shipa-no-translate>{{ r.reply }}</span></div></sc-if>
+              <sc-if value="{{ r.replying }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;"><textarea value="{{ r.draft }}" onChange="{{ r.setDraft }}" rows="2" placeholder="Ответ будет виден на сайте" style="flex:1;border:1px solid rgba(10,47,79,.2);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;"></textarea><button onClick="{{ r.sendReply }}" style="height:44px;padding:0 16px;border-radius:12px;background:#0A2F4F;color:#fff;font-weight:600;align-self:flex-end;">Отправить</button></div>
+              </sc-if>
+              <div style="display:flex;gap:8px;">
+                <sc-if value="{{ r.canPublish }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.publish }}" style="height:36px;padding:0 14px;border-radius:12px;background:#C15C22;color:#fff;font-size:13px;font-weight:600;" style-hover="background:#A84D1B;">Опубликовать на сайт</button></sc-if>
+                <button onClick="{{ r.toggleReply }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Ответить</button>
+                <sc-if value="{{ r.canHide }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.hide }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Скрыть</button></sc-if>
+                <sc-if value="{{ r.low }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:13px;color:#B8432F;font-weight:500;">Обращение создано · собственник уведомлён</span></sc-if>
+              </div>
             </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;"><sc-for list="{{ r.cats }}" as="c" hint-placeholder-count="2"><span style="padding:3px 10px;border-radius:999px;background:rgba(10,47,79,.06);font-size:12px;">{{ c }}</span></sc-for></div>
-            <p data-shipa-no-translate style="margin:0;font-size:15px;line-height:1.5;">{{ r.text }}</p>
-            <sc-if value="{{ r.hasReply }}" hint-placeholder-val="{{ false }}"><div style="border-left:2px solid #0A2F4F;padding:4px 0 4px 14px;font-size:14px;color:rgba(59,47,42,.9);"><b style="color:#0A2F4F;">Ответ SHIPÁ:</b> <span data-shipa-no-translate>{{ r.reply }}</span></div></sc-if>
-            <sc-if value="{{ r.replying }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;gap:8px;"><textarea value="{{ r.draft }}" onChange="{{ r.setDraft }}" rows="2" placeholder="Ответ будет виден на сайте" style="flex:1;border:1px solid rgba(10,47,79,.2);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;"></textarea><button onClick="{{ r.sendReply }}" style="height:44px;padding:0 16px;border-radius:12px;background:#0A2F4F;color:#fff;font-weight:600;align-self:flex-end;">Отправить</button></div>
-            </sc-if>
-            <div style="display:flex;gap:8px;">
-              <sc-if value="{{ r.canPublish }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.publish }}" style="height:36px;padding:0 14px;border-radius:12px;background:#C15C22;color:#fff;font-size:13px;font-weight:600;" style-hover="background:#A84D1B;">Опубликовать на сайт</button></sc-if>
-              <button onClick="{{ r.toggleReply }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Ответить</button>
-              <sc-if value="{{ r.canHide }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.hide }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Скрыть</button></sc-if>
-              <sc-if value="{{ r.low }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:13px;color:#B8432F;font-weight:500;">Обращение создано · собственник уведомлён</span></sc-if>
-            </div>
-          </div>
-        </sc-for>
+          </sc-for>
+        </div>
       </div>
     </section>
   </sc-if>
@@ -953,7 +955,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <button class="crm-guest-export crm-guide-trigger" type="button" aria-label="Как выгрузить данные в Excel" title="Как выгрузить данные в Excel" aria-haspopup="dialog" onClick="{{ openGuide }}">?</button>
         </div>
       </div>
-      <div class="crm-guests-table-card">
+      <div class="crm-guests-table-card" data-crm-view-motion="clients">
         <div class="crm-guests-table-scroll" tabindex="0" role="region" aria-label="Список гостей">
           <div class="crm-guests-table" role="table" aria-label="Гости">
             <div class="crm-guest-table-line crm-guest-table-head" role="row">
@@ -1010,7 +1012,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         </sc-for>
       </div>
 
-      <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;">
+      <div data-crm-view-motion="campaign-editor" style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;">
         <div style="display:flex;flex-direction:column;gap:14px;min-width:0;">
           <label style="font-size:12px;color:rgba(59,47,42,.7);">Название<input value="{{ ce.name }}" onChange="{{ ceSet.name }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;font-weight:600;"></label>
           <div>
@@ -1045,7 +1047,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <button onClick="{{ ce.del }}" style="margin-left:auto;height:44px;padding:0 14px;border-radius:12px;color:#B8432F;font-weight:500;" style-hover="background:rgba(184,67,47,.08);">Удалить рассылку</button>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:12px;">
+        <div data-crm-view-motion="campaign-audience" style="display:flex;flex-direction:column;gap:12px;">
           <div style="font-size:12px;color:rgba(59,47,42,.7);">Как увидит гость · {{ ce.sampleName }}</div>
           <div style="background:#ECE5DD;border-radius:16px;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:220px;">
             <div style="align-self:center;font-size:11px;background:rgba(255,255,255,.7);border-radius:8px;padding:3px 10px;color:rgba(59,47,42,.8);">{{ ce.sendAt }}</div>
@@ -1897,6 +1899,24 @@ function crmRoute(hash,s){
   return route;
 }
 
+function crmViewMotion(s){
+  switch(s.screen){
+    case 'calendar':
+      return {calendar:[s.calMode,s.calDay,s.calStatus,s.calMode==='month'?s.calHouse:null]};
+    case 'bookings':
+      return {bookings:[s.view,s.board,s.savedView,s.assigneeFilter,s.view==='list'?s.sort.k:null,s.view==='list'?s.sort.d:null]};
+    case 'clients':
+      return {clients:[s.clFilter,s.clSort.k,s.clSort.d]};
+    case 'campaigns': {
+      const campaign=s.campaigns.find(c=>c.id===s.cmpSel)||s.campaigns[0];
+      return {'campaign-editor':[campaign?.id,campaign?.kind],'campaign-audience':campaign?.aud||[]};
+    }
+    case 'reviews':
+      return {reviews:[s.rvFilter]};
+    default:
+      return {};
+  }
+}
 class Component extends DCLogic {
  state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
@@ -1932,8 +1952,27 @@ class Component extends DCLogic {
      }
    });
  }
+ updateViewMotion(){
+   const screen=this.state.screen;
+   const keys=Object.fromEntries(Object.entries(crmViewMotion(this.state)).map(([target,values])=>[target,JSON.stringify(values)]));
+   const previous=this.viewMotion;
+   this.viewMotion={screen,keys};
+   // Sections already animate when mounted. Only replay the content transition within a section.
+   if(previous?.screen!==screen||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+   const changed=Object.keys(keys).filter(target=>keys[target]!==previous.keys[target]);
+   for(const target of changed){
+     if(target==='campaign-audience'&&changed.includes('campaign-editor'))continue;
+     const node=document.querySelector(`[data-crm-view-motion="${target}"]`);
+     if(!node?.animate)continue;
+     node.getAnimations().find(animation=>animation.id==='crm-view-change')?.cancel();
+     node.animate([{opacity:.83,translate:'0 3px'},{opacity:1,translate:'none'}],{
+       id:'crm-view-change',duration:150,easing:'ease-out'
+     });
+   }
+ }
  componentDidUpdate(){
    if(this.navHash)this.syncNavigation();
+   this.updateViewMotion();
    if(this.state.reasonDialog){
      const dialog=document.querySelector('.crm-reason-dialog');
      if(dialog&&!dialog.open)dialog.showModal();
@@ -2054,6 +2093,7 @@ class Component extends DCLogic {
  toast(t,tone='info'){this.setState({toast:t,toastTone:tone});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:'',toastTone:'info'}),2800);}
  componentDidMount(){
   this.syncNavigation(true);
+  this.updateViewMotion();
   this._navigationChanged=()=>this.restoreNavigation();
   window.addEventListener('popstate',this._navigationChanged);
   window.addEventListener('hashchange',this._navigationChanged);
