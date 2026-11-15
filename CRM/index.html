@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-kanban-feedback"></script>
-<script defer src="./guest-export.js"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-booking-export-guide"></script>
+<script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
 <x-dc>
@@ -91,10 +91,26 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-guest-export{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 12px;border:1px solid #CCD9E2;border-radius:10px;background:#fff;color:#0A2F4F;font-size:13px;font-weight:600;white-space:nowrap;}
   .crm-guest-export:hover:not(:disabled){background:#EAF1F6;}
   .crm-guest-export:disabled{opacity:.5;cursor:default;}
+  .crm-guide-trigger{width:36px;justify-content:center;padding:0;font-size:16px;}
+  .crm-assignee-filter{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:13px;font-weight:600;}
+  .crm-assignee-select{max-width:180px;min-height:36px;padding:0 8px;border:1px solid #CCD9E2;border-radius:10px;background:#fff;font-size:13px;color:#0A2F4F;}
+  .crm-booking-assignee{display:flex;align-items:center;gap:5px;min-width:0;padding-top:6px;border-top:1px solid #E9EDF0;font-size:12px;color:#526271;}
+  .crm-booking-assignee strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0A2F4F;}
+  .crm-mini-guide{width:min(530px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:22px 24px;border:1px solid #D5E0E7;border-radius:18px;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.22);}
+  .crm-mini-guide::backdrop{background:rgba(10,47,79,.44);}
+  .crm-mini-guide header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .crm-mini-guide h2{margin:0;font-size:22px;}
+  .crm-mini-guide header button{width:36px;height:36px;border-radius:9px;font-size:23px;}
+  .crm-mini-guide header button:hover{background:#EAF1F6;}
+  .crm-mini-guide dl{display:grid;gap:12px;margin:14px 0 0;}
+  .crm-mini-guide dl div{padding:10px 12px;border-radius:10px;background:#F6F3EE;}
+  .crm-mini-guide dt{font-size:14px;font-weight:600;}
+  .crm-mini-guide dd{margin:4px 0 0;color:#43566A;font-size:13px;line-height:1.45;}
   .crm-guests-table-card{min-width:0;background:#fff;border-radius:20px;padding:8px 24px 16px;}
   .crm-guests-table-scroll{overflow-x:auto;max-width:100%;}
-  .crm-guests-table{min-width:1130px;}
-  .crm-guest-table-line{display:grid;grid-template-columns:minmax(248px,1.9fr) minmax(122px,1.15fr) minmax(66px,.55fr) minmax(112px,1fr) minmax(122px,1fr) minmax(136px,1.1fr) minmax(96px,.72fr) minmax(108px,1fr);column-gap:12px;align-items:center;}
+  .crm-guests-table{min-width:1140px;}
+  .crm-guest-table-line{display:grid;grid-template-columns:minmax(220px,1.9fr) minmax(105px,.85fr) minmax(116px,1fr) minmax(56px,.52fr) minmax(116px,.95fr) minmax(110px,1fr) minmax(132px,1.1fr) minmax(82px,.65fr) minmax(94px,.85fr);column-gap:12px;align-items:center;}
+  .crm-guest-table-number{text-align:right;font-variant-numeric:tabular-nums;}
   .crm-guest-table-head{min-height:46px;border-bottom:1px solid #DEE5EA;color:#526271;font-size:12px;font-weight:600;}
   .crm-guest-table-head button{min-height:36px;text-align:left;font-weight:inherit;}
   .crm-guest-table-head button:hover{color:#A84D1B;}
@@ -105,7 +121,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-guest-name{display:block;max-width:100%;text-align:left;font-size:14px;font-weight:600;line-height:1.35;}
   .crm-guest-identity-text{flex:1;min-width:0;}
   .crm-guest-contact{display:flex;align-items:center;gap:8px;min-width:0;margin-top:2px;color:#526271;font-size:12px;}
-  .crm-guest-tier{margin-left:auto;max-width:94px;border-radius:999px;padding:2px 7px;font-size:11px;font-weight:600;}
+  .crm-guest-tier{display:inline-block;max-width:100%;vertical-align:middle;border-radius:999px;padding:3px 8px;font-size:12px;font-weight:600;}
   .crm-guest-name,.crm-guest-tier,.crm-guest-phone,.crm-guest-tag,.crm-guest-table-cell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .crm-guest-tags{display:flex;flex-wrap:wrap;align-content:center;gap:4px;min-width:0;max-height:44px;overflow:hidden;}
   .crm-guest-tag{flex:0 0 auto;max-width:100%;padding:2px 8px;border-radius:999px;background:#EAF0F4;font-size:12px;}
@@ -506,8 +522,16 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <sc-for list="{{ savedViews }}" as="v" hint-placeholder-count="3"><button onClick="{{ v.go }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ v.bg }};color:{{ v.fg }};font-weight:500;" style-hover="background:rgba(10,47,79,.06);">{{ v.name }}</button></sc-for>
         </div>
+        <label class="crm-assignee-filter">Ответственный
+          <select class="crm-assignee-select" value="{{ assigneeFilter }}" onChange="{{ setAssigneeFilter }}">
+            <option value="*">Все сотрудники</option>
+            <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="3"><option value="{{ a.value }}">{{ a.name }}</option></sc-for>
+          </select>
+        </label>
         <span style="margin-left:auto;font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ bookingsCount }}</span>
-        <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}"><button style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Выгрузить в Excel</button></sc-if>
+        <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+          <button class="crm-guest-export" type="button" disabled="{{ bookingExportEmpty }}" onClick="{{ exportBookings }}">Выгрузить в Excel</button>
+        </sc-if>
       </div>
 
       <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
@@ -573,6 +597,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                   <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:rgba(59,47,42,.7);">
                     <span>{{ c.source }}</span>
                     <span style="color:{{ c.timerColor }};font-weight:{{ c.timerWeight }};">{{ c.timer }}</span>
+                  </div>
+                  <div class="crm-booking-assignee">
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"></circle><path d="M5 20v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"></path></svg>
+                    <span>Ответственный</span><strong title="{{ c.assignee }}">{{ c.assignee }}</strong>
                   </div>
                 </div>
               </sc-for>
@@ -842,6 +870,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <button class="crm-guest-export" type="button" onClick="{{ exportGuests }}" disabled="{{ clEmpty }}">
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path></svg>Скачать Excel
           </button>
+          <button class="crm-guest-export crm-guide-trigger" type="button" aria-label="Краткий гид по CRM" title="Краткий гид по CRM" aria-haspopup="dialog" onClick="{{ openGuide }}">?</button>
         </div>
       </div>
       <div class="crm-guests-table-card">
@@ -849,9 +878,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <div class="crm-guests-table" role="table" aria-label="Гости">
             <div class="crm-guest-table-line crm-guest-table-head" role="row">
               <div role="columnheader" aria-sort="{{ clAriaSort.name }}"><button type="button" onClick="{{ clSortBy.name }}">Гость {{ clMark.name }}</button></div>
+              <div role="columnheader" aria-sort="{{ clAriaSort.tier }}"><button type="button" onClick="{{ clSortBy.tier }}">Лояльность {{ clMark.tier }}</button></div>
               <span role="columnheader">Личный кабинет</span>
               <div role="columnheader" aria-sort="{{ clAriaSort.visits }}"><button type="button" onClick="{{ clSortBy.visits }}">Визитов {{ clMark.visits }}</button></div>
-              <div role="columnheader" aria-sort="{{ clAriaSort.spent }}"><button type="button" onClick="{{ clSortBy.spent }}">Оплатил {{ clMark.spent }}</button></div>
+              <div class="crm-guest-table-number" role="columnheader" aria-sort="{{ clAriaSort.spent }}"><button type="button" onClick="{{ clSortBy.spent }}">Оплатил {{ clMark.spent }}</button></div>
               <div role="columnheader" aria-sort="{{ clAriaSort.last }}"><button type="button" onClick="{{ clSortBy.last }}">Последний визит {{ clMark.last }}</button></div>
               <div role="columnheader" aria-sort="{{ clAriaSort.bday }}"><button type="button" onClick="{{ clSortBy.bday }}">День рождения {{ clMark.bday }}</button></div>
               <span role="columnheader">Рассылка</span><span role="columnheader">Теги</span>
@@ -862,12 +892,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                   <span class="crm-guest-avatar" aria-hidden="true">{{ r.initial }}</span>
                   <div class="crm-guest-identity-text">
                     <button class="crm-guest-name" type="button" title="{{ r.name }}">{{ r.name }}</button>
-                    <div class="crm-guest-contact"><span class="crm-guest-phone" title="{{ r.phone }}">{{ r.phone }}</span><span class="crm-guest-tier" title="{{ r.tierTitle }}" style="background:{{ r.tierBg }};color:{{ r.tierFg }};">{{ r.tier }}</span></div>
+                    <div class="crm-guest-contact"><span class="crm-guest-phone" title="{{ r.phone }}">{{ r.phone }}</span></div>
                   </div>
                 </div>
+                <div class="crm-guest-table-cell" role="cell"><span class="crm-guest-tier" title="{{ r.tierTitle }}" style="background:{{ r.tierBg }};color:{{ r.tierFg }};">{{ r.tier }}</span></div>
                 <span class="crm-guest-table-cell" role="cell" style="color:{{ r.accColor }};">{{ r.acc }}</span>
                 <span class="crm-guest-table-cell" role="cell" style="font-weight:600;">{{ r.visits }}</span>
-                <span class="crm-guest-table-cell" role="cell" title="{{ r.spent }}">{{ r.spent }}</span>
+                <span class="crm-guest-table-cell crm-guest-table-number" role="cell" title="{{ r.spent }}">{{ r.spent }}</span>
                 <span class="crm-guest-table-cell" role="cell" title="{{ r.last }}">{{ r.last }}</span>
                 <span class="crm-guest-table-cell" role="cell" title="{{ r.bday }}" style="color:{{ r.bdColor }};font-weight:{{ r.bdWeight }};">{{ r.bday }}</span>
                 <span class="crm-guest-table-cell" role="cell" style="color:{{ r.consentColor }};">{{ r.consent }}</span>
@@ -1009,7 +1040,11 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;"><span style="font-weight:600;">{{ ob.when }}</span><sc-if value="{{ ob.canRs }}" hint-placeholder-val="{{ true }}"><button id="crm-reschedule-trigger" onClick="{{ ob.startRs }}" style="height:28px;padding:0 10px;border-radius:8px;border:1px solid rgba(193,92,34,.4);color:#C15C22;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap;" style-hover="background:rgba(193,92,34,.08);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18"></path></svg>{{ ob.rsBtn }}</button></sc-if></div>
           <sc-if value="{{ ob.movesText }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.7);margin-top:2px;">{{ ob.movesText }}</div></sc-if>
         </div>
-        <div style="text-align:right;font-size:12px;color:rgba(59,47,42,.7);">Ответственный<br><b style="color:#0A2F4F;">{{ ob.owner }}</b></div>
+        <label style="text-align:right;font-size:12px;color:rgba(59,47,42,.7);">Ответственный
+          <select class="crm-assignee-select" style="display:block;margin:4px 0 0 auto;" value="{{ ob.owner }}" disabled="{{ rsOn }}" onChange="{{ setBookingAssignee }}">
+            <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="3"><option value="{{ a.value }}">{{ a.name }}</option></sc-for>
+          </select>
+        </label>
       </div>
       <div style="display:flex;align-items:center;gap:12px;background:#F6F3EE;border-radius:16px;padding:12px 14px;">
         <span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">{{ ob.initial }}</span>
@@ -1375,6 +1410,20 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   </dialog>
 </sc-if>
 
+<dialog class="crm-mini-guide" aria-labelledby="crm-mini-guide-title">
+  <header>
+    <h2 id="crm-mini-guide-title">Краткий гид по CRM</h2>
+    <button type="button" onClick="{{ closeGuide }}" aria-label="Закрыть" autofocus>×</button>
+  </header>
+  <dl>
+    <div><dt>Новая бронь</dt><dd>Выберите дом, дату и длительность. CRM покажет свободные часы и рассчитает стоимость.</dd></div>
+    <div><dt>Календарь и перенос</dt><dd>Перетащите бронь на свободное время. Проверьте новый интервал и нажмите «Сохранить перенос».</dd></div>
+    <div><dt>Канбан и оплата</dt><dd>Перемещайте карточки между колонками и фильтруйте их по ответственному. Оплату фиксируйте во вкладке «Оплата».</dd></div>
+    <div><dt>Гости и Excel</dt><dd>Найдите гостя по имени или телефону. Excel выгружает текущий список гостей или броней с учётом фильтров.</dd></div>
+    <div><dt>Тарифы и правила</dt><dd>Собственник может опубликовать новую версию тарифа. Цена уже сохранённой брони остаётся прежней.</dd></div>
+  </dl>
+</dialog>
+
 <div role="status" aria-live="polite" aria-atomic="true">
   <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
     <div class="{{ toastClass }}">
@@ -1512,6 +1561,7 @@ const sessionRules=(st,day)=>versionAt(st.versions||[BASE_VERSION],dkey(day));
 const whole=(v,min,max)=>String(v??'').trim()!==''&&Number.isSafeInteger(+v)&&+v>=min&&+v<=max;
 const fieldValue=e=>e.target.value.trim();
 const uiText=value=>window.ShipaLocale?.text?.(value)??value;
+const excelDate=key=>key&&Number.isInteger(keyOff(key))?new Date(key+'T00:00:00Z'):null;
 const builtInName=(item,defaults)=>defaults.some(base=>base.id===item.id&&base.name===item.name)?uiText(item.name):item.name;
 function isWE(version,di){
   return version.cfg.weekendDays.includes(dateAt(di).getDay())||!!holOn(version.holidays,di);
@@ -1711,6 +1761,9 @@ function calendarStatus(b){
   if(stage.color==='#0A2F4F')return 'confirmed';
   return 'work';
 }
+const BOOKING_STAFF=['Айдана','Сергей'];
+const bookingAssignee=b=>typeof b.owner==='string'?b.owner.trim():'';
+const bookingAssignees=bookings=>[...new Set([...BOOKING_STAFF,...bookings.map(bookingAssignee).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'ru'));
 const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif'];
 function crmHash(s){
   const params=new URLSearchParams();
@@ -1725,6 +1778,7 @@ function crmHash(s){
     if(s.board)params.set('board',s.board);
     if(s.view==='list')params.set('view',s.view);
     if(s.savedView)params.set('filter',s.savedView);
+    if(s.assigneeFilter!=null)params.set('responsible',s.assigneeFilter);
   }
   if(s.screen==='campaigns'&&s.cmpSel!=='bday')params.set('campaign',s.cmpSel);
   if(s.screen==='tariffs'&&s.tarView)params.set('version',s.tarView);
@@ -1758,14 +1812,15 @@ function crmRoute(hash,s){
       calHouse:pick('house',HOUSES.filter(h=>!h.soon).map(h=>h.id),'all'),calStatus:pick('status',CAL_STATUS.map(o=>o.id),'all')});
   }
   if(screen==='bookings')Object.assign(route,{board:pick('board',s.boards.map(b=>b.id),null),
-    view:pick('view',['kanban','list'],'kanban'),savedView:pick('filter',['today','unpaid','vip'],null)});
+    view:pick('view',['kanban','list'],'kanban'),savedView:pick('filter',['today','unpaid','vip'],null),
+    assigneeFilter:pick('responsible',['',...bookingAssignees(s.bookings)],null)});
   if(screen==='campaigns')route.cmpSel=pick('campaign',s.campaigns.map(c=>c.id),s.campaigns[0]?.id??'bday');
   if(screen==='tariffs')route.tarView=pick('version',s.versions.map(v=>v.from),null);
   return route;
 }
 
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -1925,7 +1980,7 @@ class Component extends DCLogic {
   window.addEventListener('popstate',this._navigationChanged);
   window.addEventListener('hashchange',this._navigationChanged);
   this._kd=e=>{
-  if(this.state.reasonDialog)return;
+  if(this.state.reasonDialog||e.target.closest?.('.crm-mini-guide'))return;
   // Let the native status picker handle Escape without dismissing the booking card.
   if(e.key==='Escape'&&e.target.closest?.('.crm-stage-select'))return;
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
@@ -2049,6 +2104,12 @@ class Component extends DCLogic {
  }
  toggleExtra(b,id,q){if(id==='tub'){b.tub=!b.tub;return b;}b.qty={...(b.qty||{})};if(q!=null){b.qty[id]=Math.max(1,Math.min(QTY_MAX,q));return b;}if(b.services.includes(id)){b.services=b.services.filter(s=>s!==id);delete b.qty[id];}else{b.services.push(id);b.qty[id]=1;}return b;}
 
+ downloadExcel(kind,sheet,headers,rows,widths){
+   try{
+     window.ShipaGuestExport.download(`shipa-${kind}-${dkeyD(new Date())}.xlsx`,uiText(sheet),headers,rows,widths);
+   }catch(e){this.toast('Не удалось подготовить Excel.');}
+ }
+
  renderVals(){
   const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
@@ -2141,13 +2202,20 @@ class Component extends DCLogic {
   const calSum=[{l:cdPast?'Было заездов':'Заездов',v:String(cdLive.length),sub:`гостей ${cdLive.reduce((a,b)=>a+(b.guests||0),0)}`},{l:'Часов в домах',v:String(cdLive.reduce((a,b)=>a+b.dur,0)),sub:`из ${HOUSES.filter(h=>!h.soon).length*(cfg.close-cfg.open)} возможных`},...(owner?[{l:'Выручка по броням дня',v:fmt(cdB.reduce((a,b)=>a+this.paid(b),0)),sub:cdPast?'по факту':'на текущий момент'}]:[]),{l:cdPast?'Не доплачено':'Ждём оплату',v:fmt(cdLive.filter(b=>b.board!=='cert').reduce((a,b)=>a+Math.max(0,this.price(b).total-this.paid(b)),0)),sub:'остатки по броням'},{l:'Отмены и неявки',v:String(cdFail),sub:cdFail?cdB.filter(b=>ST[b.stage].type==='fail').map(b=>ST[b.stage].name.toLowerCase()).join(', '):'нет'}];
   const calTitle=s.calMode==='month'?`${MONF[mBase.getMonth()]} ${mBase.getFullYear()}`:s.calMode==='day'?dlabel(s.calDay)+(s.calDay===0?' · сегодня':'')+(this.isWeekend(s.calDay)?' · выходной тариф':' · пн–чт −15%'):`${dlabel(weekStart)} — ${dlabel(weekStart+6)}`;
   // канбан
-  let filtered=B.filter(b=>(b.board||'sales')===curB.id);if(s.savedView==='today')filtered=filtered.filter(b=>b.day===0);if(s.savedView==='unpaid')filtered=filtered.filter(b=>['new','contact','prepay'].includes(b.stage));if(s.savedView==='vip')filtered=filtered.filter(b=>H[b.house]&&cats[H[b.house].cat].tier==='VIP'&&b.day>=0&&this.isWeekend(b.day));
+  const assigneeOptions=[...bookingAssignees(B).map(name=>({value:name,name})),{value:'',name:'Не назначен'}];
+  const setBookingAssignee=e=>{
+    const value=e.target.value;
+    const current=this.state.bookings.find(x=>x.num===this.state.openId);
+    if(!current||this.state.rs||current.num!==b?.num||bookingAssignee(current)===value||!assigneeOptions.some(o=>o.value===value))return;
+    this.upd(current.num,x=>this.log({...x,owner:value},`Ответственный: ${value||'Не назначен'}`));
+  };
+  let filtered=B.filter(b=>(b.board||'sales')===curB.id&&(s.assigneeFilter==null||bookingAssignee(b)===s.assigneeFilter));if(s.savedView==='today')filtered=filtered.filter(b=>b.day===0);if(s.savedView==='unpaid')filtered=filtered.filter(b=>['new','contact','prepay'].includes(b.stage));if(s.savedView==='vip')filtered=filtered.filter(b=>H[b.house]&&cats[H[b.house].cat].tier==='VIP'&&b.day>=0&&this.isWeekend(b.day));
   const savedViews=(curB.id==='sales'?[{id:'today',name:'Мои на сегодня'},{id:'unpaid',name:'Ждут оплаты'},{id:'vip',name:'VIP на выходные'}]:[]).map(v=>({...v,bg:s.savedView===v.id?'#0A2F4F':'#fff',fg:s.savedView===v.id?'#fff':'#0A2F4F',go:()=>this.setState({savedView:s.savedView===v.id?null:v.id})}));
   const ocount=curB.cols.filter(c=>c.type==='open').length;
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
   const updCol=(id,patch)=>updB(x=>({...x,cols:x.cols.map(c=>c.id===id?{...c,...patch}:c)}));
   const columns=curB.cols.map((st,ci)=>{const all=filtered.filter(b=>b.stage===st.id);const closed=st.type!=='open';const shown=closed?all.filter(b=>b.day>=-7):all;const norm=+st.norm||0;
-   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);}};});
+   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,assignee:bookingAssignee(b)||'Не назначен',guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);}};});
    const sum=all.reduce((a,b)=>a+(b.start!=null?this.price(b).total:0),0);const prev=curB.cols[ci-1],next=curB.cols[ci+1];
    const noLeft=closed||!prev||prev.type!=='open',noRight=closed||!next||next.type!=='open';
    let delWhy='';if(st.sys)delWhy='Системная стадия: на неё завязаны календарь, оплаты и уведомления. Переименовать и перекрасить можно, удалить — нет.';else if(closed)delWhy='Итоговый столбец нужен для отчётов «успех / провал». Переименовать можно, удалить — нет.';else if(ocount<=1)delWhy='На доске должен остаться хотя бы один рабочий столбец.';
@@ -2169,7 +2237,20 @@ class Component extends DCLogic {
   const curBoard={name:builtInName(curB,BOARDS0),main:!!curB.main,noDel:!!delWhyB,delWhy:delWhyB||'Удалить доску',delOpacity:delWhyB?.4:1,delCursor:delWhyB?'not-allowed':'pointer',hint:curB.main?'Основная доска открывается первой у всех сотрудников, удалить её нельзя. У столбцов меняются название, цвет, подсветка, норматив и порядок.':delWhyB||'Пустой столбец удаляется сразу, из непустого карточки сначала переносятся в выбранный столбец.'};
   const failOf=b=>{if((b.board||'sales')==='sales')return 'cancel';const bd=boards.find(x=>x.id===b.board);const f=bd&&bd.cols.find(c=>c.type==='fail');return f?f.id:'cancel';};
   const sortIcon=k=>s.sort.k===k?(s.sort.d>0?'↑':'↓'):'';
-  const listRows=[...filtered].sort((a,b)=>{const k=s.sort.k;const va=k==='num'?a.num:k==='sum'?this.price(a).total:(a.day*100+(a.start||0));const vb=k==='num'?b.num:k==='sum'?this.price(b).total:(b.day*100+(b.start||0));return (va>vb?1:va<vb?-1:0)*s.sort.d;}).map(b=>{const p=this.pill(b.stage);const pay=this.payInfo(b);return {num:b.num,guest:b.guest,phone:b.phone,house:H[b.house]?H[b.house].name:'—',when:b.start!=null?`${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'—',stage:ST[b.stage].name,pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,pay:pay.t,payColor:pay.c,sum:b.start!=null?fmt(this.price(b).total):'—',source:b.source,open:open(b.num)};});
+  const sortedBookings=[...filtered].sort((a,b)=>{const k=s.sort.k;const va=k==='num'?a.num:k==='sum'?this.price(a).total:(a.day*100+(a.start||0));const vb=k==='num'?b.num:k==='sum'?this.price(b).total:(b.day*100+(b.start||0));return (va>vb?1:va<vb?-1:0)*s.sort.d;});
+  const exportBookings=()=>{
+    if(!sortedBookings.length)return;
+    const headers=['№','Гость','Телефон','Дом','Дата заезда','Начало','Окончание','Стадия','Оплата','Сумма','Источник','Ответственный'].map(uiText);
+    headers[9]+=' (₸)';
+    const rows=sortedBookings.map(b=>{
+      const scheduled=b.start!=null;
+      return [b.num,b.guest,b.phone,H[b.house]?.name||'',scheduled?excelDate(dkey(b.day)):null,
+        scheduled?hh(b.start):'',scheduled?hh(b.start+b.dur):'',uiText(ST[b.stage].name),uiText(this.payInfo(b).t),
+        scheduled?this.price(b).total:null,uiText(b.source),bookingAssignee(b)||uiText('Не назначен')];
+    });
+    this.downloadExcel('bookings','Брони и продажи',headers,rows,[14,32,22,19,17,12,14,24,18,17,20,22]);
+  };
+  const listRows=sortedBookings.map(b=>{const p=this.pill(b.stage);const pay=this.payInfo(b);return {num:b.num,guest:b.guest,phone:b.phone,house:H[b.house]?H[b.house].name:'—',when:b.start!=null?`${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'—',stage:ST[b.stage].name,pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,pay:pay.t,payColor:pay.c,sum:b.start!=null?fmt(this.price(b).total):'—',source:b.source,open:open(b.num)};});
   const setSort=k=>()=>this.setState(st=>({sort:{k,d:st.sort.k===k?-st.sort.d:1}}));
   // отзывы
   const rvs=s.reviews;const avg=(rvs.reduce((a,r)=>a+r.rating,0)/rvs.length).toFixed(1).replace('.',',');
@@ -2243,7 +2324,7 @@ class Component extends DCLogic {
    let stNext;if((b.board||'sales')==='sales')stNext={new:['contact','Связались'],contact:['prepay','Отправить ссылку на оплату'],prepay:['confirmed','Предоплата получена'],confirmed:['prep','Начать подготовку'],prep:['inhouse','Гость заехал'],inhouse:['done','Гость уехал'],done:['review','Оценка получена'],review:[null,'Закрыта успешно']}[b.stage]||[null,'Стадия закрыта'];else{const bd=boards.find(x=>x.id===b.board)||curB;const i=bd.cols.findIndex(c=>c.id===b.stage);const nx=bd.cols[i+1];stNext=ST[b.stage]&&ST[b.stage].type==='open'&&nx?[nx.id,'Дальше: '+nx.name]:[null,'Стадия закрыта'];}
    primary={name:stNext[1],dis:!stNext[0],opacity:stNext[0]?1:.5,go:()=>{if(!stNext[0])return;if(stNext[0]==='confirmed'){this.setState({tab:'pay'});this.toast('Зафиксируйте предоплату — стадия сменится автоматически');return;}if(stNext[0]==='prepay'){sendPayLink();return;}this.move(b.num,stNext[0]);}};
    const bookCfg=this.bookedRules(b).cfg;const holdH=b.day===0?bookCfg.holdTodayH:bookCfg.holdH;const cl0=this.clientOf(b.phone);const cst=cl0?this.stats(cl0):null;const dl=this.discFor(cl0,b.day);
-   ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:b.owner,initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,maxGuests:h?this.bookedRules(b).cats[h.cat].max:100,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`),{reprice:true})),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from?ddmm(pr.from):'—',originalPrice:b.originalQuote?fmt(b.originalQuote.total):'—',
+   ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:bookingAssignee(b),initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,maxGuests:h?this.bookedRules(b).cats[h.cat].max:100,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`),{reprice:true})),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from?ddmm(pr.from):'—',originalPrice:b.originalQuote?fmt(b.originalQuote.total):'—',
     originalTariff:b.originalQuote?ddmm(b.originalQuote.from):'—',originalRows:b.originalQuote?.rows||[],
     showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:payClosed?'—':fmt(rest),restColor:rest&&!payClosed?'#C15C22':'#5E8C61',hasRest:!payClosed&&rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!s.rs&&!this.rescheduleRestriction(b),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState(st=>({clientId:cl0.id,detailsLast:'guest',ctab:st.clientId===cl0.id?st.ctab:'profile'}));else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
    tabs=[['compose','Состав'],['pay','Оплата'],['visit','Визит'],['feed','Лента']].map(([id,name])=>({name,go:()=>this.setState({tab:id}),fg:s.tab===id?'#0A2F4F':GR(.6),line:s.tab===id?'#C15C22':'transparent'}));
@@ -2374,7 +2455,7 @@ class Component extends DCLogic {
     }
   };
   const createBooking=()=>{if(!nb||nbConflict)return;if(nbMissing){this.toast(nbMissing);return;}const phone=bookingPhone(nb.phone);const fio={last:String(nb.last).trim(),first:String(nb.first).trim(),middle:String(nb.middle||'').trim()};const fullName=fioOf(fio);const known=B.find(x=>norm(x.phone)===norm(phone));const dsc=normP(phone).length>9&&nb.discOn!==false?this.bestDisc(this.discFor(this.clientOf(phone),+nb.day)):null;const pr=this.price({...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:dsc});const num=`№ ${SEQ++}`;const who=owner?'Сергей':'Айдана';
-   const kc2=this.clientOf(phone);const nbk=mk({num,guest:fullName,first:fio.first,phone:phone||'—',house:nb.house,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,kids:+nb.kids,tub:nb.tub,services:nb.services,qty:{...(nb.qty||{})},disc:dsc,stage:nb.paid||!pr.prepay?'confirmed':'prepay',stageAt:0,source:'администратор',visits:known?(known.visits||0)+1:0,created:stamp(0,NOW.getHours(),NOW.getMinutes()),ev:[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text:`Бронь создана администратором из календаря · ${fmt(pr.total)}`,who}]});
+   const kc2=this.clientOf(phone);const nbk=mk({num,owner:who,guest:fullName,first:fio.first,phone:phone||'—',house:nb.house,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,kids:+nb.kids,tub:nb.tub,services:nb.services,qty:{...(nb.qty||{})},disc:dsc,stage:nb.paid||!pr.prepay?'confirmed':'prepay',stageAt:0,source:'администратор',visits:known?(known.visits||0)+1:0,created:stamp(0,NOW.getHours(),NOW.getMinutes()),ev:[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text:`Бронь создана администратором из календаря · ${fmt(pr.total)}`,who}]});
    if(nb.paid&&pr.prepay>0){nbk.pays=[{sum:pr.prepay,type:'Предоплата',method:'Наличные',at:stamp(0,NOW.getHours(),NOW.getMinutes()),who}];nbk.events.unshift({at:nbk.created,text:`Предоплата ${fmt(pr.prepay)} · наличные → Подтверждена`,who});}
    this.setState(st=>({bookings:[withQuote(nbk,nbRules),...st.bookings],nb:null,openId:num,tab:'compose',clients:normP(phone).length>9&&!st.clients.some(c=>normP(c.phone)===normP(phone))?[...st.clients,CL('c'+Date.now(),fio.first,phone,{...fio,source:'администратор',consent:false})]:st.clients.map(c=>normP(c.phone)===normP(phone)&&(!c.last||(!c.middle&&fio.middle))?(()=>{const u={...c,last:c.last||fio.last,first:c.first||fio.first,middle:c.middle||fio.middle};u.name=fioOf(u);return u;})():c)}));this.toast(`${num} создана · слот занят в CRM`);};
 
@@ -2476,21 +2557,18 @@ class Component extends DCLogic {
   const clTiles=[{label:'Гостей в базе',value:CS.length,sub:`${CS.filter(x=>x.st.visits>0).length} с визитами`},{label:'С личным кабинетом',value:CS.filter(x=>x.c.account).length,sub:'на сайте'},{label:'Дни рождения · 14 дней',value:CS.filter(clF.bday).length,sub:'поздравим автоматически'},{label:'Согласны на рассылку',value:CS.filter(x=>x.c.consent).length,sub:`${CS.filter(x=>!x.c.consent).length} без согласия`}];
   const clFilters=[['all','Все'],['account','С кабинетом'],['vip','VIP'],['regular','Постоянные'],['bday','ДР в 14 дней'],['lapsed','Давно не были'],['noconsent','Без согласия']].map(([id,name])=>({name,n:String(CS.filter(clF[id]).length),bg:s.clFilter===id?'#0A2F4F':'#fff',fg:s.clFilter===id?'#fff':'#0A2F4F',go:()=>this.setState({clFilter:id})}));
   const cq=s.clSearch.trim().toLowerCase();const cqd=normP(cq);
-  const clKey={name:x=>x.c.name,visits:x=>x.st.visits,spent:x=>x.st.spent,last:x=>x.st.last==null?-1e4:x.st.last,bday:x=>{const n=bdNext(x.c.birthday);return n==null?999:-n;}};
+  const clKey={name:x=>x.c.name,tier:x=>this.loyal(x.c,x.st).tier.from,visits:x=>x.st.visits,spent:x=>x.st.spent,last:x=>x.st.last==null?-1e4:x.st.last,bday:x=>{const n=bdNext(x.c.birthday);return n==null?999:-n;}};
   const clList=CS.filter(clF[s.clFilter]||clF.all).filter(x=>!cq||x.c.name.toLowerCase().includes(cq)||(cqd.length>1&&normP(x.c.phone).includes(cqd))).sort((p,q)=>{const k=clKey[s.clSort.k];const a=k(p),b_=k(q);return (typeof a==='string'?a.localeCompare(b_):a-b_)*s.clSort.d;});
   const exportGuests=()=>{
     if(!clList.length)return;
     const headers=['Гость','Телефон','Уровень лояльности','Дата регистрации','Визитов','Оплатил','Последний визит','День рождения','Рассылка','Теги'].map(uiText);
     headers[5]+=' (₸)';
-    const excelDate=key=>key&&Number.isInteger(keyOff(key))?new Date(key+'T00:00:00Z'):null;
     const rows=clList.map(({c,st})=>[
       c.name,c.phone,uiText(this.loyal(c,st).tier.name),excelDate(c.account?.reg),st.visits,st.spent,
       st.last==null?null:excelDate(dkey(st.last)),c.birthday?c.birthday.slice(8,10)+'.'+c.birthday.slice(5,7):'',
       uiText(c.consent?'да':'нет'),c.tags||''
     ]);
-    try{
-      window.ShipaGuestExport.download('shipa-guests-'+dkeyD(new Date())+'.xlsx',uiText('Гости'),headers,rows);
-    }catch(e){this.toast('Не удалось подготовить Excel.');}
+    this.downloadExcel('guests','Гости',headers,rows);
   };
   const clRows=clList.map(({c,st})=>{const n=bdNext(c.birthday);const lo=this.loyal(c,st);return {tier:lo.tier.name,tierTitle:`${lo.pts} баллов · скидка ${lo.tier.pct}%`,tierBg:hexA(lo.tier.color,.18),tierFg:'#0A2F4F',name:c.name,initial:c.name[0],phone:c.phone,acc:c.account?`с ${ddmm(c.account.reg)}`:'нет',accColor:c.account?'#3F6B43':GR(.55),visits:String(st.visits),spent:st.spent?fmt(st.spent):'—',last:st.last==null?'—':st.last===0?'сегодня':dlabel(st.last),bday:c.birthday?`${bdShort(c.birthday)}${n<=14?' · '+(n===0?'сегодня':n===1?'завтра':'через '+n+' дн.'):''}`:'—',bdColor:n!=null&&n<=7?'#C15C22':'#0A2F4F',bdWeight:n!=null&&n<=7?600:400,consent:c.consent?'да':'нет',consentColor:c.consent?'#3F6B43':'#B8432F',tags:(c.tags||'').split(',').map(t=>t.trim()).filter(Boolean),tagsTitle:c.tags||'',open:()=>this.setState({clientId:c.id,ctab:'profile'})};});
   const clSortBy=Object.fromEntries(Object.keys(clKey).map(k=>[k,()=>this.setState(S=>({clSort:{k,d:S.clSort.k===k?-S.clSort.d:(k==='name'?1:-1)}}))]));const clMark=Object.fromEntries(Object.keys(clKey).map(k=>[k,s.clSort.k===k?(s.clSort.d>0?'↑':'↓'):'']));
@@ -2597,7 +2675,8 @@ class Component extends DCLogic {
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
-   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
+   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',
+   setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,
    readOnly,canEdit:owner,editingTariff,tariffLocked:!editingTariff,canStartDraft:owner&&!editingTariff,
    selectedTariff:selectedVersion.from,tariffVersions:s.versions.map(v=>({from:v.from,name:ddmm(v.from)})),
@@ -2646,6 +2725,7 @@ class Component extends DCLogic {
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
    clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,clAriaSort,exportGuests,
+   openGuide:()=>document.querySelector('.crm-mini-guide')?.showModal(),closeGuide:()=>document.querySelector('.crm-mini-guide')?.close(),
    hasClient:!!cl,guestPanelClass:panelClass('guest'),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
    cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }

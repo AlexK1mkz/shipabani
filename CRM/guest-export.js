@@ -7,7 +7,7 @@
   const office = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
   const packageRels = 'http://schemas.openxmlformats.org/package/2006/relationships';
   const xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-  const widths = [34, 21, 18, 22, 12, 20, 20, 17, 17, 35];
+  const guestWidths = [34, 21, 18, 22, 12, 20, 20, 17, 17, 35];
 
   function text(value) {
     return String(value ?? '')
@@ -81,7 +81,7 @@
     return `<c r="${ref}"${header ? ' s="1"' : ''} t="inlineStr"><is><t xml:space="preserve">${text(value)}</t></is></c>`;
   }
 
-  function workbook(sheet, headers, rows) {
+  function workbook(sheet, headers, rows, widths) {
     const range = `A1:${String.fromCharCode(64 + headers.length)}${rows.length + 1}`;
     const content = [headers, ...rows].map((values, index) => {
       const number = index + 1;
@@ -97,8 +97,8 @@
     ]);
   }
 
-  function download(filename, sheet, headers, rows) {
-    const url = URL.createObjectURL(workbook(sheet, headers, rows));
+  function download(filename, sheet, headers, rows, widths = guestWidths) {
+    const url = URL.createObjectURL(workbook(sheet, headers, rows, widths));
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
