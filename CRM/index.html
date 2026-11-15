@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-booking"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-free-starts"></script>
 </head>
 <body>
 <x-dc>
@@ -50,6 +50,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-reason-action{min-height:44px;padding:8px 14px;border:1px solid #BCCAD3;border-radius:10px;font-weight:600;}
   .crm-reason-confirm{border-color:#A44131;background:#A44131;color:#fff;}
   .crm-reason-confirm:disabled{opacity:.5;cursor:default;}
+  .crm-details-panel{position:fixed;inset:0 0 0 auto;width:min(560px,100vw);background:#fff;z-index:41;box-shadow:0 24px 64px rgba(10,47,79,.12);display:flex;flex-direction:column;animation:panelIn 200ms ease-out;}
+  .crm-details-panel--paired{width:min(560px,50vw);}
+  .crm-guest-panel.crm-details-panel--paired{right:min(560px,50vw);border-right:1px solid #D5E0E7;}
+  .crm-guest-booking[aria-current="true"]{background:#E8F0F5;}
+  @media (max-width:900px){
+    .crm-details-panel--paired{width:min(560px,100vw);}
+    .crm-guest-panel.crm-details-panel--paired{visibility:hidden;}
+  }
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
   .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
@@ -884,7 +892,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 <!-- ===== КАРТОЧКА БРОНИ ===== -->
 <sc-if value="{{ hasOpen }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ closeCard }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
-  <aside data-screen-label="Карточка брони" style="position:fixed;top:0;right:0;bottom:0;width:560px;background:#fff;z-index:41;box-shadow:0 24px 64px rgba(10,47,79,.12);display:flex;flex-direction:column;animation:panelIn 200ms ease-out;">
+  <aside data-screen-label="Карточка брони" class="{{ bookingPanelClass }}">
     <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:20px;font-weight:600;">{{ ob.num }}</span>
@@ -1075,8 +1083,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
 <!-- ===== КАРТОЧКА ГОСТЯ ===== -->
 <sc-if value="{{ hasClient }}" hint-placeholder-val="{{ false }}">
-  <div onClick="{{ closeClient }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
-  <aside data-screen-label="Карточка гостя" style="position:fixed;top:0;right:0;bottom:0;width:560px;background:#fff;z-index:41;box-shadow:0 24px 64px rgba(10,47,79,.12);display:flex;flex-direction:column;animation:panelIn 200ms ease-out;">
+  <sc-if value="{{ !hasOpen }}" hint-placeholder-val="{{ true }}">
+    <div onClick="{{ closeClient }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
+  </sc-if>
+  <aside data-screen-label="Карточка гостя" class="{{ guestPanelClass }}">
     <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
       <div style="display:flex;align-items:center;gap:14px;">
         <span style="width:52px;height:52px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;flex:0 0 auto;">{{ cv.initial }}</span>
@@ -1132,7 +1142,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <sc-if value="{{ ctab.bookings }}" hint-placeholder-val="{{ false }}">
         <sc-if value="{{ cv.noBookings }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 0;font-size:13px;color:rgba(59,47,42,.7);">Броней пока нет.</div></sc-if>
         <sc-for list="{{ cv.bookings }}" as="r" hint-placeholder-count="5">
-          <button onClick="{{ r.open }}" style="display:flex;align-items:center;gap:12px;width:100%;min-height:52px;border-top:1px solid rgba(10,47,79,.08);text-align:left;font-size:13px;" style-hover="background:rgba(10,47,79,.03);">
+          <button class="crm-guest-booking" aria-current="{{ r.current }}" onClick="{{ r.open }}" style="display:flex;align-items:center;gap:12px;width:100%;min-height:52px;border-top:1px solid rgba(10,47,79,.08);text-align:left;font-size:13px;" style-hover="background:rgba(10,47,79,.03);">
             <span style="font-weight:600;width:68px;flex:0 0 auto;">{{ r.num }}</span>
             <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;letter-spacing:.06em;width:110px;flex:0 0 auto;">{{ r.house }}</span>
             <span style="flex:1;min-width:0;">{{ r.when }}</span>
@@ -1195,7 +1205,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             </div>
           </sc-if>
         </div>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ nb.start }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
+        <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select id="crm-booking-start" value="{{ nbStartValue }}" disabled="{{ nbNoStarts }}" onFocus="{{ closeNbCalendar }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ nb.dur }}" onChange="{{ nbSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbDurs }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей / детей<span style="display:flex;gap:6px;margin-top:4px;"><input type="number" min="1" max="{{ nbMaxGuests }}" value="{{ nb.guests }}" onChange="{{ nbSet.guests }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"><input type="number" min="0" value="{{ nb.kids }}" onChange="{{ nbSet.kids }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
       </div>
@@ -1690,6 +1700,8 @@ class Component extends DCLogic {
    this.setState(s=>({nb:{...s.nb,calendarMonth:null}}));
    document.querySelector('#crm-booking-date-toggle')?.focus();
    return;
+  }if(e.key==='Escape'&&this.state.openId&&this.state.clientId&&!this.state.nb){
+   this.setState({openId:null,rs:null});return;
   }if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
   this._localeChanged=()=>this.forceUpdate();
   window.addEventListener('shipa:localechange',this._localeChanged);
@@ -1723,13 +1735,18 @@ class Component extends DCLogic {
    if(!nb)return;
    const starts=this.availableStarts(day,nb.house,+nb.dur);
    if(!starts.length)return;
-   const start=starts.includes(+nb.start)?+nb.start:starts[0];
+   const start=this.chooseBookingStart(nb.start,starts);
    this.setState({nb:{...nb,day,start,calendarMonth:null}});
+ }
+ chooseBookingStart(start,starts){
+   return start!=null&&starts.includes(+start)?+start:starts[0]??null;
  }
  newNb(o={}){
    const day=o.day??0,rules=this.rules(day);
    const slot=o.start==null?this.freeSlot(o.house||'dyhanie',day):{house:o.house,start:o.start};
-   return {phone:BOOKING_PHONE_PREFIX,last:'',first:'',middle:'',day,dur:rules.cfg.minH,guests:Math.min(4,rules.cats[H[slot.house].cat].max),kids:0,services:[],paid:false,...o,...slot,tub:false};
+   const nb={phone:BOOKING_PHONE_PREFIX,last:'',first:'',middle:'',day,dur:rules.cfg.minH,guests:Math.min(4,rules.cats[H[slot.house].cat].max),kids:0,services:[],paid:false,...o,...slot,tub:false};
+   nb.start=this.chooseBookingStart(nb.start,this.availableStarts(nb.day,nb.house,+nb.dur));
+   return nb;
  }
  loyal(c,st){const L=this.state.loyalty;st=st||this.stats(c);const pts=Math.floor(st.spent/100*(+L.rate||0));const tiers=[...L.tiers].sort((a,b)=>a.from-b.from);let tier=tiers[0];for(const t of tiers)if(pts>=t.from)tier=t;const next=tiers.find(t=>t.from>pts);return {pts,tier,next};}
  discFor(c,day){if(!c)return [];const L=this.state.loyalty;const {tier}=this.loyal(c);const out=[];if(tier&&+tier.pct)out.push({id:'tier',label:tier.name,pct:+tier.pct});const n=bdNext(c.birthday);if(c.birthday&&+L.bdayPct){const [,m,d]=c.birthday.split('-').map(Number);const dd=dateAt(day||0);let best=999;for(const y of [dd.getFullYear()-1,dd.getFullYear(),dd.getFullYear()+1]){best=Math.min(best,Math.abs(offOf(new Date(y,m-1,d))-(day||0)));}if(best<=+L.bdayDays)out.push({id:'bday',label:'день рождения',pct:+L.bdayPct});}
@@ -1745,7 +1762,7 @@ class Component extends DCLogic {
  renderVals(){
   const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
-  const open=num=>()=>this.setState({openId:num,tab:'compose',search:'',rs:null,clientId:null,pf:{sum:'',type:'Остаток',method:'Kaspi'}});
+  const open=(num,keepGuest=false)=>()=>this.setState({openId:num,tab:'compose',search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
   const newCount=B.filter(b=>b.stage==='new').length;
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
@@ -1965,6 +1982,10 @@ class Component extends DCLogic {
   // новая бронь
   const nb=s.nb;let nbRows=[],nbTotal='',nbPrepay='',nbHouseName='',nbWhen='',nbExtras=[],nbConflict=false,nbConflictText='',nbKnown='',nbSugg=[],nbMissing='';
   const nbRules=this.rules(nb?.day??0);
+  const freeStarts=nb?this.availableStarts(nb.day,nb.house,+nb.dur):[];
+  const nbNoStarts=freeStarts.length===0;
+  const nbStarts=nbNoStarts?[{v:'',name:'Нет свободных часов'}]:freeStarts.map(v=>({v,name:hh(v)}));
+  const closeNbCalendar=()=>this.setState(S=>S.nb?.calendarMonth!=null?{nb:{...S.nb,calendarMonth:null}}:null);
   const nbCal={show:nb?.calendarMonth!=null,expanded:String(nb?.calendarMonth!=null)};
   const firstMonth=day=>offOf(new Date(dateAt(day).getFullYear(),dateAt(day).getMonth(),1));
   if(nbCal.show){
@@ -1994,7 +2015,7 @@ class Component extends DCLogic {
   const toggleNbCalendar=()=>this.setState(S=>({
     nb:{...S.nb,calendarMonth:S.nb.calendarMonth==null?firstMonth(Math.max(0,+S.nb.day||0)):null}
   }));
-  if(nb){const kcD=normP(nb.phone).length>9?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const nbB={...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:kcD&&nb.discOn!==false?kcD:null};const problem=slotError(nbRules,nbB,{future:true});
+  if(nb){const kcD=normP(nb.phone).length>9?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const nbB={...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:kcD&&nb.discOn!==false?kcD:null};const problem=nbNoStarts?'На эту дату нет свободных часов для выбранной длительности. Выберите другую дату, дом или длительность.':slotError(nbRules,nbB,{future:true});
    const pr=problem?null:this.price(nbB);
    nbRows=pr?.rows||[];nbTotal=pr?fmt(pr.total):'—';nbPrepay=pr?fmt(pr.prepay):'—';
    const h=H[nb.house];nbHouseName=`${h.n} ${h.name}`;nbWhen=pr?this.whenText(nbB)+' · версия от '+ddmm(pr.from):'';
@@ -2009,7 +2030,13 @@ class Component extends DCLogic {
 
   }
   const nbSet=Object.fromEntries(['phone','last','first','middle','house','start','dur','guests','kids'].map(k=>[k,e=>{const v=e.target.value;this.setState(st=>{const n={...st.nb,[k]:v};
-    if(k==='phone'){const c=normP(v).length>9?st.clients.find(x=>normP(x.phone)===normP(v)):null;if(c&&!String(n.first||'').trim()&&!String(n.last||'').trim()){n.last=c.last||'';n.first=c.first||c.name;n.middle=c.middle||'';}}if(k==='house')n.tub=false;return {nb:n};});}]));nbSet.paid=e=>this.setState({nb:{...nb,paid:e.target.checked}});nbSet.discOn=e=>this.setState({nb:{...nb,discOn:e.target.checked}});
+    if(k==='phone'){const c=normP(v).length>9?st.clients.find(x=>normP(x.phone)===normP(v)):null;if(c&&!String(n.first||'').trim()&&!String(n.last||'').trim()){n.last=c.last||'';n.first=c.first||c.name;n.middle=c.middle||'';}}if(k==='house')n.tub=false;
+    if(k==='house'||k==='dur'||k==='start'){
+      const starts=this.availableStarts(n.day,n.house,+n.dur);
+      if(k==='start'&&!starts.includes(+v))return {nb:st.nb};
+      n.start=this.chooseBookingStart(n.start,starts);
+    }
+    return {nb:n};});}]));nbSet.paid=e=>this.setState({nb:{...nb,paid:e.target.checked}});nbSet.discOn=e=>this.setState({nb:{...nb,discOn:e.target.checked}});
   const pasteNbPhone=e=>{
     if(e.target.value.trim()!==BOOKING_PHONE_PREFIX)return;
     const value=e.clipboardData?.getData('text').trim()||'';
@@ -2132,7 +2159,7 @@ class Component extends DCLogic {
     consentText:cl.consent?`Согласие получено${cl.consentAt?' '+cl.consentAt:''}${cl.account?' при регистрации на сайте':''}. Гость может отказаться ответом «стоп» или в кабинете.`:'Нет согласия — поздравления и рассылки не уходят. Сообщения о брони приходят как обычно.',
     toggleConsent:()=>{setC({consent:!cl.consent,consentAt:!cl.consent?stamp(0,NOW.getHours(),NOW.getMinutes()).slice(0,5)+'.'+NOW.getFullYear()+' вручную':''});this.toast(cl.consent?'Согласие снято — рассылки не будут уходить':'Согласие отмечено');},
     since:`Гость в базе с ${cl.account?ddmm(cl.account.reg):st.first!=null?dlabel(Math.min(st.first,0)):'сегодня'}.`,
-    bookings:[...st.bs].sort((p,q)=>q.day-p.day||(q.start||0)-(p.start||0)).map(x=>{const p=this.pill(x.stage);return {num:x.num,house:H[x.house]?H[x.house].name:'—',when:x.start!=null?`${dlabel(x.day)} ${hh(x.start)}–${hh(x.start+x.dur)}`:(x.wish||'без времени'),stage:ST[x.stage]?ST[x.stage].name:'',pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,sum:x.start!=null?fmt(this.price(x).total):(this.paid(x)?fmt(this.paid(x)):'—'),open:()=>this.setState({clientId:null,openId:x.num,tab:'compose',rs:null})};}),
+    bookings:[...st.bs].sort((p,q)=>q.day-p.day||(q.start||0)-(p.start||0)).map(x=>{const p=this.pill(x.stage);return {num:x.num,house:H[x.house]?H[x.house].name:'—',when:x.start!=null?`${dlabel(x.day)} ${hh(x.start)}–${hh(x.start+x.dur)}`:(x.wish||'без времени'),stage:ST[x.stage]?ST[x.stage].name:'',pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,sum:x.start!=null?fmt(this.price(x).total):(this.paid(x)?fmt(this.paid(x)):'—'),current:String(x.num===s.openId),open:open(x.num,true)};}),
     noBookings:!st.bs.length,msgs:cl.msgs.map(m=>({...m,color:stCol(m.st)})),noMsgs:!cl.msgs.length};
    ctabs=[['profile','Профиль'],['bookings',`Брони · ${st.bs.length}`],['msgs',`Сообщения · ${cl.msgs.length}`]].map(([id,name])=>({name,go:()=>this.setState({ctab:id}),fg:s.ctab===id?'#0A2F4F':GR(.6),line:s.ctab===id?'#C15C22':'transparent'}));}
 
@@ -2228,7 +2255,7 @@ class Component extends DCLogic {
    calcRows:cp?.rows||[],calcTotal:cp?fmt(cp.total):'—',calcPrepay:cp?fmt(cp.prepay):'—',cfgRows,
 
    templates,adminNotifs,sendLog,
-   hasOpen:!!b,ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>this.move(b.num,e.target.value),stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
+   hasOpen:!!b,bookingPanelClass:'crm-details-panel'+(cl&&b?' crm-details-panel--paired':''),ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>this.move(b.num,e.target.value),stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
     const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
     const error=capacityError({max},{...b,guests:v});if(error){this.toast(error);return;}
     this.upd(b.num,x=>this.log({...x,guests:+v},'Изменено число гостей · цена пересчитана'),{reprice:true});
@@ -2244,8 +2271,8 @@ class Component extends DCLogic {
    setReason:e=>this.setBookingReason(e.target.value),
    dismissReason:e=>{e?.preventDefault();this.dismissBookingReason();},
    confirmReason:e=>{e?.preventDefault();this.confirmBookingReason();},
-   addRest,hasNew:!!nb,nb:nb||{},nbDateLabel:Number.isInteger(nb?.day)?ddmm(dkey(nb.day)):'Выберите дату',nbCal,toggleNbCalendar,pasteNbPhone,
-   nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts:startOptions(nbRules),nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
+   addRest,hasNew:!!nb,nb:nb||{},nbDateLabel:Number.isInteger(nb?.day)?ddmm(dkey(nb.day)):'Выберите дату',nbCal,toggleNbCalendar,closeNbCalendar,pasteNbPhone,
+   nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts,nbNoStarts,nbStartValue:nbNoStarts?'':nb?.start??'',nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
    hasToast:!!s.toast,toast:s.toast,
    calMonthMode:()=>this.setState({calMode:'month'}),calIsMonth:s.calMode==='month',monthHead,monthCells,monthStats,calHouse:s.calHouse,setCalHouse:e=>this.setState({calHouse:e.target.value}),
    boardTabs,addBoard:()=>{const id='b'+Date.now();const cols=newCols();for(const c of cols)ST[c.id]={...c,board:id};this.setState(S=>({boards:[...S.boards,{id,name:'Новая доска',cols}],board:id,boardEdit:true,colDel:null,view:'kanban'}));this.toast('Доска создана — задайте название и столбцы');},
@@ -2256,7 +2283,7 @@ class Component extends DCLogic {
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
    clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,
-   hasClient:!!cl,cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
+   hasClient:!!cl,guestPanelClass:'crm-details-panel crm-guest-panel'+(cl&&b?' crm-details-panel--paired':''),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
    cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }
 }
