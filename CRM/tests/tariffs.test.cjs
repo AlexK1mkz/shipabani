@@ -295,3 +295,80 @@ test('retains a cancellation draft after reload and only closes the booking afte
   assert.match(cancelled.events[0].text, /Отменена/);
   assert.deepEqual(saved.reasonDrafts, {});
 });
+
+test('booking calendar disables days without a slot and picks a time that fits the preparation buffer', () => {
+  const { crm } = demo();
+  const seed = crm.state.bookings.find(b => b.stage === 'confirmed');
+  crm.setState({ bookings: [{ ...seed, num: '№ 1', house: 'sila', day: 10, start: 10, dur: 12 }],
+    nb: crm.newNb({ house: 'sila', day: 9, start: 12, dur: 5 }) });
+  crm.renderVals().toggleNbCalendar();
+  const { cells } = crm.renderVals().nbCal;
+  assert.equal(cells.find(cell => cell.day === 15).css, 'crm-calendar-past');
+  const busy = cells.find(cell => cell.day === 26);
+  assert.equal(busy.css, 'crm-calendar-busy');
+  assert.equal(busy.disabled, true);
+  busy.pick();
+  assert.equal(crm.state.nb.day, 9);
+  const free = cells.find(cell => cell.day === 27);
+  assert.equal(free.css, 'crm-calendar-free');
+  assert.equal(free.disabled, false);
+  free.pick();
+  assert.equal(crm.state.nb.day, 11);
+  assert.equal(crm.state.nb.start, 12);
+  assert.equal(crm.renderVals().nbCal.show, false);
+  assert.equal(crm.renderVals().nbConflict, false);
+
+  crm.setState({ nb: { ...crm.state.nb, start: 10 },
+    bookings: [{ ...seed, num: '№ 2', house: 'sila', day: 12, start: 10, dur: 3 }] });
+  crm.pickBookingDay(12);
+  assert.equal(crm.state.nb.start, 15);
+  assert.equal(crm.renderVals().nbConflict, false);
+});
+
+test('new booking starts with a phone prefix, accepts a full pasted number and does not store the prefix by itself', () => {
+  const { crm } = demo();
+  crm.setState({ nb: { ...crm.newNb({ house: 'sila', day: 90, start: 10 }), first: 'Тест', last: 'Демо' } });
+  assert.equal(crm.state.nb.phone, '+7');
+  let prevented = false;
+  crm.renderVals().pasteNbPhone({
+    target: { value: '+7' },
+    clipboardData: { getData: () => '8 (701) 111-22-33' },
+    preventDefault() { prevented = true; },
+  });
+  assert.ok(prevented);
+  assert.equal(crm.state.nb.phone, '+77011112233');
+  crm.renderVals().nbSet.phone(event('+7'));
+  const clients = crm.state.clients.length;
+  crm.renderVals().createBooking();
+  assert.equal(storedBooking(crm, crm.state.openId).phone, '—');
+  assert.equal(crm.state.clients.length, clients);
+});
+
+test('closed bookings reject incoming money and links while allowing refunds of existing payments', () => {
+  const storage = new Map();
+  const { crm } = demo(storage);
+  const booking = crm.state.bookings.find(b => b.board === 'sales' && b.stage === 'confirmed' && crm.paid(b) > 0);
+  const paid = crm.paid(booking);
+  crm.setState({ openId: booking.num });
+  const open = crm.renderVals();
+  crm.move(booking.num, 'cancel');
+  crm.setBookingReason('Гость попросил отменить бронь');
+  crm.confirmBookingReason();
+  const eventCount = storedBooking(crm, booking.num).events.length;
+  open.addRest();
+  open.sendPayLink();
+  open.fixPay('Предоплата');
+  const closed = crm.renderVals();
+  assert.equal(closed.payOpen, false);
+  assert.equal(closed.showPayForm, true);
+  assert.equal(storedBooking(crm, booking.num).events.length, eventCount);
+  assert.equal(crm.paid(storedBooking(crm, booking.num)), paid);
+  closed.pfSet.sum(event(paid));
+  crm.renderVals().submitPayment();
+  assert.equal(crm.renderVals().showPayForm, false);
+  const reloaded = demo(storage).crm;
+  const saved = storedBooking(reloaded, booking.num);
+  assert.equal(saved.stage, 'cancel');
+  assert.equal(reloaded.paid(saved), 0);
+  assert.equal(saved.pays.at(-1).type, 'Возврат');
+});
