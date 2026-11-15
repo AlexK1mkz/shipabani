@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-booking-export-guide"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-export-help-filter"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -61,19 +61,19 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     .crm-details-panel--behind{visibility:hidden;}
   }
   .crm-stage-field{position:relative;min-width:0;max-width:55%;}
-  .crm-stage-select{appearance:none;display:block;width:100%;min-height:36px;border:1px solid rgba(10,47,79,.12);border-radius:999px;padding:6px 34px 6px 14px;cursor:pointer;font-size:13px;font-weight:600;text-overflow:ellipsis;white-space:nowrap;}
-  .crm-stage-select:focus-visible{outline:2px solid #6286A1;outline-offset:2px;}
-  .crm-stage-select option{background:#fff;color:#0A2F4F;}
+  .crm-picker{appearance:none;display:block;width:100%;min-height:36px;border:1px solid rgba(10,47,79,.12);border-radius:999px;padding:6px 34px 6px 14px;cursor:pointer;font-size:13px;font-weight:600;text-overflow:ellipsis;white-space:nowrap;}
+  .crm-picker:focus-visible{outline:2px solid #6286A1;outline-offset:2px;}
+  .crm-picker option{background:#fff;color:#0A2F4F;}
   .crm-stage-chevron{pointer-events:none;position:absolute;inset:0 13px 0 auto;width:12px;height:12px;margin:auto;}
-  .crm-stage-select:open + .crm-stage-chevron{transform:rotate(180deg);}
+  .crm-picker:open + .crm-stage-chevron{transform:rotate(180deg);}
   @supports (appearance:base-select) and selector(select::picker(select)){
-    .crm-stage-select,.crm-stage-select::picker(select){appearance:base-select;}
-    .crm-stage-select::picker-icon{display:none;}
-    .crm-stage-select::picker(select){min-width:208px;max-width:calc(100vw - 24px);max-height:min(420px,70dvh);margin-top:6px;padding:5px;overflow:auto;border:1px solid #D5E0E7;border-radius:14px;background:#fff;color:#0A2F4F;box-shadow:0 12px 32px rgba(10,47,79,.18);}
-    .crm-stage-select option{display:flex;align-items:center;gap:10px;min-height:32px;padding:5px 10px;border-radius:8px;font-size:13px;line-height:1.4;}
-    .crm-stage-select option:checked{background:#EAF1F6;font-weight:600;}
-    .crm-stage-select option:hover,.crm-stage-select option:focus-visible{background:#DAE8F2;}
-    .crm-stage-select option::checkmark{order:1;margin-inline-start:auto;color:#0A2F4F;}
+    .crm-picker,.crm-picker::picker(select){appearance:base-select;}
+    .crm-picker::picker-icon{display:none;}
+    .crm-picker::picker(select){min-width:208px;max-width:calc(100vw - 24px);max-height:min(420px,70dvh);margin-top:6px;padding:5px;overflow:auto;border:1px solid #D5E0E7;border-radius:14px;background:#fff;color:#0A2F4F;box-shadow:0 12px 32px rgba(10,47,79,.18);}
+    .crm-picker option{display:flex;align-items:center;gap:10px;min-height:32px;padding:5px 10px;border-radius:8px;font-size:13px;line-height:1.4;}
+    .crm-picker option:checked{background:#EAF1F6;font-weight:600;}
+    .crm-picker option:hover,.crm-picker option:focus-visible{background:#DAE8F2;}
+    .crm-picker option::checkmark{order:1;margin-inline-start:auto;color:#0A2F4F;}
   }
   .crm-cal-filter{position:relative;margin-left:auto;font-size:13px;}
   .crm-cal-filter summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;padding:0 12px;border:1px solid #D5E0E7;border-radius:10px;background:#fff;cursor:pointer;font-weight:600;list-style:none;}
@@ -92,7 +92,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-guest-export:hover:not(:disabled){background:#EAF1F6;}
   .crm-guest-export:disabled{opacity:.5;cursor:default;}
   .crm-guide-trigger{width:36px;justify-content:center;padding:0;font-size:16px;}
-  .crm-assignee-filter{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:13px;font-weight:600;}
+  .crm-assignee-filter{position:relative;min-width:0;color:#0A2F4F;}
+  .crm-assignee-filter-select{width:auto;max-width:min(230px,calc(100vw - 64px));padding-left:34px;background:#fff;border-color:#CCD9E2;}
+  .crm-assignee-filter-select:hover{background:#EAF1F6;}
+  .crm-assignee-filter[data-active="true"]{color:#fff;}
+  .crm-assignee-filter[data-active="true"] .crm-assignee-filter-select{background:#0A2F4F;border-color:#0A2F4F;}
+  .crm-assignee-filter-icon{pointer-events:none;position:absolute;inset:0 auto 0 12px;width:14px;height:14px;margin:auto;}
   .crm-assignee-select{max-width:180px;min-height:36px;padding:0 8px;border:1px solid #CCD9E2;border-radius:10px;background:#fff;font-size:13px;color:#0A2F4F;}
   .crm-booking-assignee{display:flex;align-items:center;gap:5px;min-width:0;padding-top:6px;border-top:1px solid #E9EDF0;font-size:12px;color:#526271;}
   .crm-booking-assignee strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0A2F4F;}
@@ -522,15 +527,20 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <sc-for list="{{ savedViews }}" as="v" hint-placeholder-count="3"><button onClick="{{ v.go }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ v.bg }};color:{{ v.fg }};font-weight:500;" style-hover="background:rgba(10,47,79,.06);">{{ v.name }}</button></sc-for>
         </div>
-        <label class="crm-assignee-filter">Ответственный
-          <select class="crm-assignee-select" value="{{ assigneeFilter }}" onChange="{{ setAssigneeFilter }}">
+        <span class="crm-assignee-filter" data-active="{{ assigneeActive }}">
+          <select class="crm-assignee-filter-select crm-picker" aria-label="Ответственный" title="Ответственный" value="{{ assigneeFilter }}" onChange="{{ setAssigneeFilter }}">
             <option value="*">Все сотрудники</option>
             <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="3"><option value="{{ a.value }}">{{ a.name }}</option></sc-for>
           </select>
-        </label>
+          <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
+          <svg class="crm-assignee-filter-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3"></circle><path d="M5 20v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"></path></svg>
+        </span>
         <span style="margin-left:auto;font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ bookingsCount }}</span>
         <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
-          <button class="crm-guest-export" type="button" disabled="{{ bookingExportEmpty }}" onClick="{{ exportBookings }}">Выгрузить в Excel</button>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="crm-guest-export" type="button" disabled="{{ bookingExportEmpty }}" onClick="{{ exportBookings }}">Выгрузить в Excel</button>
+            <button class="crm-guest-export crm-guide-trigger" type="button" aria-label="Как выгрузить данные в Excel" title="Как выгрузить данные в Excel" aria-haspopup="dialog" onClick="{{ openGuide }}">?</button>
+          </div>
         </sc-if>
       </div>
 
@@ -870,7 +880,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <button class="crm-guest-export" type="button" onClick="{{ exportGuests }}" disabled="{{ clEmpty }}">
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path></svg>Скачать Excel
           </button>
-          <button class="crm-guest-export crm-guide-trigger" type="button" aria-label="Краткий гид по CRM" title="Краткий гид по CRM" aria-haspopup="dialog" onClick="{{ openGuide }}">?</button>
+          <button class="crm-guest-export crm-guide-trigger" type="button" aria-label="Как выгрузить данные в Excel" title="Как выгрузить данные в Excel" aria-haspopup="dialog" onClick="{{ openGuide }}">?</button>
         </div>
       </div>
       <div class="crm-guests-table-card">
@@ -1024,7 +1034,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:20px;font-weight:600;">{{ ob.num }}</span>
         <div class="crm-stage-field" style="color:{{ ob.pillFg }};">
-          <select class="crm-stage-select" aria-label="Статус брони" disabled="{{ rsOn }}" value="{{ ob.stage }}" onChange="{{ setStage }}" style="background-color:{{ ob.pillBg }};color:inherit;">
+          <select class="crm-stage-select crm-picker" aria-label="Статус брони" disabled="{{ rsOn }}" value="{{ ob.stage }}" onChange="{{ setStage }}" style="background-color:{{ ob.pillBg }};color:inherit;">
             <sc-for list="{{ stageOpts }}" as="s" hint-placeholder-count="12"><option value="{{ s.id }}">{{ s.name }}</option></sc-for>
           </select>
           <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
@@ -1412,15 +1422,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
 <dialog class="crm-mini-guide" aria-labelledby="crm-mini-guide-title">
   <header>
-    <h2 id="crm-mini-guide-title">Краткий гид по CRM</h2>
+    <h2 id="crm-mini-guide-title">Как выгрузить данные в Excel</h2>
     <button type="button" onClick="{{ closeGuide }}" aria-label="Закрыть" autofocus>×</button>
   </header>
   <dl>
-    <div><dt>Новая бронь</dt><dd>Выберите дом, дату и длительность. CRM покажет свободные часы и рассчитает стоимость.</dd></div>
-    <div><dt>Календарь и перенос</dt><dd>Перетащите бронь на свободное время. Проверьте новый интервал и нажмите «Сохранить перенос».</dd></div>
-    <div><dt>Канбан и оплата</dt><dd>Перемещайте карточки между колонками и фильтруйте их по ответственному. Оплату фиксируйте во вкладке «Оплата».</dd></div>
-    <div><dt>Гости и Excel</dt><dd>Найдите гостя по имени или телефону. Excel выгружает текущий список гостей или броней с учётом фильтров.</dd></div>
-    <div><dt>Тарифы и правила</dt><dd>Собственник может опубликовать новую версию тарифа. Цена уже сохранённой брони остаётся прежней.</dd></div>
+    <div><dt>Гости</dt><dd>Найдите гостя по имени или телефону либо выберите фильтр. Нажмите «Скачать Excel».</dd></div>
+    <div><dt>Брони и продажи</dt><dd>Откройте «Список», выберите доску и нужные фильтры, например ответственного. Нажмите «Выгрузить в Excel».</dd></div>
+    <div><dt>Что попадёт в файл</dt><dd>В файле .xlsx будут строки текущего списка в том же порядке. Чтобы выгрузить все строки, сбросьте фильтры, а в разделе «Гости» очистите поиск.</dd></div>
   </dl>
 </dialog>
 
@@ -1982,7 +1990,7 @@ class Component extends DCLogic {
   this._kd=e=>{
   if(this.state.reasonDialog||e.target.closest?.('.crm-mini-guide'))return;
   // Let the native status picker handle Escape without dismissing the booking card.
-  if(e.key==='Escape'&&e.target.closest?.('.crm-stage-select'))return;
+  if(e.key==='Escape'&&e.target.closest?.('.crm-picker'))return;
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
    this.setState(s=>({nb:{...s.nb,calendarMonth:null}}));
    document.querySelector('#crm-booking-date-toggle')?.focus();
@@ -2675,7 +2683,7 @@ class Component extends DCLogic {
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
-   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',
+   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
    setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,
    readOnly,canEdit:owner,editingTariff,tariffLocked:!editingTariff,canStartDraft:owner&&!editingTariff,
