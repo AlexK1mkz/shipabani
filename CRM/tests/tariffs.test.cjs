@@ -529,3 +529,48 @@ test('CRM history restores sections, calendar settings and both cards without ex
   assert.equal(crm.state.clientId, null);
   assert.equal(browser.location.hash, '#today');
 });
+
+test('calendar drop explains occupancy and preparation conflicts before opening a transfer', () => {
+  const { crm } = demo();
+  const seed = crm.state.bookings.find(b => b.stage === 'confirmed');
+  const moving = { ...seed, num: '№ 1', house: 'dyhanie', day: 7, start: 10, dur: 3, guests: 4, kids: 0 };
+  const booked = { ...moving, num: '№ 2', house: 'sila', start: 15, dur: 4, guest: 'Тестовый гость' };
+  crm.setState({ screen: 'calendar', calDay: 7, bookings: [moving, booked] });
+  const drop = start => {
+    crm.dragB = moving.num;
+    const sila = crm.renderVals().calRows.find(row => row.name === 'СИЛА');
+    sila.drop({ preventDefault() {}, stopPropagation() {}, clientX: (start - 10) * 10 + 5,
+      currentTarget: { getBoundingClientRect: () => ({ left: 0, width: 160 }) } });
+  };
+  drop(15);
+  assert.match(crm.state.calDropError.message, /^Занято: № 2 .*15:00–19:00/);
+  assert.equal(crm.state.rs, null);
+  drop(11);
+  assert.match(crm.state.calDropError.message, /Не хватает 1 ч.*№ 2/);
+  assert.match(crm.state.calDropError.target, /11:00–14:00/);
+  drop(10);
+  assert.equal(crm.state.calDropError, null);
+  const form = crm.renderVals().rsv;
+  assert.equal(form.selectedInterval, '10:00–13:00 · 3 ч');
+  assert.match(form.occupancy[0].when, /15:00–19:00 · 4 ч/);
+  assert.equal(form.occupancy[0].prep, '13:00–15:00');
+  assert.deepEqual(Array.from(form.slots, slot => slot.t), ['10:00–13:00', '21:00–00:00']);
+  assert.equal(form.cantSave, false);
+});
+
+test('calendar legend filters day, week and month while hidden bookings still block transfers', () => {
+  const { crm } = demo();
+  const seed = crm.state.bookings.find(b => b.stage === 'confirmed');
+  const confirmed = { ...seed, num: '№ 1', house: 'sila', day: 7, start: 14, dur: 3, guest: 'Подтверждённый гость' };
+  const cancelled = { ...confirmed, num: '№ 2', stage: 'cancel', guest: 'Отменённый гость' };
+  crm.setState({ screen: 'calendar', calDay: 7, bookings: [confirmed, cancelled] });
+  const stats = Array.from(crm.renderVals().monthStats, m => m.v);
+  crm.renderVals().legend.find(item => item.id === 'fail').select({ currentTarget: { closest: () => null } });
+  const ui = crm.renderVals();
+  assert.match(ui.calStatusLabel, /отмена/);
+  assert.deepEqual(Array.from(ui.calRows.flatMap(row => row.blocks), row => row.title), ['№ 2 Отменённый гость']);
+  assert.deepEqual(Array.from(ui.weekRows.flatMap(row => row.days.flatMap(day => day.items)), item => item.guest), ['Отменённый гость']);
+  assert.deepEqual(Array.from(ui.monthCells.flatMap(cell => cell.items), item => item.label), ['СИЛА · Отменённый гость']);
+  assert.deepEqual(Array.from(ui.monthStats, m => m.v), stats);
+  assert.equal(crm.conflict({ house: 'sila', day: 7, start: 14, dur: 3 }).num, confirmed.num);
+});
