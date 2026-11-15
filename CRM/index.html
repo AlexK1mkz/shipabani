@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-prep-booking"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-dashboard-metrics"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -172,7 +172,15 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-dashboard-feed,.crm-dashboard-side{min-width:0;}
   .crm-dashboard-feed{grid-column:span 7;}
   .crm-dashboard-side{grid-column:span 5;}
-  .crm-dashboard-tile{grid-column:span 3;}
+  .crm-dashboard-tile{grid-column:span 3;align-self:stretch;min-width:0;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding:16px 20px;background:#fff;border:1px solid #E4E9ED;border-radius:16px;}
+  .crm-dashboard-tile--attention{background:#FFF8F2;border-color:#EFD6C4;}
+  .crm-dashboard-tile-heading{display:flex;align-items:center;gap:9px;color:#163851;font-size:13px;font-weight:600;line-height:1.35;}
+  .crm-dashboard-tile-icon{display:grid;place-items:center;flex:0 0 30px;height:30px;border-radius:9px;background:#EEF3F7;color:#234F6C;}
+  .crm-dashboard-tile--attention .crm-dashboard-tile-icon{background:#F9E6D7;color:#9E401A;}
+  .crm-dashboard-tile-value{align-self:end;color:#0A2F4F;font-size:clamp(24px,3vw,36px);font-weight:600;line-height:1.12;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;}
+  .crm-dashboard-tile--attention .crm-dashboard-tile-value{color:#9E401A;}
+  .crm-dashboard-tile-detail{padding-top:8px;border-top:1px solid #E4E9ED;color:#506172;font-size:12px;line-height:1.35;}
+  .crm-dashboard-tile--attention .crm-dashboard-tile-detail{border-color:#EFD6C4;color:#86401E;}
   .crm-dashboard-feed-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;margin-bottom:12px;}
   .crm-feed-entry{display:grid;grid-template-columns:54px minmax(0,1fr) minmax(0,auto);align-items:center;gap:10px;min-width:0;min-height:58px;padding:8px 10px;border-radius:10px;text-align:left;}
   .crm-feed-entry:hover,.crm-feed-entry:focus-visible{background:#EDF3F7;}
@@ -191,12 +199,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     .crm-app:has(.crm-dashboard){--crm-gutter:20px;}
     .crm-app:has(.crm-dashboard) .crm-header-date{display:none;}
     .crm-dashboard .crm-dashboard-feed,.crm-dashboard .crm-dashboard-side{grid-column:1/-1;}
+    .crm-dashboard .crm-dashboard-tile{grid-column:span 6;}
   }
   @media(max-width:820px){
-    .crm-dashboard .crm-dashboard-tile{grid-column:span 6;}
     .crm-app:has(.crm-dashboard) .crm-app-header{height:auto;min-height:72px;padding-block:10px;gap:8px;flex-wrap:wrap;}
     .crm-app:has(.crm-dashboard) .crm-header-search{order:1;flex:1 0 100%;}
   }
+  @media(max-width:520px){.crm-dashboard .crm-dashboard-tile{grid-column:1/-1;}}
   .crm-birthday-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid #E9EDF0;}
   .crm-birthday-open{display:flex;align-items:center;gap:10px;flex:1;min-width:0;min-height:48px;padding:6px 8px;border:1px solid transparent;border-radius:10px;text-align:left;transition:background-color 130ms ease-out,border-color 130ms ease-out;}
   .crm-birthday-open:hover,.crm-birthday-open:focus-visible{background:#EDF3F7;border-color:#D5E0E7;}
@@ -338,12 +347,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <button onClick="{{ dashToCal }}" title="Любая дата, загрузка домов и сводка дня" style="margin-left:auto;height:34px;padding:0 14px;border-radius:10px;color:#C15C22;font-weight:600;font-size:13px;" style-hover="background:rgba(193,92,34,.08);">Другие даты → Календарь домов</button>
       </div>
       <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
-        <div class="crm-dashboard-tile" style="background:#fff;border-radius:20px;padding:20px 24px;min-height:128px;display:flex;flex-direction:column;">
-          <div style="font-size:13px;color:rgba(59,47,42,.7);">{{ t.label }}</div>
-          <div style="display:flex;align-items:baseline;flex-wrap:wrap;column-gap:10px;row-gap:4px;margin-top:auto;">
-            <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:40px;line-height:1;white-space:nowrap;color:{{ t.color }};">{{ t.value }}</span>
-            <span style="font-size:13px;color:rgba(59,47,42,.7);">{{ t.sub }}</span>
+        <div class="crm-dashboard-tile {{ t.tone }}">
+          <div class="crm-dashboard-tile-heading">
+            <span class="crm-dashboard-tile-icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"/></svg></span>
+            <span>{{ t.label }}</span>
           </div>
+          <div class="crm-dashboard-tile-value">{{ t.value }}</div>
+          <div class="crm-dashboard-tile-detail">{{ t.sub }}</div>
         </div>
       </sc-for>
 
@@ -2251,8 +2261,22 @@ class Component extends DCLogic {
   const searchRes=q?B.filter(b=>norm(b.guest).includes(norm(q))||norm(b.phone).includes(norm(q))||norm(b.num).includes(norm(q))||(H[b.house]&&norm(H[b.house].name).includes(norm(q)))).slice(0,6).map(b=>({num:b.num,guest:b.guest,phone:b.phone,meta:(H[b.house]?H[b.house].name+' · ':'')+ST[b.stage].name,color:ST[b.stage].color,open:open(b.num)})):[];
   // сегодня
   const dWord=isNowDay?' сегодня':dd===-1?' вчера':dd===1?' завтра':'';const liveB=todayB.filter(b=>ST[b.stage].type!=='fail');const failN=todayB.length-liveB.length;
-  const tiles=[{label:'Заездов'+dWord,value:dd<0?liveB.length:openT.length,sub:isNowDay?`из них ${todayB.filter(b=>b.stage==='inhouse').length} в доме`:dd<0?(failN?`отмен и неявок: ${failN}`:'без отмен'):`гостей ${openT.reduce((a,b)=>a+(b.guests||0),0)}`,color:'#0A2F4F'},{label:'Выездов'+dWord,value:dd<0?liveB.length:openT.filter(b=>b.start+b.dur<=26).length,sub:dd>0?'по плану':`${todayB.filter(b=>['done','review'].includes(b.stage)).length} уже уехали`,color:'#0A2F4F'},{label:'Необработанных заявок',value:newCount,sub:newCount?'требуют реакции':'всё разобрано',color:newCount?'#C15C22':'#0A2F4F'},isNowDay?{label:'Домов в подготовке',value:todayB.filter(b=>b.stage==='prep').length,sub:'буфер 2 часа',color:'#0A2F4F'}:{label:dd<0?'Оплачено за день':'Ждём оплату',value:dd<0?fmt(todayB.reduce((a,b)=>a+this.paid(b),0)):fmt(liveB.reduce((a,b)=>a+Math.max(0,this.price(b).total-this.paid(b)),0)),sub:dd<0?'по броням дня':'остатки по броням',color:'#0A2F4F'}];
-  if(owner)tiles[1]={label:'Выручка'+(dWord||' за день'),value:fmt(todayB.reduce((a,b)=>a+this.paid(b),0)),sub:dd>0?'внесено заранее':'по оплатам дня',color:'#0A2F4F'};
+  const paidForDay=()=>fmt(todayB.reduce((a,b)=>a+this.paid(b),0));
+  const cashIcon='M3 6h18v12H3zM7 10v4m10-4v4m-5-4v4';
+  const tiles=[
+    {label:'Заездов'+dWord,icon:'M14 4h6v16h-6M3 12h12m-5-5 5 5-5 5',
+     value:dd<0?liveB.length:openT.length,sub:isNowDay?`из них ${todayB.filter(b=>b.stage==='inhouse').length} в доме`:dd<0?(failN?`отмен и неявок: ${failN}`:'без отмен'):`гостей ${openT.reduce((a,b)=>a+(b.guests||0),0)}`},
+    {label:'Выездов'+dWord,icon:'M10 4H4v16h6m-1-8h12m-5-5 5 5-5 5',
+     value:dd<0?liveB.length:openT.filter(b=>b.start+b.dur<=26).length,sub:dd>0?'по плану':`${todayB.filter(b=>['done','review'].includes(b.stage)).length} уже уехали`},
+    {label:'Необработанных заявок',icon:'M4 4h16l2 10v6H2v-6zM2 14h6l2 3h4l2-3h6',
+     value:newCount,sub:newCount?'требуют реакции':'всё разобрано',tone:newCount?'crm-dashboard-tile--attention':''},
+    isNowDay
+      ? {label:'Домов в подготовке',icon:'m3 11 9-7 9 7M5 10v10h14V10m-7 3v4m-2-2h4',
+         value:todayB.filter(b=>b.stage==='prep').length,sub:`Буфер подготовки · ${cfg.prep} ч`}
+      : {label:dd<0?'Оплачено за день':'Ждём оплату',icon:cashIcon,
+         value:dd<0?paidForDay():fmt(liveB.reduce((a,b)=>a+Math.max(0,this.price(b).total-this.paid(b)),0)),sub:dd<0?'по броням дня':'остатки по броням'}
+  ];
+  if(owner)tiles[1]={label:'Выручка'+(dWord||' за день'),icon:cashIcon,value:paidForDay(),sub:dd>0?'внесено заранее':'по оплатам дня'};
   const feedRaw=[];for(const b of todayB){if(ST[b.stage].type==='fail')continue;const p=this.pill(b.stage);const base={house:H[b.house].name,guest:b.guest,stage:ST[b.stage].name,pillBg:p.bg,pillFg:p.fg,color:ST[b.stage].color,open:open(b.num)};feedRaw.push({...base,t:b.start*60,time:hh(b.start),kind:'заезд',meta:`${b.guests} гостей · ${b.dur} ч${b.services.length?' · '+b.services.length+' услуги':''}`});feedRaw.push({...base,t:(b.start+b.dur)*60,time:hh(b.start+b.dur),kind:'выезд',meta:this.payInfo(b).t});}
   feedRaw.sort((a,b)=>a.t-b.t);let nowPlaced=false;const feed=feedRaw.map(e=>{const nb=isNowDay&&!nowPlaced&&e.t>NOW_MIN;if(nb)nowPlaced=true;return {...e,nowBefore:nb,opacity:isNowDay&&e.t<NOW_MIN?.55:1};});
   const nowText=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;
