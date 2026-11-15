@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-export-help-filter"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-prep-booking"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -144,6 +144,15 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:10px 14px;border-radius:11px;background:#0A2F4F;color:#fff;box-shadow:0 12px 36px rgba(10,47,79,.2);font-size:13px;line-height:1.4;overflow-wrap:anywhere;animation:fadeIn 150ms ease-out;}
   .crm-toast--success{background:#235A3C;}
   .crm-toast svg{flex:none;}
+  .crm-prep-booking{display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:12px;align-items:center;width:100%;min-height:68px;padding:10px 4px;border-top:1px solid #E9EDF0;text-align:left;}
+  .crm-prep-booking:hover{background:#F4F7F9;}
+  .crm-prep-booking > svg{color:#61798C;}
+  .crm-prep-identity,.crm-prep-times{display:grid;gap:4px;min-width:0;}
+  .crm-prep-heading{display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap;}
+  .crm-prep-house{font:600 18px 'Cormorant Garamond',serif;letter-spacing:.05em;}
+  .crm-prep-pill{padding:3px 7px;border-radius:999px;font-size:11px;font-weight:600;}
+  .crm-prep-guest{overflow-wrap:anywhere;font-size:13px;color:#43566A;}
+  .crm-prep-times{text-align:right;white-space:nowrap;font-size:12px;}
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
   .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
@@ -329,12 +338,11 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <sc-if value="{{ noPrep }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 0;color:rgba(59,47,42,.7);">Домов к подготовке нет.</div></sc-if>
           <div style="display:flex;flex-direction:column;">
           <sc-for list="{{ prepList }}" as="q" hint-placeholder-count="3">
-            <div style="display:flex;align-items:center;gap:10px;height:52px;border-top:1px solid rgba(10,47,79,.08);min-width:0;">
-              <span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;letter-spacing:.06em;width:104px;flex:0 0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ q.house }}</span>
-              <span title="Начать топить" style="font-size:13px;color:rgba(59,47,42,.7);flex:0 0 auto;white-space:nowrap;">с {{ q.startAt }}</span>
-              <span style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ q.bg }};color:{{ q.fg }};white-space:nowrap;flex:0 0 auto;">{{ q.stage }}</span>
-              <span style="margin-left:auto;font-weight:600;color:{{ q.cdColor }};white-space:nowrap;">{{ q.countdown }}</span>
-            </div>
+            <button type="button" class="crm-prep-booking" onClick="{{ q.open }}">
+              <span class="crm-prep-identity"><span class="crm-prep-heading"><strong class="crm-prep-house">{{ q.house }}</strong><span class="crm-prep-pill" style="background:{{ q.bg }};color:{{ q.fg }};">{{ q.stage }}</span></span><span class="crm-prep-guest">{{ q.guest }}</span></span>
+              <span class="crm-prep-times"><strong>заезд {{ q.arrival }}</strong><span style="color:#526271;" title="Начать топить">с {{ q.startAt }}</span><sc-if value="{{ q.countdown }}" hint-placeholder-val="{{ true }}"><span style="color:#526271;">{{ q.countdown }}</span></sc-if></span>
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+            </button>
           </sc-for>
           </div>
         </div>
@@ -2121,7 +2129,7 @@ class Component extends DCLogic {
  renderVals(){
   const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
-  const open=(num,keepGuest=false)=>()=>this.setState({openId:num,detailsLast:'booking',tab:'compose',search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
+  const open=(num,{keepGuest=false,tab='compose'}={})=>()=>this.setState({openId:num,detailsLast:'booking',tab,search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
   const newCount=B.filter(b=>b.stage==='new').length;
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
@@ -2141,7 +2149,16 @@ class Component extends DCLogic {
   const nowText=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;
   const pendingB=B.filter(b=>b.stage==='new');
   const pending=pendingB.map(b=>{const over=b.stageAt>15;return {guest:b.guest,initial:b.guest[0],phone:b.phone,source:b.source,wish:b.wish||'',wait:ago(b.stageAt),timerColor:over?'#B8432F':'#0A2F4F',bg:over?'rgba(184,67,47,.06)':'#fff',tel:'tel:'+b.phone.replace(/\s/g,''),wa:'https://wa.me/'+b.phone.replace(/\D/g,''),take:()=>{this.move(b.num,'contact');this.toast(`${b.num} взята в работу`);this.setState({openId:b.num,tab:'compose'});}};});
-  const prepList=!isNowDay?liveB.slice().sort((a,b)=>a.start-b.start).map(b=>({house:H[b.house].name,startAt:hh(b.start-cfg.prep),stage:ST[b.stage].name,bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',countdown:`заезд ${hh(b.start)}`,cdColor:'#0A2F4F'})):todayB.filter(b=>['confirmed','prep','inhouse'].includes(b.stage)&&b.start*60>NOW_MIN-60).sort((a,b)=>a.start-b.start).map(b=>{const startAt=b.start-cfg.prep;const left=startAt*60-NOW_MIN;const st=b.stage==='prep'?'Топим':b.stage==='inhouse'?'Принят':'Запланирована';const bg=b.stage==='prep'?'rgba(217,164,65,.22)':b.stage==='inhouse'?'rgba(94,140,97,.15)':'rgba(10,47,79,.08)';return {house:H[b.house].name,startAt:hh(startAt),stage:st,bg,fg:'#0A2F4F',countdown:left>0?`через ${ago(left)}`:b.stage==='inhouse'?'гость в доме':`заезд через ${ago(b.start*60-NOW_MIN)}`,cdColor:left<=0&&b.stage!=='inhouse'?'#C15C22':'#0A2F4F'};});
+  const prepBookings=isNowDay?todayB.filter(b=>['confirmed','prep','inhouse'].includes(b.stage)&&b.start*60>NOW_MIN-60):liveB;
+  const prepList=prepBookings.filter(b=>H[b.house]).sort((a,b)=>a.start-b.start).map(b=>{
+    const startAt=hh(b.start-this.rules(b.day).cfg.prep);
+    const stage=!isNowDay?ST[b.stage].name:b.stage==='prep'?'Топим':b.stage==='inhouse'?'Принят':'Запланирована';
+    const bg=isNowDay&&b.stage==='prep'?'rgba(217,164,65,.22)':isNowDay&&b.stage==='inhouse'?'rgba(94,140,97,.15)':'rgba(10,47,79,.08)';
+    const untilArrival=b.start*60-NOW_MIN;
+    const countdown=isNowDay?(b.stage==='inhouse'?'гость в доме':untilArrival>0?`заезд через ${ago(untilArrival)}`:''):'';
+    return {house:H[b.house].name,guest:b.guest,arrival:`${dlabel(b.day)} · ${hh(b.start)}`,startAt,stage,bg,countdown,
+      fg:'#0A2F4F',open:open(b.num,{tab:'visit'})};
+  });
   // календарь
   const calCfg=this.rules(s.calDay).cfg;const hours=[];for(let x=calCfg.open;x<calCfg.close;x++)hours.push(x);const span=calCfg.close-calCfg.open;const pct=h=>((h-calCfg.open)/span*100).toFixed(2)+'%';
   const legend=CAL_STATUS.map(o=>({...o,active:String(s.calStatus===o.id),select:e=>{
@@ -2604,7 +2621,7 @@ class Component extends DCLogic {
     consentText:cl.consent?`Согласие получено${cl.consentAt?' '+cl.consentAt:''}${cl.account?' при регистрации на сайте':''}. Гость может отказаться ответом «стоп» или в кабинете.`:'Нет согласия — поздравления и рассылки не уходят. Сообщения о брони приходят как обычно.',
     toggleConsent:()=>{setC({consent:!cl.consent,consentAt:!cl.consent?stamp(0,NOW.getHours(),NOW.getMinutes()).slice(0,5)+'.'+NOW.getFullYear()+' вручную':''});this.toast(cl.consent?'Согласие снято — рассылки не будут уходить':'Согласие отмечено');},
     since:`Гость в базе с ${cl.account?ddmm(cl.account.reg):st.first!=null?dlabel(Math.min(st.first,0)):'сегодня'}.`,
-    bookings:[...st.bs].sort((p,q)=>q.day-p.day||(q.start||0)-(p.start||0)).map(x=>{const p=this.pill(x.stage);return {num:x.num,house:H[x.house]?H[x.house].name:'—',when:x.start!=null?`${dlabel(x.day)} ${hh(x.start)}–${hh(x.start+x.dur)}`:(x.wish||'без времени'),stage:ST[x.stage]?ST[x.stage].name:'',pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,sum:x.start!=null?fmt(this.price(x).total):(this.paid(x)?fmt(this.paid(x)):'—'),current:String(x.num===s.openId),open:open(x.num,true)};}),
+    bookings:[...st.bs].sort((p,q)=>q.day-p.day||(q.start||0)-(p.start||0)).map(x=>{const p=this.pill(x.stage);return {num:x.num,house:H[x.house]?H[x.house].name:'—',when:x.start!=null?`${dlabel(x.day)} ${hh(x.start)}–${hh(x.start+x.dur)}`:(x.wish||'без времени'),stage:ST[x.stage]?ST[x.stage].name:'',pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,sum:x.start!=null?fmt(this.price(x).total):(this.paid(x)?fmt(this.paid(x)):'—'),current:String(x.num===s.openId),open:open(x.num,{keepGuest:true})};}),
     noBookings:!st.bs.length,msgs:cl.msgs.map(m=>({...m,color:stCol(m.st)})),noMsgs:!cl.msgs.length};
    ctabs=[['profile','Профиль'],['bookings',`Брони · ${st.bs.length}`],['msgs',`Сообщения · ${cl.msgs.length}`]].map(([id,name])=>({name,go:()=>this.setState({ctab:id}),fg:s.ctab===id?'#0A2F4F':GR(.6),line:s.ctab===id?'#C15C22':'transparent'}));}
 
@@ -2677,7 +2694,7 @@ class Component extends DCLogic {
   return {nav,navOpen,navCollapsed:!navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
-   screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
+   screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
    calendarKey:CAL_STATUS.filter(o=>o.id!=='all'),calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
