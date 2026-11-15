@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-calendar-guests"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-guest-export"></script>
+<script defer src="./guest-export.js"></script>
 </head>
 <body>
 <x-dc>
@@ -84,6 +85,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-cal-drop-error{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid #E7B4AB;border-radius:12px;background:#FBEAE7;color:#862D22;font-size:13px;line-height:1.4;}
   .crm-cal-drop-error button{margin-left:auto;padding:0 7px;font-size:18px;}
   [data-scroll-main]:has(.crm-guests-table){scrollbar-gutter:stable;}
+  .crm-guest-export-group{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .crm-guest-export{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 12px;border:1px solid #CCD9E2;border-radius:10px;background:#fff;color:#0A2F4F;font-size:13px;font-weight:600;white-space:nowrap;}
+  .crm-guest-export:hover:not(:disabled){background:#EAF1F6;}
+  .crm-guest-export:disabled{opacity:.5;cursor:default;}
   .crm-guests-table-card{min-width:0;background:#fff;border-radius:20px;padding:8px 24px 16px;}
   .crm-guests-table-scroll{overflow-x:auto;max-width:100%;}
   .crm-guests-table{min-width:1130px;}
@@ -811,7 +816,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <sc-for list="{{ clFilters }}" as="f" hint-placeholder-count="6"><button onClick="{{ f.go }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ f.bg }};color:{{ f.fg }};font-weight:500;white-space:nowrap;">{{ f.name }} <span style="opacity:.6;">{{ f.n }}</span></button></sc-for>
         </div>
-        <span style="margin-left:auto;font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ clCount }}</span>
+        <div class="crm-guest-export-group">
+          <span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ clCount }}</span>
+          <button class="crm-guest-export" type="button" onClick="{{ exportGuests }}" disabled="{{ clEmpty }}">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path></svg>Скачать Excel
+          </button>
+        </div>
       </div>
       <div class="crm-guests-table-card">
         <div class="crm-guests-table-scroll" tabindex="0" role="region" aria-label="Список гостей">
@@ -2417,6 +2427,20 @@ class Component extends DCLogic {
   const cq=s.clSearch.trim().toLowerCase();const cqd=normP(cq);
   const clKey={name:x=>x.c.name,visits:x=>x.st.visits,spent:x=>x.st.spent,last:x=>x.st.last==null?-1e4:x.st.last,bday:x=>{const n=bdNext(x.c.birthday);return n==null?999:-n;}};
   const clList=CS.filter(clF[s.clFilter]||clF.all).filter(x=>!cq||x.c.name.toLowerCase().includes(cq)||(cqd.length>1&&normP(x.c.phone).includes(cqd))).sort((p,q)=>{const k=clKey[s.clSort.k];const a=k(p),b_=k(q);return (typeof a==='string'?a.localeCompare(b_):a-b_)*s.clSort.d;});
+  const exportGuests=()=>{
+    if(!clList.length)return;
+    const headers=['Гость','Телефон','Уровень лояльности','Дата регистрации','Визитов','Оплатил','Последний визит','День рождения','Рассылка','Теги'].map(uiText);
+    headers[5]+=' (₸)';
+    const excelDate=key=>key&&Number.isInteger(keyOff(key))?new Date(key+'T00:00:00Z'):null;
+    const rows=clList.map(({c,st})=>[
+      c.name,c.phone,uiText(this.loyal(c,st).tier.name),excelDate(c.account?.reg),st.visits,st.spent,
+      st.last==null?null:excelDate(dkey(st.last)),c.birthday?c.birthday.slice(8,10)+'.'+c.birthday.slice(5,7):'',
+      uiText(c.consent?'да':'нет'),c.tags||''
+    ]);
+    try{
+      window.ShipaGuestExport.download('shipa-guests-'+dkeyD(new Date())+'.xlsx',uiText('Гости'),headers,rows);
+    }catch(e){this.toast('Не удалось подготовить Excel.');}
+  };
   const clRows=clList.map(({c,st})=>{const n=bdNext(c.birthday);const lo=this.loyal(c,st);return {tier:lo.tier.name,tierTitle:`${lo.pts} баллов · скидка ${lo.tier.pct}%`,tierBg:hexA(lo.tier.color,.18),tierFg:'#0A2F4F',name:c.name,initial:c.name[0],phone:c.phone,acc:c.account?`с ${ddmm(c.account.reg)}`:'нет',accColor:c.account?'#3F6B43':GR(.55),visits:String(st.visits),spent:st.spent?fmt(st.spent):'—',last:st.last==null?'—':st.last===0?'сегодня':dlabel(st.last),bday:c.birthday?`${bdShort(c.birthday)}${n<=14?' · '+(n===0?'сегодня':n===1?'завтра':'через '+n+' дн.'):''}`:'—',bdColor:n!=null&&n<=7?'#C15C22':'#0A2F4F',bdWeight:n!=null&&n<=7?600:400,consent:c.consent?'да':'нет',consentColor:c.consent?'#3F6B43':'#B8432F',tags:(c.tags||'').split(',').map(t=>t.trim()).filter(Boolean),tagsTitle:c.tags||'',open:()=>this.setState({clientId:c.id,ctab:'profile'})};});
   const clSortBy=Object.fromEntries(Object.keys(clKey).map(k=>[k,()=>this.setState(S=>({clSort:{k,d:S.clSort.k===k?-S.clSort.d:(k==='name'?1:-1)}}))]));const clMark=Object.fromEntries(Object.keys(clKey).map(k=>[k,s.clSort.k===k?(s.clSort.d>0?'↑':'↓'):'']));
   const clAriaSort=Object.fromEntries(Object.keys(clKey).map(k=>[k,s.clSort.k===k?(s.clSort.d>0?'ascending':'descending'):'none']));
@@ -2569,7 +2593,7 @@ class Component extends DCLogic {
    askDelBoard:()=>{if(delWhyB)return;this.setState({boardDelAsk:true});},boardDelAsk:s.boardDelAsk,boardDelText:`Удалить доску «${curB.name}»? ${bCards.length?`${bCards.length} карт. перейдут на основную доску «${mainB.name}» в столбец «${mainB.cols[0].name}».`:'Карточек на доске нет.'}`,
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
-   clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,clAriaSort,
+   clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,clAriaSort,exportGuests,
    hasClient:!!cl,guestPanelClass:panelClass('guest'),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
    cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }
