@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-guest-export"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-kanban-feedback"></script>
 <script defer src="./guest-export.js"></script>
 </head>
 <body>
@@ -82,6 +82,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-cal-filter-menu button{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:5px 8px;text-align:left;border-radius:7px;white-space:nowrap;}
   .crm-cal-filter-menu button:hover,.crm-cal-filter-menu button[aria-pressed="true"]{background:#EAF1F6;}
   .crm-cal-swatch{width:12px;height:12px;border-radius:3px;flex:none;}
+  .crm-cal-key{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin-top:-6px;padding:12px 16px;border:1px solid #E2E8ED;border-radius:12px;background:#fff;color:#526271;font-size:12px;}
+  .crm-cal-key-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
   .crm-cal-drop-error{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid #E7B4AB;border-radius:12px;background:#FBEAE7;color:#862D22;font-size:13px;line-height:1.4;}
   .crm-cal-drop-error button{margin-left:auto;padding:0 7px;font-size:18px;}
   [data-scroll-main]:has(.crm-guests-table){scrollbar-gutter:stable;}
@@ -107,6 +109,20 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-guest-name,.crm-guest-tier,.crm-guest-phone,.crm-guest-tag,.crm-guest-table-cell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .crm-guest-tags{display:flex;flex-wrap:wrap;align-content:center;gap:4px;min-width:0;max-height:44px;overflow:hidden;}
   .crm-guest-tag{flex:0 0 auto;max-width:100%;padding:2px 8px;border-radius:999px;background:#EAF0F4;font-size:12px;}
+  .crm-reschedule-footer{flex:0 0 auto;display:grid;gap:10px;padding:12px 24px max(12px,env(safe-area-inset-bottom));border-top:1px solid #E5D5C7;background:#FFFAF5;color:#0A2F4F;}
+  .crm-reschedule-footer-status{display:grid;gap:3px;font-size:12px;line-height:1.4;overflow-wrap:anywhere;}
+  .crm-reschedule-footer-status strong{font-size:13px;}
+  .crm-reschedule-footer-actions{display:flex;flex-wrap:wrap;gap:8px;}
+  .crm-reschedule-footer-actions button{min-height:44px;padding:0 16px;border-radius:10px;font-size:13px;font-weight:600;}
+  .crm-reschedule-save{background:#AC4D20;color:#fff;}
+  .crm-reschedule-save:hover:not(:disabled){background:#963F18;}
+  .crm-reschedule-save:disabled{background:#EEDDD1;color:#6A574A;cursor:default;}
+  .crm-reschedule-discard{border:1px solid #CCD9E2;background:#fff;}
+  .crm-reschedule-discard:hover{background:#EAF1F6;}
+  .crm-stage-select:disabled{opacity:1;cursor:default;}
+  .crm-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:10px 14px;border-radius:11px;background:#0A2F4F;color:#fff;box-shadow:0 12px 36px rgba(10,47,79,.2);font-size:13px;line-height:1.4;overflow-wrap:anywhere;animation:fadeIn 150ms ease-out;}
+  .crm-toast--success{background:#235A3C;}
+  .crm-toast svg{flex:none;}
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
   .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
@@ -336,9 +352,6 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <span style="font-size:17px;font-weight:600;white-space:nowrap;">{{ calTitle }}</span>
         <button onClick="{{ calToday }}" style="height:36px;padding:0 12px;border-radius:10px;color:#C15C22;font-weight:600;font-size:13px;">Сегодня</button>
         <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}"><input type="date" value="{{ calKey }}" onChange="{{ calPick }}" aria-label="Перейти к дате" title="Перейти к дате" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"></sc-if>
-        <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}">
-          <span style="display:flex;align-items:center;gap:6px;font-size:12px;"><span class="crm-cal-swatch" style="background:repeating-linear-gradient(135deg,rgba(10,47,79,.25) 0 2px,transparent 2px 5px);"></span>подготовка</span>
-        </sc-if>
         <details class="crm-cal-filter">
           <summary><span>{{ calStatusLabel }}</span><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg></summary>
           <div class="crm-cal-filter-menu">
@@ -440,6 +453,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <div style="margin-top:12px;font-size:13px;color:rgba(59,47,42,.7);">Полоса под датой — загрузка дня: часы броней от доступных часов домов. Клик по дню — расписание по часам. Бронь можно перетащить на другой день.</div>
         </div>
       </sc-if>
+      <div class="crm-cal-key" role="group" aria-label="Легенда календаря">
+        <sc-for list="{{ calendarKey }}" as="l" hint-placeholder-count="6">
+          <span class="crm-cal-key-item"><span class="crm-cal-swatch" aria-hidden="true" style="background:{{ l.color }};border:{{ l.border }};"></span>{{ l.name }}</span>
+        </sc-for>
+        <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}">
+          <span class="crm-cal-key-item"><span class="crm-cal-swatch" aria-hidden="true" style="background:repeating-linear-gradient(135deg,rgba(10,47,79,.25) 0 2px,transparent 2px 5px);"></span>подготовка</span>
+        </sc-if>
+      </div>
     </section>
   </sc-if>
 
@@ -533,7 +554,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                 </div>
               </sc-if>
               <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="2">
-                <div draggable="true" onDragStart="{{ c.drag }}" onClick="{{ c.open }}" style="background:#fff;border-radius:12px;padding:12px 14px;cursor:grab;border:1px solid rgba(10,47,79,.06);display:flex;flex-direction:column;gap:8px;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-2px);box-shadow:0 8px 24px rgba(10,47,79,.10);">
+                <div draggable="true" onDragStart="{{ c.drag }}" onDragEnd="{{ clearKanbanDrag }}" onClick="{{ c.open }}" style="background:#fff;border-radius:12px;padding:12px 14px;cursor:grab;border:1px solid rgba(10,47,79,.06);display:flex;flex-direction:column;gap:8px;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-2px);box-shadow:0 8px 24px rgba(10,47,79,.10);">
                   <div style="display:flex;align-items:center;gap:8px;">
                     <span style="width:28px;height:28px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:14px;">{{ c.initial }}</span>
                     <span style="font-weight:600;">{{ c.guest }}</span>
@@ -972,7 +993,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:20px;font-weight:600;">{{ ob.num }}</span>
         <div class="crm-stage-field" style="color:{{ ob.pillFg }};">
-          <select class="crm-stage-select" aria-label="Статус брони" value="{{ ob.stage }}" onChange="{{ setStage }}" style="background-color:{{ ob.pillBg }};color:inherit;">
+          <select class="crm-stage-select" aria-label="Статус брони" disabled="{{ rsOn }}" value="{{ ob.stage }}" onChange="{{ setStage }}" style="background-color:{{ ob.pillBg }};color:inherit;">
             <sc-for list="{{ stageOpts }}" as="s" hint-placeholder-count="12"><option value="{{ s.id }}">{{ s.name }}</option></sc-for>
           </select>
           <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
@@ -985,7 +1006,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <div style="flex:1;min-width:0;">
           <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;letter-spacing:.08em;line-height:1;">{{ ob.house }}</div>
           <div style="font-size:13px;color:rgba(59,47,42,.7);margin-top:4px;">{{ ob.cat }} · {{ ob.mode }}</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;"><span style="font-weight:600;">{{ ob.when }}</span><sc-if value="{{ ob.canRs }}" hint-placeholder-val="{{ true }}"><button onClick="{{ ob.startRs }}" style="height:28px;padding:0 10px;border-radius:8px;border:1px solid rgba(193,92,34,.4);color:#C15C22;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap;" style-hover="background:rgba(193,92,34,.08);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18"></path></svg>{{ ob.rsBtn }}</button></sc-if></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;"><span style="font-weight:600;">{{ ob.when }}</span><sc-if value="{{ ob.canRs }}" hint-placeholder-val="{{ true }}"><button id="crm-reschedule-trigger" onClick="{{ ob.startRs }}" style="height:28px;padding:0 10px;border-radius:8px;border:1px solid rgba(193,92,34,.4);color:#C15C22;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap;" style-hover="background:rgba(193,92,34,.08);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18"></path></svg>{{ ob.rsBtn }}</button></sc-if></div>
           <sc-if value="{{ ob.movesText }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:rgba(59,47,42,.7);margin-top:2px;">{{ ob.movesText }}</div></sc-if>
         </div>
         <div style="text-align:right;font-size:12px;color:rgba(59,47,42,.7);">Ответственный<br><b style="color:#0A2F4F;">{{ ob.owner }}</b></div>
@@ -996,15 +1017,17 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <a href="{{ ob.tel }}" title="Позвонить" style="width:40px;height:40px;border-radius:12px;border:1px solid rgba(10,47,79,.15);display:flex;align-items:center;justify-content:center;background:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></a>
         <a href="{{ ob.wa }}" target="_blank" rel="noopener" title="WhatsApp с текстом по стадии" style="width:40px;height:40px;border-radius:12px;border:1px solid rgba(10,47,79,.15);display:flex;align-items:center;justify-content:center;background:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
       </div>
-      <div style="display:flex;gap:4px;border-bottom:1px solid rgba(10,47,79,.08);">
-        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.go }}" style="height:40px;padding:0 14px;font-weight:600;font-size:14px;color:{{ t.fg }};border-bottom:2px solid {{ t.line }};margin-bottom:-1px;">{{ t.name }}</button></sc-for>
-      </div>
+      <sc-if value="{{ !rsOn }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(10,47,79,.08);">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.go }}" style="height:40px;padding:0 14px;font-weight:600;font-size:14px;color:{{ t.fg }};border-bottom:2px solid {{ t.line }};margin-bottom:-1px;">{{ t.name }}</button></sc-for>
+        </div>
+      </sc-if>
     </div>
 
-    <div style="flex:1;min-height:0;overflow:auto;padding:16px 24px 24px;">
+    <div class="crm-booking-panel-body" style="flex:1;min-height:0;overflow:auto;padding:16px 24px 24px;">
       <sc-if value="{{ rsOn }}" hint-placeholder-val="{{ false }}">
         <div style="border:1.5px solid #C15C22;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;margin-bottom:16px;background:#FFFAF5;">
-          <div style="display:flex;align-items:baseline;gap:12px;"><b style="font-size:16px;">{{ rsv.title }}</b><span style="margin-left:auto;font-size:12px;color:rgba(59,47,42,.7);text-align:right;">было: {{ rsv.was }}</span></div>
+          <div style="display:flex;align-items:baseline;gap:12px;"><h2 id="crm-reschedule-heading" tabindex="-1" style="font-size:16px;margin:0;">{{ rsv.title }}</h2><span style="margin-left:auto;font-size:12px;color:rgba(59,47,42,.7);text-align:right;">было: {{ rsv.was }}</span></div>
           <sc-if value="{{ rsv.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="background:rgba(184,67,47,.1);border-radius:12px;padding:10px 12px;font-size:13px;color:#B8432F;">{{ rsv.err }}</div></sc-if>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ rsv.house }}" onChange="{{ rsSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
@@ -1038,10 +1061,6 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <div><textarea value="{{ rsv.msg }}" onChange="{{ rsSet.msg }}" rows="3" style="display:block;width:100%;border:1px solid rgba(10,47,79,.15);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45;resize:vertical;color:#0A2F4F;background:#fff;"></textarea>
             <sc-if value="{{ rsv.msgEdited }}" hint-placeholder-val="{{ false }}"><button onClick="{{ rsv.resetMsg }}" style="margin-top:4px;font-size:12px;font-weight:600;color:#C15C22;">Вернуть текст из шаблона</button></sc-if></div>
           </sc-if>
-          <div style="display:flex;gap:8px;">
-            <button onClick="{{ rsv.save }}" disabled="{{ rsv.cantSave }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;opacity:{{ rsv.saveOp }};" style-hover="background:#A84D1B;">{{ rsv.saveLabel }}</button>
-            <button onClick="{{ rsv.cancel }}" style="height:44px;padding:0 14px;border-radius:12px;font-weight:500;color:rgba(10,47,79,.75);" style-hover="background:rgba(10,47,79,.06);">Отмена</button>
-          </div>
         </div>
       </sc-if>
       <sc-if value="{{ tab.compose }}" hint-placeholder-val="{{ true }}">
@@ -1159,11 +1178,25 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </sc-if>
     </div>
 
-    <div style="flex:0 0 auto;border-top:1px solid rgba(10,47,79,.08);padding:12px 24px;display:flex;gap:8px;align-items:center;background:#fff;">
-      <button onClick="{{ primary.go }}" disabled="{{ primary.dis }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;opacity:{{ primary.opacity }};" style-hover="background:#A84D1B;">{{ primary.name }}</button>
-      <button onClick="{{ cancelBooking }}" disabled="{{ cancelDisabled }}" style="opacity:{{ cancelOpacity }};height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Отменить бронь</button>
-      <span style="margin-left:auto;font-size:12px;color:rgba(59,47,42,.7);">{{ ob.created }}</span>
-    </div>
+    <sc-if value="{{ rsOn }}" hint-placeholder-val="{{ false }}">
+      <footer class="crm-reschedule-footer">
+        <div class="crm-reschedule-footer-status" id="crm-reschedule-status" aria-live="polite">
+          <strong>{{ rsv.pendingLabel }}</strong>
+          <span>{{ rsv.footerMessage }}</span>
+        </div>
+        <div class="crm-reschedule-footer-actions">
+          <button class="crm-reschedule-save" type="button" onClick="{{ rsv.save }}" disabled="{{ rsv.cantSave }}" aria-describedby="crm-reschedule-status">{{ rsv.saveLabel }}</button>
+          <button class="crm-reschedule-discard" type="button" onClick="{{ rsv.cancel }}">{{ rsv.cancelLabel }}</button>
+        </div>
+      </footer>
+    </sc-if>
+    <sc-if value="{{ !rsOn }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:0 0 auto;border-top:1px solid rgba(10,47,79,.08);padding:12px 24px;display:flex;gap:8px;align-items:center;background:#fff;">
+        <button onClick="{{ primary.go }}" disabled="{{ primary.dis }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;opacity:{{ primary.opacity }};" style-hover="background:#A84D1B;">{{ primary.name }}</button>
+        <button onClick="{{ cancelBooking }}" disabled="{{ cancelDisabled }}" style="opacity:{{ cancelOpacity }};height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Отменить бронь</button>
+        <span style="margin-left:auto;font-size:12px;color:rgba(59,47,42,.7);">{{ ob.created }}</span>
+      </div>
+    </sc-if>
   </aside>
 </sc-if>
 
@@ -1342,9 +1375,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   </dialog>
 </sc-if>
 
-<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0A2F4F;color:#fff;border-radius:12px;padding:12px 18px;font-size:14px;z-index:60;box-shadow:0 24px 64px rgba(10,47,79,.2);animation:fadeIn 150ms ease-out;">{{ toast }}</div>
-</sc-if>
+<div role="status" aria-live="polite" aria-atomic="true">
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div class="{{ toastClass }}">
+      <sc-if value="{{ toastSuccess }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"></path></svg></sc-if>
+      <span>{{ toast }}</span>
+    </div>
+  </sc-if>
+</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -1727,7 +1765,7 @@ function crmRoute(hash,s){
 }
 
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -1818,9 +1856,9 @@ class Component extends DCLogic {
    })}));
  }
  log(b,text){b.events=[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text,who:this.state.role==='owner'?'Сергей':'Айдана'},...b.events];return b;}
- askBookingReason(b,to,cancel=false){
+ askBookingReason(b,to,cancel=false,kanban=false){
    if(!b||b.stage===to||ST[b.stage]?.type!=='open'||ST[to]?.type!=='fail')return;
-   this.setState({reasonDialog:{num:b.num,to,cancel,key:JSON.stringify([b.num,to])}});
+   this.setState({reasonDialog:{num:b.num,to,cancel,kanban,key:JSON.stringify([b.num,to])}});
  }
  setBookingReason(value){
    const dialog=this.state.reasonDialog;
@@ -1843,7 +1881,7 @@ class Component extends DCLogic {
      const canRefund=b.start!=null&&b.day*24+b.start-NOW_MIN/60>=this.bookedRules(b).cfg.cancelFreeDays*24;
      note=canRefund?'возврат предоплаты — задача администратору':'срок бесплатной отмены прошёл, сумму возврата нужно уточнить';
    }
-   if(!this.move(dialog.num,dialog.to,reason,note))return;
+   if(!this.move(dialog.num,dialog.to,{why:reason,note,kanban:dialog.kanban}))return;
    this.setState(s=>{
      const reasonDrafts={...s.reasonDrafts};
      delete reasonDrafts[dialog.key];
@@ -1851,7 +1889,7 @@ class Component extends DCLogic {
    });
    this.dismissBookingReason();
  }
- move(num,to,why,note=''){
+ move(num,to,{why,note='',kanban=false}={}){
    const b=this.state.bookings.find(x=>x.num===num),target=ST[to];
    if(!b||!target||b.stage===to)return false;
    const from=ST[b.stage];
@@ -1859,7 +1897,7 @@ class Component extends DCLogic {
      this.toast(`Из «${from.name}» переход недоступен: стадия закрытая`);return false;
    }
    if(target.type==='fail'&&!why?.trim()){
-     this.askBookingReason(b,to,to==='cancel'||to==='certLost');return false;
+     this.askBookingReason(b,to,to==='cancel'||to==='certLost',kanban);return false;
    }
    if(to==='confirmed'&&b.board==='sales'&&(!b.quote||this.paid(b)<this.price(b).prepay)){
      this.toast('Сначала зафиксируйте предоплату — тогда бронь станет подтверждённой');return false;
@@ -1872,6 +1910,7 @@ class Component extends DCLogic {
      if(to==='done')x.outAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;
      return x;
    });
+   if(kanban)this.toast(`Бронь перемещена · ${num} → «${target.name}»`,'success');
    return true;
  }
 
@@ -1879,7 +1918,7 @@ class Component extends DCLogic {
    this.setState(s=>s.clientId&&s.detailsLast==='guest'?{clientId:null}:{openId:null,rs:null});
  }
 
- toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
+ toast(t,tone='info'){this.setState({toast:t,toastTone:tone});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:'',toastTone:'info'}),2800);}
  componentDidMount(){
   this.syncNavigation(true);
   this._navigationChanged=()=>this.restoreNavigation();
@@ -1893,6 +1932,8 @@ class Component extends DCLogic {
    this.setState(s=>({nb:{...s.nb,calendarMonth:null}}));
    document.querySelector('#crm-booking-date-toggle')?.focus();
    return;
+  }if(e.key==='Escape'&&this.state.rs&&!this.state.nb){
+   this.cancelReschedule();return;
   }if(e.key==='Escape'&&this.state.openId&&this.state.clientId&&!this.state.nb){
    this.closeDetails();return;
   }if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
@@ -1997,7 +2038,14 @@ class Component extends DCLogic {
    if(restriction){this.toast(restriction);return;}
    const {house,day,start,dur}=this.rescheduleSlot(b,over);
    this.setState({openId:num,detailsLast:'booking',tab:'compose',search:'',calDropError:null,
-     rs:{house,date:dkey(day),start,dur,reason:'guest',notify:true,msg:null}});
+     rs:{house,date:dkey(day),start,dur,reason:'guest',notify:true,msg:null}},()=>{
+      const body=document.querySelector('.crm-booking-panel-body');
+      if(body)body.scrollTop=0;
+      document.querySelector('#crm-reschedule-heading')?.focus({preventScroll:true});
+    });
+ }
+ cancelReschedule(){
+   this.setState({rs:null},()=>document.querySelector('#crm-reschedule-trigger')?.focus({preventScroll:true}));
  }
  toggleExtra(b,id,q){if(id==='tub'){b.tub=!b.tub;return b;}b.qty={...(b.qty||{})};if(q!=null){b.qty[id]=Math.max(1,Math.min(QTY_MAX,q));return b;}if(b.services.includes(id)){b.services=b.services.filter(s=>s!==id);delete b.qty[id];}else{b.services.push(id);b.qty[id]=1;}return b;}
 
@@ -2099,7 +2147,7 @@ class Component extends DCLogic {
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
   const updCol=(id,patch)=>updB(x=>({...x,cols:x.cols.map(c=>c.id===id?{...c,...patch}:c)}));
   const columns=curB.cols.map((st,ci)=>{const all=filtered.filter(b=>b.stage===st.id);const closed=st.type!=='open';const shown=closed?all.filter(b=>b.day>=-7):all;const norm=+st.norm||0;
-   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';}};});
+   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);}};});
    const sum=all.reduce((a,b)=>a+(b.start!=null?this.price(b).total:0),0);const prev=curB.cols[ci-1],next=curB.cols[ci+1];
    const noLeft=closed||!prev||prev.type!=='open',noRight=closed||!next||next.type!=='open';
    let delWhy='';if(st.sys)delWhy='Системная стадия: на неё завязаны календарь, оплаты и уведомления. Переименовать и перекрасить можно, удалить — нет.';else if(closed)delWhy='Итоговый столбец нужен для отчётов «успех / провал». Переименовать можно, удалить — нет.';else if(ocount<=1)delWhy='На доске должен остаться хотя бы один рабочий столбец.';
@@ -2107,7 +2155,7 @@ class Component extends DCLogic {
    const swap=dir=>()=>updB(x=>{const cols=[...x.cols];const i=cols.findIndex(c=>c.id===st.id);const j=i+dir;[cols[i],cols[j]]=[cols[j],cols[i]];return {...x,cols};});
    return {name:st.name,editName:builtInName(st,BOARDS0.find(bd=>bd.id===curB.id)?.cols??[]),color:st.color,count:all.length,sum:sum?fmt(sum):'',cards,empty:!cards.length,arch:closed&&all.length>shown.length?`ещё ${all.length-shown.length} старше 7 дней — открыть списком`:'',
     bg:st.hl?hexA(st.color,.09):closed?'rgba(59,47,42,.03)':'rgba(10,47,79,.04)',border:st.hl?`1px solid ${hexA(st.color,.35)}`:closed?`1px dashed ${GR(.2)}`:'1px solid transparent',shadow:st.hl?`inset 0 4px 0 ${st.color}`:'none',
-    drop:e=>{e.preventDefault();if(this.drag){this.move(this.drag,st.id);this.drag=null;}},
+    drop:e=>{e.preventDefault();const num=this.drag;this.drag=null;if(num)this.move(num,st.id,{kanban:true});},
     rename:e=>updCol(st.id,{name:e.target.value}),swatches:PALETTE.map(([c,n])=>({c,name:n,ring:st.color===c?`0 0 0 2px #fff,0 0 0 4px ${c}`:'none',pick:()=>updCol(st.id,{color:c})})),
     hlBg:st.hl?'#C15C22':'rgba(59,47,42,.25)',hlLeft:st.hl?'16px':'2px',toggleHl:()=>updCol(st.id,{hl:!st.hl}),norm:st.norm===''||st.norm==null?'':String(st.norm),setNorm:e=>updCol(st.id,{norm:e.target.value===''?'':Math.max(0,+e.target.value||0)}),
     left:noLeft?()=>{}:swap(-1),right:noRight?()=>{}:swap(1),noLeft,noRight,leftOp:noLeft?.3:1,rightOp:noRight?.3:1,
@@ -2197,7 +2245,7 @@ class Component extends DCLogic {
    const bookCfg=this.bookedRules(b).cfg;const holdH=b.day===0?bookCfg.holdTodayH:bookCfg.holdH;const cl0=this.clientOf(b.phone);const cst=cl0?this.stats(cl0):null;const dl=this.discFor(cl0,b.day);
    ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:b.owner,initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,maxGuests:h?this.bookedRules(b).cats[h.cat].max:100,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`),{reprice:true})),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from?ddmm(pr.from):'—',originalPrice:b.originalQuote?fmt(b.originalQuote.total):'—',
     originalTariff:b.originalQuote?ddmm(b.originalQuote.from):'—',originalRows:b.originalQuote?.rows||[],
-    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:payClosed?'—':fmt(rest),restColor:rest&&!payClosed?'#C15C22':'#5E8C61',hasRest:!payClosed&&rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState(st=>({clientId:cl0.id,detailsLast:'guest',ctab:st.clientId===cl0.id?st.ctab:'profile'}));else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
+    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:payClosed?'—':fmt(rest),restColor:rest&&!payClosed?'#C15C22':'#5E8C61',hasRest:!payClosed&&rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!s.rs&&!this.rescheduleRestriction(b),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState(st=>({clientId:cl0.id,detailsLast:'guest',ctab:st.clientId===cl0.id?st.ctab:'profile'}));else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
    tabs=[['compose','Состав'],['pay','Оплата'],['visit','Визит'],['feed','Лента']].map(([id,name])=>({name,go:()=>this.setState({tab:id}),fg:s.tab===id?'#0A2F4F':GR(.6),line:s.tab===id?'#C15C22':'transparent'}));
    const canIn=['confirmed','prep'].includes(b.stage),canOut=b.stage==='inhouse';const extended={...b,dur:b.dur+1};
    const ext=b.start!=null&&!slotError(this.bookedRules(b),extended,{extension:true})&&
@@ -2392,14 +2440,17 @@ class Component extends DCLogic {
      return {when:`${dlabel(o.day)} ${hh(o.start)}–${hh(o.start+o.dur)} · ${o.dur} ч`,booking:`${o.num} ${o.guest}`,
        prep:prep?`${hh(o.start-prep)}–${hh(o.start)}`:''};
    });
-   rsv={occupancy,noOccupancy:!occupancy.length,prep:rsRules.cfg.prep,
-    selectedInterval:`${hh(+rs.start)}–${hh(+rs.start+ +rs.dur)} · ${rs.dur} ч`,title:b.start!=null?`Перенос ${b.num}`:`Дата и время ${b.num}`,was:b.start!=null?`${H[b.house]?H[b.house].name:''}, ${this.whenText(b)}`:'время не выбрано',house:rs.house,houseName:h2.name,date:rs.date,minDate:dkey(0),start:String(rs.start),dur:String(rs.dur),
+   const selectedInterval=`${hh(+rs.start)}–${hh(+rs.start+ +rs.dur)} · ${rs.dur} ч`;
+   const footerMessage=err||(same?'Выберите новое время, дату или дом.':`${h2.name} · ${dlabel(nd)} · ${selectedInterval}`);
+   rsv={occupancy,noOccupancy:!occupancy.length,prep:rsRules.cfg.prep,footerMessage,
+    pendingLabel:b.start!=null?'Перенос не сохранён':'Время не сохранено',
+    selectedInterval,title:b.start!=null?`Перенос ${b.num}`:`Дата и время ${b.num}`,was:b.start!=null?`${H[b.house]?H[b.house].name:''}, ${this.whenText(b)}`:'время не выбрано',house:rs.house,houseName:h2.name,date:rs.date,minDate:dkey(0),start:String(rs.start),dur:String(rs.dur),
     dayHint:isNaN(nd)?'—':(nd===0?'сегодня':nd>0?`через ${nd} дн.`:'прошла')+(isNaN(nd)?'':' · версия от '+ddmm(rsRules.from)),
     slots:slots.map(x=>({t:`${hh(x)}–${hh(x+nbx.dur)}`,pick:()=>this.setState({rs:{...s.rs,start:x}}),bg:x===+rs.start?'#0A2F4F':'#fff',fg:x===+rs.start?'#fff':'#0A2F4F'})),noSlots:!slots.length,
     alt:alt.map(h=>({name:h.name,pick:()=>this.setState({rs:{...s.rs,house:h.id}})})),hasAlt:!!alt.length&&!!cf,err,hasErr:!!err,
     priceText:oldP?`${fmt(oldP)} → ${fmt(newP)}`:fmt(newP),diffText,diffColor:diff>0?'#C15C22':diff<0?'#5E8C61':'#0A2F4F',reason:rs.reason,notify:!!rs.notify,msg,msgEdited:rs.msg!=null,resetMsg:()=>this.setState({rs:{...s.rs,msg:null}}),
-    saveLabel:same?'Ничего не изменилось':b.start!=null?'Сохранить перенос':'Сохранить время',cantSave:cant,saveOp:cant?.45:1,cancel:()=>this.setState({rs:null}),
-    save:()=>{if(cant||this.conflict(nbx,b.num)||slotError(rsRules,nbx,{future:true}))return;const was=b.start!=null?`${H[b.house].name} ${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'без времени';const now_=`${h2.name} ${dlabel(nd)} ${hh(+rs.start)}–${hh(+rs.start + +rs.dur)}`;const why={guest:'по просьбе гостя',admin:'решение администратора',tech:'технические причины'}[rs.reason];
+    saveLabel:b.start!=null?'Сохранить перенос':'Сохранить время',cancelLabel:b.start!=null?'Отменить перенос':'Отмена',cantSave:cant,cancel:()=>this.cancelReschedule(),
+    save:()=>{if(cant||this.state.rs!==rs||this.state.openId!==b.num||this.conflict(nbx,b.num)||slotError(rsRules,nbx,{future:true}))return;const was=b.start!=null?`${H[b.house].name} ${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'без времени';const now_=`${h2.name} ${dlabel(nd)} ${hh(+rs.start)}–${hh(+rs.start + +rs.dur)}`;const why={guest:'по просьбе гостя',admin:'решение администратора',tech:'технические причины'}[rs.reason];
      this.upd(b.num,x=>{const {house,day,start,dur,guests,tub}=nbx;Object.assign(x,{house,day,start,dur,guests,tub});if(b.start!=null)x.moves=(x.moves||0)+1;if(x.stage==='moved')x.stage='confirmed';this.log(x,`${b.start!=null?'Перенос':'Назначено время'} ${why}: ${was} → ${now_} · цена ${fmt(oldP)} → ${fmt(newP)}`);if(rs.notify)this.log(x,`Гостю отправлено в WhatsApp: «${msg}»`);return x;},{reprice:true,transfer:true});
      if(rs.notify)this.addMsg(b.phone,`Перенос ${b.num}: ${now_}`);this.setState({rs:null,tab:'feed'});this.toast(`${b.num}: ${now_}${rs.notify?' · гость уведомлён':''}`);}};}
   const rsSet=Object.fromEntries(['house','date','start','dur','reason','msg'].map(k=>[k,e=>{const v=e.target.value;this.setState(S=>{
@@ -2542,7 +2593,7 @@ class Component extends DCLogic {
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
-   calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
+   calendarKey:CAL_STATUS.filter(o=>o.id!=='all'),calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
@@ -2566,7 +2617,7 @@ class Component extends DCLogic {
    calcRows:cp?.rows||[],calcTotal:cp?fmt(cp.total):'—',calcPrepay:cp?fmt(cp.prepay):'—',cfgRows,
 
    templates,adminNotifs,sendLog,
-   hasOpen:!!b,bookingPanelClass:panelClass('booking'),ob,closeDetails:()=>this.closeDetails(),closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>this.move(b.num,e.target.value),stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
+   hasOpen:!!b,bookingPanelClass:panelClass('booking'),ob,closeDetails:()=>this.closeDetails(),closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>this.move(b.num,e.target.value),stageOpts,tabs,tab:rsOn?{}:{[s.tab]:true},edit:{guests:e=>{
     const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
     const error=capacityError({max},{...b,guests:v});if(error){this.toast(error);return;}
     this.upd(b.num,x=>this.log({...x,guests:+v},'Изменено число гостей · цена пересчитана'),{reprice:true});
@@ -2584,7 +2635,8 @@ class Component extends DCLogic {
    confirmReason:e=>{e?.preventDefault();this.confirmBookingReason();},
    addRest,hasNew:!!nb,nb:nb||{},nbDateLabel:Number.isInteger(nb?.day)?ddmm(dkey(nb.day)):'Выберите дату',nbCal,toggleNbCalendar,closeNbCalendar,pasteNbPhone,
    nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts,nbNoStarts,nbStartValue:nbNoStarts?'':nb?.start??'',nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
-   hasToast:!!s.toast,toast:s.toast,
+   hasToast:!!s.toast,toast:s.toast,toastSuccess:s.toastTone==='success',
+   toastClass:s.toastTone==='success'?'crm-toast crm-toast--success':'crm-toast',clearKanbanDrag:()=>{this.drag=null;},
    calMonthMode:()=>this.setState({calMode:'month'}),calIsMonth:s.calMode==='month',monthHead,monthCells,monthStats,calHouse:s.calHouse,setCalHouse:e=>this.setState({calHouse:e.target.value}),
    boardTabs,addBoard:()=>{const id='b'+Date.now();const cols=newCols();for(const c of cols)ST[c.id]={...c,board:id};this.setState(S=>({boards:[...S.boards,{id,name:'Новая доска',cols}],board:id,boardEdit:true,colDel:null,view:'kanban'}));this.toast('Доска создана — задайте название и столбцы');},
    boardEdit:s.boardEdit,toggleBoardEdit:()=>this.setState({boardEdit:!s.boardEdit,colDel:null,boardDelAsk:false,view:'kanban'}),boardEditLabel:s.boardEdit?'Идёт настройка':'Настроить доску',boardEditBg:s.boardEdit?'rgba(193,92,34,.1)':'#fff',boardEditFg:s.boardEdit?'#A84D1B':'#0A2F4F',boardEditBd:s.boardEdit?'rgba(193,92,34,.4)':'rgba(10,47,79,.15)',
