@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-tariffs-kz"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-crm-kz"></script>
 </head>
 <body>
 <x-dc>
@@ -163,7 +163,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <div style="border:1px solid rgba(10,47,79,.08);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:{{ p.bg }};">
               <div style="display:flex;align-items:center;gap:12px;">
                 <span style="width:36px;height:36px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;">{{ p.initial }}</span>
-                <div style="flex:1;min-width:0;"><div style="font-weight:600;">{{ p.guest }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ p.source }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ p.phone }} · {{ p.wish }}</div></div>
+                <div style="flex:1;min-width:0;"><div style="font-weight:600;">{{ p.guest }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ p.source }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ p.phone }} · <span data-shipa-no-translate>{{ p.wish }}</span></div></div>
                 <span style="font-size:13px;font-weight:600;color:{{ p.timerColor }};white-space:nowrap;">ждёт {{ p.wait }}</span>
               </div>
               <div style="display:flex;gap:8px;">
@@ -388,7 +388,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                 <div style="display:flex;flex-direction:column;gap:8px;padding:4px 2px 10px;border-bottom:1px solid rgba(10,47,79,.08);">
                   <div style="display:flex;gap:6px;align-items:center;">
                     <span style="width:10px;height:10px;border-radius:999px;background:{{ col.color }};flex:0 0 auto;"></span>
-                    <input value="{{ col.name }}" onChange="{{ col.rename }}" aria-label="Название столбца" style="flex:1;min-width:0;height:34px;border-radius:10px;border:1px solid rgba(10,47,79,.15);padding:0 10px;font-size:13px;font-weight:600;background:#fff;">
+                    <input value="{{ col.editName }}" onChange="{{ col.rename }}" aria-label="Название столбца" style="flex:1;min-width:0;height:34px;border-radius:10px;border:1px solid rgba(10,47,79,.15);padding:0 10px;font-size:13px;font-weight:600;background:#fff;">
                     <button onClick="{{ col.del }}" disabled="{{ col.noDel }}" title="{{ col.delWhy }}" aria-label="Удалить столбец" style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#B8432F;opacity:{{ col.delOpacity }};cursor:{{ col.delCursor }};flex:0 0 auto;" style-hover="background:rgba(184,67,47,.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path></svg></button>
                   </div>
                   <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -497,8 +497,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               <span style="padding:4px 10px;border-radius:999px;background:{{ r.stBg }};color:{{ r.stFg }};font-size:12px;font-weight:600;">{{ r.status }}</span>
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;"><sc-for list="{{ r.cats }}" as="c" hint-placeholder-count="2"><span style="padding:3px 10px;border-radius:999px;background:rgba(10,47,79,.06);font-size:12px;">{{ c }}</span></sc-for></div>
-            <p style="margin:0;font-size:15px;line-height:1.5;">{{ r.text }}</p>
-            <sc-if value="{{ r.hasReply }}" hint-placeholder-val="{{ false }}"><div style="border-left:2px solid #0A2F4F;padding:4px 0 4px 14px;font-size:14px;color:rgba(59,47,42,.9);"><b style="color:#0A2F4F;">Ответ SHIPÁ:</b> {{ r.reply }}</div></sc-if>
+            <p data-shipa-no-translate style="margin:0;font-size:15px;line-height:1.5;">{{ r.text }}</p>
+            <sc-if value="{{ r.hasReply }}" hint-placeholder-val="{{ false }}"><div style="border-left:2px solid #0A2F4F;padding:4px 0 4px 14px;font-size:14px;color:rgba(59,47,42,.9);"><b style="color:#0A2F4F;">Ответ SHIPÁ:</b> <span data-shipa-no-translate>{{ r.reply }}</span></div></sc-if>
             <sc-if value="{{ r.replying }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;gap:8px;"><textarea value="{{ r.draft }}" onChange="{{ r.setDraft }}" rows="2" placeholder="Ответ будет виден на сайте" style="flex:1;border:1px solid rgba(10,47,79,.2);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;"></textarea><button onClick="{{ r.sendReply }}" style="height:44px;padding:0 16px;border-radius:12px;background:#0A2F4F;color:#fff;font-weight:600;align-self:flex-end;">Отправить</button></div>
             </sc-if>
@@ -770,7 +770,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <label style="font-size:12px;color:rgba(59,47,42,.7);">Действует, дней<input type="number" min="1" value="{{ ce.giftDays }}" onChange="{{ ceSet.giftDays }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"></label>
           </div>
           <label style="font-size:12px;color:rgba(59,47,42,.7);">Текст RU<textarea value="{{ ce.ru }}" onChange="{{ ceSet.ru }}" rows="4" style="display:block;width:100%;margin-top:4px;border:1px solid rgba(10,47,79,.15);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45;resize:vertical;color:#0A2F4F;"></textarea></label>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:rgba(59,47,42,.7);">Вставить:<sc-for list="{{ ce.vars }}" as="v" hint-placeholder-count="6"><button onClick="{{ v.go }}" style="height:28px;padding:0 10px;border-radius:8px;background:rgba(10,47,79,.06);font-size:12px;font-weight:500;color:#0A2F4F;">{{ v.name }}</button></sc-for></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:rgba(59,47,42,.7);">Вставить:<sc-for list="{{ ce.vars }}" as="v" hint-placeholder-count="6"><button data-shipa-no-translate onClick="{{ v.go }}" style="height:28px;padding:0 10px;border-radius:8px;background:rgba(10,47,79,.06);font-size:12px;font-weight:500;color:#0A2F4F;">{{ v.name }}</button></sc-for></div>
           <label style="font-size:12px;color:rgba(59,47,42,.7);">Текст KZ <span style="color:#B8432F;">{{ ce.kzNote }}</span><textarea value="{{ ce.kz }}" onChange="{{ ceSet.kz }}" rows="3" style="display:block;width:100%;margin-top:4px;border:1px solid rgba(10,47,79,.15);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45;resize:vertical;color:#0A2F4F;"></textarea></label>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
             <sc-if value="{{ ce.isNow }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ce.sendNow }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;" style-hover="background:#A84D1B;">{{ ce.sendNowLabel }}</button></sc-if>
@@ -782,8 +782,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <div style="font-size:12px;color:rgba(59,47,42,.7);">Как увидит гость · {{ ce.sampleName }}</div>
           <div style="background:#ECE5DD;border-radius:16px;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:220px;">
             <div style="align-self:center;font-size:11px;background:rgba(255,255,255,.7);border-radius:8px;padding:3px 10px;color:rgba(59,47,42,.8);">{{ ce.sendAt }}</div>
-            <div style="background:#fff;border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:14px;line-height:1.45;color:#111;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-wrap;">{{ ce.preview }}<div style="font-size:11px;color:rgba(0,0,0,.45);text-align:right;margin-top:4px;">SHIPÁ · {{ ce.time }}</div></div>
-            <sc-if value="{{ ce.hasKz }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:14px;line-height:1.45;color:#111;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-wrap;"><span style="font-size:11px;font-weight:600;color:#5E8C61;">KZ · </span>{{ ce.previewKz }}</div></sc-if>
+            <div style="background:#fff;border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:14px;line-height:1.45;color:#111;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-wrap;"><span data-shipa-no-translate>{{ ce.preview }}</span><div style="font-size:11px;color:rgba(0,0,0,.45);text-align:right;margin-top:4px;">SHIPÁ · {{ ce.time }}</div></div>
+            <sc-if value="{{ ce.hasKz }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border-radius:4px 14px 14px 14px;padding:10px 12px;font-size:14px;line-height:1.45;color:#111;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-wrap;"><span style="font-size:11px;font-weight:600;color:#5E8C61;">KZ · </span><span data-shipa-no-translate>{{ ce.previewKz }}</span></div></sc-if>
           </div>
           <div style="font-size:12px;line-height:1.5;color:rgba(59,47,42,.75);">Гостю уходит текст на его языке: KZ — если язык гостя казахский и перевод заполнен, иначе RU. Маркетинговые сообщения WhatsApp Business отправляются по шаблону, одобренному Meta: после правки текста шаблон уходит на проверку, обычно до 24 часов.</div>
           <sc-if value="{{ ce.hasUpcoming }}" hint-placeholder-val="{{ false }}">
@@ -926,7 +926,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(10,47,79,.1);padding-top:10px;margin-top:4px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ ob.total }}</span></div>
           </div>
           <div style="font-size:13px;"><span style="color:rgba(59,47,42,.7);">Источник:</span> {{ ob.source }} · <span style="color:rgba(59,47,42,.7);">Согласие с правилами и ПД:</span> {{ ob.consent }}</div>
-          <sc-if value="{{ ob.hasComment }}" hint-placeholder-val="{{ false }}"><div style="border-left:2px solid #C15C22;padding:4px 0 4px 14px;font-size:14px;">Комментарий гостя: «{{ ob.comment }}»</div></sc-if>
+          <sc-if value="{{ ob.hasComment }}" hint-placeholder-val="{{ false }}"><div style="border-left:2px solid #C15C22;padding:4px 0 4px 14px;font-size:14px;">Комментарий гостя: «<span data-shipa-no-translate>{{ ob.comment }}</span>»</div></sc-if>
         </div>
       </sc-if>
 
@@ -1089,7 +1089,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <sc-for list="{{ cv.msgs }}" as="m" hint-placeholder-count="3">
           <div style="display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(10,47,79,.08);font-size:13px;">
             <span style="width:112px;flex:0 0 auto;color:rgba(59,47,42,.7);">{{ m.at }}</span>
-            <span style="flex:1;">{{ m.text }}</span>
+            <span data-shipa-no-translate style="flex:1;">{{ m.text }}</span>
             <span style="color:{{ m.color }};font-weight:600;white-space:nowrap;">{{ m.st }}</span>
           </div>
         </sc-for>
@@ -1273,6 +1273,8 @@ const versionAt=(versions,key)=>versions.findLast(v=>v.from<=key)||versions[0];
 const sessionRules=(st,day)=>versionAt(st.versions||[BASE_VERSION],dkey(day));
 const whole=(v,min,max)=>String(v??'').trim()!==''&&Number.isSafeInteger(+v)&&+v>=min&&+v<=max;
 const fieldValue=e=>e.target.value.trim();
+const uiText=value=>window.ShipaLocale?.text?.(value)??value;
+const builtInName=(item,defaults)=>defaults.some(base=>base.id===item.id&&base.name===item.name)?uiText(item.name):item.name;
 function isWE(version,di){
   return version.cfg.weekendDays.includes(dateAt(di).getDay())||!!holOn(version.holidays,di);
 }
@@ -1477,7 +1479,7 @@ class Component extends DCLogic {
  resetDemo(){
    if(this.state.role!=='owner')return;
    const message='Сбросить демоданные CRM? Брони, оплаты и тарифы вернутся к исходным.';
-   if(!window.confirm(window.ShipaLocale?.text?.(message)??message))return;
+   if(!window.confirm(uiText(message)))return;
    try{localStorage.removeItem(DEMO_KEY);window.location.reload();}
    catch(e){this.toast('Не удалось сбросить демоданные.');}
  }
@@ -1524,7 +1526,7 @@ class Component extends DCLogic {
   this.upd(num,x=>{this.log(x,`${from.name} → ${ST[to].name}${why?' · '+why:''} · пробыла ${ago(x.stageAt)}`);x.stage=to;x.stageAt=0;if(to==='inhouse')x.inAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;if(to==='done')x.outAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;return x;});}
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
  componentDidMount(){this._kd=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
-  this._localeChanged=()=>{if(this.state.screen==='tariffs')this.forceUpdate();};
+  this._localeChanged=()=>this.forceUpdate();
   window.addEventListener('shipa:localechange',this._localeChanged);
  }
  componentWillUnmount(){
@@ -1625,7 +1627,7 @@ class Component extends DCLogic {
    let delWhy='';if(st.sys)delWhy='Системная стадия: на неё завязаны календарь, оплаты и уведомления. Переименовать и перекрасить можно, удалить — нет.';else if(closed)delWhy='Итоговый столбец нужен для отчётов «успех / провал». Переименовать можно, удалить — нет.';else if(ocount<=1)delWhy='На доске должен остаться хотя бы один рабочий столбец.';
    const isDel=!!(s.colDel&&s.colDel.id===st.id);const moveOpts=curB.cols.filter(c=>c.id!==st.id).map(c=>({id:c.id,name:c.name}));
    const swap=dir=>()=>updB(x=>{const cols=[...x.cols];const i=cols.findIndex(c=>c.id===st.id);const j=i+dir;[cols[i],cols[j]]=[cols[j],cols[i]];return {...x,cols};});
-   return {name:st.name,color:st.color,count:all.length,sum:sum?fmt(sum):'',cards,empty:!cards.length,arch:closed&&all.length>shown.length?`ещё ${all.length-shown.length} старше 7 дней — открыть списком`:'',
+   return {name:st.name,editName:builtInName(st,BOARDS0.find(bd=>bd.id===curB.id)?.cols??[]),color:st.color,count:all.length,sum:sum?fmt(sum):'',cards,empty:!cards.length,arch:closed&&all.length>shown.length?`ещё ${all.length-shown.length} старше 7 дней — открыть списком`:'',
     bg:st.hl?hexA(st.color,.09):closed?'rgba(59,47,42,.03)':'rgba(10,47,79,.04)',border:st.hl?`1px solid ${hexA(st.color,.35)}`:closed?`1px dashed ${GR(.2)}`:'1px solid transparent',shadow:st.hl?`inset 0 4px 0 ${st.color}`:'none',
     drop:e=>{e.preventDefault();if(this.drag){this.move(this.drag,st.id);this.drag=null;}},
     rename:e=>updCol(st.id,{name:e.target.value}),swatches:PALETTE.map(([c,n])=>({c,name:n,ring:st.color===c?`0 0 0 2px #fff,0 0 0 4px ${c}`:'none',pick:()=>updCol(st.id,{color:c})})),
@@ -1638,7 +1640,7 @@ class Component extends DCLogic {
   const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open').length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false})};});
   const bCards=B.filter(b=>(b.board||'sales')===curB.id);
   const delWhyB=curB.main?'Основную доску удалить нельзя. Сначала сделайте основной другую доску.':curB.sys?'Доска броней связана с календарём, сайтом и оплатами — её нельзя удалить.':'';
-  const curBoard={name:curB.name,main:!!curB.main,noDel:!!delWhyB,delWhy:delWhyB||'Удалить доску',delOpacity:delWhyB?.4:1,delCursor:delWhyB?'not-allowed':'pointer',hint:curB.main?'Основная доска открывается первой у всех сотрудников, удалить её нельзя. У столбцов меняются название, цвет, подсветка, норматив и порядок.':delWhyB||'Пустой столбец удаляется сразу, из непустого карточки сначала переносятся в выбранный столбец.'};
+  const curBoard={name:builtInName(curB,BOARDS0),main:!!curB.main,noDel:!!delWhyB,delWhy:delWhyB||'Удалить доску',delOpacity:delWhyB?.4:1,delCursor:delWhyB?'not-allowed':'pointer',hint:curB.main?'Основная доска открывается первой у всех сотрудников, удалить её нельзя. У столбцов меняются название, цвет, подсветка, норматив и порядок.':delWhyB||'Пустой столбец удаляется сразу, из непустого карточки сначала переносятся в выбранный столбец.'};
   const failOf=b=>{if((b.board||'sales')==='sales')return 'cancel';const bd=boards.find(x=>x.id===b.board);const f=bd&&bd.cols.find(c=>c.type==='fail');return f?f.id:'cancel';};
   const sortIcon=k=>s.sort.k===k?(s.sort.d>0?'↑':'↓'):'';
   const listRows=[...filtered].sort((a,b)=>{const k=s.sort.k;const va=k==='num'?a.num:k==='sum'?this.price(a).total:(a.day*100+(a.start||0));const vb=k==='num'?b.num:k==='sum'?this.price(b).total:(b.day*100+(b.start||0));return (va>vb?1:va<vb?-1:0)*s.sort.d;}).map(b=>{const p=this.pill(b.stage);const pay=this.payInfo(b);return {num:b.num,guest:b.guest,phone:b.phone,house:H[b.house]?H[b.house].name:'—',when:b.start!=null?`${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'—',stage:ST[b.stage].name,pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,pay:pay.t,payColor:pay.c,sum:b.start!=null?fmt(this.price(b).total):'—',source:b.source,open:open(b.num)};});
@@ -1650,7 +1652,7 @@ class Component extends DCLogic {
   const rvFilters=[{id:'all',name:'Все'},{id:'pending',name:'На проверке'},{id:'published',name:'Опубликованы'},{id:'hidden',name:'Скрыты'},{id:'low',name:'Оценка ≤ 3'}].map(f=>({...f,bg:s.rvFilter===f.id?'#0A2F4F':'#fff',fg:s.rvFilter===f.id?'#fff':'#0A2F4F',go:()=>this.setState({rvFilter:f.id})}));
   const stMap={pending:['На проверке','rgba(217,164,65,.22)'],published:['Опубликован','rgba(94,140,97,.15)'],hidden:['Скрыт','rgba(59,47,42,.1)']};
   const updR=(id,fn)=>this.setState(st=>({reviews:st.reviews.map(r=>r.id===id?fn({...r}):r)}));
-  const reviewsView=rvs.filter(r=>s.rvFilter==='all'||(s.rvFilter==='low'?r.rating<=3:r.status===s.rvFilter)).map(r=>({...r,initial:r.guest[0],house:H[r.house].name,status:stMap[r.status][0],stBg:stMap[r.status][1],stFg:'#0A2F4F',ratingColor:r.rating<=3?'#B8432F':'#0A2F4F',low:r.rating<=3,hasReply:!!r.reply,canPublish:r.status!=='published',canHide:r.status!=='hidden',replying:s.rvReplying===r.id,draft:s.rvDraft[r.id]||'',setDraft:e=>this.setState({rvDraft:{...s.rvDraft,[r.id]:e.target.value}}),toggleReply:()=>this.setState({rvReplying:s.rvReplying===r.id?null:r.id}),sendReply:()=>{const t=(s.rvDraft[r.id]||'').trim();if(!t)return;updR(r.id,x=>{x.reply=t;return x;});this.setState({rvReplying:null});this.toast('Ответ сохранён и показан на сайте');},publish:()=>{updR(r.id,x=>{x.status='published';return x;});this.toast('Отзыв опубликован на сайте');},hide:()=>{const why=window.prompt('Причина скрытия');if(why==null)return;updR(r.id,x=>{x.status='hidden';x.hideReason=why;return x;});this.toast('Отзыв скрыт · причина записана в аудит');}}));
+  const reviewsView=rvs.filter(r=>s.rvFilter==='all'||(s.rvFilter==='low'?r.rating<=3:r.status===s.rvFilter)).map(r=>({...r,initial:r.guest[0],house:H[r.house].name,status:stMap[r.status][0],stBg:stMap[r.status][1],stFg:'#0A2F4F',ratingColor:r.rating<=3?'#B8432F':'#0A2F4F',low:r.rating<=3,hasReply:!!r.reply,canPublish:r.status!=='published',canHide:r.status!=='hidden',replying:s.rvReplying===r.id,draft:s.rvDraft[r.id]||'',setDraft:e=>this.setState({rvDraft:{...s.rvDraft,[r.id]:e.target.value}}),toggleReply:()=>this.setState({rvReplying:s.rvReplying===r.id?null:r.id}),sendReply:()=>{const t=(s.rvDraft[r.id]||'').trim();if(!t)return;updR(r.id,x=>{x.reply=t;return x;});this.setState({rvReplying:null});this.toast('Ответ сохранён и показан на сайте');},publish:()=>{updR(r.id,x=>{x.status='published';return x;});this.toast('Отзыв опубликован на сайте');},hide:()=>{const why=window.prompt(uiText('Причина скрытия'));if(why==null)return;updR(r.id,x=>{x.status='hidden';x.hideReason=why;return x;});this.toast('Отзыв скрыт · причина записана в аудит');}}));
   // тарифы
   const readOnly=!owner;
   const selectedVersion=s.versions.find(v=>v.from===s.tarView)||todayRules;
@@ -1722,7 +1724,7 @@ class Component extends DCLogic {
    const canIn=['confirmed','prep'].includes(b.stage),canOut=b.stage==='inhouse';const extended={...b,dur:b.dur+1};
    const ext=b.start!=null&&!slotError(this.bookedRules(b),extended,{extension:true})&&
      !slotError(this.rules(b.day),extended,{extension:true})&&!this.conflict(extended,b.num);
-   visitActions=[{name:'Гость заехал',hint:canIn?'→ Гость в доме':'',dis:!canIn,go:()=>this.move(b.num,'inhouse')},{name:'Гость уехал',hint:canOut?'→ Визит завершён':'',dis:!canOut,go:()=>this.move(b.num,'done')},{name:'Продлить на 1 ч',hint:ext?'следующий слот свободен':'время недоступно',dis:!canOut||!ext,go:()=>{if(!canOut||!ext)return;this.upd(b.num,x=>{x.dur+=1;return this.log(x,'Продление на 1 ч · цена пересчитана');},{reprice:true});}},{name:'Неявка',hint:'начало + 1 ч без заезда',dis:!canIn||b.day!==0||b.start*60+60>NOW_MIN,go:()=>{const why=window.prompt('Причина неявки');if(why==null)return;this.move(b.num,'noshow',why);}}].map(a=>({...a,opacity:a.dis?.45:1,bg:'#fff',fg:'#0A2F4F'}));
+   visitActions=[{name:'Гость заехал',hint:canIn?'→ Гость в доме':'',dis:!canIn,go:()=>this.move(b.num,'inhouse')},{name:'Гость уехал',hint:canOut?'→ Визит завершён':'',dis:!canOut,go:()=>this.move(b.num,'done')},{name:'Продлить на 1 ч',hint:ext?'следующий слот свободен':'время недоступно',dis:!canOut||!ext,go:()=>{if(!canOut||!ext)return;this.upd(b.num,x=>{x.dur+=1;return this.log(x,'Продление на 1 ч · цена пересчитана');},{reprice:true});}},{name:'Неявка',hint:'начало + 1 ч без заезда',dis:!canIn||b.day!==0||b.start*60+60>NOW_MIN,go:()=>{const why=window.prompt(uiText('Причина неявки'));if(why==null)return;this.move(b.num,'noshow',why);}}].map(a=>({...a,opacity:a.dis?.45:1,bg:'#fff',fg:'#0A2F4F'}));
    methods=['Kaspi','Карта','Наличные','Перевод'].map(m=>({name:m,bg:s.pf.method===m?'#0A2F4F':'#fff',fg:s.pf.method===m?'#fff':'#0A2F4F',pick:()=>this.setState({pf:{...s.pf,method:m}})}));
    stageOpts=(boards.find(x=>x.id===(b.board||'sales'))||curB).cols.map(x=>({id:x.id,name:x.name}));
   }
@@ -1787,7 +1789,7 @@ class Component extends DCLogic {
   const loy={bdayPct:String(LY.bdayPct),bdayDays:String(LY.bdayDays),rate:String(LY.rate),bg:readOnly?'#F6F3EE':'#fff',
    stackOpts:[['max','большая из двух'],['sum','сложить']].map(([id,name])=>({name,bg:LY.stack===id?'#fff':'transparent',fg:LY.stack===id?'#0A2F4F':GR(.7),go:()=>setL({stack:id})})),
    tiers:tiersSorted.map((t,i)=>({
-    name:LOY0.tiers.some(base=>base.id===t.id&&base.name===t.name)?window.ShipaLocale?.text?.(t.name)??t.name:t.name,
+    name:builtInName(t,LOY0.tiers),
     color:t.color,from:String(t.from),pct:String(t.pct),fromLocked:readOnly||i===0,fromTitle:i===0?'Первый уровень — с нуля баллов':'',fromBg:readOnly||i===0?'#F6F3EE':'#fff',
     count:(()=>{const n=s.clients.filter(c=>this.loyal(c).tier.id===t.id).length;return `${n} ${pl(n,'гость','гостя','гостей')}`;})(),
     setName:e=>{const name=fieldValue(e);if(name)setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,name}:x)});},
@@ -1915,7 +1917,7 @@ class Component extends DCLogic {
    const offs=(sel.kind==='birthday'?[0,1,3,7,14]:[0,1,3,7,14,30,45]);if(!offs.includes(+sel.offset))offs.push(+sel.offset);
    const sendAt=sel.kind==='now'?'сейчас':sel.kind==='birthday'?(si.up[0]?`${whenDays(si.up[0].send)}, ${sel.time}`:sel.time):si.sendOff>=0?`${dlabel(si.sendOff)}, ${sel.time}`:sel.time;
    const noC=CS.filter(x=>!x.c.consent).length;const varList=['{имя}','{скидка}','{подарок}','{срок}','{ссылка}'].concat(sel.kind==='holiday'?['{праздник}','{дата}']:[]);
-   ce={name:sel.name,kinds:KINDS.map(([id,name])=>({name,bg:sel.kind===id?'#fff':'transparent',fg:sel.kind===id?'#0A2F4F':GR(.7),go:()=>updK(sel.id,{kind:id,holiday:sel.holiday||(s.holidays[0]&&s.holidays[0].id),date:sel.date||dkey(7)})})),
+   ce={name:builtInName(sel,CAMPAIGNS0),kinds:KINDS.map(([id,name])=>({name,bg:sel.kind===id?'#fff':'transparent',fg:sel.kind===id?'#0A2F4F':GR(.7),go:()=>updK(sel.id,{kind:id,holiday:sel.holiday||(s.holidays[0]&&s.holidays[0].id),date:sel.date||dkey(7)})})),
     isHoliday:sel.kind==='holiday',isDate:sel.kind==='date',isNow:sel.kind==='now',hasOffset:sel.kind==='birthday'||sel.kind==='holiday',hasTime:sel.kind!=='now',holiday:sel.holiday||'',date:sel.date||'',minDate:dkey(0),offset:String(+sel.offset||0),offsetOpts:offs.map(v=>({v:String(v),name:offTxt(v,sel.kind)})),time:sel.time,
     aud:AUD.map(([id,name])=>{const on=(sel.aud||[]).includes(id);return {name,bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.15)',go:()=>updK(sel.id,{aud:on?sel.aud.filter(x=>x!==id):[...(sel.aud||[]),id]})};}),
     audText:`Получат ${gw(si.rec.length)} из ${CS.length}${noC?` · ${noC} без согласия не получат`:''}${sel.kind==='birthday'?` · дней рождения в ближайшие 30 дней: ${si.up.length}`:''}${!(sel.aud||[]).length?' · фильтры не выбраны — все с согласием':''}`,
@@ -1971,7 +1973,7 @@ class Component extends DCLogic {
    calcRows:cp?.rows||[],calcTotal:cp?fmt(cp.total):'—',calcPrepay:cp?fmt(cp.prepay):'—',cfgRows,
 
    templates,adminNotifs,sendLog,
-   hasOpen:!!b,ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>{const to=e.target.value;if(ST[to]&&ST[to].type==='fail'){const why=window.prompt('Причина (обязательно)');if(!why)return;this.move(b.num,to,why);}else this.move(b.num,to);},stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
+   hasOpen:!!b,ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>{const to=e.target.value;if(ST[to]&&ST[to].type==='fail'){const why=window.prompt(uiText('Причина (обязательно)'));if(!why)return;this.move(b.num,to,why);}else this.move(b.num,to);},stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
     const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
     const error=capacityError({max},{...b,guests:v});if(error){this.toast(error);return;}
     this.upd(b.num,x=>this.log({...x,guests:+v},'Изменено число гостей · цена пересчитана'),{reprice:true});
@@ -1979,7 +1981,7 @@ class Component extends DCLogic {
     const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
     const error=capacityError({max},{guests:b.guests||1,kids:v});if(error){this.toast(error);return;}
     this.upd(b.num,x=>({...x,kids:+v}));
-   }},pf:s.pf,pfSet,methods,fixPay,sendPayLink:()=>{this.upd(b.num,x=>this.log(x,`Ссылка на оплату ${fmt(this.price(x).prepay)} отправлена в WhatsApp`));if(['new','contact'].includes(b.stage))this.move(b.num,'prepay');this.toast('Ссылка отправлена гостю');},visitActions,noteDraft:s.note,setNote:e=>this.setState({note:e.target.value}),addNote:()=>{if(!s.note.trim())return;this.upd(b.num,x=>this.log(x,'Комментарий: '+s.note.trim()));this.setState({note:''});},primary,cancelBooking:()=>{const why=window.prompt('Причина отмены');if(!why)return;const refund=b.start!=null&&b.day*24+b.start-NOW_MIN/60>=this.bookedRules(b).cfg.cancelFreeDays*24;this.move(b.num,failOf(b),why+(this.paid(b)>0?(refund?' · возврат предоплаты — задача администратору':' · срок бесплатной отмены прошёл, сумму возврата нужно уточнить'):''));},
+   }},pf:s.pf,pfSet,methods,fixPay,sendPayLink:()=>{this.upd(b.num,x=>this.log(x,`Ссылка на оплату ${fmt(this.price(x).prepay)} отправлена в WhatsApp`));if(['new','contact'].includes(b.stage))this.move(b.num,'prepay');this.toast('Ссылка отправлена гостю');},visitActions,noteDraft:s.note,setNote:e=>this.setState({note:e.target.value}),addNote:()=>{if(!s.note.trim())return;this.upd(b.num,x=>this.log(x,'Комментарий: '+s.note.trim()));this.setState({note:''});},primary,cancelBooking:()=>{const why=window.prompt(uiText('Причина отмены'));if(!why)return;const refund=b.start!=null&&b.day*24+b.start-NOW_MIN/60>=this.bookedRules(b).cfg.cancelFreeDays*24;this.move(b.num,failOf(b),why+(this.paid(b)>0?(refund?' · возврат предоплаты — задача администратору':' · срок бесплатной отмены прошёл, сумму возврата нужно уточнить'):''));},
    addRest,hasNew:!!nb,nb:nb||{},nbDate:Number.isInteger(nb?.day)?dkey(nb.day):'',
    nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts:startOptions(nbRules),nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
    hasToast:!!s.toast,toast:s.toast,
