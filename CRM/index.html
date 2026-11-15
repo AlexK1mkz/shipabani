@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-cancel"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-booking"></script>
 </head>
 <body>
 <x-dc>
@@ -50,6 +50,26 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-reason-action{min-height:44px;padding:8px 14px;border:1px solid #BCCAD3;border-radius:10px;font-weight:600;}
   .crm-reason-confirm{border-color:#A44131;background:#A44131;color:#fff;}
   .crm-reason-confirm:disabled{opacity:.5;cursor:default;}
+  .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
+  .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
+  .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
+  .crm-booking-warning--missing{background:#FAEDD6;color:#66440F;}
+  .crm-booking-date{position:relative;min-width:0;}
+  .crm-booking-date-button{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;text-align:left;}
+  .crm-booking-date-button svg{flex-shrink:0;}
+  .crm-booking-calendar{position:absolute;top:100%;left:0;z-index:2;width:300px;max-width:calc(100vw - 64px);padding:12px;margin-top:6px;border:1px solid #D5E0E7;border-radius:14px;background:#fff;box-shadow:0 12px 30px rgba(10,47,79,.16);font-size:12px;}
+  .crm-booking-calendar-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
+  .crm-booking-calendar-head button{width:32px;height:32px;border:1px solid #D5E0E7;border-radius:8px;font-size:16px;}
+  .crm-booking-calendar-head button:disabled{opacity:.4;cursor:default;}
+  .crm-booking-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center;}
+  .crm-booking-calendar-grid button{min-height:32px;border-radius:7px;border:1px solid transparent;font-weight:600;}
+  .crm-booking-calendar-grid button[aria-pressed="true"]{border-color:#0A2F4F;box-shadow:inset 0 0 0 1px #0A2F4F;}
+  .crm-calendar-free{background:#E9F4EA;color:#235A34;}
+  .crm-calendar-free:hover{background:#D5EBDD;}
+  .crm-calendar-busy{background:#FBEAE7;color:#862D22;cursor:not-allowed;}
+  .crm-calendar-past{background:#F2F4F5;color:#536375;cursor:not-allowed;}
+  .crm-booking-calendar-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;font-size:11px;}
+  .crm-booking-calendar-legend span{padding:2px 6px;border-radius:5px;}
   .tariff-card{background:#fff;border-radius:20px;padding:20px;min-width:0;}
   .tariff-label{display:grid;gap:5px;font-size:12px;color:rgba(59,47,42,.85);}
   .tariff-input{width:100%;min-width:0;min-height:38px;border-radius:10px;border:1px solid rgba(10,47,79,.2);padding:6px 8px;background:#fff;font-size:14px;}
@@ -969,6 +989,9 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <div style="background:#F6F3EE;border-radius:16px;padding:14px;"><div style="font-size:12px;color:rgba(59,47,42,.7);">Оплачено</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1.1;color:#5E8C61;">{{ ob.paid }}</div></div>
             <div style="background:#F6F3EE;border-radius:16px;padding:14px;"><div style="font-size:12px;color:rgba(59,47,42,.7);">Остаток</div><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1.1;color:{{ ob.restColor }};">{{ ob.rest }}</div></div>
           </div>
+          <sc-if value="{{ payClosed }}" hint-placeholder-val="{{ false }}">
+            <div class="crm-booking-warning crm-booking-warning--missing" role="status">Приём оплаты по закрытой брони недоступен.</div>
+          </sc-if>
           <sc-if value="{{ ob.hasRest }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:10px;border:1px solid rgba(193,92,34,.35);background:rgba(193,92,34,.06);border-radius:16px;padding:12px 14px;">
               <div style="font-size:13px;color:rgba(59,47,42,.8);">Гость доплачивает на месте — один клик, и остаток попадёт в выручку дня.<div style="display:flex;gap:6px;margin-top:8px;"><sc-for list="{{ methods }}" as="m" hint-placeholder-count="4"><button onClick="{{ m.pick }}" style="height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:12px;font-weight:500;background:{{ m.bg }};color:{{ m.fg }};">{{ m.name }}</button></sc-for></div></div>
@@ -977,25 +1000,27 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           </sc-if>
           <div>
             <div style="font-size:12px;color:rgba(59,47,42,.7);margin-bottom:6px;">Платежи</div>
-            <sc-if value="{{ ob.noPays }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(59,47,42,.7);padding:8px 0;">Платежей нет. Предоплата {{ ob.prepayNeed }} удерживает слот до {{ ob.holdUntil }}.</div></sc-if>
+            <sc-if value="{{ ob.noPays }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(59,47,42,.7);padding:8px 0;">Платежей нет.<sc-if value="{{ payOpen }}" hint-placeholder-val="{{ true }}"> Предоплата {{ ob.prepayNeed }} удерживает слот до {{ ob.holdUntil }}.</sc-if></div></sc-if>
             <sc-for list="{{ ob.pays }}" as="p" hint-placeholder-count="1">
               <div style="display:flex;align-items:center;gap:12px;height:48px;border-top:1px solid rgba(10,47,79,.08);font-size:13px;"><span style="font-weight:600;width:110px;">{{ p.sum }}</span><span>{{ p.type }}</span><span style="color:rgba(59,47,42,.7);">{{ p.method }}</span><span style="margin-left:auto;color:rgba(59,47,42,.7);">{{ p.at }} · {{ p.who }}</span></div>
             </sc-for>
           </div>
+          <sc-if value="{{ showPayForm }}" hint-placeholder-val="{{ true }}">
           <div style="border:1px solid rgba(10,47,79,.12);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
-            <div style="font-weight:600;">Зафиксировать оплату</div>
+            <div style="font-weight:600;">{{ payFormTitle }}</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <label style="font-size:12px;color:rgba(59,47,42,.7);">Сумма, ₸<input type="number" value="{{ pf.sum }}" onChange="{{ pfSet.sum }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
-              <label style="font-size:12px;color:rgba(59,47,42,.7);">Тип<select value="{{ pf.type }}" onChange="{{ pfSet.type }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><option value="Предоплата">Предоплата</option><option value="Остаток">Остаток</option><option value="Полная">Полная</option><option value="Возврат">Возврат</option></select></label>
+              <sc-if value="{{ payOpen }}" hint-placeholder-val="{{ true }}"><label style="font-size:12px;color:rgba(59,47,42,.7);">Тип<select value="{{ pf.type }}" onChange="{{ pfSet.type }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><option value="Предоплата">Предоплата</option><option value="Остаток">Остаток</option><option value="Полная">Полная</option><option value="Возврат">Возврат</option></select></label></sc-if>
             </div>
             <div style="display:flex;gap:6px;">
               <sc-for list="{{ methods }}" as="m" hint-placeholder-count="4"><button onClick="{{ m.pick }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;font-weight:500;background:{{ m.bg }};color:{{ m.fg }};">{{ m.name }}</button></sc-for>
             </div>
             <div style="display:flex;gap:8px;margin-top:4px;">
-              <button onClick="{{ fixPay }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;" style-hover="background:#A84D1B;">Зафиксировать</button>
-              <button onClick="{{ sendPayLink }}" style="height:44px;padding:0 16px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Отправить ссылку на оплату</button>
+              <button onClick="{{ submitPayment }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;" style-hover="background:#A84D1B;">Зафиксировать</button>
+              <sc-if value="{{ payOpen }}" hint-placeholder-val="{{ true }}"><button onClick="{{ sendPayLink }}" style="height:44px;padding:0 16px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Отправить ссылку на оплату</button></sc-if>
             </div>
           </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -1137,14 +1162,39 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div style="display:flex;align-items:center;"><h2 style="font-size:20px;font-weight:600;margin:0;">Новая бронь</h2><span style="margin-left:12px;font-size:13px;color:rgba(59,47,42,.7);">цена считается движком сайта</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Телефон<input value="{{ nb.phone }}" onChange="{{ nbSet.phone }}" placeholder="+7 7__ ___ __ __" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+        <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Телефон<input type="tel" autocomplete="tel" value="{{ nb.phone }}" onChange="{{ nbSet.phone }}" onPaste="{{ pasteNbPhone }}" placeholder="+7 7__ ___ __ __" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Имя <span style="color:#C15C22;">*</span><input value="{{ nb.first }}" onChange="{{ nbSet.first }}" placeholder="Данил" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Фамилия <span style="color:#C15C22;">*</span><input value="{{ nb.last }}" onChange="{{ nbSet.last }}" placeholder="Ковалёв" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Отчество <span style="color:rgba(59,47,42,.5);">· по желанию</span><input value="{{ nb.middle }}" onChange="{{ nbSet.middle }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <sc-if value="{{ hasNbKnown }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;font-size:12px;color:#3F6B43;background:rgba(94,140,97,.12);border-radius:10px;padding:8px 12px;">{{ nbKnown }}</div></sc-if>
         <sc-if value="{{ hasNbSugg }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;display:flex;flex-direction:column;gap:4px;"><div style="font-size:12px;color:rgba(59,47,42,.7);">Найдены гости с таким номером — выберите, чтобы подставить ФИО</div><sc-for list="{{ nbSugg }}" as="g" hint-placeholder-count="2"><button onClick="{{ g.pick }}" style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:10px;border:1px solid rgba(10,47,79,.12);text-align:left;font-size:13px;" style-hover="background:rgba(10,47,79,.06);"><span style="font-weight:600;flex:1;">{{ g.name }}</span><span style="color:rgba(59,47,42,.7);">{{ g.phone }} · {{ g.hint }}</span></button></sc-for></div></sc-if>
         <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ nb.house }}" onChange="{{ nbSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Дата<input class="tariff-input" type="date" min="{{ demoDate }}" value="{{ nbDate }}" onChange="{{ nbSet.day }}"></label>
+        <div class="crm-booking-date">
+          <span id="crm-booking-date-label" style="font-size:12px;color:rgba(59,47,42,.7);">Дата</span>
+          <button type="button" id="crm-booking-date-toggle" class="tariff-input crm-booking-date-button" aria-labelledby="crm-booking-date-label crm-booking-date-value" aria-expanded="{{ nbCal.expanded }}" aria-controls="crm-booking-calendar" onClick="{{ toggleNbCalendar }}">
+            <span id="crm-booking-date-value">{{ nbDateLabel }}</span>
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+          </button>
+          <sc-if value="{{ nbCal.show }}" hint-placeholder-val="{{ false }}">
+            <div id="crm-booking-calendar" class="crm-booking-calendar" role="group" aria-label="Календарь доступности">
+              <div class="crm-booking-calendar-head">
+                <button type="button" aria-label="Предыдущий месяц" onClick="{{ nbCal.prev }}" disabled="{{ nbCal.prevDisabled }}">‹</button>
+                <strong aria-live="polite">{{ nbCal.title }}</strong>
+                <button type="button" aria-label="Следующий месяц" onClick="{{ nbCal.next }}">›</button>
+              </div>
+              <div class="crm-booking-calendar-grid">
+                <sc-for list="{{ nbCal.weekdays }}" as="w"><span>{{ w }}</span></sc-for>
+                <sc-for list="{{ nbCal.cells }}" as="d">
+                  <sc-if value="{{ d.blank }}" hint-placeholder-val="{{ false }}"><span></span></sc-if>
+                  <sc-if value="{{ d.day }}" hint-placeholder-val="{{ true }}"><button type="button" class="{{ d.css }}" aria-label="{{ d.label }}" title="{{ d.label }}" aria-pressed="{{ d.selected }}" disabled="{{ d.disabled }}" onClick="{{ d.pick }}">{{ d.day }}</button></sc-if>
+                </sc-for>
+              </div>
+              <div class="crm-booking-calendar-legend">
+                <span class="crm-calendar-free">Есть свободное время</span><span class="crm-calendar-busy">Нет свободного времени</span><span class="crm-calendar-past">Прошедшая дата</span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ nb.start }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ nb.dur }}" onChange="{{ nbSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbDurs }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
         <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей / детей<span style="display:flex;gap:6px;margin-top:4px;"><input type="number" min="1" max="{{ nbMaxGuests }}" value="{{ nb.guests }}" onChange="{{ nbSet.guests }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"><input type="number" min="0" value="{{ nb.kids }}" onChange="{{ nbSet.kids }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
@@ -1162,18 +1212,20 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </div>
       <sc-if value="{{ nbHasDisc }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" checked="{{ nbDiscOn }}" onChange="{{ nbSet.discOn }}" style="width:18px;height:18px;accent-color:#C15C22;">Скидка гостя: <b>{{ nbDiscLabel }}</b></label></sc-if>
       <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" checked="{{ nb.paid }}" onChange="{{ nbSet.paid }}" style="width:18px;height:18px;accent-color:#C15C22;">Предоплата уже получена (наличные)</label>
-      <sc-if value="{{ hasNbMissing }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(217,164,65,.16);border-radius:12px;padding:12px 14px;font-size:13px;color:#7A5A12;">{{ nbMissing }}</div></sc-if>
-      <sc-if value="{{ nbConflict }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(184,67,47,.1);border-radius:12px;padding:12px 14px;font-size:13px;color:#B8432F;">{{ nbConflictText }}</div></sc-if>
     </div>
-    <div style="background:#F6F3EE;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;font-size:13px;align-self:start;">
+    <aside class="crm-booking-summary">
       <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.08em;">{{ nbHouseName }}</div>
       <div style="font-size:12px;color:rgba(59,47,42,.7);margin-bottom:6px;">{{ nbWhen }}</div>
+      <div id="crm-booking-warnings" aria-live="polite">
+        <sc-if value="{{ nbConflict }}" hint-placeholder-val="{{ false }}"><div class="crm-booking-warning crm-booking-warning--conflict">{{ nbConflictText }}</div></sc-if>
+        <sc-if value="{{ hasNbMissing }}" hint-placeholder-val="{{ false }}"><div class="crm-booking-warning crm-booking-warning--missing" style="margin-top:4px;">{{ nbMissing }}</div></sc-if>
+      </div>
       <sc-for list="{{ nbRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(59,47,42,.85);">{{ r.l }}</span><span style="white-space:nowrap;">{{ r.v }}</span></div></sc-for>
       <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(10,47,79,.1);padding-top:10px;margin-top:4px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ nbTotal }}</span></div>
       <div style="display:flex;justify-content:space-between;color:rgba(59,47,42,.7);"><span>Предоплата</span><span>{{ nbPrepay }}</span></div>
-      <button onClick="{{ createBooking }}" disabled="{{ nbDisabled }}" style="margin-top:12px;height:48px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;font-size:15px;opacity:{{ nbBtnOpacity }};" style-hover="background:#A84D1B;">Создать бронь</button>
+      <button onClick="{{ createBooking }}" disabled="{{ nbDisabled }}" aria-describedby="crm-booking-warnings" style="margin-top:12px;height:48px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;font-size:15px;opacity:{{ nbBtnOpacity }};" style-hover="background:#A84D1B;">Создать бронь</button>
       <button onClick="{{ closeNew }}" style="height:40px;border-radius:12px;font-weight:500;color:rgba(10,47,79,.7);">Отмена</button>
-    </div>
+    </aside>
   </div>
 </sc-if>
 
@@ -1229,6 +1281,7 @@ const STAGES=[
 {id:'moved',name:'Перенесена',color:GR(.25),type:'fail'},
 {id:'noshow',name:'Неявка',color:GR(.25),type:'fail'}];
 const ST=Object.fromEntries(STAGES.map(s=>[s.id,s]));
+const paymentsClosed=b=>ST[b.stage]?.type==='fail';
 const fmt=n=>Math.round(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ')+' ₸';
 const hh=h=>String(((h%24)+24)%24).padStart(2,'0')+':00';
 const DOW=['вс','пн','вт','ср','чт','пт','сб'];const MON=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
@@ -1299,6 +1352,8 @@ const bdAge=k=>{const y=+String(k).split('-')[0];if(!y||y<1900)return null;retur
 const whenDays=n=>n===0?'сегодня':n===1?'завтра':n<7?`через ${n} ${n<5?'дня':'дней'}`:dlabel(n);
 const pl=(n,a,b_,c)=>{n=Math.abs(Math.round(n));const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<10||h>=20)?b_:c;};
 const normP=x=>String(x||'').replace(/\D/g,'');
+const BOOKING_PHONE_PREFIX='+7';
+const bookingPhone=value=>normP(value).length>1?String(value).trim():'';
 const tmin=t=>{const [h,m]=String(t).split(':').map(Number);return h*60+(m||0);};
 const fillT=(t,v)=>String(t||'').replace(/\{([^}]+)\}/g,(m,k)=>v[k]!=null&&v[k]!==''?v[k]:m);
 const fmtK=n=>n>=1e6?(n/1e6).toFixed(1).replace('.',',')+' млн':n>=1e3?Math.round(n/1e3)+' тыс':String(n);
@@ -1631,7 +1686,11 @@ class Component extends DCLogic {
  }
 
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
- componentDidMount(){this._kd=e=>{if(this.state.reasonDialog)return;if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
+ componentDidMount(){this._kd=e=>{if(this.state.reasonDialog)return;if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
+   this.setState(s=>({nb:{...s.nb,calendarMonth:null}}));
+   document.querySelector('#crm-booking-date-toggle')?.focus();
+   return;
+  }if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
   this._localeChanged=()=>this.forceUpdate();
   window.addEventListener('shipa:localechange',this._localeChanged);
  }
@@ -1650,10 +1709,27 @@ class Component extends DCLogic {
   return {bs,visits:vis.length+(c.hist||0),spent,avg:nv?visPaid/nv:0,last,favH,rating,upcoming,first:bs.length?Math.min(...bs.map(b=>b.day)):null};}
  freeSlot(pref,day=0){const cfg=this.rules(day).cfg;const from=day===0?NOW.getHours()+cfg.leadH+(NOW.getMinutes()?1:0):cfg.open;const order=[pref,...HOUSES.filter(h=>!h.soon&&h.id!==pref).map(h=>h.id)].filter(Boolean);
   for(const house of order)for(let x=Math.max(cfg.open,from);x<=cfg.lastStart;x++){if(!this.conflict({house,day,start:x,dur:cfg.minH}))return {house,start:x};}return {house:pref||'dyhanie',start:Math.min(cfg.lastStart,Math.max(cfg.open,from))};}
+ availableStarts(day,house,dur){
+   const rules=this.rules(day);
+   const starts=[];
+   for(let start=rules.cfg.open;start<=rules.cfg.lastStart;start++){
+     const slot={day,house,start,dur,guests:1,kids:0};
+     if(!slotError(rules,slot,{future:true})&&!this.conflict(slot))starts.push(start);
+   }
+   return starts;
+ }
+ pickBookingDay(day){
+   const nb=this.state.nb;
+   if(!nb)return;
+   const starts=this.availableStarts(day,nb.house,+nb.dur);
+   if(!starts.length)return;
+   const start=starts.includes(+nb.start)?+nb.start:starts[0];
+   this.setState({nb:{...nb,day,start,calendarMonth:null}});
+ }
  newNb(o={}){
    const day=o.day??0,rules=this.rules(day);
    const slot=o.start==null?this.freeSlot(o.house||'dyhanie',day):{house:o.house,start:o.start};
-   return {phone:'',last:'',first:'',middle:'',day,dur:rules.cfg.minH,guests:Math.min(4,rules.cats[H[slot.house].cat].max),kids:0,services:[],paid:false,...o,...slot,tub:false};
+   return {phone:BOOKING_PHONE_PREFIX,last:'',first:'',middle:'',day,dur:rules.cfg.minH,guests:Math.min(4,rules.cats[H[slot.house].cat].max),kids:0,services:[],paid:false,...o,...slot,tub:false};
  }
  loyal(c,st){const L=this.state.loyalty;st=st||this.stats(c);const pts=Math.floor(st.spent/100*(+L.rate||0));const tiers=[...L.tiers].sort((a,b)=>a.from-b.from);let tier=tiers[0];for(const t of tiers)if(pts>=t.from)tier=t;const next=tiers.find(t=>t.from>pts);return {pts,tier,next};}
  discFor(c,day){if(!c)return [];const L=this.state.loyalty;const {tier}=this.loyal(c);const out=[];if(tier&&+tier.pct)out.push({id:'tier',label:tier.name,pct:+tier.pct});const n=bdNext(c.birthday);if(c.birthday&&+L.bdayPct){const [,m,d]=c.birthday.split('-').map(Number);const dd=dateAt(day||0);let best=999;for(const y of [dd.getFullYear()-1,dd.getFullYear(),dd.getFullYear()+1]){best=Math.min(best,Math.abs(offOf(new Date(y,m-1,d))-(day||0)));}if(best<=+L.bdayDays)out.push({id:'bday',label:'день рождения',pct:+L.bdayPct});}
@@ -1817,15 +1893,15 @@ class Component extends DCLogic {
   const adminNotifs=[{name:'Новая заявка',ch:'push · Telegram'},{name:'Оплата поступила',ch:'push'},{name:'Оценка ≤ 3',ch:'Telegram · собственнику'},{name:'Просрочка стадии',ch:'push'},{name:'Утренняя сводка 09:30',ch:'WhatsApp · этап 2'}];
   const sendLog=[{t:'14:02',text:'Инна · запрос оценки запланирован на 16:02',st:'в очереди',color:GR(.6)},{t:'13:00',text:'Елена · напоминание за 2 ч',st:'доставлено',color:'#5E8C61'},{t:'12:48',text:'Нурлан · ссылка на оплату',st:'прочитано',color:'#5E8C61'},{t:'10:30',text:'Бауыржан · заявка принята',st:'доставлено',color:'#5E8C61'},{t:'09:15',text:'Арман · спасибо за оценку',st:'ошибка SMS',color:'#B8432F'}];
   // карточка брони
-  const b=B.find(x=>x.num===s.openId);let ob={},tabs=[],visitActions=[],primary={name:'',go:()=>{},dis:true,opacity:.5},methods=[],stageOpts=[];
+  const b=B.find(x=>x.num===s.openId);const payClosed=!!b&&paymentsClosed(b);let ob={},tabs=[],visitActions=[],primary={name:'',go:()=>{},dis:true,opacity:.5},methods=[],stageOpts=[];
   if(b){const h=H[b.house];const pr=this.price(b);const paidSum=this.paid(b);const rest=Math.max(0,pr.total-paidSum);const p=this.pill(b.stage);const vip=h&&cats[h.cat].tier==='VIP';
    const gName=b.first||b.guest;const waText=encodeURIComponent({new:`${gName}, здравствуйте! Это SHIPÁ. Получили вашу заявку, подскажите удобное время?`,prepay:`${gName}, чтобы закрепить ${h?h.name:'дом'}, внесите предоплату ${fmt(pr.prepay)}: kaspi.kz/pay/shipa`,confirmed:`${gName}, ждём вас ${b.start!=null?dlabel(b.day)+' в '+hh(b.start):''} в ${h?h.name:''}. Адрес: 2gis.kz/karaganda`}[b.stage]||`${gName}, здравствуйте! Это SHIPÁ.`);
    let stNext;if((b.board||'sales')==='sales')stNext={new:['contact','Связались'],contact:['prepay','Отправить ссылку на оплату'],prepay:['confirmed','Предоплата получена'],confirmed:['prep','Начать подготовку'],prep:['inhouse','Гость заехал'],inhouse:['done','Гость уехал'],done:['review','Оценка получена'],review:[null,'Закрыта успешно']}[b.stage]||[null,'Стадия закрыта'];else{const bd=boards.find(x=>x.id===b.board)||curB;const i=bd.cols.findIndex(c=>c.id===b.stage);const nx=bd.cols[i+1];stNext=ST[b.stage]&&ST[b.stage].type==='open'&&nx?[nx.id,'Дальше: '+nx.name]:[null,'Стадия закрыта'];}
-   primary={name:stNext[1],dis:!stNext[0],opacity:stNext[0]?1:.5,go:()=>{if(!stNext[0])return;if(stNext[0]==='confirmed'){this.setState({tab:'pay'});this.toast('Зафиксируйте предоплату — стадия сменится автоматически');return;}if(stNext[0]==='prepay'){this.move(b.num,'prepay');this.upd(b.num,x=>this.log(x,'Ссылка на оплату отправлена в WhatsApp'));return;}this.move(b.num,stNext[0]);}};
+   primary={name:stNext[1],dis:!stNext[0],opacity:stNext[0]?1:.5,go:()=>{if(!stNext[0])return;if(stNext[0]==='confirmed'){this.setState({tab:'pay'});this.toast('Зафиксируйте предоплату — стадия сменится автоматически');return;}if(stNext[0]==='prepay'){sendPayLink();return;}this.move(b.num,stNext[0]);}};
    const bookCfg=this.bookedRules(b).cfg;const holdH=b.day===0?bookCfg.holdTodayH:bookCfg.holdH;const cl0=this.clientOf(b.phone);const cst=cl0?this.stats(cl0):null;const dl=this.discFor(cl0,b.day);
    ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:b.owner,initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,maxGuests:h?this.bookedRules(b).cats[h.cat].max:100,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`),{reprice:true})),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from?ddmm(pr.from):'—',originalPrice:b.originalQuote?fmt(b.originalQuote.total):'—',
     originalTariff:b.originalQuote?ddmm(b.originalQuote.from):'—',originalRows:b.originalQuote?.rows||[],
-    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:fmt(rest),restColor:rest?'#C15C22':'#5E8C61',hasRest:rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState({clientId:cl0.id,ctab:'profile',openId:null,rs:null});else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
+    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:payClosed?'—':fmt(rest),restColor:rest&&!payClosed?'#C15C22':'#5E8C61',hasRest:!payClosed&&rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState({clientId:cl0.id,ctab:'profile',openId:null,rs:null});else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
    tabs=[['compose','Состав'],['pay','Оплата'],['visit','Визит'],['feed','Лента']].map(([id,name])=>({name,go:()=>this.setState({tab:id}),fg:s.tab===id?'#0A2F4F':GR(.6),line:s.tab===id?'#C15C22':'transparent'}));
    const canIn=['confirmed','prep'].includes(b.stage),canOut=b.stage==='inhouse';const extended={...b,dur:b.dur+1};
    const ext=b.start!=null&&!slotError(this.bookedRules(b),extended,{extension:true})&&
@@ -1835,34 +1911,89 @@ class Component extends DCLogic {
    stageOpts=(boards.find(x=>x.id===(b.board||'sales'))||curB).cols.map(x=>({id:x.id,name:x.name}));
   }
   const pfSet={sum:e=>this.setState({pf:{...s.pf,sum:e.target.value}}),type:e=>this.setState({pf:{...s.pf,type:e.target.value}})};
-  const addRest=()=>{if(!b)return;const r=Math.max(0,this.price(b).total-this.paid(b));if(!r){this.toast('Остатка нет — бронь оплачена полностью');return;}const m=s.pf.method;this.upd(b.num,x=>{x.pays.push({sum:r,type:'Остаток',method:m,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});this.log(x,`Оплата остаток ${fmt(r)} · ${m}`);return x;});this.setState({pf:{sum:'',type:'Остаток',method:m}});this.toast(`Остаток ${fmt(r)} · ${m} зафиксирован — выручка дня обновлена`);};
-  const fixPay=()=>{
-    if(!b)return;
-    const type=s.pf.type;
-    const price=this.price(b),paid=this.paid(b);
-    const limit=type==='Возврат'?paid:Math.max(0,price.total-paid);
-    const suggested=type==='Возврат'?0:type==='Предоплата'?Math.min(limit,Math.max(0,price.prepay-paid)):limit;
-    const raw=s.pf.sum.trim()||suggested;
+  const currentPaymentBooking=()=>this.state.bookings.find(x=>x.num===b?.num);
+  const blockedPayment=()=>this.toast('Приём оплаты по закрытой брони недоступен.');
+  const sendPayLink=()=>{
+    const current=currentPaymentBooking();
+    if(!current)return;
+    if(paymentsClosed(current)){blockedPayment();return;}
+    this.upd(current.num,x=>this.log(x,`Ссылка на оплату ${fmt(this.price(x).prepay)} отправлена в WhatsApp`));
+    if(['new','contact'].includes(current.stage))this.move(current.num,'prepay');
+    this.toast('Ссылка отправлена гостю');
+  };
+  const addRest=()=>{
+    const current=currentPaymentBooking();
+    if(!current)return;
+    if(paymentsClosed(current)){blockedPayment();return;}
+    const rest=Math.max(0,this.price(current).total-this.paid(current));
+    if(!rest){this.toast('Остатка нет — бронь оплачена полностью');return;}
+    const method=this.state.pf.method;
+    this.upd(current.num,x=>{
+      x.pays.push({sum:rest,type:'Остаток',method,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});
+      return this.log(x,`Оплата остаток ${fmt(rest)} · ${method}`);
+    });
+    this.setState({pf:{sum:'',type:'Остаток',method}});
+    this.toast(`Остаток ${fmt(rest)} · ${method} зафиксирован — выручка дня обновлена`);
+  };
+  const fixPay=(type=this.state.pf.type)=>{
+    const current=currentPaymentBooking();
+    if(!current)return;
+    const refund=type==='Возврат';
+    if(!refund&&paymentsClosed(current)){blockedPayment();return;}
+    const price=this.price(current),paid=this.paid(current);
+    const limit=refund?paid:Math.max(0,price.total-paid);
+    const suggested=refund?0:type==='Предоплата'?Math.min(limit,Math.max(0,price.prepay-paid)):limit;
+    const {method,sum:entered}=this.state.pf;
+    const raw=entered.trim()||suggested;
     if(!whole(raw,1,limit)){
-      this.toast(type==='Возврат'?'Укажите сумму возврата в пределах оплаты.':'Укажите положительную сумму в пределах остатка.');
+      this.toast(refund?'Укажите сумму возврата в пределах оплаты.':'Укажите положительную сумму в пределах остатка.');
       return;
     }
     const sum=+raw;
-    this.upd(b.num,x=>{
-      x.pays.push({sum,type,method:s.pf.method,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});
-      this.log(x,`Оплата ${type.toLowerCase()} ${fmt(sum)} · ${s.pf.method}`);
-      if(x.quote&&type!=='Возврат'&&['new','contact','prepay'].includes(x.stage)&&this.paid(x)>=price.prepay){
+    this.upd(current.num,x=>{
+      x.pays.push({sum,type,method,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});
+      this.log(x,`Оплата ${type.toLowerCase()} ${fmt(sum)} · ${method}`);
+      if(x.quote&&!refund&&['new','contact','prepay'].includes(x.stage)&&this.paid(x)>=price.prepay){
         x.stage='confirmed';x.stageAt=0;this.log(x,'Предоплата получена → Подтверждена');
       }
       return x;
     });
-    this.setState({pf:{sum:'',type:'Остаток',method:s.pf.method}});
-    this.toast(`Оплата ${fmt(sum)} зафиксирована`);
+    this.setState({pf:{sum:'',type:'Остаток',method}});
+    this.toast(refund?`Возврат ${fmt(sum)} зафиксирован`:`Оплата ${fmt(sum)} зафиксирована`);
   };
 
   // новая бронь
   const nb=s.nb;let nbRows=[],nbTotal='',nbPrepay='',nbHouseName='',nbWhen='',nbExtras=[],nbConflict=false,nbConflictText='',nbKnown='',nbSugg=[],nbMissing='';
   const nbRules=this.rules(nb?.day??0);
+  const nbCal={show:nb?.calendarMonth!=null,expanded:String(nb?.calendarMonth!=null)};
+  const firstMonth=day=>offOf(new Date(dateAt(day).getFullYear(),dateAt(day).getMonth(),1));
+  if(nbCal.show){
+    const month=dateAt(nb.calendarMonth);
+    const shift=n=>offOf(new Date(month.getFullYear(),month.getMonth()+n,1));
+    const lead=(month.getDay()+6)%7;
+    const days=dateAt(shift(1)-1).getDate();
+    Object.assign(nbCal,{
+      title:`${MONF[month.getMonth()]} ${month.getFullYear()}`,
+      weekdays:['пн','вт','ср','чт','пт','сб','вс'],
+      prevDisabled:nb.calendarMonth<=firstMonth(0),
+      prev:()=>{if(nb.calendarMonth>firstMonth(0))this.setState({nb:{...nb,calendarMonth:shift(-1)}});},
+      next:()=>this.setState({nb:{...nb,calendarMonth:shift(1)}}),
+      cells:Array.from({length:lead+days},(_,i)=>{
+        if(i<lead)return {blank:true};
+        const day=nb.calendarMonth+i-lead,past=day<0;
+        const available=!past&&this.availableStarts(day,nb.house,+nb.dur).length>0;
+        return {
+          day:i-lead+1,css:past?'crm-calendar-past':available?'crm-calendar-free':'crm-calendar-busy',
+          disabled:!available,selected:String(day===nb.day),
+          label:ddmm(dkey(day))+' · '+(past?'Прошедшая дата':available?'Есть свободное время':'Нет свободного времени'),
+          pick:()=>this.pickBookingDay(day)
+        };
+      })
+    });
+  }
+  const toggleNbCalendar=()=>this.setState(S=>({
+    nb:{...S.nb,calendarMonth:S.nb.calendarMonth==null?firstMonth(Math.max(0,+S.nb.day||0)):null}
+  }));
   if(nb){const kcD=normP(nb.phone).length>9?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const nbB={...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:kcD&&nb.discOn!==false?kcD:null};const problem=slotError(nbRules,nbB,{future:true});
    const pr=problem?null:this.price(nbB);
    nbRows=pr?.rows||[];nbTotal=pr?fmt(pr.total):'—';nbPrepay=pr?fmt(pr.prepay):'—';
@@ -1877,17 +2008,21 @@ class Component extends DCLogic {
    if(!String(nb.last||'').trim()||!String(nb.first||'').trim())nbMissing='Укажите фамилию и имя гостя — так не перепутаем однофамильцев и тёзок.';
 
   }
-  const nbSet=Object.fromEntries(['phone','last','first','middle','house','day','start','dur','guests','kids'].map(k=>[k,e=>{const v=e.target.value;this.setState(st=>{const n={...st.nb,[k]:k==='day'?keyOff(v):v};
-    if(k==='day'&&Number.isInteger(n.day)){
-      const dayCfg=this.rules(n.day).cfg;
-      if(!whole(n.start,dayCfg.open,dayCfg.lastStart))n.start=dayCfg.open;
-      if(!whole(n.dur,dayCfg.minH,dayCfg.maxH)||+n.start+ +n.dur>dayCfg.close)n.dur=dayCfg.minH;
-    }
+  const nbSet=Object.fromEntries(['phone','last','first','middle','house','start','dur','guests','kids'].map(k=>[k,e=>{const v=e.target.value;this.setState(st=>{const n={...st.nb,[k]:v};
     if(k==='phone'){const c=normP(v).length>9?st.clients.find(x=>normP(x.phone)===normP(v)):null;if(c&&!String(n.first||'').trim()&&!String(n.last||'').trim()){n.last=c.last||'';n.first=c.first||c.name;n.middle=c.middle||'';}}if(k==='house')n.tub=false;return {nb:n};});}]));nbSet.paid=e=>this.setState({nb:{...nb,paid:e.target.checked}});nbSet.discOn=e=>this.setState({nb:{...nb,discOn:e.target.checked}});
-  const createBooking=()=>{if(!nb||nbConflict)return;if(nbMissing){this.toast(nbMissing);return;}const fio={last:String(nb.last).trim(),first:String(nb.first).trim(),middle:String(nb.middle||'').trim()};const fullName=fioOf(fio);const known=B.find(x=>norm(x.phone)===norm(nb.phone));const dsc=normP(nb.phone).length>9&&nb.discOn!==false?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const pr=this.price({...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:dsc});const num=`№ ${SEQ++}`;const who=owner?'Сергей':'Айдана';
-   const kc2=this.clientOf(nb.phone);const nbk=mk({num,guest:fullName,first:fio.first,phone:nb.phone||'—',house:nb.house,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,kids:+nb.kids,tub:nb.tub,services:nb.services,qty:{...(nb.qty||{})},disc:dsc,stage:nb.paid||!pr.prepay?'confirmed':'prepay',stageAt:0,source:'администратор',visits:known?(known.visits||0)+1:0,created:stamp(0,NOW.getHours(),NOW.getMinutes()),ev:[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text:`Бронь создана администратором из календаря · ${fmt(pr.total)}`,who}]});
+  const pasteNbPhone=e=>{
+    if(e.target.value.trim()!==BOOKING_PHONE_PREFIX)return;
+    const value=e.clipboardData?.getData('text').trim()||'';
+    const digits=normP(value);
+    if((value.startsWith('+')&&digits.length>1)||/^[78]\d{10}$/.test(digits)){
+      e.preventDefault();
+      nbSet.phone({target:{value:value.startsWith('+')?value:'+7'+digits.slice(1)}});
+    }
+  };
+  const createBooking=()=>{if(!nb||nbConflict)return;if(nbMissing){this.toast(nbMissing);return;}const phone=bookingPhone(nb.phone);const fio={last:String(nb.last).trim(),first:String(nb.first).trim(),middle:String(nb.middle||'').trim()};const fullName=fioOf(fio);const known=B.find(x=>norm(x.phone)===norm(phone));const dsc=normP(phone).length>9&&nb.discOn!==false?this.bestDisc(this.discFor(this.clientOf(phone),+nb.day)):null;const pr=this.price({...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:dsc});const num=`№ ${SEQ++}`;const who=owner?'Сергей':'Айдана';
+   const kc2=this.clientOf(phone);const nbk=mk({num,guest:fullName,first:fio.first,phone:phone||'—',house:nb.house,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,kids:+nb.kids,tub:nb.tub,services:nb.services,qty:{...(nb.qty||{})},disc:dsc,stage:nb.paid||!pr.prepay?'confirmed':'prepay',stageAt:0,source:'администратор',visits:known?(known.visits||0)+1:0,created:stamp(0,NOW.getHours(),NOW.getMinutes()),ev:[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text:`Бронь создана администратором из календаря · ${fmt(pr.total)}`,who}]});
    if(nb.paid&&pr.prepay>0){nbk.pays=[{sum:pr.prepay,type:'Предоплата',method:'Наличные',at:stamp(0,NOW.getHours(),NOW.getMinutes()),who}];nbk.events.unshift({at:nbk.created,text:`Предоплата ${fmt(pr.prepay)} · наличные → Подтверждена`,who});}
-   this.setState(st=>({bookings:[withQuote(nbk,nbRules),...st.bookings],nb:null,openId:num,tab:'compose',clients:normP(nb.phone).length>9&&!st.clients.some(c=>normP(c.phone)===normP(nb.phone))?[...st.clients,CL('c'+Date.now(),fio.first,nb.phone,{...fio,source:'администратор',consent:false})]:st.clients.map(c=>normP(c.phone)===normP(nb.phone)&&(!c.last||(!c.middle&&fio.middle))?(()=>{const u={...c,last:c.last||fio.last,first:c.first||fio.first,middle:c.middle||fio.middle};u.name=fioOf(u);return u;})():c)}));this.toast(`${num} создана · слот занят в CRM`);};
+   this.setState(st=>({bookings:[withQuote(nbk,nbRules),...st.bookings],nb:null,openId:num,tab:'compose',clients:normP(phone).length>9&&!st.clients.some(c=>normP(c.phone)===normP(phone))?[...st.clients,CL('c'+Date.now(),fio.first,phone,{...fio,source:'администратор',consent:false})]:st.clients.map(c=>normP(c.phone)===normP(phone)&&(!c.last||(!c.middle&&fio.middle))?(()=>{const u={...c,last:c.last||fio.last,first:c.first||fio.first,middle:c.middle||fio.middle};u.name=fioOf(u);return u;})():c)}));this.toast(`${num} создана · слот занят в CRM`);};
 
   // скидки и лояльность
   const LY=s.loyalty;const setL=patch=>{if(this.state.role!=='owner')return;this.setState(S=>({loyalty:{...S.loyalty,...patch}}));};
@@ -2101,12 +2236,15 @@ class Component extends DCLogic {
     const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
     const error=capacityError({max},{guests:b.guests||1,kids:v});if(error){this.toast(error);return;}
     this.upd(b.num,x=>({...x,kids:+v}));
-   }},pf:s.pf,pfSet,methods,fixPay,sendPayLink:()=>{this.upd(b.num,x=>this.log(x,`Ссылка на оплату ${fmt(this.price(x).prepay)} отправлена в WhatsApp`));if(['new','contact'].includes(b.stage))this.move(b.num,'prepay');this.toast('Ссылка отправлена гостю');},visitActions,noteDraft:s.note,setNote:e=>this.setState({note:e.target.value}),addNote:()=>{if(!s.note.trim())return;this.upd(b.num,x=>this.log(x,'Комментарий: '+s.note.trim()));this.setState({note:''});},primary,cancelDisabled:!b||ST[b.stage]?.type!=='open',cancelOpacity:b&&ST[b.stage]?.type==='open'?1:.5,cancelBooking:()=>this.askBookingReason(b,failOf(b),true),
+   }},pf:s.pf,pfSet,methods,fixPay,sendPayLink,
+   payClosed,payOpen:!payClosed,showPayForm:!!b&&(!payClosed||this.paid(b)>0),
+   payFormTitle:payClosed?'Зафиксировать возврат':'Зафиксировать оплату',
+   submitPayment:()=>payClosed?fixPay('Возврат'):fixPay(),visitActions,noteDraft:s.note,setNote:e=>this.setState({note:e.target.value}),addNote:()=>{if(!s.note.trim())return;this.upd(b.num,x=>this.log(x,'Комментарий: '+s.note.trim()));this.setState({note:''});},primary,cancelDisabled:!b||ST[b.stage]?.type!=='open',cancelOpacity:b&&ST[b.stage]?.type==='open'?1:.5,cancelBooking:()=>this.askBookingReason(b,failOf(b),true),
    reasonOn:!!reasonInfo,reasonInfo:reasonInfo||{},
    setReason:e=>this.setBookingReason(e.target.value),
    dismissReason:e=>{e?.preventDefault();this.dismissBookingReason();},
    confirmReason:e=>{e?.preventDefault();this.confirmBookingReason();},
-   addRest,hasNew:!!nb,nb:nb||{},nbDate:Number.isInteger(nb?.day)?dkey(nb.day):'',
+   addRest,hasNew:!!nb,nb:nb||{},nbDateLabel:Number.isInteger(nb?.day)?ddmm(dkey(nb.day)):'Выберите дату',nbCal,toggleNbCalendar,pasteNbPhone,
    nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts:startOptions(nbRules),nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
    hasToast:!!s.toast,toast:s.toast,
    calMonthMode:()=>this.setState({calMode:'month'}),calIsMonth:s.calMode==='month',monthHead,monthCells,monthStats,calHouse:s.calHouse,setCalHouse:e=>this.setState({calHouse:e.target.value}),
