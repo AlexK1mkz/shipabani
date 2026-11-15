@@ -29,6 +29,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-nav-label{flex:1;min-width:0;overflow-wrap:anywhere;}
   .crm-nav-badge{flex-shrink:0;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#9D481A;color:#fff;font-size:12px;font-weight:600;display:grid;place-items:center;}
   .crm-nav-item[aria-current="page"] .crm-nav-badge{background:#F9EFE3;color:#0A2F4F;}
+  .crm-nav-links{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;overflow:auto;padding:2px;}
+  .crm-nav-footer{flex:0 0 auto;margin-top:auto;padding-top:8px;border-top:1px solid rgba(10,47,79,.08);}
+  .crm-nav-pin{width:calc(100% - 4px);margin:0 2px 4px;font-size:13px;}
+  .crm-nav-pin[aria-pressed="true"]{background:#EAF0F4;color:#0A2F4F;font-weight:600;}
+  .crm-nav-pin[aria-pressed="true"]:hover{background:#DDE8EF;}
+  .crm-nav-links .crm-nav-item:focus-visible,.crm-nav-pin:focus-visible{outline-offset:-2px;}
   .tariff-card{background:#fff;border-radius:20px;padding:20px;min-width:0;}
   .tariff-label{display:grid;gap:5px;font-size:12px;color:rgba(59,47,42,.85);}
   .tariff-input{width:100%;min-width:0;min-height:38px;border-radius:10px;border:1px solid rgba(10,47,79,.2);padding:6px 8px;background:#fff;font-size:14px;}
@@ -54,18 +60,24 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
 <!-- Боковое меню -->
 <nav onMouseEnter="{{ navEnter }}" onMouseLeave="{{ navLeave }}" style="width:{{ navW }};flex:0 0 auto;background:#fff;border-right:1px solid rgba(10,47,79,.08);display:flex;flex-direction:column;padding:16px 12px;gap:4px;transition:width 200ms ease-out;overflow:hidden;z-index:5;">
-  <div style="display:flex;align-items:center;gap:12px;height:48px;padding:0 8px;margin-bottom:16px;">
+  <div style="display:flex;align-items:center;gap:12px;height:48px;flex:0 0 auto;padding:0 8px;margin-bottom:12px;">
     <img src="brand/mark-navy.png" alt="SHIPA" style="width:32px;height:32px;object-fit:contain;flex:0 0 auto;">
-    <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.08em;white-space:nowrap;">SHIPÁ CRM</div><button onClick="{{ togglePin }}" title="{{ pinTitle }}" aria-label="{{ pinTitle }}" style="margin-left:auto;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:{{ pinFg }};background:{{ pinBg }};flex:0 0 auto;" style-hover="background:rgba(10,47,79,.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"></path></svg></button></sc-if>
+    <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.08em;white-space:nowrap;">SHIPÁ CRM</div></sc-if>
   </div>
-  <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
-    <button onClick="{{ n.go }}" title="{{ n.name }}" aria-label="{{ n.name }}" aria-current="{{ n.current }}" class="crm-nav-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="{{ n.icon }}"></path></svg>
-      <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-label">{{ n.name }}</span></sc-if>
-      <sc-if value="{{ n.badgeShow }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-badge">{{ n.badge }}</span></sc-if>
+  <div class="crm-nav-links">
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+      <button onClick="{{ n.go }}" title="{{ n.name }}" aria-label="{{ n.name }}" aria-current="{{ n.current }}" class="crm-nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="{{ n.icon }}"></path></svg>
+        <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-label">{{ n.name }}</span></sc-if>
+        <sc-if value="{{ n.badgeShow }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-badge">{{ n.badge }}</span></sc-if>
+      </button>
+    </sc-for>
+  </div>
+  <div class="crm-nav-footer">
+    <button onClick="{{ togglePin }}" title="{{ pinTitle }}" aria-label="Закрепить панель" aria-pressed="{{ pinPressed }}" class="crm-nav-item crm-nav-pin">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"></path></svg>
+      <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-label">{{ pinTitle }}</span></sc-if>
     </button>
-  </sc-for>
-  <div style="margin-top:auto;border-top:1px solid rgba(10,47,79,.08);padding-top:12px;">
     <button onClick="{{ toggleRole }}" title="Переключить роль" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 6px;border-radius:12px;width:100%;text-align:left;" style-hover="background:rgba(10,47,79,.06);">
       <span style="width:36px;height:36px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;flex:0 0 auto;">{{ roleInitial }}</span>
       <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span style="white-space:nowrap;"><span style="display:block;font-weight:600;font-size:13px;">{{ roleName }}</span><span style="display:block;font-size:12px;color:rgba(59,47,42,.7);">{{ roleLabel }} · сменить</span></span></sc-if>
@@ -1948,7 +1960,7 @@ class Component extends DCLogic {
    return {name:c.name,initial:c.name[0],when:whenDays(n),age:age?`${age} ${pl(age,'год','года','лет')}`:'',st,stColor:col,open:()=>this.setState({clientId:c.id,ctab:'profile'}),wa:'https://wa.me/'+normP(c.phone)};});
   const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen;
   return {nav,navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
-   togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinFg:pinned?'#fff':'rgba(10,47,79,.6)',pinBg:pinned?'#0A2F4F':'transparent',
+   togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
