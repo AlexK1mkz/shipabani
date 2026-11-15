@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-nav"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-tariffs-kz"></script>
 </head>
 <body>
 <x-dc>
@@ -1475,7 +1475,9 @@ class Component extends DCLogic {
    catch(e){this.toast('Не удалось сохранить демоданные в браузере.');}
  }
  resetDemo(){
-   if(this.state.role!=='owner'||!window.confirm('Сбросить демоданные CRM? Брони, оплаты и тарифы вернутся к исходным.'))return;
+   if(this.state.role!=='owner')return;
+   const message='Сбросить демоданные CRM? Брони, оплаты и тарифы вернутся к исходным.';
+   if(!window.confirm(window.ShipaLocale?.text?.(message)??message))return;
    try{localStorage.removeItem(DEMO_KEY);window.location.reload();}
    catch(e){this.toast('Не удалось сбросить демоданные.');}
  }
@@ -1521,8 +1523,14 @@ class Component extends DCLogic {
   if(to==='confirmed'&&b.board==='sales'&&(!b.quote||this.paid(b)<this.price(b).prepay)){this.toast('Сначала зафиксируйте предоплату — тогда бронь станет подтверждённой');return;}
   this.upd(num,x=>{this.log(x,`${from.name} → ${ST[to].name}${why?' · '+why:''} · пробыла ${ago(x.stageAt)}`);x.stage=to;x.stageAt=0;if(to==='inhouse')x.inAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;if(to==='done')x.outAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;return x;});}
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
- componentDidMount(){this._kd=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);}
- componentWillUnmount(){window.removeEventListener('keydown',this._kd);}
+ componentDidMount(){this._kd=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
+  this._localeChanged=()=>{if(this.state.screen==='tariffs')this.forceUpdate();};
+  window.addEventListener('shipa:localechange',this._localeChanged);
+ }
+ componentWillUnmount(){
+  window.removeEventListener('keydown',this._kd);
+  window.removeEventListener('shipa:localechange',this._localeChanged);
+ }
  extrasFor(b,setFn){const h=H[b.house];const rules=b.quote?this.bookedRules(b):this.rules(b.day);const c=h?rules.cats[h.cat]:null;const vip=c&&c.tier==='VIP';const list=[];
   list.push({id:'tub',name:'Горячий чан',price:vip?'входит':h&&h.tub?fmt(rules.cfg.tubPrice):'нет в доме',on:vip||!!b.tub,locked:vip||!(h&&h.tub)});
   for(const p of [...PROGRAMS,...EXTRAS]){const on=b.services.includes(p.id);const q=on?qtyOf(b,p.id):1;list.push({id:p.id,name:p.name,price:fmt(p.price*(on?q:1)),title:on&&q>1?`${fmt(p.price)} × ${q}`:'',on,hasQty:on,qty:String(q),kind:p.per==='person'?'на человека':'общая',qtyUnit:p.per==='person'?'чел.':'шт.'});}
@@ -1778,7 +1786,9 @@ class Component extends DCLogic {
   const tiersSorted=[...LY.tiers].sort((a,b)=>a.from-b.from);
   const loy={bdayPct:String(LY.bdayPct),bdayDays:String(LY.bdayDays),rate:String(LY.rate),bg:readOnly?'#F6F3EE':'#fff',
    stackOpts:[['max','большая из двух'],['sum','сложить']].map(([id,name])=>({name,bg:LY.stack===id?'#fff':'transparent',fg:LY.stack===id?'#0A2F4F':GR(.7),go:()=>setL({stack:id})})),
-   tiers:tiersSorted.map((t,i)=>({name:t.name,color:t.color,from:String(t.from),pct:String(t.pct),fromLocked:readOnly||i===0,fromTitle:i===0?'Первый уровень — с нуля баллов':'',fromBg:readOnly||i===0?'#F6F3EE':'#fff',
+   tiers:tiersSorted.map((t,i)=>({
+    name:LOY0.tiers.some(base=>base.id===t.id&&base.name===t.name)?window.ShipaLocale?.text?.(t.name)??t.name:t.name,
+    color:t.color,from:String(t.from),pct:String(t.pct),fromLocked:readOnly||i===0,fromTitle:i===0?'Первый уровень — с нуля баллов':'',fromBg:readOnly||i===0?'#F6F3EE':'#fff',
     count:(()=>{const n=s.clients.filter(c=>this.loyal(c).tier.id===t.id).length;return `${n} ${pl(n,'гость','гостя','гостей')}`;})(),
     setName:e=>{const name=fieldValue(e);if(name)setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,name}:x)});},
     setFrom:e=>{const from=fieldValue(e);if(i===0)return;
