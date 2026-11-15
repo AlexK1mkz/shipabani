@@ -574,3 +574,33 @@ test('calendar legend filters day, week and month while hidden bookings still bl
   assert.deepEqual(Array.from(ui.monthStats, m => m.v), stats);
   assert.equal(crm.conflict({ house: 'sila', day: 7, start: 14, dur: 3 }).num, confirmed.num);
 });
+
+test('guest Excel export follows the current filter, search and sort order', () => {
+  const downloads = [];
+  const { crm } = demo(new Map(), () => false, {
+    ShipaGuestExport: { download: (...args) => downloads.push(args) },
+    ShipaLocale: { text: label => ({ 'Гости': 'Қонақтар', 'Гость': 'Қонақ' })[label] || label },
+  });
+  let ui = crm.renderVals();
+  ui.clFilters.find(f => f.name === 'ДР в 14 дней').go();
+  crm.renderVals().clSortBy.name();
+  ui = crm.renderVals();
+  assert.ok(ui.clRows.length > 1);
+  ui.exportGuests();
+  const [filename, sheet, headers, rows] = downloads[0];
+  assert.match(filename, /^shipa-guests-\d{4}-\d{2}-\d{2}\.xlsx$/);
+  assert.equal(sheet, 'Қонақтар');
+  assert.equal(headers[0], 'Қонақ');
+  assert.deepEqual(Array.from(rows, row => row[0]), Array.from(ui.clRows, row => row.name));
+  assert.equal(typeof rows[0][1], 'string');
+  assert.equal(typeof rows[0][4], 'number');
+  assert.equal(typeof rows[0][5], 'number');
+  ui.setClSearch(event(rows[0][0]));
+  crm.renderVals().exportGuests();
+  assert.equal(downloads[1][3].length, 1);
+  assert.equal(downloads[1][3][0][0], rows[0][0]);
+  crm.renderVals().setClSearch(event('нет совпадений'));
+  assert.equal(crm.renderVals().clEmpty, true);
+  crm.renderVals().exportGuests();
+  assert.equal(downloads.length, 2);
+});
