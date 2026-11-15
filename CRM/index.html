@@ -1589,6 +1589,58 @@ function seeded(x){return ()=>{x=(x*16807)%2147483647;return (x-1)/2147483646;};
 for(const b of DATA){const c=CLIENTS0.find(x=>normP(x.phone)===normP(b.phone));if(c){b.guest=c.name;b.first=c.first;}}
 
 
+const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif'];
+function crmHash(s){
+  const params=new URLSearchParams();
+  if(s.screen==='today'&&s.dashDay)params.set('day',s.dashDay);
+  if(s.screen==='calendar'){
+    if(s.calDay)params.set('date',dkey(s.calDay));
+    if(s.calMode!=='day')params.set('mode',s.calMode);
+    if(s.calHouse!=='all')params.set('house',s.calHouse);
+  }
+  if(s.screen==='bookings'){
+    if(s.board)params.set('board',s.board);
+    if(s.view==='list')params.set('view',s.view);
+    if(s.savedView)params.set('filter',s.savedView);
+  }
+  if(s.screen==='campaigns'&&s.cmpSel!=='bday')params.set('campaign',s.cmpSel);
+  if(s.screen==='tariffs'&&s.tarView)params.set('version',s.tarView);
+  if(s.openId){
+    params.set('booking',s.openId.replace(/^№ /,''));
+    if(s.tab!=='compose')params.set('bookingTab',s.tab);
+  }
+  if(s.clientId){
+    params.set('guest',s.clientId);
+    if(s.ctab!=='profile')params.set('guestTab',s.ctab);
+  }
+  if(s.openId&&s.clientId&&s.detailsLast==='guest')params.set('panel','guest');
+  const query=params.toString();
+  return '#'+s.screen+(query?'?'+query:'');
+}
+function crmRoute(hash,s){
+  const [name,query]=hash.replace(/^#/,'').split('?',2);
+  const screen=CRM_SCREENS.includes(name)&&(name!=='notif'||s.role==='owner')?name:'today';
+  const params=new URLSearchParams(query);
+  const pick=(key,choices,fallback)=>choices.includes(params.get(key))?params.get(key):fallback;
+  const openId=s.bookings.find(b=>b.num==='№ '+params.get('booking'))?.num??null;
+  const clientId=s.clients.find(c=>c.id===params.get('guest'))?.id??null;
+  const route={screen,openId,clientId,
+    tab:openId?pick('bookingTab',['compose','pay','visit','feed'],'compose'):'compose',
+    ctab:clientId?pick('guestTab',['profile','bookings','msgs'],'profile'):'profile',
+    detailsLast:openId&&clientId&&params.get('panel')==='guest'?'guest':'booking'};
+  if(screen==='today')route.dashDay=params.get('day')==='1'?1:0;
+  if(screen==='calendar'){
+    const day=keyOff(params.get('date')||'');
+    Object.assign(route,{calDay:Number.isInteger(day)?day:0,calMode:pick('mode',['day','week','month'],'day'),
+      calHouse:pick('house',HOUSES.filter(h=>!h.soon).map(h=>h.id),'all')});
+  }
+  if(screen==='bookings')Object.assign(route,{board:pick('board',s.boards.map(b=>b.id),null),
+    view:pick('view',['kanban','list'],'kanban'),savedView:pick('filter',['today','unpaid','vip'],null)});
+  if(screen==='campaigns')route.cmpSel=pick('campaign',s.campaigns.map(c=>c.id),s.campaigns[0]?.id??'bday');
+  if(screen==='tariffs')route.tarView=pick('version',s.versions.map(v=>v.from),null);
+  return route;
+}
+
 class Component extends DCLogic {
  state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',...restoreDemo()};
  constructor(props){
@@ -1596,6 +1648,7 @@ class Component extends DCLogic {
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
   SEQ=Math.max(SEQ,...this.state.bookings.map(b=>(Number(b.num.replace(/\D/g,''))||0)+1));
   this.persisted=DEMO_FIELDS.map(k=>this.state[k]);
+  if(window.location?.hash)Object.assign(this.state,crmRoute(window.location.hash,this.state));
  }
  drag=null;
  // --- движок цены (как на сайте) ---
@@ -1603,7 +1656,28 @@ class Component extends DCLogic {
  bookedRules(b){return this.state.versions.find(v=>v.from===b.quote?.from)||this.rules(b.day);}
  isWeekend(di){return isWE(this.rules(di),di);}
  price(b){return b.quote||calcPrice(this.rules(b.day),b);}
+ syncNavigation(replace=false){
+   const hash=crmHash(this.state);
+   if(hash===this.navHash)return;
+   this.navHash=hash;
+   window.history[replace?'replaceState':'pushState'](window.history.state,'',hash);
+ }
+ restoreNavigation(){
+   const hash=window.location.hash;
+   if(hash===this.navHash)return;
+   const s=this.state,route=crmRoute(hash,s);
+   this.navHash=crmHash({...s,...route});
+   if(this.navHash!==hash)window.history.replaceState(window.history.state,'',this.navHash);
+   const payment=route.openId===s.openId?s.pf:{sum:'',type:'Остаток',method:'Kaspi'};
+   this.setState({...route,search:'',nb:null,rs:null,reasonDialog:null,boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
+     if(route.screen!==s.screen){
+       const main=document.querySelector('[data-scroll-main]');
+       if(main)main.scrollTop=0;
+     }
+   });
+ }
  componentDidUpdate(){
+   if(this.navHash)this.syncNavigation();
    if(this.state.reasonDialog){
      const dialog=document.querySelector('.crm-reason-dialog');
      if(dialog&&!dialog.open)dialog.showModal();
@@ -1721,7 +1795,12 @@ class Component extends DCLogic {
  }
 
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
- componentDidMount(){this._kd=e=>{
+ componentDidMount(){
+  this.syncNavigation(true);
+  this._navigationChanged=()=>this.restoreNavigation();
+  window.addEventListener('popstate',this._navigationChanged);
+  window.addEventListener('hashchange',this._navigationChanged);
+  this._kd=e=>{
   if(this.state.reasonDialog)return;
   // Let the native status picker handle Escape without dismissing the booking card.
   if(e.key==='Escape'&&e.target.closest?.('.crm-stage-select'))return;
@@ -1736,6 +1815,8 @@ class Component extends DCLogic {
   window.addEventListener('shipa:localechange',this._localeChanged);
  }
  componentWillUnmount(){
+  window.removeEventListener('popstate',this._navigationChanged);
+  window.removeEventListener('hashchange',this._navigationChanged);
   window.removeEventListener('keydown',this._kd);
   window.removeEventListener('shipa:localechange',this._localeChanged);
  }
