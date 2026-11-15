@@ -1463,7 +1463,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   </dialog>
 </sc-if>
 
-<dialog class="crm-mini-guide" aria-labelledby="crm-mini-guide-title">
+<dialog class="crm-mini-guide" aria-labelledby="crm-mini-guide-title" closedby="any" onPointerDown="{{ pressGuideBackdrop }}" onClick="{{ clickGuideBackdrop }}">
   <header>
     <h2 id="crm-mini-guide-title">Как выгрузить данные в Excel</h2>
     <button type="button" onClick="{{ closeGuide }}" aria-label="Закрыть" autofocus>×</button>
@@ -2161,6 +2161,13 @@ class Component extends DCLogic {
    }catch(e){this.toast('Не удалось подготовить Excel.');}
  }
 
+ guideBackdrop(e){
+   const dialog=e.currentTarget;
+   if('closedBy' in dialog||e.target!==dialog)return false;
+   const rect=dialog.getBoundingClientRect();
+   return e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom;
+ }
+
  renderVals(){
   const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
@@ -2786,6 +2793,12 @@ class Component extends DCLogic {
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
    clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,clAriaSort,exportGuests,
    openGuide:()=>document.querySelector('.crm-mini-guide')?.showModal(),closeGuide:()=>document.querySelector('.crm-mini-guide')?.close(),
+   pressGuideBackdrop:e=>{this.guideBackdropPressed=this.guideBackdrop(e);},
+   clickGuideBackdrop:e=>{
+     const pressed=this.guideBackdropPressed;
+     this.guideBackdropPressed=false;
+     if(pressed&&this.guideBackdrop(e))e.currentTarget.close();
+   },
    hasClient:!!cl,guestPanelClass:panelClass('guest'),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
    cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }
