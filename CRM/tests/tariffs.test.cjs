@@ -372,3 +372,65 @@ test('closed bookings reject incoming money and links while allowing refunds of 
   assert.equal(reloaded.paid(saved), 0);
   assert.equal(saved.pays.at(-1).type, 'Возврат');
 });
+
+test('new booking lists only available start times and updates them after date, house or duration changes', () => {
+  const { crm } = demo();
+  const seed = crm.state.bookings.find(b => b.stage === 'confirmed');
+  crm.setState({
+    bookings: [{ ...seed, house: 'sila', day: 10, start: 17, dur: 3 }],
+    nb: crm.newNb({ house: 'sila', day: 11, start: 12, dur: 3 }),
+  });
+  crm.pickBookingDay(10);
+  let ui = crm.renderVals();
+  const hours = () => Array.from(crm.renderVals().nbStarts, option => option.v);
+  assert.equal(ui.nbStartValue, 12);
+  assert.ok(hours().includes(12));
+  assert.ok(!hours().includes(13), 'preparation buffer before the existing booking');
+  assert.ok(!hours().includes(21), 'preparation buffer after the existing booking');
+  ui.nbSet.start(event(17));
+  assert.equal(crm.renderVals().nbStartValue, 12);
+
+  ui.nbSet.dur(event(5));
+  ui = crm.renderVals();
+  assert.deepEqual(hours(), [10]);
+  assert.equal(ui.nbStartValue, 10);
+  ui.nbSet.dur(event(6));
+  ui = crm.renderVals();
+  assert.equal(ui.nbNoStarts, true);
+  assert.equal(ui.nbStartValue, '');
+  assert.equal(ui.nbDisabled, true);
+  assert.match(ui.nbConflictText, /нет свободных часов/);
+  ui.nbSet.house(event('balans'));
+  ui = crm.renderVals();
+  assert.equal(ui.nbNoStarts, false);
+  assert.equal(ui.nbStartValue, 10);
+  assert.ok(hours().includes(17));
+  assert.ok(hours().includes(20));
+  assert.ok(!hours().includes(21), 'rental would end after closing');
+});
+
+test('opening and switching a guest’s bookings preserves the guest card and its bookings tab', () => {
+  const { crm } = demo();
+  const guest = crm.state.clients.find(client => crm.stats(client).bs.length > 1);
+  crm.setState({ clientId: guest.id, ctab: 'bookings', pf: { sum: '300', type: 'Возврат', method: 'Карта' } });
+  let ui = crm.renderVals();
+  const [first, second] = ui.cv.bookings;
+  first.open();
+  ui = crm.renderVals();
+  assert.equal(ui.hasClient, true);
+  assert.equal(ui.hasOpen, true);
+  assert.match(ui.guestPanelClass, /--paired/);
+  assert.match(ui.bookingPanelClass, /--paired/);
+  assert.equal(ui.ctab.bookings, true);
+  assert.equal(ui.cv.bookings.find(row => row.num === first.num).current, 'true');
+  assert.equal(ui.ob.num, first.num);
+  assert.equal(ui.pf.sum, '');
+  second.open();
+  assert.equal(crm.renderVals().ob.num, second.num);
+  crm.renderVals().closeCard();
+  ui = crm.renderVals();
+  assert.equal(ui.hasOpen, false);
+  assert.equal(ui.hasClient, true);
+  assert.equal(ui.ctab.bookings, true);
+  assert.equal(crm.state.clientId, guest.id);
+});
