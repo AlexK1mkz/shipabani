@@ -7,13 +7,14 @@ const vm = require('node:vm');
 const html = readFileSync(join(__dirname, '..', 'index.html'), 'utf8');
 const script = html.match(/<script type="text\/x-dc" data-dc-script>([\s\S]+?)<\/script>/)[1];
 
-function demo(storage = new Map(), confirm = () => false) {
+function demo(storage = new Map(), confirm = () => false, browser = {}) {
   const context = vm.createContext({
     DCLogic: class {
-      setState(change) {
+      setState(change, callback) {
         const patch = typeof change === 'function' ? change(this.state) : change;
-        Object.assign(this.state, patch);
+        this.state = { ...this.state, ...patch };
         this.componentDidUpdate();
+        callback?.();
       }
     },
     localStorage: {
@@ -21,7 +22,8 @@ function demo(storage = new Map(), confirm = () => false) {
       setItem: (key, value) => storage.set(key, value),
       removeItem: key => storage.delete(key),
     },
-    window: { confirm, location: { reload() {} } },
+    URLSearchParams,
+    window: { confirm, location: { reload() {} }, ...browser },
     document: { querySelector: () => null },
     setTimeout: () => 1,
     clearTimeout() {},
@@ -452,4 +454,78 @@ test('opening a guest from a booking keeps the booking and its current tab open'
   assert.equal(ui.hasClient, false);
   assert.equal(ui.ob.num, booking.num);
   assert.equal(ui.tab.pay, true);
+});
+
+test('CRM history restores sections, calendar settings and both cards without extra entries', () => {
+  const storage = new Map();
+  const events = new EventTarget();
+  const browser = {
+    addEventListener: events.addEventListener.bind(events),
+    removeEventListener: events.removeEventListener.bind(events),
+    dispatchEvent: events.dispatchEvent.bind(events),
+  };
+  const entries = [''];
+  let index = 0;
+  browser.location = { hash: '' };
+  browser.history = {
+    replaceState(_, __, hash) {
+      entries[index] = browser.location.hash = hash;
+    },
+    pushState(_, __, hash) {
+      entries.splice(++index, entries.length, hash);
+      browser.location.hash = hash;
+    },
+  };
+  const travel = offset => {
+    browser.location.hash = entries[index += offset];
+    browser.dispatchEvent(new Event('popstate'));
+    browser.dispatchEvent(new Event('hashchange'));
+  };
+  let { crm } = demo(storage, () => false, browser);
+  crm.componentDidMount();
+  crm.renderVals().dashSeg[1].go();
+  assert.equal(browser.location.hash, '#today?day=1');
+  crm.renderVals().dashToCal();
+  crm.renderVals().calWeekMode();
+  crm.renderVals().calNext();
+  const calendarHash = browser.location.hash;
+  assert.match(calendarHash, /^#calendar\?date=2026-10-24&mode=week$/);
+  crm.setState({ screen: 'clients' });
+  const client = crm.state.clients.find(c => crm.stats(c).bs.length);
+  crm.setState({ clientId: client.id, ctab: 'bookings' });
+  crm.renderVals().cv.bookings[0].open();
+  crm.renderVals().tabs[1].go();
+  const booking = crm.state.openId;
+  const cardHash = browser.location.hash;
+  assert.match(cardHash, /^#clients\?booking=\d+&bookingTab=pay&guest=c\d+&guestTab=bookings$/);
+  const count = entries.length;
+  crm.setState({ search: 'Поисковый текст' });
+  assert.equal(entries.length, count);
+  travel(-1);
+  assert.equal(crm.state.tab, 'compose');
+  travel(-1);
+  assert.equal(crm.state.openId, null);
+  assert.equal(crm.state.ctab, 'bookings');
+  travel(-2);
+  assert.equal(browser.location.hash, calendarHash);
+  assert.equal(crm.state.calMode, 'week');
+  assert.equal(crm.state.calDay, 8);
+  travel(4);
+  assert.equal(entries.length, count);
+  assert.equal(browser.location.hash, cardHash);
+  crm.componentWillUnmount();
+
+  crm = demo(storage, () => false, browser).crm;
+  crm.componentDidMount();
+  assert.equal(crm.state.screen, 'clients');
+  assert.equal(crm.state.clientId, client.id);
+  assert.equal(crm.state.openId, booking);
+  assert.equal(crm.state.tab, 'pay');
+  assert.equal(entries.length, count);
+  browser.location.hash = '#notif?booking=999999&guest=missing';
+  browser.dispatchEvent(new Event('hashchange'));
+  assert.equal(crm.state.screen, 'today');
+  assert.equal(crm.state.openId, null);
+  assert.equal(crm.state.clientId, null);
+  assert.equal(browser.location.hash, '#today');
 });
