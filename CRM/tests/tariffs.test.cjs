@@ -631,3 +631,60 @@ test('kanban reports success only after a stage change is applied', () => {
   assert.equal(crm.renderVals().toastSuccess, true);
   assert.match(crm.state.toast, /Бронь перемещена.*Отменена/);
 });
+
+test('the assignee on Kanban cards and the shared filter use the saved booking assignment', () => {
+  const storage = new Map();
+  let { crm } = demo(storage);
+  const booking = crm.state.bookings.find(b => b.board === 'sales' && b.stage === 'confirmed');
+  crm.setState({ screen: 'bookings', openId: booking.num });
+  crm.renderVals().setBookingAssignee(event('Сергей'));
+  assert.equal(storedBooking(crm, booking.num).owner, 'Сергей');
+  assert.match(storedBooking(crm, booking.num).events[0].text, /Ответственный: Сергей/);
+  crm.renderVals().setAssigneeFilter(event('Сергей'));
+  let ui = crm.renderVals();
+  assert.equal(ui.assigneeFilter, 'Сергей');
+  assert.deepEqual(Array.from(ui.columns.flatMap(column => column.cards), card => [card.num, card.assignee]), [[booking.num, 'Сергей']]);
+  assert.deepEqual(Array.from(ui.listRows, row => row.num), [booking.num]);
+  ui.setBookingAssignee(event('Недопустимое значение'));
+  assert.equal(storedBooking(crm, booking.num).owner, 'Сергей');
+
+  const hash = '#bookings?responsible=' + encodeURIComponent('Сергей');
+  crm = demo(storage, () => false, { location: { hash } }).crm;
+  assert.equal(crm.state.assigneeFilter, 'Сергей');
+  assert.equal(storedBooking(crm, booking.num).owner, 'Сергей');
+  crm.setState({ openId: booking.num });
+  crm.renderVals().setBookingAssignee(event(''));
+  crm.renderVals().setAssigneeFilter(event(''));
+  ui = crm.renderVals();
+  assert.equal(ui.columns.flatMap(column => column.cards)[0].assignee, 'Не назначен');
+  assert.deepEqual(Array.from(ui.listRows, row => row.num), [booking.num]);
+});
+
+test('bookings Excel exports the selected board, preset, assignee and list order', () => {
+  const downloads = [];
+  const { crm } = demo(new Map(), () => false, {
+    ShipaGuestExport: { download: (...args) => downloads.push(args) },
+  });
+  const requests = crm.state.bookings.filter(b => b.board === 'sales' && ['new', 'contact', 'prepay'].includes(b.stage));
+  const scoped = requests.slice(0, 2).map(b => b.num);
+  assert.equal(scoped.length, 2);
+  crm.setState({
+    screen: 'bookings', view: 'list', savedView: 'unpaid', assigneeFilter: 'Сергей',
+    bookings: crm.state.bookings.map(b => scoped.includes(b.num) ? { ...b, owner: 'Сергей' } : b),
+  });
+  crm.renderVals().sortNum();
+  const ui = crm.renderVals();
+  ui.exportBookings();
+  const [filename, sheet, headers, rows, widths] = downloads[0];
+  assert.match(filename, /^shipa-bookings-\d{4}-\d{2}-\d{2}\.xlsx$/);
+  assert.equal(sheet, 'Брони и продажи');
+  assert.deepEqual(Array.from(rows, row => row[0]), Array.from(ui.listRows, row => row.num));
+  assert.equal(rows.length, 2);
+  assert.ok(rows.every(row => row[11] === 'Сергей' && typeof row[2] === 'string'));
+  assert.ok(rows.every(row => row[9] == null || typeof row[9] === 'number'));
+  assert.equal(headers.length, widths.length);
+  crm.setState({ board: 'cert' });
+  assert.equal(crm.renderVals().bookingExportEmpty, true);
+  crm.renderVals().exportBookings();
+  assert.equal(downloads.length, 1);
+});
