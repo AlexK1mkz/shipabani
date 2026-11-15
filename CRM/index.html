@@ -21,6 +21,25 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 @keyframes panelIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 ::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:rgba(10,47,79,.15);border-radius:8px}
+  .tariff-card{background:#fff;border-radius:20px;padding:20px;min-width:0;}
+  .tariff-label{display:grid;gap:5px;font-size:12px;color:rgba(59,47,42,.85);}
+  .tariff-input{width:100%;min-width:0;min-height:38px;border-radius:10px;border:1px solid rgba(10,47,79,.2);padding:6px 8px;background:#fff;font-size:14px;}
+  .tariff-input:disabled{background:#F6F3EE;opacity:1;}
+  .tariff-btn{min-height:38px;padding:6px 12px;border-radius:10px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:600;}
+  .tariff-btn-primary{background:#0A2F4F;color:#fff;}
+  .tariff-btn-danger{color:#A03527;}
+  .tariff-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:end;}
+  .tariff-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start;max-width:1440px;}
+  .tariff-side{grid-column:2;grid-row:span 2;}
+  .tariff-matrix [role="row"]{display:grid;grid-template-columns:1.55fr .75fr .75fr repeat(5,1fr);align-items:stretch;}
+  .tariff-matrix{width:100%;min-width:560px;border-collapse:collapse;text-align:left;font-size:13px;}
+  .tariff-matrix [role="columnheader"],.tariff-matrix [role="cell"]{padding:7px 4px;border-bottom:1px solid rgba(10,47,79,.1);vertical-align:middle;}
+  .tariff-matrix [role="columnheader"]{font-size:11px;}
+  .tariff-matrix [role="cell"]:first-child{min-width:120px;}
+  .tariff-period{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px;background:#F6F3EE;border-radius:12px;margin-top:8px;}
+  .tariff-holiday-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;font-size:13px;}
+  @media(max-width:1040px){.tariff-grid{grid-template-columns:minmax(0,1fr);}.tariff-grid>.tariff-card,.tariff-grid>.tariff-side{grid-column:1!important;grid-row:auto!important;}}
+  @media(max-width:560px){.tariff-card{padding:14px;}.tariff-period,.tariff-holiday-options{grid-template-columns:repeat(2,minmax(0,1fr));}}
 </style>
 </helmet>
 <div data-screen-label="CRM" style="display:flex;height:100vh;min-width:1280px;background:#F6F3EE;color:#0A2F4F;font-size:14px;line-height:1.4;overflow:hidden;">
@@ -489,44 +508,82 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <!-- ===== ТАРИФЫ ===== -->
   <sc-if value="{{ is.tariffs }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Тарифы и правила" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
-      <sc-if value="{{ readOnly }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 12;background:rgba(217,164,65,.15);border-radius:12px;padding:12px 16px;font-size:13px;">Администратор видит тарифы только для чтения. Изменения вносит собственник.</div></sc-if>
-      <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Категории и тариф</h2><span style="font-size:13px;color:rgba(59,47,42,.7);">версия с {{ tariffFrom }} · цены ₸/час, выходной (пт–вс, праздники)</span></div>
-        <div style="display:grid;grid-template-columns:1.4fr repeat(7,minmax(0,1fr));height:44px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
-          <span>Категория</span><span>В цене</span><span>Макс.</span><span>День 10–17</span><span>Вечер 17–02</span><span>Пн–чт, %</span><span>Доплата/гость</span><span>Предоплата</span>
+    <section data-screen-label="Тарифы и правила" class="tariff-grid">
+      <div class="tariff-card" style="grid-column:1/-1;">
+        <div class="tariff-actions" style="justify-content:space-between;">
+          <div><h2 style="font-size:17px;margin:0 0 4px;">Версии тарифов</h2><div style="font-size:13px;">{{ tariffStatus }}</div></div>
+          <label class="tariff-label">История версий
+            <select class="tariff-input" value="{{ selectedTariff }}" onChange="{{ selectTariff }}" disabled="{{ editingTariff }}">
+              <sc-for list="{{ tariffVersions }}" as="v"><option value="{{ v.from }}">{{ v.name }}</option></sc-for>
+            </select>
+          </label>
+          <sc-if value="{{ canStartDraft }}"><button class="tariff-btn tariff-btn-primary" onClick="{{ startDraft }}">Новая версия</button></sc-if>
+          <sc-if value="{{ editingTariff }}">
+            <label class="tariff-label">Вступает в силу<input class="tariff-input" type="date" min="{{ demoDate }}" value="{{ draftFrom }}" onChange="{{ setDraftFrom }}"></label>
+            <button class="tariff-btn tariff-btn-primary" onClick="{{ publishTariff }}">Сохранить версию</button>
+            <button class="tariff-btn" onClick="{{ cancelDraft }}">Отменить черновик</button>
+          </sc-if>
         </div>
-        <sc-for list="{{ catRows }}" as="c" hint-placeholder-count="5">
-          <div style="display:grid;grid-template-columns:1.4fr repeat(7,minmax(0,1fr));min-height:56px;padding:8px 0;align-items:center;border-bottom:1px solid rgba(10,47,79,.06);gap:8px;">
-            <span><span style="font-weight:600;">{{ c.name }}</span><span style="display:block;font-size:12px;color:rgba(59,47,42,.7);">{{ c.houses }}</span></span>
-            <sc-for list="{{ c.fields }}" as="f" hint-placeholder-count="7">
-              <input value="{{ f.v }}" onChange="{{ f.set }}" disabled="{{ readOnly }}" style="width:100%;height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:{{ f.bg }};">
-            </sc-for>
-          </div>
-        </sc-for>
-        <div style="display:flex;gap:8px;margin-top:16px;align-items:center;">
-          <sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}"><button style="height:40px;padding:0 16px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;">Запланировать новую версию с даты…</button></sc-if>
-          <span style="font-size:13px;color:rgba(59,47,42,.7);">Смена цены не трогает существующие брони — каждая хранит свою версию тарифа.</span>
-        </div>
-        <div style="margin-top:24px;border-top:1px solid rgba(10,47,79,.08);padding-top:16px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;"><h3 style="font-size:15px;font-weight:600;margin:0;">Особые даты</h3><sc-if value="{{ canEdit }}" hint-placeholder-val="{{ true }}"><button onClick="{{ addSpecial }}" style="font-size:13px;font-weight:600;color:#C15C22;">+ Добавить период</button></sc-if></div>
-          <sc-for list="{{ specials }}" as="s" hint-placeholder-count="1">
-            <div style="display:flex;align-items:center;gap:16px;height:48px;border-bottom:1px solid rgba(10,47,79,.06);font-size:13px;"><span style="font-weight:600;width:200px;">{{ s.range }}</span><span>{{ s.name }}</span><span style="margin-left:auto;color:rgba(59,47,42,.7);">{{ s.rates }}</span></div>
-          </sc-for>
-          <sc-if value="{{ noSpecials }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 0;font-size:13px;color:rgba(59,47,42,.7);">Особых дат нет. Новый год и праздники можно завести заранее.</div></sc-if>
-        </div>
+        <sc-if value="{{ tariffHasError }}"><div role="alert" style="font-size:13px;color:#A03527;margin-top:12px;">{{ tariffError }}</div></sc-if>
       </div>
-
-      <div style="grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;gap:16px;">
+      <div class="tariff-card">
+        <h2 style="font-size:17px;margin:0 0 6px;">Категории и тариф</h2>
+        <p style="font-size:13px;margin:0 0 12px;">Ставки в ₸/час. В пятницу, субботу, воскресенье и отмеченные праздники действует полный тариф.</p>
+        <div style="overflow-x:auto;">
+          <div class="tariff-matrix" role="table">
+            <div role="rowgroup"><div role="row"><div role="columnheader">Категория</div><div role="columnheader">В цене</div><div role="columnheader">Макс.</div><div role="columnheader">День</div><div role="columnheader">Вечер</div><div role="columnheader">Пн–чт, %</div><div role="columnheader">Доплата за гостя</div><div role="columnheader">Предоплата</div></div></div>
+            <div role="rowgroup"><sc-for list="{{ catRows }}" as="c">
+              <div role="row">
+                <div role="cell"><strong>{{ c.name }}</strong><div style="font-size:11px;">{{ c.houses }}</div></div>
+                <sc-for list="{{ c.fields }}" as="f"><div role="cell"><input class="tariff-input" type="number" min="0" aria-label="{{ f.label }}" value="{{ f.v }}" onChange="{{ f.set }}" disabled="{{ tariffLocked }}"></div></sc-for>
+              </div>
+            </sc-for></div>
+          </div>
+        </div>
+        <div style="margin-top:20px;">
+          <div class="tariff-actions" style="justify-content:space-between;"><h3 style="font-size:15px;margin:0;">Особые даты</h3><sc-if value="{{ editingTariff }}"><button class="tariff-btn" onClick="{{ addSpecial }}">+ Добавить период</button></sc-if></div>
+          <p style="font-size:13px;">Цены периода действуют на дату заезда без скидки пн–чт.</p>
+          <sc-for list="{{ specials }}" as="s">
+            <div class="tariff-period">
+              <label class="tariff-label">Название<input class="tariff-input" value="{{ s.name }}" onChange="{{ s.set.name }}" disabled="{{ tariffLocked }}"></label>
+              <label class="tariff-label">Начало периода<input class="tariff-input" type="date" value="{{ s.from }}" onChange="{{ s.set.from }}" disabled="{{ tariffLocked }}"></label>
+              <label class="tariff-label">Конец периода<input class="tariff-input" type="date" value="{{ s.to }}" onChange="{{ s.set.to }}" disabled="{{ tariffLocked }}"></label>
+              <label class="tariff-label">Категория<select class="tariff-input" value="{{ s.cat }}" onChange="{{ s.set.cat }}" disabled="{{ tariffLocked }}"><sc-for list="{{ categoryOpts }}" as="c"><option value="{{ c.id }}">{{ c.name }}</option></sc-for></select></label>
+              <label class="tariff-label">День, ₸/час<input class="tariff-input" type="number" min="0" value="{{ s.day }}" onChange="{{ s.set.day }}" disabled="{{ tariffLocked }}"></label>
+              <label class="tariff-label">Вечер, ₸/час<input class="tariff-input" type="number" min="0" value="{{ s.evening }}" onChange="{{ s.set.evening }}" disabled="{{ tariffLocked }}"></label>
+              <sc-if value="{{ editingTariff }}"><button class="tariff-btn tariff-btn-danger" onClick="{{ s.remove }}">Удалить период</button></sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noSpecials }}"><div style="font-size:13px;">Особые периоды пока не заданы.</div></sc-if>
+        </div>
+        <details style="margin-top:20px;border-top:1px solid rgba(10,47,79,.1);padding-top:12px;">
+          <summary style="cursor:pointer;font-size:14px;font-weight:600;margin-bottom:10px;">Праздники с полным тарифом</summary>
+          <div class="tariff-holiday-options"><sc-for list="{{ pricedHolidays }}" as="h">
+            <label><input type="checkbox" checked="{{ h.on }}" disabled="{{ h.locked }}" onChange="{{ h.toggle }}"> {{ h.name }} · {{ h.when }}</label>
+          </sc-for></div>
+        </details>
+      </div>
+      <div class="tariff-side" style="display:flex;flex-direction:column;gap:16px;">
         <div style="background:#fff;border-radius:20px;padding:24px;">
           <h2 style="font-size:17px;font-weight:600;margin:0 0 12px;">Калькулятор проверки</h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ calc.house }}" onChange="{{ calcSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
-            <label style="font-size:12px;color:rgba(59,47,42,.7);">Дата<select value="{{ calc.day }}" onChange="{{ calcSet.day }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ dayOpts }}" as="o" hint-placeholder-count="7"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
-            <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ calc.start }}" onChange="{{ calcSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ startOpts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
-            <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ calc.dur }}" onChange="{{ calcSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ durOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
-            <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей<input type="number" min="1" max="16" value="{{ calc.guests }}" onChange="{{ calcSet.guests }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+            <label class="tariff-label" style="grid-column:span 2;">Дом<select class="tariff-input" value="{{ calc.house }}" onChange="{{ calcSet.house }}"><sc-for list="{{ houseOpts }}" as="o"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
+            <label class="tariff-label">Дата<input class="tariff-input" type="date" value="{{ calc.date }}" onChange="{{ calcSet.date }}"></label>
+            <label class="tariff-label">Начало<select class="tariff-input" value="{{ calc.start }}" onChange="{{ calcSet.start }}"><sc-for list="{{ calcStarts }}" as="o"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
+            <label class="tariff-label">Часов<select class="tariff-input" value="{{ calc.dur }}" onChange="{{ calcSet.dur }}"><sc-for list="{{ calcDurs }}" as="o"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
+            <label class="tariff-label">Гостей<input class="tariff-input" type="number" min="1" value="{{ calc.guests }}" onChange="{{ calcSet.guests }}"></label>
           </div>
+          <details style="margin-top:12px;">
+            <summary style="cursor:pointer;font-size:13px;">Чан и дополнительные услуги</summary>
+            <sc-for list="{{ calcExtras }}" as="x">
+              <div style="display:flex;align-items:center;gap:8px;min-height:38px;font-size:13px;">
+                <label style="flex:1;"><input type="checkbox" checked="{{ x.on }}" disabled="{{ x.locked }}" onChange="{{ x.toggle }}"> {{ x.name }} · {{ x.price }}</label>
+                <sc-if value="{{ x.hasQty }}"><button class="tariff-btn" aria-label="Меньше" onClick="{{ x.dec }}">−</button><span>{{ x.qty }}</span><button class="tariff-btn" aria-label="Больше" onClick="{{ x.inc }}">+</button></sc-if>
+              </div>
+            </sc-for>
+          </details>
+          <div style="font-size:12px;margin-top:12px;">{{ calcVersion }}</div>
+          <sc-if value="{{ calcHasError }}"><div role="status" style="font-size:13px;color:#A03527;margin-top:8px;">{{ calcError }}</div></sc-if>
           <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;font-size:13px;">
             <sc-for list="{{ calcRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;"><span style="color:rgba(59,47,42,.8);">{{ r.l }}</span><span style="white-space:nowrap;">{{ r.v }}</span></div></sc-for>
             <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(10,47,79,.08);padding-top:10px;margin-top:4px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ calcTotal }}</span></div>
@@ -537,13 +594,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <h2 style="font-size:17px;font-weight:600;margin:0 0 12px;">Режим работы</h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <sc-for list="{{ cfgRows }}" as="c" hint-placeholder-count="10">
-              <label style="font-size:12px;color:rgba(59,47,42,.7);">{{ c.name }}<input value="{{ c.v }}" onChange="{{ c.set }}" disabled="{{ readOnly }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;color:#0A2F4F;background:{{ c.bg }};"></label>
+              <label style="font-size:12px;color:rgba(59,47,42,.7);">{{ c.name }}<input value="{{ c.v }}" type="number" min="0" onChange="{{ c.set }}" disabled="{{ tariffLocked }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;color:#0A2F4F;background:{{ c.bg }};"></label>
             </sc-for>
           </div>
-          <div style="margin-top:12px;font-size:12px;color:rgba(59,47,42,.7);">Выходные: пт, сб, вс. Праздничные дни с выходным тарифом — в «Рассылки → Календарь праздников»: {{ holTariffCount }}.</div>
+          <div style="margin-top:12px;font-size:12px;color:rgba(59,47,42,.7);">Часы после полуночи указываются числом больше 24. Например, 26 означает 02:00.</div>
         </div>
       </div>
-      <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;">
+      <div class="tariff-card">
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;gap:12px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Скидки и лояльность</h2><span style="font-size:13px;color:rgba(59,47,42,.7);">применяются к новым броням; у созданных броней скидка сохраняется</span></div>
         <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
           <label style="font-size:12px;color:rgba(59,47,42,.7);">Скидка в день рождения, %<input type="number" min="0" max="50" value="{{ loy.bdayPct }}" onChange="{{ loySet.bdayPct }}" disabled="{{ readOnly }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;background:{{ loy.bg }};"></label>
@@ -568,6 +625,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         </sc-for>
         <div style="margin-top:12px;font-size:12px;line-height:1.5;color:rgba(59,47,42,.7);">{{ loy.note }}</div>
       </div>
+      <sc-if value="{{ canEdit }}"><div class="tariff-card" style="grid-column:1/-1;"><button class="tariff-btn tariff-btn-danger" onClick="{{ resetDemo }}">Сбросить демоданные CRM</button></div></sc-if>
     </section>
   </sc-if>
 
@@ -730,22 +788,22 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </div>
 
       <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;gap:12px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Календарь праздников</h2><span style="font-size:13px;color:rgba(59,47,42,.7);flex:1;">даты для поздравлений и выходного тарифа</span><button onClick="{{ addHol }}" style="font-size:13px;font-weight:600;color:#C15C22;white-space:nowrap;">+ Своя дата</button></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;gap:12px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Календарь праздников</h2><span style="font-size:13px;color:rgba(59,47,42,.7);flex:1;">даты для поздравлений и выходного тарифа</span><button onClick="{{ addHol }}" disabled="{{ readOnly }}" style="font-size:13px;font-weight:600;color:#C15C22;white-space:nowrap;">+ Своя дата</button></div>
         <div style="display:grid;grid-template-columns:minmax(0,1.7fr) 150px 64px 92px 104px 110px 36px;gap:10px;height:40px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
           <span>Название</span><span>Дата</span><span>Дней</span><span>Каждый год</span><span>Выходной тариф</span><span>Ближайшая</span><span></span>
         </div>
         <sc-for list="{{ holRows }}" as="h" hint-placeholder-count="10">
           <div style="display:grid;grid-template-columns:minmax(0,1.7fr) 150px 64px 92px 104px 110px 36px;gap:10px;min-height:52px;align-items:center;border-bottom:1px solid rgba(10,47,79,.06);font-size:13px;">
-            <input value="{{ h.name }}" onChange="{{ h.setName }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.1);padding:0 10px;font-size:13px;min-width:0;color:#0A2F4F;">
-            <input type="date" value="{{ h.date }}" onChange="{{ h.setDate }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.1);padding:0 8px;font-size:13px;color:#0A2F4F;min-width:0;">
-            <input type="number" min="1" max="14" value="{{ h.days }}" onChange="{{ h.setDays }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.1);padding:0 8px;font-size:13px;color:#0A2F4F;min-width:0;">
-            <button onClick="{{ h.toggleYearly }}" aria-label="Каждый год" style="width:40px;height:24px;border-radius:999px;background:{{ h.yBg }};position:relative;"><span style="position:absolute;top:2px;left:{{ h.yLeft }};width:20px;height:20px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left 150ms ease-out;"></span></button>
-            <button onClick="{{ h.toggleTariff }}" aria-label="Выходной тариф" style="width:40px;height:24px;border-radius:999px;background:{{ h.tBg }};position:relative;"><span style="position:absolute;top:2px;left:{{ h.tLeft }};width:20px;height:20px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left 150ms ease-out;"></span></button>
+            <input value="{{ h.name }}" onChange="{{ h.setName }}" disabled="{{ readOnly }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.1);padding:0 10px;font-size:13px;min-width:0;color:#0A2F4F;">
+            <input type="date" value="{{ h.date }}" onChange="{{ h.setDate }}" disabled="{{ readOnly }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.1);padding:0 8px;font-size:13px;color:#0A2F4F;min-width:0;">
+            <input type="number" min="1" max="14" value="{{ h.days }}" onChange="{{ h.setDays }}" disabled="{{ readOnly }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.1);padding:0 8px;font-size:13px;color:#0A2F4F;min-width:0;">
+            <button onClick="{{ h.toggleYearly }}" disabled="{{ readOnly }}" aria-label="Каждый год" style="width:40px;height:24px;border-radius:999px;background:{{ h.yBg }};position:relative;"><span style="position:absolute;top:2px;left:{{ h.yLeft }};width:20px;height:20px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left 150ms ease-out;"></span></button>
+            <span>{{ h.tariffText }}</span>
             <span style="color:rgba(59,47,42,.75);white-space:nowrap;">{{ h.next }}</span>
-            <button onClick="{{ h.del }}" aria-label="Удалить дату" style="width:32px;height:32px;border-radius:10px;color:#B8432F;display:flex;align-items:center;justify-content:center;" style-hover="background:rgba(184,67,47,.08);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+            <button onClick="{{ h.del }}" disabled="{{ readOnly }}" aria-label="Удалить дату" style="width:32px;height:32px;border-radius:10px;color:#B8432F;display:flex;align-items:center;justify-content:center;" style-hover="background:rgba(184,67,47,.08);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
           </div>
         </sc-for>
-        <div style="margin-top:12px;font-size:12px;color:rgba(59,47,42,.7);">Дата с «Выходной тариф» считается в цене как пт–вс — в калькуляторе, на сайте и в новых бронях. Дни рождения гостей берутся из карточек гостей.</div>
+        <div style="margin-top:12px;font-size:12px;color:rgba(59,47,42,.7);">Праздничный тариф настраивается в разделе «Тарифы и правила». Этот календарь задаёт даты рассылок.</div>
       </div>
 
       <div style="grid-column:span 4;background:#fff;border-radius:20px;padding:24px;">
@@ -803,8 +861,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ rsv.house }}" onChange="{{ rsSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
             <label style="font-size:12px;color:rgba(59,47,42,.7);">Дата · {{ rsv.dayHint }}<input type="date" value="{{ rsv.date }}" min="{{ rsv.minDate }}" onChange="{{ rsSet.date }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"></label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ rsv.start }}" onChange="{{ rsSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ startOpts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
-              <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ rsv.dur }}" onChange="{{ rsSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ durOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
+              <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ rsv.start }}" onChange="{{ rsSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ rsvStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
+              <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ rsv.dur }}" onChange="{{ rsSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ rsvDurs }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
             </div>
           </div>
           <div>
@@ -836,7 +894,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <label style="font-size:12px;color:rgba(59,47,42,.7);">Доска<select value="{{ ob.board }}" onChange="{{ setBoardOf }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ boardOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
             <label style="font-size:12px;color:rgba(59,47,42,.7);">Скидка гостя · {{ ob.discHint }}<select value="{{ ob.disc }}" onChange="{{ setDisc }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;color:#0A2F4F;"><sc-for list="{{ ob.discOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
-            <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей взрослых<input type="number" min="1" max="16" value="{{ ob.guests }}" onChange="{{ edit.guests }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+            <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей взрослых<input type="number" min="1" max="{{ ob.maxGuests }}" value="{{ ob.guests }}" onChange="{{ edit.guests }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
             <label style="font-size:12px;color:rgba(59,47,42,.7);">Детей до 7<input type="number" min="0" max="10" value="{{ ob.kids }}" onChange="{{ edit.kids }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;">
@@ -852,6 +910,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           </div>
           <div style="background:#F6F3EE;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;font-size:13px;">
             <div style="font-size:12px;color:rgba(59,47,42,.7);margin-bottom:4px;">Расшифровка цены · тариф от {{ ob.tariffFrom }}</div>
+            <sc-if value="{{ ob.showOriginal }}"><details style="margin:4px 0 10px;font-size:12px;">
+              <summary>Первоначальная цена · {{ ob.originalPrice }} · версия от {{ ob.originalTariff }}</summary>
+              <sc-for list="{{ ob.originalRows }}" as="r"><div style="display:flex;justify-content:space-between;gap:8px;"><span>{{ r.l }}</span><span>{{ r.v }}</span></div></sc-for>
+            </details></sc-if>
             <sc-for list="{{ ob.priceRows }}" as="r" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:12px;"><span style="color:rgba(59,47,42,.85);">{{ r.l }}</span><span style="white-space:nowrap;">{{ r.v }}</span></div></sc-for>
             <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(10,47,79,.1);padding-top:10px;margin-top:4px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ ob.total }}</span></div>
           </div>
@@ -1042,10 +1104,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <sc-if value="{{ hasNbKnown }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;font-size:12px;color:#3F6B43;background:rgba(94,140,97,.12);border-radius:10px;padding:8px 12px;">{{ nbKnown }}</div></sc-if>
         <sc-if value="{{ hasNbSugg }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;display:flex;flex-direction:column;gap:4px;"><div style="font-size:12px;color:rgba(59,47,42,.7);">Найдены гости с таким номером — выберите, чтобы подставить ФИО</div><sc-for list="{{ nbSugg }}" as="g" hint-placeholder-count="2"><button onClick="{{ g.pick }}" style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:10px;border:1px solid rgba(10,47,79,.12);text-align:left;font-size:13px;" style-hover="background:rgba(10,47,79,.06);"><span style="font-weight:600;flex:1;">{{ g.name }}</span><span style="color:rgba(59,47,42,.7);">{{ g.phone }} · {{ g.hint }}</span></button></sc-for></div></sc-if>
         <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ nb.house }}" onChange="{{ nbSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Дата<select value="{{ nb.day }}" onChange="{{ nbSet.day }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ dayOpts }}" as="o" hint-placeholder-count="7"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ nb.start }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ startOpts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ nb.dur }}" onChange="{{ nbSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ durOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей / детей<span style="display:flex;gap:6px;margin-top:4px;"><input type="number" min="1" max="16" value="{{ nb.guests }}" onChange="{{ nbSet.guests }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"><input type="number" min="0" value="{{ nb.kids }}" onChange="{{ nbSet.kids }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
+        <label style="font-size:12px;color:rgba(59,47,42,.7);">Дата<input class="tariff-input" type="date" min="{{ demoDate }}" value="{{ nbDate }}" onChange="{{ nbSet.day }}"></label>
+        <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select value="{{ nb.start }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
+        <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ nb.dur }}" onChange="{{ nbSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbDurs }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
+        <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей / детей<span style="display:flex;gap:6px;margin-top:4px;"><input type="number" min="1" max="{{ nbMaxGuests }}" value="{{ nb.guests }}" onChange="{{ nbSet.guests }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"><input type="number" min="0" value="{{ nb.kids }}" onChange="{{ nbSet.kids }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <sc-for list="{{ nbExtras }}" as="x" hint-placeholder-count="4">
@@ -1059,7 +1121,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           </sc-for>
       </div>
       <sc-if value="{{ nbHasDisc }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" checked="{{ nbDiscOn }}" onChange="{{ nbSet.discOn }}" style="width:18px;height:18px;accent-color:#C15C22;">Скидка гостя: <b>{{ nbDiscLabel }}</b></label></sc-if>
-      <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" checked="{{ nb.paid }}" onChange="{{ nbSet.paid }}" style="width:18px;height:18px;accent-color:#C15C22;">Предоплата уже получена (наличные / Kaspi)</label>
+      <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" checked="{{ nb.paid }}" onChange="{{ nbSet.paid }}" style="width:18px;height:18px;accent-color:#C15C22;">Предоплата уже получена (наличные)</label>
       <sc-if value="{{ hasNbMissing }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(217,164,65,.16);border-radius:12px;padding:12px 14px;font-size:13px;color:#7A5A12;">{{ nbMissing }}</div></sc-if>
       <sc-if value="{{ nbConflict }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(184,67,47,.1);border-radius:12px;padding:12px 14px;font-size:13px;color:#B8432F;">{{ nbConflictText }}</div></sc-if>
     </div>
@@ -1069,7 +1131,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <sc-for list="{{ nbRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(59,47,42,.85);">{{ r.l }}</span><span style="white-space:nowrap;">{{ r.v }}</span></div></sc-for>
       <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(10,47,79,.1);padding-top:10px;margin-top:4px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ nbTotal }}</span></div>
       <div style="display:flex;justify-content:space-between;color:rgba(59,47,42,.7);"><span>Предоплата</span><span>{{ nbPrepay }}</span></div>
-      <button onClick="{{ createBooking }}" disabled="{{ nbConflict }}" style="margin-top:12px;height:48px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;font-size:15px;opacity:{{ nbBtnOpacity }};" style-hover="background:#A84D1B;">Создать бронь</button>
+      <button onClick="{{ createBooking }}" disabled="{{ nbDisabled }}" style="margin-top:12px;height:48px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;font-size:15px;opacity:{{ nbBtnOpacity }};" style-hover="background:#A84D1B;">Создать бронь</button>
       <button onClick="{{ closeNew }}" style="height:40px;border-radius:12px;font-weight:500;color:rgba(10,47,79,.7);">Отмена</button>
     </div>
   </div>
@@ -1168,7 +1230,12 @@ const PALETTE=[['#C15C22','Кирпичный'],['#D9A441','Янтарный'],[
 const hexA=(c,a)=>{if(!c||c[0]!=='#')return `rgba(59,47,42,${(a*.6).toFixed(3)})`;const n=parseInt(c.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;};
 const dkeyD=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const offOf=d=>{const x=new Date(d);x.setHours(0,0,0,0);return Math.round((x-dateAt(0))/864e5);};
-const keyOff=k=>{const [y,m,d]=String(k).split('-').map(Number);return offOf(new Date(y,m-1,d));};
+const keyOff=k=>{
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(k))return NaN;
+  const [y,m,d]=k.split('-').map(Number);
+  const date=new Date(y,m-1,d);
+  return dkeyD(date)===k?offOf(date):NaN;
+};
 const ddmm=k=>{if(!k)return '—';const [y,m,d]=k.split('-');return `${d}.${m}.${y}`;};
 const bdShort=k=>k?`${+k.slice(8,10)} ${MON[+k.slice(5,7)-1]}`:'—';
 const bdNext=k=>{if(!k)return null;const [,m,d]=k.split('-').map(Number);let x=new Date(NOW.getFullYear(),m-1,d);if(offOf(x)<0)x=new Date(NOW.getFullYear()+1,m-1,d);return offOf(x);};
@@ -1181,20 +1248,137 @@ const fillT=(t,v)=>String(t||'').replace(/\{([^}]+)\}/g,(m,k)=>v[k]!=null&&v[k]!
 const fmtK=n=>n>=1e6?(n/1e6).toFixed(1).replace('.',',')+' млн':n>=1e3?Math.round(n/1e3)+' тыс':String(n);
 const HOL=(id,name,date,o={})=>({id,name,date,days:1,yearly:true,tariff:true,official:true,...o});
 const HOLIDAYS0=[HOL('ny','Новый год','2027-01-01',{days:2}),HOL('w8','Международный женский день','2027-03-08'),HOL('nauryz','Наурыз мейрамы','2027-03-21',{days:3}),HOL('may1','Праздник единства народа Казахстана','2027-05-01'),HOL('may7','День защитника Отечества','2027-05-07'),HOL('may9','День Победы','2027-05-09'),HOL('capital','День столицы','2027-07-06'),HOL('const','День Конституции','2027-08-30'),HOL('rep','День Республики','2026-10-25'),HOL('ind','День Независимости','2026-12-16'),HOL('shipa','День рождения SHIPÁ','2026-11-20',{official:false,tariff:false}),HOL('val','День всех влюблённых','2027-02-14',{official:false,tariff:false})];
-const holNext=h=>{const [y,m,d]=h.date.split('-').map(Number);if(!h.yearly)return keyOff(h.date);let x=new Date(NOW.getFullYear(),m-1,d);if(offOf(x)+((h.days||1)-1)<0)x=new Date(NOW.getFullYear()+1,m-1,d);return offOf(x);};
-const holKeys=h=>{const [y,m,d]=h.date.split('-').map(Number);const out=[];for(let i=0;i<Math.max(1,+h.days||1);i++){const k=dkeyD(new Date(y,m-1,d+i));out.push(h.yearly?k.slice(5):k);}return out;};
-const holOn=(hols,di)=>{const k=dkey(di);return hols.find(h=>h.date&&holKeys(h).some(x=>x===k||x===k.slice(5)));};
-function isWE(st,di){const d=dateAt(di);if(st.cfg.weekendDays.includes(d.getDay()))return true;const h=holOn(st.holidays,di);return !!(h&&h.tariff);}
-function calcPrice(st,b){const h=H[b.house];if(!h||b.start==null)return {rows:[],total:0,prepay:0};const t=st.tar[h.cat],c=st.cats[h.cat],cfg=st.cfg;const we=isWE(st,b.day);const disc=we?0:t.disc;
-  let dayH=0,eveH=0;for(let x=b.start;x<b.start+b.dur;x++){(x>=cfg.dayEnd?eveH++:dayH++);}
-  const pd=Math.round(t.day*(100-disc)/100),pe=Math.round(t.evening*(100-disc)/100);const rows=[];
-  if(dayH)rows.push({l:`${dayH} ч днём × ${fmt(pd)}`,v:fmt(dayH*pd)});if(eveH)rows.push({l:`${eveH} ч вечером × ${fmt(pe)}`,v:fmt(eveH*pe)});
-  if(disc)rows.push({l:`Скидка пн–чт ${disc}% учтена в часах`,v:''});
-  let total=dayH*pd+eveH*pe;const gx=Math.max(0,(b.guests||0)-c.incl);if(gx){rows.push({l:`${gx} ${gx===1?'гость':'гостя'} сверх ${c.incl} × ${fmt(t.extraGuest)}`,v:fmt(gx*t.extraGuest)});total+=gx*t.extraGuest;}
-  const vip=c.tier==='VIP';if(vip)rows.push({l:'Горячий чан',v:'входит'});else if(b.tub&&h.tub){rows.push({l:'Горячий чан',v:fmt(cfg.tubPrice)});total+=cfg.tubPrice;}
-  for(const s of b.services||[]){const p=SVC(s);if(p){const q=qtyOf(b,s);rows.push({l:q>1?`${p.name} × ${q}${p.per==='person'?' чел.':''}`:p.name,v:fmt(p.price*q)});total+=p.price*q;}}
-  if(b.disc&&+b.disc.pct){const d=Math.round(total*b.disc.pct/100);rows.push({l:`Скидка: ${b.disc.label} −${b.disc.pct}%`,v:'− '+fmt(d)});total-=d;}
-  return {rows,total,prepay:t.prepay,from:t.from};}
+function holidayStarts(holiday,year){
+  if(!holiday.yearly)return [keyOff(holiday.date)];
+  return [year-1,year,year+1].map(y=>keyOff(String(y)+holiday.date.slice(4))).filter(Number.isInteger);
+}
+const holNext=h=>{
+  const starts=holidayStarts(h,NOW.getFullYear());
+  return starts.find(n=>n+h.days>0)??starts.at(-1)??NaN;
+};
+const holOn=(hols,di)=>hols.find(h=>holidayStarts(h,dateAt(di).getFullYear()).some(n=>n<=di&&di<n+h.days));
+const BASE_VERSION={from:STD.from,tar:TAR0,cats:CATS0,cfg:CFG0,specials:[],holidays:HOLIDAYS0.filter(h=>h.tariff)};
+const DEMO_KEY='shipa_crm_demo_v1';
+const DEMO_FIELDS=['versions','bookings','clients','loyalty','holidays','boards','campaigns','cmpLog','reviews','templates'];
+const clone=value=>JSON.parse(JSON.stringify(value));
+const versionAt=(versions,key)=>versions.findLast(v=>v.from<=key)||versions[0];
+const sessionRules=(st,day)=>versionAt(st.versions||[BASE_VERSION],dkey(day));
+const whole=(v,min,max)=>String(v??'').trim()!==''&&Number.isSafeInteger(+v)&&+v>=min&&+v<=max;
+const fieldValue=e=>e.target.value.trim();
+function isWE(version,di){
+  return version.cfg.weekendDays.includes(dateAt(di).getDay())||!!holOn(version.holidays,di);
+}
+function calcPrice(version,b){
+  const h=H[b.house];
+  if(!h||b.start==null)return {rows:[],total:0,prepay:0};
+  const t=version.tar[h.cat],c=version.cats[h.cat],cfg=version.cfg;
+  const key=dkey(b.day);
+  const special=version.specials.find(x=>x.cat===h.cat&&x.from<=key&&key<=x.to);
+  const disc=special||isWE(version,b.day)?0:t.disc;
+  const pd=special?special.day:t.day,pe=special?special.evening:t.evening;
+  const dayH=Math.max(0,Math.min(b.start+b.dur,cfg.dayEnd)-b.start);
+  const eveH=b.dur-dayH;
+  const rows=[];
+  if(special)rows.push({l:'Особый период: '+special.name,v:''});
+  if(dayH)rows.push({l:`${dayH} ч днём × ${fmt(pd)}`,v:fmt(dayH*pd)});
+  if(eveH)rows.push({l:`${eveH} ч вечером × ${fmt(pe)}`,v:fmt(eveH*pe)});
+  let total=dayH*pd+eveH*pe;
+  if(disc){
+    const amount=Math.round(total*disc/100);
+    rows.push({l:`Скидка пн–чт −${disc}%`,v:'− '+fmt(amount)});
+    total-=amount;
+  }
+  const gx=Math.max(0,(b.guests||0)-c.incl);
+  if(gx){
+    rows.push({l:`${gx} гостей сверх ${c.incl} × ${fmt(t.extraGuest)}`,v:fmt(gx*t.extraGuest)});
+    total+=gx*t.extraGuest;
+  }
+  if(c.tier==='VIP')rows.push({l:'Горячий чан',v:'входит'});
+  else if(b.tub&&h.tub){
+    rows.push({l:'Горячий чан',v:fmt(cfg.tubPrice)});
+    total+=cfg.tubPrice;
+  }
+  for(const id of b.services||[]){
+    const service=SVC(id);
+    if(!service)continue;
+    const q=qtyOf(b,id);
+    rows.push({l:q>1?`${service.name} × ${q}${service.per==='person'?' чел.':''}`:service.name,v:fmt(service.price*q)});
+    total+=service.price*q;
+  }
+  if(b.disc&&+b.disc.pct){
+    const amount=Math.round(total*b.disc.pct/100);
+    rows.push({l:`Скидка: ${b.disc.label} −${b.disc.pct}%`,v:'− '+fmt(amount)});
+    total-=amount;
+  }
+  return {rows,total,prepay:Math.min(total,t.prepay),from:version.from};
+}
+function withQuote(b,version){
+  if(!H[b.house]||b.start==null)return b;
+  const quote=calcPrice(version,b);
+  return {...b,quote,originalQuote:b.originalQuote||quote};
+}
+function restoreDemo(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(DEMO_KEY));
+    if(!saved||!Array.isArray(saved.versions)||!saved.versions.length||!Array.isArray(saved.bookings))return {};
+    return Object.fromEntries(DEMO_FIELDS.filter(k=>Object.hasOwn(saved,k)).map(k=>[k,saved[k]]));
+  }catch(e){return {};}
+}
+function validateVersion(v,versions){
+  if(Number.isNaN(keyOff(v.from))||v.from<dkey(0))return 'Укажите дату вступления в силу, начиная с сегодняшнего дня.';
+  if(versions.some(x=>x.from===v.from))return 'На эту дату уже есть версия тарифа.';
+  for(const id of Object.keys(v.cats)){
+    const c=v.cats[id],t=v.tar[id];
+    if(!whole(c.incl,1,100)||!whole(c.max,+c.incl,100))return 'Проверьте количество гостей в цене и максимум по категории.';
+    if(!['day','evening','extraGuest','prepay'].every(k=>whole(t[k],0,100000000))||!whole(t.disc,0,100))return 'Укажите цены целыми числами от 0 до 100 000 000 ₸ и скидку от 0 до 100%.';
+  }
+  const cfg=v.cfg;
+  if(!whole(cfg.open,0,23)||!whole(cfg.close,+cfg.open+1,48)||
+     !whole(cfg.minH,1,+cfg.close- +cfg.open)||!whole(cfg.maxH,+cfg.minH,+cfg.close- +cfg.open)||
+     !whole(cfg.lastStart,+cfg.open,Math.min(23,+cfg.close- +cfg.minH))||
+     !whole(cfg.dayEnd,+cfg.open,+cfg.close))return 'Проверьте часы работы, границу вечера и длительность брони.';
+  if(!['prep','leadH','holdH','holdTodayH'].every(k=>whole(cfg[k],0,48))||
+     !['cancelFreeDays','childAge'].every(k=>whole(cfg[k],0,365))||!whole(cfg.tubPrice,0,100000000))return 'Проверьте время подготовки, удержание и стоимость чана.';
+  for(const [i,x] of v.specials.entries()){
+    if(!x.name.trim()||Number.isNaN(keyOff(x.from))||Number.isNaN(keyOff(x.to))||x.from>x.to||!Object.hasOwn(v.cats,x.cat))
+      return 'Укажите название, категорию и корректные даты особого периода.';
+    if(!whole(x.day,0,100000000)||!whole(x.evening,0,100000000))return 'Проверьте дневную и вечернюю цену особого периода.';
+    if(v.specials.slice(0,i).some(y=>x.cat===y.cat&&x.from<=y.to&&y.from<=x.to))return 'Особые периоды одной категории пересекаются.';
+  }
+  return '';
+}
+function normalizeVersion(v){
+  const numberFields=(obj,keys)=>Object.assign(obj,Object.fromEntries(keys.map(k=>[k,+obj[k]])));
+  for(const id of Object.keys(v.cats)){
+    numberFields(v.cats[id],['incl','max']);
+    numberFields(v.tar[id],['day','evening','disc','extraGuest','prepay']);
+  }
+  numberFields(v.cfg,Object.keys(v.cfg).filter(k=>k!=='weekendDays'));
+  for(const x of v.specials){
+    x.name=x.name.trim();
+    numberFields(x,['day','evening']);
+  }
+  return v;
+}
+function slotError(version,b,{future=false,extension=false}={}){
+  if(!Number.isInteger(b.day))return 'Укажите корректную дату.';
+  const h=H[b.house],cfg=version.cfg;
+  if(!h||h.soon)return 'Выберите открытый дом.';
+  if(!whole(b.start,cfg.open,extension?cfg.close-1:cfg.lastStart)||
+     !whole(b.dur,cfg.minH,cfg.maxH)||b.start+b.dur>cfg.close)
+    return `Выберите время в пределах ${hh(cfg.open)}–${hh(cfg.close)} и длительность ${cfg.minH}–${cfg.maxH} ч.`;
+  if(future&&(b.day<0||(b.day===0&&b.start*60<NOW_MIN+cfg.leadH*60)))
+    return 'Выберите будущее время с учётом минимального срока до заезда.';
+  const c=version.cats[h.cat];
+  return capacityError(c,b);
+}
+function capacityError(category,b){
+  const kids=b.kids??0;
+  if(!whole(kids,0,100))return 'Укажите количество детей целым числом от 0 до 100.';
+  if(!whole(b.guests,1,category.max))return `Укажите от 1 до ${category.max} гостей.`;
+  if(+b.guests+ +kids>category.max)return `Вместимость дома с учётом детей: ${category.max} человек.`;
+  return '';
+}
 // ---------- доски продаж ----------
 const BOARDS0=[
  {id:'sales',name:'Брони и продажи',main:true,sys:true,cols:STAGES.map(x=>({...x,sys:true,hl:false,norm:x.norm||''}))},
@@ -1245,7 +1429,7 @@ DATA.push(
  mk({num:'№ 1039',guest:'Гульнара',phone:'+7 778 340 12 66',board:'corp',house:null,day:15,start:null,dur:null,guests:12,stage:'req',stageAt:mins(0,10,15),source:'сайт · кабинет',wish:'юбилей, 12 гостей, конец октября',created:stamp(0,10,15),ev:[{at:stamp(0,10,15),text:'Запрос из личного кабинета: юбилей на 12 гостей',who:'Сайт'}]}),
  mk({num:'№ 1034',guest:'Мадина',phone:'+7 747 556 21 09',board:'cert',house:null,day:0,start:null,dur:null,guests:null,stage:'certPaid',stageAt:mins(-1,12,0),source:'сайт · кабинет',wish:'сертификат 50 000 ₸ в подарок мужу',prepaid:50000,payAt:stamp(-1,12,0),created:stamp(-1,11,50),ev:[{at:stamp(-1,12,0),text:'Сертификат 50 000 ₸ оплачен картой',who:'Шлюз'}]}));
 function seeded(x){return ()=>{x=(x*16807)%2147483647;return (x-1)/2147483646;};}
-(function genHistory(){const rnd=seeded(11);const pick=a=>a[Math.floor(rnd()*a.length)];const act=HOUSES.filter(h=>!h.soon);const pool=CLIENTS0.filter(c=>!c.noGen);const st0={tar:TAR0,cats:CATS0,cfg:CFG0,holidays:HOLIDAYS0};const out=[];
+(function genHistory(){const rnd=seeded(11);const pick=a=>a[Math.floor(rnd()*a.length)];const act=HOUSES.filter(h=>!h.soon);const pool=CLIENTS0.filter(c=>!c.noGen);const st0=BASE_VERSION;const out=[];
  for(let di=-26;di<=24;di++){if(di>=-2&&di<=3)continue;const we=[5,6,0].includes(dateAt(di).getDay());let cnt=we?1+Math.floor(rnd()*3):Math.floor(rnd()*2.2);if(di>12&&cnt)cnt--;
   for(let k=0;k<cnt;k++){const h=pick(act);const start=pick([11,12,13,14,15,16,17,18,19]);const dur=pick([3,3,4,4,5,6]);
    if([...DATA,...out].some(o=>o.house===h.id&&o.day===di&&o.start!=null&&!(start+dur+2<=o.start||o.start+o.dur+2<=start)))continue;
@@ -1262,26 +1446,77 @@ for(const b of DATA){const c=CLIENTS0.find(x=>normP(x.phone)===normP(b.phone));i
 
 
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reviews:REVIEWS,templates:TEMPLATES,tar:TAR0,cats:CATS0,cfg:CFG0,specials:[],view:'kanban',calMode:'day',calDay:0,openId:null,tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',day:0,start:15,dur:4,guests:8},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all'};
+ state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',...restoreDemo()};
+ constructor(props){
+  super(props);
+  this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
+  SEQ=Math.max(SEQ,...this.state.bookings.map(b=>(Number(b.num.replace(/\D/g,''))||0)+1));
+  this.persisted=DEMO_FIELDS.map(k=>this.state[k]);
+ }
  drag=null;
  // --- движок цены (как на сайте) ---
- isWeekend(di){return isWE(this.state,di);}
- price(b){return calcPrice(this.state,b);}
+ rules(day){return sessionRules(this.state,day);}
+ bookedRules(b){return this.state.versions.find(v=>v.from===b.quote?.from)||this.rules(b.day);}
+ isWeekend(di){return isWE(this.rules(di),di);}
+ price(b){return b.quote||calcPrice(this.rules(b.day),b);}
+ componentDidUpdate(){
+   const next=DEMO_FIELDS.map(k=>this.state[k]);
+   if(next.every((v,i)=>v===this.persisted[i]))return;
+   this.persisted=next;
+   try{localStorage.setItem(DEMO_KEY,JSON.stringify(Object.fromEntries(DEMO_FIELDS.map((k,i)=>[k,next[i]]))));}
+   catch(e){this.toast('Не удалось сохранить демоданные в браузере.');}
+ }
+ resetDemo(){
+   if(this.state.role!=='owner'||!window.confirm('Сбросить демоданные CRM? Брони, оплаты и тарифы вернутся к исходным.'))return;
+   try{localStorage.removeItem(DEMO_KEY);window.location.reload();}
+   catch(e){this.toast('Не удалось сбросить демоданные.');}
+ }
+ patchDraft(update){
+   if(this.state.role!=='owner'||!this.state.tarDraft)return;
+   const draft=clone(this.state.tarDraft);
+   update(draft);
+   this.setState({tarDraft:draft,tarError:''});
+ }
+ publishVersion(){
+   const s=this.state;
+   if(s.role!=='owner'||!s.tarDraft)return;
+   const error=validateVersion(s.tarDraft,s.versions);
+   if(error){this.setState({tarError:error});return;}
+   const v=normalizeVersion(clone(s.tarDraft));
+   const versions=[...s.versions,v].sort((a,b)=>a.from.localeCompare(b.from));
+   this.setState({versions,tarView:v.from,tarDraft:null,tarError:''});
+   this.toast('Версия тарифа сохранена.');
+ }
  paid(b){return (b.pays||[]).reduce((s,p)=>s+(p.type==='Возврат'?-p.sum:p.sum),0);}
- payInfo(b){const {total}=this.price(b);const p=this.paid(b);if(!total)return p>0?{t:'оплачено',c:'#5E8C61',bg:'rgba(94,140,97,.15)'}:{t:'без оплаты',c:GR(.6),bg:'rgba(59,47,42,.08)'};if(p>=total)return {t:'оплачено',c:'#5E8C61',bg:'rgba(94,140,97,.15)'};if(p>0)return {t:'предоплата',c:'#0A2F4F',bg:'rgba(10,47,79,.08)'};return {t:'не оплачено',c:'#C15C22',bg:'rgba(193,92,34,.12)'};}
+ payInfo(b){const {total}=this.price(b);const p=this.paid(b);if(b.quote&&!total)return {t:'без оплаты',c:'#5E8C61',bg:'rgba(94,140,97,.15)'};if(!total)return p>0?{t:'оплачено',c:'#5E8C61',bg:'rgba(94,140,97,.15)'}:{t:'без оплаты',c:GR(.6),bg:'rgba(59,47,42,.08)'};if(p>=total)return {t:'оплачено',c:'#5E8C61',bg:'rgba(94,140,97,.15)'};if(p>0)return {t:'предоплата',c:'#0A2F4F',bg:'rgba(10,47,79,.08)'};return {t:'не оплачено',c:'#C15C22',bg:'rgba(193,92,34,.12)'};}
  pill(stage){const s=ST[stage]||{type:'open',color:'#7A6F69'};if(!s.sys)return {bg:s.type==='fail'?'transparent':hexA(s.color,.18),fg:'#0A2F4F',border:s.type==='fail'?`1.5px dashed ${GR(.3)}`:'0'};const dark=['confirmed','prep','new','inhouse'].includes(stage);const amber=stage==='contact'||stage==='prepay';return {bg:s.type==='fail'?'transparent':amber?'rgba(217,164,65,.22)':s.type==='success'||stage==='done'?'rgba(59,47,42,.1)':s.color,fg:dark?'#fff':s.type==='fail'?GR(.6):'#0A2F4F',border:s.type==='fail'?`1.5px dashed ${GR(.3)}`:'0'};}
- conflict(b,excludeNum){const cfg=this.state.cfg;return this.state.bookings.find(o=>o.num!==excludeNum&&o.house===b.house&&o.start!=null&&o.day===b.day&&ST[o.stage]&&ST[o.stage].type==='open'&&!(b.start+b.dur+cfg.prep<=o.start||o.start+o.dur+cfg.prep<=b.start));}
+ conflict(b,excludeNum){
+   const start=b.day*24+b.start,end=start+b.dur;
+   const prep=this.rules(b.day).cfg.prep;
+   return this.state.bookings.find(o=>{
+     if(o.num===excludeNum||o.house!==b.house||o.start==null||ST[o.stage]?.type!=='open')return false;
+     const other=o.day*24+o.start;
+     const otherPrep=this.rules(o.day).cfg.prep;
+     return start<other+o.dur+prep&&other<end+otherPrep;
+   });
+ }
  whenText(b){if(b.start==null)return b.wish||'без времени';return `${dlabel(b.day)} · ${hh(b.start)}–${hh(b.start+b.dur)} · ${b.dur} ч`;}
- upd(num,fn){this.setState(s=>({bookings:s.bookings.map(b=>b.num===num?fn({...b,events:[...b.events],pays:[...b.pays],services:[...b.services],qty:{...(b.qty||{})}}):b)}));}
+ upd(num,fn,{reprice=false,transfer=false}={}){
+   this.setState(s=>({bookings:s.bookings.map(b=>{
+     if(b.num!==num)return b;
+     const x=fn({...b,events:[...b.events],pays:[...b.pays],services:[...b.services],qty:{...(b.qty||{})}});
+     return reprice?withQuote(x,transfer?this.rules(x.day):this.bookedRules(b)):x;
+   })}));
+ }
  log(b,text){b.events=[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text,who:this.state.role==='owner'?'Сергей':'Айдана'},...b.events];return b;}
  move(num,to,why){const b=this.state.bookings.find(x=>x.num===num);if(!b||b.stage===to)return;const from=ST[b.stage];if(from.type!=='open'&&!(b.stage==='moved'&&to==='confirmed')){this.toast(`Из «${from.name}» переход недоступен: стадия закрытая`);return;}
-  if(to==='confirmed'&&b.board==='sales'&&this.paid(b)<=0&&!why){this.toast('Сначала зафиксируйте предоплату — тогда бронь станет подтверждённой');return;}
+  if(to==='confirmed'&&b.board==='sales'&&(!b.quote||this.paid(b)<this.price(b).prepay)){this.toast('Сначала зафиксируйте предоплату — тогда бронь станет подтверждённой');return;}
   this.upd(num,x=>{this.log(x,`${from.name} → ${ST[to].name}${why?' · '+why:''} · пробыла ${ago(x.stageAt)}`);x.stage=to;x.stageAt=0;if(to==='inhouse')x.inAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;if(to==='done')x.outAt=`${String(NOW.getHours()).padStart(2,'0')}:${String(NOW.getMinutes()).padStart(2,'0')}`;return x;});}
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
  componentDidMount(){this._kd=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);}
  componentWillUnmount(){window.removeEventListener('keydown',this._kd);}
- extrasFor(b,setFn){const h=H[b.house];const c=h?this.state.cats[h.cat]:null;const vip=c&&c.tier==='VIP';const list=[];
-  list.push({id:'tub',name:'Горячий чан',price:vip?'входит':h&&h.tub?fmt(this.state.cfg.tubPrice):'нет в доме',on:vip||!!b.tub,locked:vip||!(h&&h.tub)});
+ extrasFor(b,setFn){const h=H[b.house];const rules=b.quote?this.bookedRules(b):this.rules(b.day);const c=h?rules.cats[h.cat]:null;const vip=c&&c.tier==='VIP';const list=[];
+  list.push({id:'tub',name:'Горячий чан',price:vip?'входит':h&&h.tub?fmt(rules.cfg.tubPrice):'нет в доме',on:vip||!!b.tub,locked:vip||!(h&&h.tub)});
   for(const p of [...PROGRAMS,...EXTRAS]){const on=b.services.includes(p.id);const q=on?qtyOf(b,p.id):1;list.push({id:p.id,name:p.name,price:fmt(p.price*(on?q:1)),title:on&&q>1?`${fmt(p.price)} × ${q}`:'',on,hasQty:on,qty:String(q),kind:p.per==='person'?'на человека':'общая',qtyUnit:p.per==='person'?'чел.':'шт.'});}
   return list.map(x=>({...x,kind:x.kind||'',bg:x.on?'rgba(10,47,79,.04)':'#fff',boxBg:x.on?'#0A2F4F':'transparent',opacity:x.locked?.55:1,toggle:()=>{if(x.locked)return;setFn(x.id);},
    dec:()=>{if(!x.hasQty||+x.qty<=1)return;setFn(x.id,+x.qty-1);},inc:()=>{if(!x.hasQty||+x.qty>=QTY_MAX)return;setFn(x.id,+x.qty+1);},decOp:+x.qty<=1?.35:1,incOp:+x.qty>=QTY_MAX?.35:1}));}
@@ -1289,22 +1524,26 @@ class Component extends DCLogic {
   const days=vis.map(b=>b.day);if(c.lastHist!=null)days.push(c.lastHist);const last=days.length?Math.max(...days):null;const fav={};vis.forEach(b=>{fav[b.house]=(fav[b.house]||0)+1;});const favH=Object.keys(fav).sort((a,b)=>fav[b]-fav[a])[0];
   const rr=bs.filter(b=>b.rating);const rating=rr.length?rr.reduce((a,b)=>a+b.rating,0)/rr.length:null;const upcoming=bs.filter(b=>b.day>=0&&b.start!=null&&ST[b.stage]&&ST[b.stage].type==='open'&&b.stage!=='done').sort((a,b)=>a.day-b.day);
   return {bs,visits:vis.length+(c.hist||0),spent,avg:nv?visPaid/nv:0,last,favH,rating,upcoming,first:bs.length?Math.min(...bs.map(b=>b.day)):null};}
- freeSlot(pref,day=0){const cfg=this.state.cfg;const from=day===0?NOW.getHours()+cfg.leadH+(NOW.getMinutes()?1:0):cfg.open;const order=[pref,...HOUSES.filter(h=>!h.soon&&h.id!==pref).map(h=>h.id)].filter(Boolean);
+ freeSlot(pref,day=0){const cfg=this.rules(day).cfg;const from=day===0?NOW.getHours()+cfg.leadH+(NOW.getMinutes()?1:0):cfg.open;const order=[pref,...HOUSES.filter(h=>!h.soon&&h.id!==pref).map(h=>h.id)].filter(Boolean);
   for(const house of order)for(let x=Math.max(cfg.open,from);x<=cfg.lastStart;x++){if(!this.conflict({house,day,start:x,dur:cfg.minH}))return {house,start:x};}return {house:pref||'dyhanie',start:Math.min(cfg.lastStart,Math.max(cfg.open,from))};}
- newNb(o={}){const f=this.freeSlot(o.house||'dyhanie',0);const vip=this.state.cats[H[f.house].cat].tier==='VIP';return {phone:'',last:'',first:'',middle:'',day:0,dur:this.state.cfg.minH,guests:4,kids:0,services:[],paid:false,...o,house:f.house,start:f.start,tub:vip};}
+ newNb(o={}){
+   const day=o.day??0,rules=this.rules(day);
+   const slot=o.start==null?this.freeSlot(o.house||'dyhanie',day):{house:o.house,start:o.start};
+   return {phone:'',last:'',first:'',middle:'',day,dur:rules.cfg.minH,guests:Math.min(4,rules.cats[H[slot.house].cat].max),kids:0,services:[],paid:false,...o,...slot,tub:false};
+ }
  loyal(c,st){const L=this.state.loyalty;st=st||this.stats(c);const pts=Math.floor(st.spent/100*(+L.rate||0));const tiers=[...L.tiers].sort((a,b)=>a.from-b.from);let tier=tiers[0];for(const t of tiers)if(pts>=t.from)tier=t;const next=tiers.find(t=>t.from>pts);return {pts,tier,next};}
  discFor(c,day){if(!c)return [];const L=this.state.loyalty;const {tier}=this.loyal(c);const out=[];if(tier&&+tier.pct)out.push({id:'tier',label:tier.name,pct:+tier.pct});const n=bdNext(c.birthday);if(c.birthday&&+L.bdayPct){const [,m,d]=c.birthday.split('-').map(Number);const dd=dateAt(day||0);let best=999;for(const y of [dd.getFullYear()-1,dd.getFullYear(),dd.getFullYear()+1]){best=Math.min(best,Math.abs(offOf(new Date(y,m-1,d))-(day||0)));}if(best<=+L.bdayDays)out.push({id:'bday',label:'день рождения',pct:+L.bdayPct});}
   if(out.length>1){if(L.stack==='sum')out.push({id:'both',label:out.map(x=>x.label).join(' + '),pct:out.reduce((a,x)=>a+x.pct,0)});}return out;}
  bestDisc(list){if(!list.length)return null;const b=list.reduce((a,x)=>x.pct>a.pct?x:a,list[0]);return {label:b.label,pct:b.pct,kind:b.id};}
  clientOf(phone){return this.state.clients.find(c=>normP(c.phone)===normP(phone));}
  addMsg(phone,text,st='отправлено'){const at=stamp(0,NOW.getHours(),NOW.getMinutes());this.setState(S=>({clients:S.clients.map(c=>normP(c.phone)===normP(phone)?{...c,msgs:[{at:at.slice(0,5)+'.'+NOW.getFullYear()+at.slice(5),text,st},...c.msgs]}:c)}));}
- startRs(num,over={}){const b=this.state.bookings.find(x=>x.num===num);if(!b)return;const cfg=this.state.cfg;if(['inhouse','done'].includes(b.stage)){this.toast('Гость уже в доме — используйте «Продлить на 1 ч» во вкладке «Визит»');return;}if(!ST[b.stage]||ST[b.stage].type!=='open'){this.toast(`Стадия «${ST[b.stage]?ST[b.stage].name:''}» закрыта — перенос недоступен`);return;}
-  const house=over.house||b.house||HOUSES.find(h=>!h.soon).id;const day=over.day!=null?over.day:Math.max(0,b.day||0);const start=over.start!=null?over.start:(b.start!=null?b.start:Math.max(cfg.open,Math.min(cfg.lastStart,NOW.getHours()+2)));
+ startRs(num,over={}){const b=this.state.bookings.find(x=>x.num===num);if(!b)return;if(['inhouse','done'].includes(b.stage)){this.toast('Гость уже в доме — используйте «Продлить на 1 ч» во вкладке «Визит»');return;}if(!ST[b.stage]||ST[b.stage].type!=='open'){this.toast(`Стадия «${ST[b.stage]?ST[b.stage].name:''}» закрыта — перенос недоступен`);return;}
+  const house=over.house||b.house||HOUSES.find(h=>!h.soon).id;const day=over.day!=null?over.day:Math.max(0,b.day||0);const cfg=this.rules(day).cfg;const start=over.start!=null?over.start:(b.start!=null?b.start:Math.max(cfg.open,Math.min(cfg.lastStart,NOW.getHours()+2)));
   this.setState({openId:num,tab:'compose',search:'',rs:{house,date:dkey(day),start:Math.min(start,cfg.lastStart),dur:b.dur||cfg.minH,reason:'guest',notify:true,msg:null}});}
  toggleExtra(b,id,q){if(id==='tub'){b.tub=!b.tub;return b;}b.qty={...(b.qty||{})};if(q!=null){b.qty[id]=Math.max(1,Math.min(QTY_MAX,q));return b;}if(b.services.includes(id)){b.services=b.services.filter(s=>s!==id);delete b.qty[id];}else{b.services.push(id);b.qty[id]=1;}return b;}
 
  renderVals(){
-  const s=this.state,cfg=s.cfg;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
+  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=num=>()=>this.setState({openId:num,tab:'compose',search:'',rs:null,clientId:null,pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
@@ -1328,22 +1567,22 @@ class Component extends DCLogic {
   const pending=pendingB.map(b=>{const over=b.stageAt>15;return {guest:b.guest,initial:b.guest[0],phone:b.phone,source:b.source,wish:b.wish||'',wait:ago(b.stageAt),timerColor:over?'#B8432F':'#0A2F4F',bg:over?'rgba(184,67,47,.06)':'#fff',tel:'tel:'+b.phone.replace(/\s/g,''),wa:'https://wa.me/'+b.phone.replace(/\D/g,''),take:()=>{this.move(b.num,'contact');this.toast(`${b.num} взята в работу`);this.setState({openId:b.num,tab:'compose'});}};});
   const prepList=!isNowDay?liveB.slice().sort((a,b)=>a.start-b.start).map(b=>({house:H[b.house].name,startAt:hh(b.start-cfg.prep),stage:ST[b.stage].name,bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',countdown:`заезд ${hh(b.start)}`,cdColor:'#0A2F4F'})):todayB.filter(b=>['confirmed','prep','inhouse'].includes(b.stage)&&b.start*60>NOW_MIN-60).sort((a,b)=>a.start-b.start).map(b=>{const startAt=b.start-cfg.prep;const left=startAt*60-NOW_MIN;const st=b.stage==='prep'?'Топим':b.stage==='inhouse'?'Принят':'Запланирована';const bg=b.stage==='prep'?'rgba(217,164,65,.22)':b.stage==='inhouse'?'rgba(94,140,97,.15)':'rgba(10,47,79,.08)';return {house:H[b.house].name,startAt:hh(startAt),stage:st,bg,fg:'#0A2F4F',countdown:left>0?`через ${ago(left)}`:b.stage==='inhouse'?'гость в доме':`заезд через ${ago(b.start*60-NOW_MIN)}`,cdColor:left<=0&&b.stage!=='inhouse'?'#C15C22':'#0A2F4F'};});
   // календарь
-  const hours=[];for(let x=cfg.open;x<cfg.close;x++)hours.push(x);const span=cfg.close-cfg.open;const pct=h=>((h-cfg.open)/span*100).toFixed(2)+'%';
+  const calCfg=this.rules(s.calDay).cfg;const hours=[];for(let x=calCfg.open;x<calCfg.close;x++)hours.push(x);const span=calCfg.close-calCfg.open;const pct=h=>((h-calCfg.open)/span*100).toFixed(2)+'%';
   const legend=[{name:'новая',color:'#C15C22',border:'0'},{name:'в работе',color:'#D9A441',border:'0'},{name:'подтверждена',color:'#0A2F4F',border:'0'},{name:'в доме',color:'#5E8C61',border:'0'},{name:'завершена',color:GR(.4),border:'0'},{name:'отмена/неявка',color:'transparent',border:`1.5px dashed ${GR(.4)}`}];
   const blockStyle=b=>{const st=ST[b.stage];const isNow=b.day===0&&b.start*60<=NOW_MIN&&(b.start+b.dur)*60>NOW_MIN;if(st.type==='fail')return {bg:'transparent',fg:GR(.6),border:`1.5px dashed ${GR(.35)}`};if(b.stage==='prepay'||b.stage==='contact')return {bg:'rgba(217,164,65,.25)',fg:'#0A2F4F',border:'1.5px dashed #D9A441'};if(b.stage==='done'||b.stage==='review')return {bg:'rgba(59,47,42,.12)',fg:'#0A2F4F',border:'0'};return {bg:st.color,fg:'#fff',border:'0'};};
-  const openNewAt=(house,day,start)=>()=>{const h=H[house];const vip=this.state.cats[h.cat].tier==='VIP';this.setState({nb:{phone:'',last:'',first:'',middle:'',house,day,start:Math.min(start,cfg.lastStart),dur:cfg.minH,guests:4,kids:0,tub:vip,services:[],paid:false}});};
-  const calRows=HOUSES.map(h=>{const bs=B.filter(b=>b.house===h.id&&b.start!=null&&b.day===s.calDay&&b.stage!=='moved');const blocks=[];for(const b of bs){const sty=blockStyle(b);if(ST[b.stage].type==='open'&&b.stage!=='done'){blocks.push({left:pct(b.start-cfg.prep),width:(cfg.prep/span*100).toFixed(2)+'%',bg:'repeating-linear-gradient(135deg,rgba(10,47,79,.18) 0 3px,transparent 3px 8px)',fg:'transparent',border:'0',l1:'',l2:'',title:'Подготовка 2 ч',pe:'none',dr:false,drag:()=>{},open:()=>{}});}
+  const openNewAt=(house,day,start)=>()=>this.setState({nb:this.newNb({house,day,start})});
+  const calRows=HOUSES.map(h=>{const bs=B.filter(b=>b.house===h.id&&b.start!=null&&b.day===s.calDay&&b.stage!=='moved');const blocks=[];for(const b of bs){const sty=blockStyle(b);if(ST[b.stage].type==='open'&&b.stage!=='done'){blocks.push({left:pct(b.start-calCfg.prep),width:(calCfg.prep/span*100).toFixed(2)+'%',bg:'repeating-linear-gradient(135deg,rgba(10,47,79,.18) 0 3px,transparent 3px 8px)',fg:'transparent',border:'0',l1:'',l2:'',title:`Подготовка ${calCfg.prep} ч`,pe:'none',dr:false,drag:()=>{},open:()=>{}});}
     blocks.push({left:pct(b.start),width:(b.dur/span*100).toFixed(2)+'%',...sty,l1:`${b.guest} · ${b.guests}`,l2:`${ST[b.stage].name} · ${fmt(this.price(b).total)}`,title:`${b.num} ${b.guest} — перетащите, чтобы перенести`,pe:'auto',dr:!!(ST[b.stage]&&ST[b.stage].type==='open'),drag:e=>{this.dragB=b.num;e.dataTransfer.effectAllowed='move';},open:open(b.num)});}
-    const cells=hours.map(x=>{const busy=bs.some(b=>ST[b.stage].type==='open'&&x>=b.start-cfg.prep&&x<b.start+b.dur);const past=s.calDay<0||(s.calDay===0&&x*60<NOW_MIN);const can=!h.soon&&!busy&&!past&&x<=cfg.lastStart;return {click:can?openNewAt(h.id,s.calDay,x):()=>{},title:can?`Новая бронь · ${h.name} · ${hh(x)}`:'',cursor:can?'pointer':'default',drop:e=>{e.preventDefault();const n=this.dragB;this.dragB=null;if(!n)return;if(h.soon){this.toast(`${h.name} ещё не открыт`);return;}this.startRs(n,{house:h.id,day:s.calDay,start:x});}};});
-    return {n:h.n,name:h.name,cat:s.cats[h.cat].name+(h.soon?' · скоро открытие':''),opacity:h.soon?.4:1,cells,blocks,showNow:s.calDay===0};});
-  const nowLeft=((NOW_MIN/60-cfg.open)/span*100).toFixed(2)+'%';
+    const cells=hours.map(x=>{const candidate={house:h.id,day:s.calDay,start:x,dur:calCfg.minH,guests:1};const can=!slotError(this.rules(s.calDay),candidate,{future:true})&&!this.conflict(candidate);return {click:can?openNewAt(h.id,s.calDay,x):()=>{},title:can?`Новая бронь · ${h.name} · ${hh(x)}`:'',cursor:can?'pointer':'default',drop:e=>{e.preventDefault();const n=this.dragB;this.dragB=null;if(!n)return;if(h.soon){this.toast(`${h.name} ещё не открыт`);return;}this.startRs(n,{house:h.id,day:s.calDay,start:x});}};});
+    return {n:h.n,name:h.name,cat:cats[h.cat].name+(h.soon?' · скоро открытие':''),opacity:h.soon?.4:1,cells,blocks,showNow:s.calDay===0};});
+  const nowLeft=((NOW_MIN/60-calCfg.open)/span*100).toFixed(2)+'%';
   const weekStart=s.calDay-((dateAt(s.calDay).getDay()+6)%7);const weekDays=[];for(let i=0;i<7;i++){const di=weekStart+i;weekDays.push({di,label:dlabel(di),color:di===0?'#C15C22':this.isWeekend(di)?'#0A2F4F':GR(.7),weight:di===0?600:500,go:()=>this.setState({calMode:'day',calDay:di})});}
-  const weekRows=HOUSES.map(h=>({n:h.n,name:h.name,cat:s.cats[h.cat].name,opacity:h.soon?.4:1,days:weekDays.map(d=>({go:()=>this.setState({calMode:'day',calDay:d.di}),drop:e=>{e.preventDefault();e.stopPropagation();const n=this.dragB;this.dragB=null;if(!n)return;if(h.soon){this.toast(`${h.name} ещё не открыт`);return;}this.startRs(n,{house:h.id,day:d.di});},items:B.filter(b=>b.house===h.id&&b.start!=null&&b.day===d.di&&ST[b.stage]&&ST[b.stage].type!=='fail').sort((a,b)=>a.start-b.start).map(b=>({...blockStyle(b),time:hh(b.start),guest:b.guest,drag:e=>{e.stopPropagation();this.dragB=b.num;e.dataTransfer.effectAllowed='move';},open:e=>{e.stopPropagation();open(b.num)();}}))}))}));
+  const weekRows=HOUSES.map(h=>({n:h.n,name:h.name,cat:cats[h.cat].name,opacity:h.soon?.4:1,days:weekDays.map(d=>({go:()=>this.setState({calMode:'day',calDay:d.di}),drop:e=>{e.preventDefault();e.stopPropagation();const n=this.dragB;this.dragB=null;if(!n)return;if(h.soon){this.toast(`${h.name} ещё не открыт`);return;}this.startRs(n,{house:h.id,day:d.di});},items:B.filter(b=>b.house===h.id&&b.start!=null&&b.day===d.di&&ST[b.stage]&&ST[b.stage].type!=='fail').sort((a,b)=>a.start-b.start).map(b=>({...blockStyle(b),time:hh(b.start),guest:b.guest,drag:e=>{e.stopPropagation();this.dragB=b.num;e.dataTransfer.effectAllowed='move';},open:e=>{e.stopPropagation();open(b.num)();}}))}))}));
 
   const MONF=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
   const mBase=dateAt(s.calDay);const mFirst=new Date(mBase.getFullYear(),mBase.getMonth(),1);const mLast=new Date(mBase.getFullYear(),mBase.getMonth()+1,0);const gStart=offOf(mFirst)-((mFirst.getDay()+6)%7);const gEnd=offOf(mLast)+(6-((mLast.getDay()+6)%7));
-  const actH=HOUSES.filter(h=>!h.soon&&(s.calHouse==='all'||h.id===s.calHouse));const capDay=actH.length*(cfg.close-cfg.open);const monthCells=[];let mBooked=0,mCap=0,mCnt=0,mRev=0;
-  for(let di=gStart;di<=gEnd;di++){const d=dateAt(di);const inM=d.getMonth()===mBase.getMonth();const bs=B.filter(b=>b.start!=null&&b.day===di&&b.house&&actH.some(h=>h.id===b.house)&&ST[b.stage]&&ST[b.stage].type!=='fail').sort((a,b)=>a.start-b.start);const hrs=bs.reduce((a,b)=>a+b.dur,0);const load=capDay?Math.min(1,hrs/capDay):0;const rev=bs.reduce((a,b)=>a+this.price(b).total,0);
+  const actH=HOUSES.filter(h=>!h.soon&&(s.calHouse==='all'||h.id===s.calHouse));const monthCells=[];let mBooked=0,mCap=0,mCnt=0,mRev=0;
+  for(let di=gStart;di<=gEnd;di++){const d=dateAt(di);const inM=d.getMonth()===mBase.getMonth();const bs=B.filter(b=>b.start!=null&&b.day===di&&b.house&&actH.some(h=>h.id===b.house)&&ST[b.stage]&&ST[b.stage].type!=='fail').sort((a,b)=>a.start-b.start);const mCfg=this.rules(di).cfg;const capDay=actH.length*(mCfg.close-mCfg.open);const hrs=bs.reduce((a,b)=>a+b.dur,0);const load=capDay?Math.min(1,hrs/capDay):0;const rev=bs.reduce((a,b)=>a+this.price(b).total,0);
    if(inM){mBooked+=hrs;mCap+=capDay;mCnt+=bs.length;mRev+=rev;}const hol=holOn(s.holidays,di);const bd=s.clients.filter(c=>c.birthday&&c.birthday.slice(5)===dkey(di).slice(5)).map(c=>c.name);const we=this.isWeekend(di);
    monthCells.push({num:d.getDate(),hol:hol?hol.name:'',rev:owner&&rev?fmtK(rev)+' ₸':'',load:Math.round(load*100)+'%',loadColor:'#0A2F4F',loadTitle:`Загрузка ${Math.round(load*100)}% · ${hrs} ч из ${capDay}`,
     items:bs.slice(0,3).map(b=>({...blockStyle(b),time:hh(b.start),label:`${H[b.house].name} · ${b.guest}`,title:`${b.num} · ${H[b.house].name} · ${hh(b.start)}–${hh(b.start+b.dur)} · ${b.guest}`,open:e=>{e.stopPropagation();open(b.num)();},drag:e=>{e.stopPropagation();this.dragB=b.num;e.dataTransfer.effectAllowed='move';}})),
@@ -1358,13 +1597,13 @@ class Component extends DCLogic {
   const calSum=[{l:cdPast?'Было заездов':'Заездов',v:String(cdLive.length),sub:`гостей ${cdLive.reduce((a,b)=>a+(b.guests||0),0)}`},{l:'Часов в домах',v:String(cdLive.reduce((a,b)=>a+b.dur,0)),sub:`из ${HOUSES.filter(h=>!h.soon).length*(cfg.close-cfg.open)} возможных`},...(owner?[{l:'Выручка по броням дня',v:fmt(cdB.reduce((a,b)=>a+this.paid(b),0)),sub:cdPast?'по факту':'на текущий момент'}]:[]),{l:cdPast?'Не доплачено':'Ждём оплату',v:fmt(cdLive.filter(b=>b.board!=='cert').reduce((a,b)=>a+Math.max(0,this.price(b).total-this.paid(b)),0)),sub:'остатки по броням'},{l:'Отмены и неявки',v:String(cdFail),sub:cdFail?cdB.filter(b=>ST[b.stage].type==='fail').map(b=>ST[b.stage].name.toLowerCase()).join(', '):'нет'}];
   const calTitle=s.calMode==='month'?`${MONF[mBase.getMonth()]} ${mBase.getFullYear()}`:s.calMode==='day'?dlabel(s.calDay)+(s.calDay===0?' · сегодня':'')+(this.isWeekend(s.calDay)?' · выходной тариф':' · пн–чт −15%'):`${dlabel(weekStart)} — ${dlabel(weekStart+6)}`;
   // канбан
-  let filtered=B.filter(b=>(b.board||'sales')===curB.id);if(s.savedView==='today')filtered=filtered.filter(b=>b.day===0);if(s.savedView==='unpaid')filtered=filtered.filter(b=>['new','contact','prepay'].includes(b.stage));if(s.savedView==='vip')filtered=filtered.filter(b=>H[b.house]&&s.cats[H[b.house].cat].tier==='VIP'&&b.day>=0&&this.isWeekend(b.day));
+  let filtered=B.filter(b=>(b.board||'sales')===curB.id);if(s.savedView==='today')filtered=filtered.filter(b=>b.day===0);if(s.savedView==='unpaid')filtered=filtered.filter(b=>['new','contact','prepay'].includes(b.stage));if(s.savedView==='vip')filtered=filtered.filter(b=>H[b.house]&&cats[H[b.house].cat].tier==='VIP'&&b.day>=0&&this.isWeekend(b.day));
   const savedViews=(curB.id==='sales'?[{id:'today',name:'Мои на сегодня'},{id:'unpaid',name:'Ждут оплаты'},{id:'vip',name:'VIP на выходные'}]:[]).map(v=>({...v,bg:s.savedView===v.id?'#0A2F4F':'#fff',fg:s.savedView===v.id?'#fff':'#0A2F4F',go:()=>this.setState({savedView:s.savedView===v.id?null:v.id})}));
   const ocount=curB.cols.filter(c=>c.type==='open').length;
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
   const updCol=(id,patch)=>updB(x=>({...x,cols:x.cols.map(c=>c.id===id?{...c,...patch}:c)}));
   const columns=curB.cols.map((st,ci)=>{const all=filtered.filter(b=>b.stage===st.id);const closed=st.type!=='open';const shown=closed?all.filter(b=>b.day>=-7):all;const norm=+st.norm||0;
-   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&s.cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';}};});
+   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';}};});
    const sum=all.reduce((a,b)=>a+(b.start!=null?this.price(b).total:0),0);const prev=curB.cols[ci-1],next=curB.cols[ci+1];
    const noLeft=closed||!prev||prev.type!=='open',noRight=closed||!next||next.type!=='open';
    let delWhy='';if(st.sys)delWhy='Системная стадия: на неё завязаны календарь, оплаты и уведомления. Переименовать и перекрасить можно, удалить — нет.';else if(closed)delWhy='Итоговый столбец нужен для отчётов «успех / провал». Переименовать можно, удалить — нет.';else if(ocount<=1)delWhy='На доске должен остаться хотя бы один рабочий столбец.';
@@ -1397,90 +1636,207 @@ class Component extends DCLogic {
   const updR=(id,fn)=>this.setState(st=>({reviews:st.reviews.map(r=>r.id===id?fn({...r}):r)}));
   const reviewsView=rvs.filter(r=>s.rvFilter==='all'||(s.rvFilter==='low'?r.rating<=3:r.status===s.rvFilter)).map(r=>({...r,initial:r.guest[0],house:H[r.house].name,status:stMap[r.status][0],stBg:stMap[r.status][1],stFg:'#0A2F4F',ratingColor:r.rating<=3?'#B8432F':'#0A2F4F',low:r.rating<=3,hasReply:!!r.reply,canPublish:r.status!=='published',canHide:r.status!=='hidden',replying:s.rvReplying===r.id,draft:s.rvDraft[r.id]||'',setDraft:e=>this.setState({rvDraft:{...s.rvDraft,[r.id]:e.target.value}}),toggleReply:()=>this.setState({rvReplying:s.rvReplying===r.id?null:r.id}),sendReply:()=>{const t=(s.rvDraft[r.id]||'').trim();if(!t)return;updR(r.id,x=>{x.reply=t;return x;});this.setState({rvReplying:null});this.toast('Ответ сохранён и показан на сайте');},publish:()=>{updR(r.id,x=>{x.status='published';return x;});this.toast('Отзыв опубликован на сайте');},hide:()=>{const why=window.prompt('Причина скрытия');if(why==null)return;updR(r.id,x=>{x.status='hidden';x.hideReason=why;return x;});this.toast('Отзыв скрыт · причина записана в аудит');}}));
   // тарифы
-  const readOnly=!owner;const fbg=readOnly?'#F6F3EE':'#fff';
-  const setTar=(cat,k)=>e=>this.setState(st=>({tar:{...st.tar,[cat]:{...st.tar[cat],[k]:+e.target.value||0}}}));const setCat=(cat,k)=>e=>this.setState(st=>({cats:{...st.cats,[cat]:{...st.cats[cat],[k]:+e.target.value||0}}}));
-  const catRows=Object.keys(s.cats).map(id=>{const c=s.cats[id],t=s.tar[id];return {name:c.name,houses:HOUSES.filter(h=>h.cat===id).map(h=>h.n+' '+h.name).join(', '),fields:[{v:c.incl,set:setCat(id,'incl')},{v:c.max,set:setCat(id,'max')},{v:t.day,set:setTar(id,'day')},{v:t.evening,set:setTar(id,'evening')},{v:t.disc,set:setTar(id,'disc')},{v:t.extraGuest,set:setTar(id,'extraGuest')},{v:t.prepay,set:setTar(id,'prepay')}].map(f=>({...f,bg:fbg}))};});
-  const setCfg=k=>e=>this.setState(st=>({cfg:{...st.cfg,[k]:+e.target.value||0}}));
-  const cfgRows=[['open','Открытие, ч'],['close','Закрытие, ч (26 = 02:00)'],['lastStart','Последний заезд, ч'],['minH','Минимум часов'],['maxH','Максимум часов'],['prep','Подготовка, ч'],['leadH','Минимум до заезда, ч'],['holdH','Удержание без оплаты, ч'],['holdTodayH','Удержание на сегодня, ч'],['cancelFreeDays','Отмена с возвратом, дней'],['tubPrice','Чан, ₸'],['childAge','Дети бесплатно до, лет']].map(([k,name])=>({name,v:cfg[k],set:setCfg(k),bg:fbg}));
-  const houseOpts=HOUSES.filter(h=>!h.soon).map(h=>({id:h.id,name:`${h.n} ${h.name} · ${s.cats[h.cat].name}`}));
-  const dayOpts=[];for(let i=0;i<14;i++)dayOpts.push({v:i,name:dlabel(i)+(i===0?' · сегодня':'')});
-  const startOpts=[];for(let x=cfg.open;x<=cfg.lastStart;x++)startOpts.push({v:x,name:hh(x)});const durOpts=[3,4,5,6,8];
-  const calcB={house:s.calc.house,day:+s.calc.day,start:+s.calc.start,dur:+s.calc.dur,guests:+s.calc.guests,tub:true,services:[]};const cp=this.price(calcB);
-  const calcSet=Object.fromEntries(['house','day','start','dur','guests'].map(k=>[k,e=>this.setState({calc:{...s.calc,[k]:e.target.value}})]));
-  const specials=s.specials.map(x=>({range:x.range,name:x.name,rates:x.rates}));
+  const readOnly=!owner;
+  const selectedVersion=s.versions.find(v=>v.from===s.tarView)||todayRules;
+  const editingTariff=owner&&!!s.tarDraft;
+  const editor=editingTariff?s.tarDraft:selectedVersion;
+  const configFields=[
+    ['open','Открытие, ч'],['close','Закрытие, ч'],['lastStart','Последний заезд, ч'],
+    ['dayEnd','Начало вечернего тарифа, ч'],['minH','Минимум часов'],['maxH','Максимум часов'],
+    ['prep','Подготовка, ч'],['leadH','Минимум до заезда, ч'],['holdH','Удержание без оплаты, ч'],
+    ['holdTodayH','Удержание на сегодня, ч'],['cancelFreeDays','Отмена с возвратом, дней'],
+    ['tubPrice','Чан, ₸'],['childAge','Дети бесплатно до, лет']
+  ];
+  const categoryOpts=Object.entries(editor.cats).map(([id,c])=>({id,name:c.name}));
+  const catRows=categoryOpts.map(({id,name})=>{
+    const fields=[['cats','incl','В цене'],['cats','max','Макс.'],['tar','day','День'],['tar','evening','Вечер'],
+      ['tar','disc','Пн–чт, %'],['tar','extraGuest','Доплата за гостя'],['tar','prepay','Предоплата']];
+    return {name,houses:HOUSES.filter(h=>h.cat===id).map(h=>h.n+' '+h.name).join(', '),
+      fields:fields.map(([group,k,label])=>({label:name+' · '+label,v:editor[group][id][k],
+        set:e=>this.patchDraft(v=>{v[group][id][k]=fieldValue(e);})}))};
+  });
+  const cfgRows=configFields.map(([k,name])=>({name,v:editor.cfg[k],bg:editingTariff?'#fff':'#F6F3EE',
+    set:e=>this.patchDraft(v=>{v.cfg[k]=fieldValue(e);})}));
+  const specials=editor.specials.map((x,i)=>({...x,
+    set:Object.fromEntries(['name','from','to','cat','day','evening'].map(k=>[k,e=>this.patchDraft(v=>{v.specials[i][k]=fieldValue(e);})])),
+    remove:()=>this.patchDraft(v=>{v.specials.splice(i,1);})}));
+  const pricedHolidays=[...s.holidays,...editor.holidays.filter(h=>!s.holidays.some(x=>x.id===h.id))].map(h=>{
+    const frozen=editor.holidays.find(x=>x.id===h.id);
+    return {name:(frozen||h).name,when:ddmm((frozen||h).date),on:!!frozen,locked:!editingTariff,
+      toggle:()=>this.patchDraft(v=>{v.holidays=frozen?v.holidays.filter(x=>x.id!==h.id):[...v.holidays,{...h,tariff:true}];})};
+  });
+  const startOptions=rules=>Array.from({length:rules.cfg.lastStart-rules.cfg.open+1},(_,i)=>{
+    const v=rules.cfg.open+i;return {v,name:hh(v)};
+  });
+  const durationOptions=rules=>Array.from({length:rules.cfg.maxH-rules.cfg.minH+1},(_,i)=>rules.cfg.minH+i);
+  const houseOpts=HOUSES.filter(h=>!h.soon).map(h=>({id:h.id,name:`${h.n} ${h.name} · ${cats[h.cat].name}`}));
+  const calcB={...s.calc,day:keyOff(s.calc.date),start:+s.calc.start,dur:+s.calc.dur,guests:+s.calc.guests};
+  const calcRules=this.rules(calcB.day);
+  const calcError=slotError(calcRules,calcB);
+  const cp=calcError?null:this.price(calcB);
+  const calcSet=Object.fromEntries(['house','date','start','dur','guests'].map(k=>[k,e=>{
+    const v=e.target.value;
+    const calc={...s.calc,[k]:v};
+    if(k==='house')calc.tub=false;
+    if(k==='date'){
+      const rules=this.rules(keyOff(v));
+      if(!whole(calc.start,rules.cfg.open,rules.cfg.lastStart))calc.start=rules.cfg.open;
+      if(!whole(calc.dur,rules.cfg.minH,rules.cfg.maxH)||+calc.start+ +calc.dur>rules.cfg.close)calc.dur=rules.cfg.minH;
+    }
+    this.setState({calc});
+  }]));
+  const calcExtras=this.extrasFor(calcB,(id,q)=>this.setState(S=>({
+    calc:this.toggleExtra({...S.calc,services:[...S.calc.services]},id,q)
+  })));
   // уведомления
   const templates=s.templates.map(t=>({...t,open:s.tplOpen===t.id,swBg:t.on?'#5E8C61':'rgba(59,47,42,.25)',swLeft:t.on?'21px':'3px',opacity:t.on?1:.5,langs:t.kz?'RU · KZ':'RU',kzNote:t.kz?'':'нет перевода',kzColor:'#B8432F',toggle:()=>this.setState(st=>({templates:st.templates.map(x=>x.id===t.id?{...x,on:!x.on}:x)})),expand:()=>this.setState({tplOpen:s.tplOpen===t.id?null:t.id}),setRu:e=>this.setState(st=>({templates:st.templates.map(x=>x.id===t.id?{...x,ru:e.target.value}:x)})),setKz:e=>this.setState(st=>({templates:st.templates.map(x=>x.id===t.id?{...x,kz:e.target.value}:x)}))}));
   const adminNotifs=[{name:'Новая заявка',ch:'push · Telegram'},{name:'Оплата поступила',ch:'push'},{name:'Оценка ≤ 3',ch:'Telegram · собственнику'},{name:'Просрочка стадии',ch:'push'},{name:'Утренняя сводка 09:30',ch:'WhatsApp · этап 2'}];
   const sendLog=[{t:'14:02',text:'Инна · запрос оценки запланирован на 16:02',st:'в очереди',color:GR(.6)},{t:'13:00',text:'Елена · напоминание за 2 ч',st:'доставлено',color:'#5E8C61'},{t:'12:48',text:'Нурлан · ссылка на оплату',st:'прочитано',color:'#5E8C61'},{t:'10:30',text:'Бауыржан · заявка принята',st:'доставлено',color:'#5E8C61'},{t:'09:15',text:'Арман · спасибо за оценку',st:'ошибка SMS',color:'#B8432F'}];
   // карточка брони
   const b=B.find(x=>x.num===s.openId);let ob={},tabs=[],visitActions=[],primary={name:'',go:()=>{},dis:true,opacity:.5},methods=[],stageOpts=[];
-  if(b){const h=H[b.house];const pr=this.price(b);const paidSum=this.paid(b);const rest=Math.max(0,pr.total-paidSum);const p=this.pill(b.stage);const vip=h&&s.cats[h.cat].tier==='VIP';
+  if(b){const h=H[b.house];const pr=this.price(b);const paidSum=this.paid(b);const rest=Math.max(0,pr.total-paidSum);const p=this.pill(b.stage);const vip=h&&cats[h.cat].tier==='VIP';
    const gName=b.first||b.guest;const waText=encodeURIComponent({new:`${gName}, здравствуйте! Это SHIPÁ. Получили вашу заявку, подскажите удобное время?`,prepay:`${gName}, чтобы закрепить ${h?h.name:'дом'}, внесите предоплату ${fmt(pr.prepay)}: kaspi.kz/pay/shipa`,confirmed:`${gName}, ждём вас ${b.start!=null?dlabel(b.day)+' в '+hh(b.start):''} в ${h?h.name:''}. Адрес: 2gis.kz/karaganda`}[b.stage]||`${gName}, здравствуйте! Это SHIPÁ.`);
    let stNext;if((b.board||'sales')==='sales')stNext={new:['contact','Связались'],contact:['prepay','Отправить ссылку на оплату'],prepay:['confirmed','Предоплата получена'],confirmed:['prep','Начать подготовку'],prep:['inhouse','Гость заехал'],inhouse:['done','Гость уехал'],done:['review','Оценка получена'],review:[null,'Закрыта успешно']}[b.stage]||[null,'Стадия закрыта'];else{const bd=boards.find(x=>x.id===b.board)||curB;const i=bd.cols.findIndex(c=>c.id===b.stage);const nx=bd.cols[i+1];stNext=ST[b.stage]&&ST[b.stage].type==='open'&&nx?[nx.id,'Дальше: '+nx.name]:[null,'Стадия закрыта'];}
    primary={name:stNext[1],dis:!stNext[0],opacity:stNext[0]?1:.5,go:()=>{if(!stNext[0])return;if(stNext[0]==='confirmed'){this.setState({tab:'pay'});this.toast('Зафиксируйте предоплату — стадия сменится автоматически');return;}if(stNext[0]==='prepay'){this.move(b.num,'prepay');this.upd(b.num,x=>this.log(x,'Ссылка на оплату отправлена в WhatsApp'));return;}this.move(b.num,stNext[0]);}};
-   const holdH=b.day===0?cfg.holdTodayH:cfg.holdH;const cl0=this.clientOf(b.phone);const cst=cl0?this.stats(cl0):null;const dl=this.discFor(cl0,b.day);
-   ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?s.cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:b.owner,initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`))),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from||'—',source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:fmt(rest),restColor:rest?'#C15C22':'#5E8C61',hasRest:rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-cfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState({clientId:cl0.id,ctab:'profile',openId:null,rs:null});else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
+   const bookCfg=this.bookedRules(b).cfg;const holdH=b.day===0?bookCfg.holdTodayH:bookCfg.holdH;const cl0=this.clientOf(b.phone);const cst=cl0?this.stats(cl0):null;const dl=this.discFor(cl0,b.day);
+   ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:b.owner,initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,maxGuests:h?this.bookedRules(b).cats[h.cat].max:100,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`),{reprice:true})),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from?ddmm(pr.from):'—',originalPrice:b.originalQuote?fmt(b.originalQuote.total):'—',
+    originalTariff:b.originalQuote?ddmm(b.originalQuote.from):'—',originalRows:b.originalQuote?.rows||[],
+    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:fmt(rest),restColor:rest?'#C15C22':'#5E8C61',hasRest:rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState({clientId:cl0.id,ctab:'profile',openId:null,rs:null});else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
    tabs=[['compose','Состав'],['pay','Оплата'],['visit','Визит'],['feed','Лента']].map(([id,name])=>({name,go:()=>this.setState({tab:id}),fg:s.tab===id?'#0A2F4F':GR(.6),line:s.tab===id?'#C15C22':'transparent'}));
-   const canIn=['confirmed','prep'].includes(b.stage),canOut=b.stage==='inhouse';const ext=b.start!=null&&!this.conflict({...b,dur:b.dur+1},b.num);
-   visitActions=[{name:'Гость заехал',hint:canIn?'→ Гость в доме':'',dis:!canIn,go:()=>this.move(b.num,'inhouse')},{name:'Гость уехал',hint:canOut?'→ Визит завершён':'',dis:!canOut,go:()=>this.move(b.num,'done')},{name:'Продлить на 1 ч',hint:ext?'следующий слот свободен':'дальше занято',dis:!canOut||!ext,go:()=>this.upd(b.num,x=>{x.dur+=1;return this.log(x,'Продление на 1 ч · цена пересчитана');})},{name:'Неявка',hint:'начало + 1 ч без заезда',dis:!canIn||b.day!==0||b.start*60+60>NOW_MIN,go:()=>{const why=window.prompt('Причина неявки');if(why==null)return;this.move(b.num,'noshow',why);}}].map(a=>({...a,opacity:a.dis?.45:1,bg:'#fff',fg:'#0A2F4F'}));
+   const canIn=['confirmed','prep'].includes(b.stage),canOut=b.stage==='inhouse';const extended={...b,dur:b.dur+1};
+   const ext=b.start!=null&&!slotError(this.bookedRules(b),extended,{extension:true})&&
+     !slotError(this.rules(b.day),extended,{extension:true})&&!this.conflict(extended,b.num);
+   visitActions=[{name:'Гость заехал',hint:canIn?'→ Гость в доме':'',dis:!canIn,go:()=>this.move(b.num,'inhouse')},{name:'Гость уехал',hint:canOut?'→ Визит завершён':'',dis:!canOut,go:()=>this.move(b.num,'done')},{name:'Продлить на 1 ч',hint:ext?'следующий слот свободен':'время недоступно',dis:!canOut||!ext,go:()=>{if(!canOut||!ext)return;this.upd(b.num,x=>{x.dur+=1;return this.log(x,'Продление на 1 ч · цена пересчитана');},{reprice:true});}},{name:'Неявка',hint:'начало + 1 ч без заезда',dis:!canIn||b.day!==0||b.start*60+60>NOW_MIN,go:()=>{const why=window.prompt('Причина неявки');if(why==null)return;this.move(b.num,'noshow',why);}}].map(a=>({...a,opacity:a.dis?.45:1,bg:'#fff',fg:'#0A2F4F'}));
    methods=['Kaspi','Карта','Наличные','Перевод'].map(m=>({name:m,bg:s.pf.method===m?'#0A2F4F':'#fff',fg:s.pf.method===m?'#fff':'#0A2F4F',pick:()=>this.setState({pf:{...s.pf,method:m}})}));
    stageOpts=(boards.find(x=>x.id===(b.board||'sales'))||curB).cols.map(x=>({id:x.id,name:x.name}));
   }
   const pfSet={sum:e=>this.setState({pf:{...s.pf,sum:e.target.value}}),type:e=>this.setState({pf:{...s.pf,type:e.target.value}})};
   const addRest=()=>{if(!b)return;const r=Math.max(0,this.price(b).total-this.paid(b));if(!r){this.toast('Остатка нет — бронь оплачена полностью');return;}const m=s.pf.method;this.upd(b.num,x=>{x.pays.push({sum:r,type:'Остаток',method:m,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});this.log(x,`Оплата остаток ${fmt(r)} · ${m}`);return x;});this.setState({pf:{sum:'',type:'Остаток',method:m}});this.toast(`Остаток ${fmt(r)} · ${m} зафиксирован — выручка дня обновлена`);};
-  const fixPay=()=>{if(!b)return;const sum=+s.pf.sum||(s.pf.type==='Предоплата'?this.price(b).prepay:Math.max(0,this.price(b).total-this.paid(b)));if(!sum)return;this.upd(b.num,x=>{x.pays.push({sum,type:s.pf.type,method:s.pf.method,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});this.log(x,`Оплата ${s.pf.type.toLowerCase()} ${fmt(sum)} · ${s.pf.method}`);return x;});if(['new','contact','prepay'].includes(b.stage)&&s.pf.type!=='Возврат')setTimeout(()=>this.move(b.num,'confirmed','оплата зафиксирована'),0);this.setState({pf:{sum:'',type:'Остаток',method:s.pf.method}});this.toast(`Оплата ${fmt(sum)} зафиксирована`);};
+  const fixPay=()=>{
+    if(!b)return;
+    const type=s.pf.type;
+    const price=this.price(b),paid=this.paid(b);
+    const limit=type==='Возврат'?paid:Math.max(0,price.total-paid);
+    const suggested=type==='Возврат'?0:type==='Предоплата'?Math.min(limit,Math.max(0,price.prepay-paid)):limit;
+    const raw=s.pf.sum.trim()||suggested;
+    if(!whole(raw,1,limit)){
+      this.toast(type==='Возврат'?'Укажите сумму возврата в пределах оплаты.':'Укажите положительную сумму в пределах остатка.');
+      return;
+    }
+    const sum=+raw;
+    this.upd(b.num,x=>{
+      x.pays.push({sum,type,method:s.pf.method,at:stamp(0,NOW.getHours(),NOW.getMinutes()),who:owner?'Сергей':'Айдана'});
+      this.log(x,`Оплата ${type.toLowerCase()} ${fmt(sum)} · ${s.pf.method}`);
+      if(x.quote&&type!=='Возврат'&&['new','contact','prepay'].includes(x.stage)&&this.paid(x)>=price.prepay){
+        x.stage='confirmed';x.stageAt=0;this.log(x,'Предоплата получена → Подтверждена');
+      }
+      return x;
+    });
+    this.setState({pf:{sum:'',type:'Остаток',method:s.pf.method}});
+    this.toast(`Оплата ${fmt(sum)} зафиксирована`);
+  };
+
   // новая бронь
   const nb=s.nb;let nbRows=[],nbTotal='',nbPrepay='',nbHouseName='',nbWhen='',nbExtras=[],nbConflict=false,nbConflictText='',nbKnown='',nbSugg=[],nbMissing='';
-  if(nb){const kcD=normP(nb.phone).length>9?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const nbB={...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:kcD&&nb.discOn!==false?kcD:null};const pr=this.price(nbB);nbRows=pr.rows;nbTotal=fmt(pr.total);nbPrepay=fmt(pr.prepay);const h=H[nb.house];nbHouseName=`${h.n} ${h.name}`;nbWhen=this.whenText(nbB)+(this.isWeekend(nbB.day)?' · выходной':' · пн–чт −15%');
+  const nbRules=this.rules(nb?.day??0);
+  if(nb){const kcD=normP(nb.phone).length>9?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const nbB={...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:kcD&&nb.discOn!==false?kcD:null};const problem=slotError(nbRules,nbB,{future:true});
+   const pr=problem?null:this.price(nbB);
+   nbRows=pr?.rows||[];nbTotal=pr?fmt(pr.total):'—';nbPrepay=pr?fmt(pr.prepay):'—';
+   const h=H[nb.house];nbHouseName=`${h.n} ${h.name}`;nbWhen=pr?this.whenText(nbB)+' · версия от '+ddmm(pr.from):'';
    nbExtras=this.extrasFor(nbB,(id,q)=>this.setState({nb:this.toggleExtra({...nb,services:[...nb.services]},id,q)}));
-   const c=this.conflict(nbB);if(c){nbConflict=true;nbConflictText=`Конфликт: ${c.num} ${c.guest} занимает ${h.name} ${hh(c.start)}–${hh(c.start+c.dur)} (+2 ч подготовки). Сдвиньте время или выберите другой дом.`;}
-   if(nbB.guests>s.cats[h.cat].max){nbConflict=true;nbConflictText=`В ${h.name} максимум ${s.cats[h.cat].max} гостей.`;}
+   const c=problem?null:this.conflict(nbB);
+   nbConflictText=problem||(c?`Конфликт: ${c.num} ${c.guest} · ${dlabel(c.day)} ${hh(c.start)}–${hh(c.start+c.dur)}. Учтён буфер подготовки.`:'');
+   nbConflict=!!nbConflictText;
+
    const kc=nb.phone.length>8?this.clientOf(nb.phone):null;if(kc){const kst=this.stats(kc);nbKnown=`Гость в базе: ${kc.name}${kst.visits?' · визитов '+kst.visits:''}${kc.account?' · есть кабинет':''}`;}
    const qd=normP(nb.phone);if(!kc&&qd.length>=3){nbSugg=s.clients.filter(c=>normP(c.phone).includes(qd)).slice(0,5).map(c=>{const cs=this.stats(c);return {name:c.name,phone:c.phone,hint:cs.visits?`визитов ${cs.visits}`:'без визитов',pick:()=>this.setState({nb:{...nb,phone:c.phone,last:c.last||'',first:c.first||c.name,middle:c.middle||''}})};});}
-   if(!String(nb.last||'').trim()||!String(nb.first||'').trim())nbMissing='Укажите фамилию и имя гостя — так не перепутаем однофамильцев и тёзок.';}
-  const nbSet=Object.fromEntries(['phone','last','first','middle','house','day','start','dur','guests','kids'].map(k=>[k,e=>{const v=e.target.value;this.setState(st=>{const n={...st.nb,[k]:v};if(k==='phone'){const c=normP(v).length>9?st.clients.find(x=>normP(x.phone)===normP(v)):null;if(c&&!String(n.first||'').trim()&&!String(n.last||'').trim()){n.last=c.last||'';n.first=c.first||c.name;n.middle=c.middle||'';}}if(k==='house'){n.tub=s.cats[H[v].cat].tier==='VIP';}return {nb:n};});}]));nbSet.paid=e=>this.setState({nb:{...nb,paid:e.target.checked}});nbSet.discOn=e=>this.setState({nb:{...nb,discOn:e.target.checked}});
+   if(!String(nb.last||'').trim()||!String(nb.first||'').trim())nbMissing='Укажите фамилию и имя гостя — так не перепутаем однофамильцев и тёзок.';
+
+  }
+  const nbSet=Object.fromEntries(['phone','last','first','middle','house','day','start','dur','guests','kids'].map(k=>[k,e=>{const v=e.target.value;this.setState(st=>{const n={...st.nb,[k]:k==='day'?keyOff(v):v};
+    if(k==='day'&&Number.isInteger(n.day)){
+      const dayCfg=this.rules(n.day).cfg;
+      if(!whole(n.start,dayCfg.open,dayCfg.lastStart))n.start=dayCfg.open;
+      if(!whole(n.dur,dayCfg.minH,dayCfg.maxH)||+n.start+ +n.dur>dayCfg.close)n.dur=dayCfg.minH;
+    }
+    if(k==='phone'){const c=normP(v).length>9?st.clients.find(x=>normP(x.phone)===normP(v)):null;if(c&&!String(n.first||'').trim()&&!String(n.last||'').trim()){n.last=c.last||'';n.first=c.first||c.name;n.middle=c.middle||'';}}if(k==='house')n.tub=false;return {nb:n};});}]));nbSet.paid=e=>this.setState({nb:{...nb,paid:e.target.checked}});nbSet.discOn=e=>this.setState({nb:{...nb,discOn:e.target.checked}});
   const createBooking=()=>{if(!nb||nbConflict)return;if(nbMissing){this.toast(nbMissing);return;}const fio={last:String(nb.last).trim(),first:String(nb.first).trim(),middle:String(nb.middle||'').trim()};const fullName=fioOf(fio);const known=B.find(x=>norm(x.phone)===norm(nb.phone));const dsc=normP(nb.phone).length>9&&nb.discOn!==false?this.bestDisc(this.discFor(this.clientOf(nb.phone),+nb.day)):null;const pr=this.price({...nb,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,disc:dsc});const num=`№ ${SEQ++}`;const who=owner?'Сергей':'Айдана';
-   const kc2=this.clientOf(nb.phone);const nbk=mk({num,guest:fullName,first:fio.first,phone:nb.phone||'—',house:nb.house,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,kids:+nb.kids,tub:nb.tub,services:nb.services,qty:{...(nb.qty||{})},disc:dsc,stage:nb.paid?'confirmed':'prepay',stageAt:0,source:'администратор',visits:known?(known.visits||0)+1:0,created:stamp(0,NOW.getHours(),NOW.getMinutes()),ev:[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text:`Бронь создана администратором из календаря · ${fmt(pr.total)}`,who}]});
-   if(nb.paid){nbk.pays=[{sum:pr.prepay,type:'Предоплата',method:'Наличные',at:stamp(0,NOW.getHours(),NOW.getMinutes()),who}];nbk.events.unshift({at:nbk.created,text:`Предоплата ${fmt(pr.prepay)} · наличные → Подтверждена`,who});}
-   this.setState(st=>({bookings:[nbk,...st.bookings],nb:null,openId:num,tab:'compose',clients:normP(nb.phone).length>9&&!st.clients.some(c=>normP(c.phone)===normP(nb.phone))?[...st.clients,CL('c'+Date.now(),fio.first,nb.phone,{...fio,source:'администратор',consent:false})]:st.clients.map(c=>normP(c.phone)===normP(nb.phone)&&(!c.last||(!c.middle&&fio.middle))?(()=>{const u={...c,last:c.last||fio.last,first:c.first||fio.first,middle:c.middle||fio.middle};u.name=fioOf(u);return u;})():c)}));this.toast(`${num} создана · слот закрыт на сайте`);};
+   const kc2=this.clientOf(nb.phone);const nbk=mk({num,guest:fullName,first:fio.first,phone:nb.phone||'—',house:nb.house,day:+nb.day,start:+nb.start,dur:+nb.dur,guests:+nb.guests,kids:+nb.kids,tub:nb.tub,services:nb.services,qty:{...(nb.qty||{})},disc:dsc,stage:nb.paid||!pr.prepay?'confirmed':'prepay',stageAt:0,source:'администратор',visits:known?(known.visits||0)+1:0,created:stamp(0,NOW.getHours(),NOW.getMinutes()),ev:[{at:stamp(0,NOW.getHours(),NOW.getMinutes()),text:`Бронь создана администратором из календаря · ${fmt(pr.total)}`,who}]});
+   if(nb.paid&&pr.prepay>0){nbk.pays=[{sum:pr.prepay,type:'Предоплата',method:'Наличные',at:stamp(0,NOW.getHours(),NOW.getMinutes()),who}];nbk.events.unshift({at:nbk.created,text:`Предоплата ${fmt(pr.prepay)} · наличные → Подтверждена`,who});}
+   this.setState(st=>({bookings:[withQuote(nbk,nbRules),...st.bookings],nb:null,openId:num,tab:'compose',clients:normP(nb.phone).length>9&&!st.clients.some(c=>normP(c.phone)===normP(nb.phone))?[...st.clients,CL('c'+Date.now(),fio.first,nb.phone,{...fio,source:'администратор',consent:false})]:st.clients.map(c=>normP(c.phone)===normP(nb.phone)&&(!c.last||(!c.middle&&fio.middle))?(()=>{const u={...c,last:c.last||fio.last,first:c.first||fio.first,middle:c.middle||fio.middle};u.name=fioOf(u);return u;})():c)}));this.toast(`${num} создана · слот занят в CRM`);};
 
   // скидки и лояльность
-  const LY=s.loyalty;const setL=patch=>{if(!owner)return;this.setState(S=>({loyalty:{...S.loyalty,...patch}}));};
+  const LY=s.loyalty;const setL=patch=>{if(this.state.role!=='owner')return;this.setState(S=>({loyalty:{...S.loyalty,...patch}}));};
   const tiersSorted=[...LY.tiers].sort((a,b)=>a.from-b.from);
   const loy={bdayPct:String(LY.bdayPct),bdayDays:String(LY.bdayDays),rate:String(LY.rate),bg:readOnly?'#F6F3EE':'#fff',
    stackOpts:[['max','большая из двух'],['sum','сложить']].map(([id,name])=>({name,bg:LY.stack===id?'#fff':'transparent',fg:LY.stack===id?'#0A2F4F':GR(.7),go:()=>setL({stack:id})})),
    tiers:tiersSorted.map((t,i)=>({name:t.name,color:t.color,from:String(t.from),pct:String(t.pct),fromLocked:readOnly||i===0,fromTitle:i===0?'Первый уровень — с нуля баллов':'',fromBg:readOnly||i===0?'#F6F3EE':'#fff',
     count:(()=>{const n=s.clients.filter(c=>this.loyal(c).tier.id===t.id).length;return `${n} ${pl(n,'гость','гостя','гостей')}`;})(),
-    setName:e=>setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,name:e.target.value}:x)}),setFrom:e=>setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,from:Math.max(0,+e.target.value||0)}:x)}),setPct:e=>setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,pct:Math.max(0,Math.min(50,+e.target.value||0))}:x)})})),
+    setName:e=>{const name=fieldValue(e);if(name)setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,name}:x)});},
+    setFrom:e=>{const from=fieldValue(e);if(i===0)return;
+      if(!whole(from,1,1000000000)||LY.tiers.some(x=>x.id!==t.id&&x.from===+from)){this.toast('Укажите уникальный порог уровня больше нуля.');return;}
+      setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,from:+from}:x)});
+    },
+    setPct:e=>{const pct=fieldValue(e);if(!whole(pct,0,50)){this.toast('Укажите скидку от 0 до 50%.');return;}
+      setL({tiers:LY.tiers.map(x=>x.id===t.id?{...x,pct:+pct}:x)});
+    }})),
    note:`Баллы начисляются с оплаченных сумм: ${LY.rate} ${pl(Math.round(+LY.rate)||0,'балл','балла','баллов')} за каждые 100 ₸. Уровень считается по сумме баллов за всё время. Скидка дня рождения действует ${LY.bdayDays} дн. до и после даты. ${LY.stack==='sum'?'При совпадении скидки складываются.':'При совпадении применяется большая скидка.'} Администратор видит настройки только для чтения.`};
-  const loySet={bdayPct:e=>setL({bdayPct:Math.max(0,Math.min(50,+e.target.value||0))}),bdayDays:e=>setL({bdayDays:Math.max(0,Math.min(30,+e.target.value||0))}),rate:e=>setL({rate:Math.max(0,+e.target.value||0)})};
+  const loySet=Object.fromEntries([['bdayPct',50],['bdayDays',30],['rate',100]].map(([k,max])=>[k,e=>{
+    const v=fieldValue(e);
+    if(!whole(v,0,max)){this.toast(`Укажите целое число от 0 до ${max}.`);return;}
+    setL({[k]:+v});
+  }]));
+
 
   // перенос брони
   let rsv={},rsOn=false;const rs=s.rs;
-  if(b&&rs){rsOn=true;const nd=keyOff(rs.date);const h2=H[rs.house];const c2=s.cats[h2.cat];const nbx={...b,house:rs.house,day:nd,start:+rs.start,dur:+rs.dur};
-   let err='';const cf=isNaN(nd)?null:this.conflict(nbx,b.num);
-   if(isNaN(nd))err='Укажите дату.';else if(nd<0||(nd===0&&+rs.start*60<NOW_MIN))err='Это время уже прошло — выберите будущие дату и время.';else if(cf)err=`Занято: ${cf.num} ${cf.guest} в ${h2.name} ${hh(cf.start)}–${hh(cf.start+cf.dur)} (+${cfg.prep} ч подготовки).`;else if((b.guests||0)>c2.max)err=`В ${h2.name} максимум ${c2.max} гостей, в брони — ${b.guests}.`;else if(+rs.start+ +rs.dur>cfg.close)err=`Комплекс работает до ${hh(cfg.close)} — уменьшите длительность или начните раньше.`;
-   const slots=[];if(!isNaN(nd)&&nd>=0)for(let x=cfg.open;x<=cfg.lastStart;x++){if(nd===0&&x*60<NOW_MIN)continue;if(x+ +rs.dur>cfg.close)continue;if(!this.conflict({...nbx,start:x},b.num))slots.push(x);}
-   const alt=isNaN(nd)||nd<0?[]:HOUSES.filter(h=>!h.soon&&h.id!==rs.house&&(b.guests||0)<=s.cats[h.cat].max&&!this.conflict({...nbx,house:h.id},b.num));
-   const oldP=b.start!=null?this.price(b).total:0;const newP=isNaN(nd)?0:this.price(nbx).total;const paidS=this.paid(b);const diff=newP-oldP;
+  const rsDay=keyOff(rs?.date||'');
+  const rsRules=this.rules(rsDay);
+  if(b&&rs){
+   rsOn=true;
+   const nd=rsDay,h2=H[rs.house];
+   const nbx={...b,house:rs.house,day:nd,start:+rs.start,dur:+rs.dur,guests:b.guests||Math.min(4,rsRules.cats[h2.cat].max),
+     tub:!!(h2.tub&&b.tub)};
+   let err=slotError(rsRules,nbx,{future:true});
+   const cf=err?null:this.conflict(nbx,b.num);
+   if(cf)err=`Занято: ${cf.num} ${cf.guest} · ${dlabel(cf.day)} ${hh(cf.start)}–${hh(cf.start+cf.dur)}. Учтён буфер подготовки.`;
+   const slots=startOptions(rsRules).map(o=>o.v).filter(x=>{
+     const candidate={...nbx,start:x};
+     return !slotError(rsRules,candidate,{future:true})&&!this.conflict(candidate,b.num);
+   });
+   const alt=HOUSES.filter(h=>{
+     const candidate={...nbx,house:h.id};
+     return h.id!==rs.house&&!slotError(rsRules,candidate,{future:true})&&!this.conflict(candidate,b.num);
+   });
+   const oldP=this.price(b).total;
+   const newP=err&&!cf?oldP:calcPrice(rsRules,nbx).total;
+   const paidS=this.paid(b),diff=newP-oldP;
    const same=rs.house===b.house&&nd===b.day&&+rs.start===b.start&&+rs.dur===b.dur;
    const tpl=s.templates.find(t=>t.id==='moved');const rcl=this.clientOf(b.phone);const autoMsg=fillT(tpl?((rcl&&rcl.lang==='KZ'&&tpl.kz)?tpl.kz:tpl.ru):'',{имя:b.guest,дом:h2.name,дата:isNaN(nd)?'':dlabel(nd),время:hh(+rs.start),сумма:fmt(newP)});const msg=rs.msg!=null?rs.msg:autoMsg;
-   const diffText=!oldP?fmt(newP):diff>0?`доплата ${fmt(diff)}`:diff<0?(paidS>newP?`переплата ${fmt(paidS-newP)} — оформите возврат`:`дешевле на ${fmt(-diff)}`):'цена не меняется';
+   const diffText=err?'':!oldP?fmt(newP):diff>0?`доплата ${fmt(diff)}`:diff<0?(paidS>newP?`переплата ${fmt(paidS-newP)} — оформите возврат`:`дешевле на ${fmt(-diff)}`):'цена не меняется';
    if(same)err='';const cant=!!err||same;
    rsv={title:b.start!=null?`Перенос ${b.num}`:`Дата и время ${b.num}`,was:b.start!=null?`${H[b.house]?H[b.house].name:''}, ${this.whenText(b)}`:'время не выбрано',house:rs.house,houseName:h2.name,date:rs.date,minDate:dkey(0),start:String(rs.start),dur:String(rs.dur),
-    dayHint:isNaN(nd)?'—':(nd===0?'сегодня':nd>0?`через ${nd} дн.`:'прошла')+(isNaN(nd)?'':this.isWeekend(nd)?' · выходной тариф':' · будний тариф'),
+    dayHint:isNaN(nd)?'—':(nd===0?'сегодня':nd>0?`через ${nd} дн.`:'прошла')+(isNaN(nd)?'':' · версия от '+ddmm(rsRules.from)),
     slots:slots.map(x=>({t:hh(x),pick:()=>this.setState({rs:{...s.rs,start:x}}),bg:x===+rs.start?'#0A2F4F':'#fff',fg:x===+rs.start?'#fff':'#0A2F4F'})),noSlots:!slots.length,
     alt:alt.map(h=>({name:h.name,pick:()=>this.setState({rs:{...s.rs,house:h.id}})})),hasAlt:!!alt.length&&!!cf,err,hasErr:!!err,
     priceText:oldP?`${fmt(oldP)} → ${fmt(newP)}`:fmt(newP),diffText,diffColor:diff>0?'#C15C22':diff<0?'#5E8C61':'#0A2F4F',reason:rs.reason,notify:!!rs.notify,msg,msgEdited:rs.msg!=null,resetMsg:()=>this.setState({rs:{...s.rs,msg:null}}),
     saveLabel:same?'Ничего не изменилось':b.start!=null?'Сохранить перенос':'Сохранить время',cantSave:cant,saveOp:cant?.45:1,cancel:()=>this.setState({rs:null}),
-    save:()=>{if(cant)return;const was=b.start!=null?`${H[b.house].name} ${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'без времени';const now_=`${h2.name} ${dlabel(nd)} ${hh(+rs.start)}–${hh(+rs.start + +rs.dur)}`;const why={guest:'по просьбе гостя',admin:'решение администратора',tech:'технические причины'}[rs.reason];
-     this.upd(b.num,x=>{x.house=rs.house;x.day=nd;x.start=+rs.start;x.dur=+rs.dur;if(b.start!=null)x.moves=(x.moves||0)+1;if(x.stage==='moved')x.stage='confirmed';this.log(x,`${b.start!=null?'Перенос':'Назначено время'} ${why}: ${was} → ${now_} · цена ${fmt(oldP)} → ${fmt(newP)}`);if(rs.notify)this.log(x,`Гостю отправлено в WhatsApp: «${msg}»`);return x;});
+    save:()=>{if(cant||this.conflict(nbx,b.num)||slotError(rsRules,nbx,{future:true}))return;const was=b.start!=null?`${H[b.house].name} ${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'без времени';const now_=`${h2.name} ${dlabel(nd)} ${hh(+rs.start)}–${hh(+rs.start + +rs.dur)}`;const why={guest:'по просьбе гостя',admin:'решение администратора',tech:'технические причины'}[rs.reason];
+     this.upd(b.num,x=>{const {house,day,start,dur,guests,tub}=nbx;Object.assign(x,{house,day,start,dur,guests,tub});if(b.start!=null)x.moves=(x.moves||0)+1;if(x.stage==='moved')x.stage='confirmed';this.log(x,`${b.start!=null?'Перенос':'Назначено время'} ${why}: ${was} → ${now_} · цена ${fmt(oldP)} → ${fmt(newP)}`);if(rs.notify)this.log(x,`Гостю отправлено в WhatsApp: «${msg}»`);return x;},{reprice:true,transfer:true});
      if(rs.notify)this.addMsg(b.phone,`Перенос ${b.num}: ${now_}`);this.setState({rs:null,tab:'feed'});this.toast(`${b.num}: ${now_}${rs.notify?' · гость уведомлён':''}`);}};}
-  const rsSet=Object.fromEntries(['house','date','start','dur','reason','msg'].map(k=>[k,e=>{const v=e.target.value;this.setState(S=>({rs:{...S.rs,[k]:k==='start'||k==='dur'?+v:v}}));}]));rsSet.notify=e=>this.setState({rs:{...s.rs,notify:e.target.checked}});
+  const rsSet=Object.fromEntries(['house','date','start','dur','reason','msg'].map(k=>[k,e=>{const v=e.target.value;this.setState(S=>{
+    const next={...S.rs,[k]:k==='start'||k==='dur'?+v:v};
+    if(k==='date'&&Number.isInteger(keyOff(v))){
+      const dst=this.rules(keyOff(v)).cfg;
+      if(!whole(next.start,dst.open,dst.lastStart))next.start=dst.open;
+      if(!whole(next.dur,dst.minH,dst.maxH)||next.start+next.dur>dst.close)next.dur=dst.minH;
+    }
+    return {rs:next};
+  });}]));rsSet.notify=e=>this.setState({rs:{...s.rs,notify:e.target.checked}});
   const boardOpts=boards.map(x=>({id:x.id,name:x.name+(x.main?' · основная':'')}));
   const setBoardOf=e=>{if(!b)return;const to=e.target.value;const tb=boards.find(x=>x.id===to);if(!tb||to===(b.board||'sales'))return;this.upd(b.num,x=>{this.log(x,`Перенесена на доску «${tb.name}» → ${tb.cols[0].name}`);x.board=to;x.stage=tb.cols[0].id;x.stageAt=0;return x;});this.setState({board:to});this.toast(`${b.num} → «${tb.name}»`);};
 
-  const setDisc=e=>{if(!b)return;const v=e.target.value;const cl1=this.clientOf(b.phone);const opt=this.discFor(cl1,b.day).find(x=>x.id===v);this.upd(b.num,x=>{const old=x.disc?`${x.disc.label} −${x.disc.pct}%`:'нет';x.disc=v==='none'?null:opt?{label:opt.label,pct:opt.pct,kind:opt.id}:x.disc;this.log(x,`Скидка: ${old} → ${x.disc?x.disc.label+' −'+x.disc.pct+'%':'нет'} · цена пересчитана`);return x;});};
+  const setDisc=e=>{if(!b)return;const v=e.target.value;const cl1=this.clientOf(b.phone);const opt=this.discFor(cl1,b.day).find(x=>x.id===v);this.upd(b.num,x=>{const old=x.disc?`${x.disc.label} −${x.disc.pct}%`:'нет';x.disc=v==='none'?null:opt?{label:opt.label,pct:opt.pct,kind:opt.id}:x.disc;this.log(x,`Скидка: ${old} → ${x.disc?x.disc.label+' −'+x.disc.pct+'%':'нет'} · цена пересчитана`);return x;},{reprice:true});};
   let nbHasDisc=false,nbDiscLabel='',nbDiscOn=false;
   if(nb){const kc=this.clientOf(nb.phone);const bd_=this.bestDisc(this.discFor(kc,+nb.day));if(bd_&&normP(nb.phone).length>9){nbHasDisc=true;nbDiscLabel=`${bd_.label} −${bd_.pct}%`;nbDiscOn=nb.discOn!==false;}}
 
@@ -1555,13 +1911,17 @@ class Component extends DCLogic {
    ceSet=Object.fromEntries(['name','holiday','date','time','gift','ru','kz'].map(k=>[k,e=>updK(sel.id,{[k]:e.target.value})]));ceSet.offset=e=>updK(sel.id,{offset:+e.target.value});ceSet.giftDays=e=>updK(sel.id,{giftDays:e.target.value===''?'':Math.max(1,+e.target.value||1)});}
   const timeOpts=[];for(let x=9;x<=21;x++)timeOpts.push(String(x).padStart(2,'0')+':00');if(sel&&sel.time&&!timeOpts.includes(sel.time))timeOpts.push(sel.time);
   const holOpts=s.holidays.map(h=>({id:h.id,name:h.name}));
-  const setH=(id,patch)=>this.setState(S=>({holidays:S.holidays.map(h=>h.id===id?{...h,...patch}:h)}));
-  const holRows=[...s.holidays].sort((p,q)=>holNext(p)-holNext(q)).map(h=>{const n=holNext(h);return {name:h.name,date:h.date,days:String(h.days||1),setName:e=>setH(h.id,{name:e.target.value}),setDate:e=>{if(e.target.value)setH(h.id,{date:e.target.value});},setDays:e=>setH(h.id,{days:Math.max(1,Math.min(14,+e.target.value||1))}),
-   toggleYearly:()=>setH(h.id,{yearly:!h.yearly}),toggleTariff:()=>setH(h.id,{tariff:!h.tariff}),yBg:h.yearly?'#5E8C61':'rgba(59,47,42,.25)',yLeft:h.yearly?'18px':'2px',tBg:h.tariff?'#C15C22':'rgba(59,47,42,.25)',tLeft:h.tariff?'18px':'2px',
-   next:isNaN(n)?'—':n<0?'прошла':n===0?'сегодня':whenDays(n),del:()=>{this.setState(S=>({holidays:S.holidays.filter(x=>x.id!==h.id)}));this.toast(`«${h.name}» удалён из календаря`);}};});
-  const addHol=()=>{const id='h'+Date.now();this.setState(S=>({holidays:[...S.holidays,{id,name:'Своя дата',date:dkey(14),days:1,yearly:true,tariff:false,official:false}]}));this.toast('Дата добавлена — задайте название и день');};
+  const setH=(id,patch)=>{
+    if(this.state.role!=='owner')return;
+    if(('date' in patch&&Number.isNaN(keyOff(patch.date)))||('days' in patch&&!whole(patch.days,1,14))||
+       ('name' in patch&&!patch.name.trim())){this.toast('Проверьте название, дату и длительность праздника.');return;}
+    this.setState(S=>({holidays:S.holidays.map(h=>h.id===id?{...h,...patch}:h)}));
+  };
+  const holRows=[...s.holidays].sort((p,q)=>holNext(p)-holNext(q)).map(h=>{const n=holNext(h);return {name:h.name,date:h.date,days:String(h.days||1),setName:e=>setH(h.id,{name:e.target.value}),setDate:e=>{if(e.target.value)setH(h.id,{date:e.target.value});},setDays:e=>setH(h.id,{days:e.target.value===''?'':+e.target.value}),
+   toggleYearly:()=>setH(h.id,{yearly:!h.yearly}),tariffText:todayRules.holidays.some(x=>x.id===h.id)?'Действует':'—',yBg:h.yearly?'#5E8C61':'rgba(59,47,42,.25)',yLeft:h.yearly?'18px':'2px',
+   next:isNaN(n)?'—':n<0?'прошла':n===0?'сегодня':whenDays(n),del:()=>{if(this.state.role!=='owner')return;this.setState(S=>({holidays:S.holidays.filter(x=>x.id!==h.id)}));this.toast(`«${h.name}» удалён из календаря`);}};});
+  const addHol=()=>{if(this.state.role!=='owner')return;const id='h'+Date.now();this.setState(S=>({holidays:[...S.holidays,{id,name:'Своя дата',date:dkey(14),days:1,yearly:true,tariff:false,official:false}]}));this.toast('Дата добавлена — задайте название и день');};
   const addCmp=()=>{const id='k'+Date.now();this.setState(S=>({campaigns:[...S.campaigns,{id,name:'Новая рассылка',kind:'date',date:dkey(7),on:false,offset:0,time:'12:00',aud:[],gift:'',giftDays:7,ru:'{имя}, ',kz:''}],cmpSel:id}));};
-  const holTariffCount=(n=>`${n} ${pl(n,'праздник','праздника','праздников')}`)(s.holidays.filter(h=>h.tariff).length);
   // дни рождения на «Сегодня»
   const bdC=s.campaigns.find(k=>k.kind==='birthday'&&k.on&&!+k.offset);
   const bdays=s.clients.map(c=>({c,n:bdNext(c.birthday)})).filter(x=>x.n!=null&&x.n<=7).sort((p,q)=>p.n-q.n).map(({c,n})=>{const age=bdAge(c.birthday);let st,col;if(!c.consent){st='нет согласия на рассылку — поздравьте лично';col=GR(.65);}else if(!bdC){st='автопоздравление выключено';col=GR(.65);}else if(n===0&&NOW_MIN>=tmin(bdC.time)){st=`поздравили в ${bdC.time} · скидка ${s.loyalty.bdayPct}% на визит`;col='#3F6B43';}else{st=`поздравим ${n===0?'сегодня':n===1?'завтра':dlabel(n)} в ${bdC.time}`;col='#0A2F4F';}
@@ -1569,16 +1929,41 @@ class Component extends DCLogic {
   const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen;
   return {nav,navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinFg:pinned?'#fff':'rgba(10,47,79,.6)',pinBg:pinned?'#0A2F4F':'transparent',
-   roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen})),
+   roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?'топить за 2 ч · готов за 20 мин':'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
    viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,
-   readOnly,canEdit:!readOnly,tariffFrom:'01.10.2026',catRows,specials,noSpecials:!specials.length,addSpecial:()=>this.setState(st=>({specials:[...st.specials,{range:'31.12.2026 — 02.01.2027',name:'Новый год',rates:'VIP 60 000 / 65 000 · Standard 35 000 / 40 000'}]})),calc:s.calc,calcSet,houseOpts,dayOpts,startOpts,durOpts,calcRows:cp.rows,calcTotal:fmt(cp.total),calcPrepay:fmt(cp.prepay),cfgRows,
+   readOnly,canEdit:owner,editingTariff,tariffLocked:!editingTariff,canStartDraft:owner&&!editingTariff,
+   selectedTariff:selectedVersion.from,tariffVersions:s.versions.map(v=>({from:v.from,name:ddmm(v.from)})),
+   tariffStatus:readOnly?'Настройки доступны для просмотра.':editingTariff?'Черновик. Калькулятор использует сохранённую версию.':'Версия выбирается по дате заезда. Цена сохранённых броней зафиксирована.',
+   selectTariff:e=>this.setState({tarView:e.target.value,tarError:''}),draftFrom:editor.from,demoDate:dkey(0),
+   startDraft:()=>{if(this.state.role!=='owner'||this.state.tarDraft)return;const draft=clone(selectedVersion);let day=0;
+     while(this.state.versions.some(v=>v.from===dkey(day)))day++;
+     draft.from=dkey(day);this.setState({tarDraft:draft,tarError:''});},
+   setDraftFrom:e=>this.patchDraft(v=>{v.from=e.target.value;}),
+   publishTariff:()=>this.publishVersion(),cancelDraft:()=>this.setState({tarDraft:null,tarError:''}),
+   tariffHasError:!!s.tarError,tariffError:s.tarError,resetDemo:()=>this.resetDemo(),
+   catRows,specials,categoryOpts,pricedHolidays,noSpecials:!specials.length,
+   addSpecial:()=>this.patchDraft(v=>{const cat=categoryOpts[0].id;const t=v.tar[cat];const from=v.from||dkey(0);
+     v.specials.push({name:'',from,to:from,cat,day:t.day,evening:t.evening});}),
+   calc:s.calc,calcSet,houseOpts,calcStarts:startOptions(calcRules),calcDurs:durationOptions(calcRules),calcExtras,
+   calcHasError:!!calcError,calcError,calcVersion:cp?'Версия от '+ddmm(cp.from):'',
+   calcRows:cp?.rows||[],calcTotal:cp?fmt(cp.total):'—',calcPrepay:cp?fmt(cp.prepay):'—',cfgRows,
+
    templates,adminNotifs,sendLog,
-   hasOpen:!!b,ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>{const to=e.target.value;if(ST[to]&&ST[to].type==='fail'){const why=window.prompt('Причина (обязательно)');if(!why)return;this.move(b.num,to,why);}else this.move(b.num,to);},stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>this.upd(b.num,x=>this.log(Object.assign(x,{guests:+e.target.value||1}),'Изменено число гостей · цена пересчитана')),kids:e=>this.upd(b.num,x=>Object.assign(x,{kids:+e.target.value||0}))},pf:s.pf,pfSet,methods,fixPay,sendPayLink:()=>{this.upd(b.num,x=>this.log(x,`Ссылка на оплату ${fmt(this.price(x).prepay)} отправлена в WhatsApp`));if(['new','contact'].includes(b.stage))this.move(b.num,'prepay');this.toast('Ссылка отправлена гостю');},visitActions,noteDraft:s.note,setNote:e=>this.setState({note:e.target.value}),addNote:()=>{if(!s.note.trim())return;this.upd(b.num,x=>this.log(x,'Комментарий: '+s.note.trim()));this.setState({note:''});},primary,cancelBooking:()=>{const why=window.prompt('Причина отмены');if(!why)return;const refund=b.day>=cfg.cancelFreeDays;this.move(b.num,failOf(b),why+(this.paid(b)>0?(refund?' · возврат предоплаты — задача администратору':' · менее 3 дней, предоплата не возвращается'):''));},
-   addRest,hasNew:!!nb,nb:nb||{},nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
+   hasOpen:!!b,ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>{const to=e.target.value;if(ST[to]&&ST[to].type==='fail'){const why=window.prompt('Причина (обязательно)');if(!why)return;this.move(b.num,to,why);}else this.move(b.num,to);},stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
+    const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
+    const error=capacityError({max},{...b,guests:v});if(error){this.toast(error);return;}
+    this.upd(b.num,x=>this.log({...x,guests:+v},'Изменено число гостей · цена пересчитана'),{reprice:true});
+   },kids:e=>{
+    const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
+    const error=capacityError({max},{guests:b.guests||1,kids:v});if(error){this.toast(error);return;}
+    this.upd(b.num,x=>({...x,kids:+v}));
+   }},pf:s.pf,pfSet,methods,fixPay,sendPayLink:()=>{this.upd(b.num,x=>this.log(x,`Ссылка на оплату ${fmt(this.price(x).prepay)} отправлена в WhatsApp`));if(['new','contact'].includes(b.stage))this.move(b.num,'prepay');this.toast('Ссылка отправлена гостю');},visitActions,noteDraft:s.note,setNote:e=>this.setState({note:e.target.value}),addNote:()=>{if(!s.note.trim())return;this.upd(b.num,x=>this.log(x,'Комментарий: '+s.note.trim()));this.setState({note:''});},primary,cancelBooking:()=>{const why=window.prompt('Причина отмены');if(!why)return;const refund=b.start!=null&&b.day*24+b.start-NOW_MIN/60>=this.bookedRules(b).cfg.cancelFreeDays*24;this.move(b.num,failOf(b),why+(this.paid(b)>0?(refund?' · возврат предоплаты — задача администратору':' · срок бесплатной отмены прошёл, сумму возврата нужно уточнить'):''));},
+   addRest,hasNew:!!nb,nb:nb||{},nbDate:Number.isInteger(nb?.day)?dkey(nb.day):'',
+   nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts:startOptions(nbRules),nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
    hasToast:!!s.toast,toast:s.toast,
    calMonthMode:()=>this.setState({calMode:'month'}),calIsMonth:s.calMode==='month',monthHead,monthCells,monthStats,calHouse:s.calHouse,setCalHouse:e=>this.setState({calHouse:e.target.value}),
    boardTabs,addBoard:()=>{const id='b'+Date.now();const cols=newCols();for(const c of cols)ST[c.id]={...c,board:id};this.setState(S=>({boards:[...S.boards,{id,name:'Новая доска',cols}],board:id,boardEdit:true,colDel:null,view:'kanban'}));this.toast('Доска создана — задайте название и столбцы');},
@@ -1587,10 +1972,10 @@ class Component extends DCLogic {
    addCol:()=>{const id='c'+Date.now();const nc={id,name:'Новый столбец',color:'#3B7EA1',type:'open',hl:false,norm:''};ST[id]={...nc,board:curB.id};updB(x=>{const cols=[...x.cols];const i=cols.findIndex(c=>c.type!=='open');if(i<0)cols.push(nc);else cols.splice(i,0,nc);return {...x,cols};});this.setState({boardEdit:true,view:'kanban'});},
    askDelBoard:()=>{if(delWhyB)return;this.setState({boardDelAsk:true});},boardDelAsk:s.boardDelAsk,boardDelText:`Удалить доску «${curB.name}»? ${bCards.length?`${bCards.length} карт. перейдут на основную доску «${mainB.name}» в столбец «${mainB.cols[0].name}».`:'Карточек на доске нет.'}`,
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
-   boardOpts,setBoardOf,rsOn,rsv,rsSet,
+   boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
    clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,
    hasClient:!!cl,cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
-   cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,holTariffCount,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
+   cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }
 }
 </script>
