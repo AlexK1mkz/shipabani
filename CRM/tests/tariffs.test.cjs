@@ -212,7 +212,11 @@ test('renders all calendar modes and cancels or confirms the owner-only reset', 
 
 test('localizes the tariff editor and restores Russian after switching back', () => {
   const script = readFileSync(join(__dirname, '..', 'shipa-ru-kz.js'), 'utf8');
-  const labels = ['Тарифы и правила', 'Сохранить версию', '4 ч вечером × 45 000 ₸', 'Укажите от 1 до 16 гостей.'];
+  const labels = [
+    'Тарифы и правила', 'Сохранить версию', '4 ч вечером × 45 000 ₸', 'Укажите от 1 до 16 гостей.',
+    'Малый Standard', 'Большой Standard', 'Малый VIP', 'Средний VIP', 'Большой VIP',
+    '04 ЭНЕРГИЯ · Малый Standard', 'Большой VIP · Предоплата',
+  ];
   const body = { nodeType: 1, tagName: 'BODY', getAttribute: () => null, hasAttribute: () => false };
   const nodes = labels.map(nodeValue => ({ nodeType: 3, nodeValue, parentElement: body }));
   const document = {
@@ -234,6 +238,8 @@ test('localizes the tariff editor and restores Russian after switching back', ()
   assert.equal(document.documentElement.lang, 'kk');
   assert.deepEqual(nodes.map(n => n.nodeValue), [
     'Тарифтер мен ережелер', 'Нұсқаны сақтау', '4 сағ кешке × 45 000 ₸', 'Қонақ санын 1–16 аралығында көрсетіңіз.',
+    'Шағын Standard', 'Үлкен Standard', 'Шағын VIP', 'Орташа VIP', 'Үлкен VIP',
+    '04 ЭНЕРГИЯ · Шағын Standard', 'Үлкен VIP · Алдын ала төлем',
   ]);
   window.ShipaLocale.set('RU');
   assert.deepEqual(nodes.map(n => n.nodeValue), labels);
