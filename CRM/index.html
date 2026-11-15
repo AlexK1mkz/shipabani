@@ -21,6 +21,21 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 :focus-visible{outline:2px solid #C15C22;outline-offset:2px;}
 @keyframes panelIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes crmAppear{from{opacity:.84;translate:0 4px}to{opacity:1;translate:none}}
+  [data-scroll-main] > section[data-screen-label],
+  .crm-new-booking,.crm-reason-dialog[open],.crm-mini-guide[open],
+  .crm-booking-calendar,.crm-cal-filter[open] .crm-cal-filter-menu{
+    animation:crmAppear 160ms ease-out;
+  }
+  @media(prefers-reduced-motion:reduce){
+    [data-screen-label="CRM"] *,[data-screen-label="CRM"] *::before,[data-screen-label="CRM"] *::after{
+      animation:none!important;transition:none!important;
+    }
+  }
+  .crm-booking-filter{min-height:36px;padding:0 14px;border:1px solid #D5E0E7;border-radius:999px;background:#fff;color:#0A2F4F;white-space:nowrap;font-size:13px;font-weight:500;}
+  .crm-booking-filter:hover,.crm-booking-filter:active{background:#EDF3F7;}
+  .crm-booking-filter[aria-pressed="true"]{background:#0A2F4F;border-color:#0A2F4F;color:#fff;}
+  .crm-booking-filter[aria-pressed="true"]:hover,.crm-booking-filter[aria-pressed="true"]:active{background:#163F60;border-color:#163F60;}
 ::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:rgba(10,47,79,.15);border-radius:8px}
   .crm-nav-item{position:relative;display:flex;flex:0 0 auto;align-items:center;gap:12px;min-height:44px;padding:7px 12px;border-radius:10px;text-align:left;font-size:14px;line-height:1.25;font-weight:500;transition:background-color 150ms ease-out;}
   .crm-nav-item:hover{background:#F1F4F5;}
@@ -30,10 +45,17 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-nav-label{flex:1;min-width:0;overflow-wrap:anywhere;}
   .crm-nav-badge{flex-shrink:0;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#9D481A;color:#fff;font-size:12px;font-weight:600;display:grid;place-items:center;}
   .crm-nav-item[aria-current="page"] .crm-nav-badge{background:#F9EFE3;color:#0A2F4F;}
-  .crm-nav-brand{display:flex;align-items:center;gap:8px;height:48px;flex:0 0 auto;padding:0 8px;margin-bottom:12px;white-space:nowrap;}
+  .crm-nav-brand{position:relative;display:flex;align-items:center;gap:8px;height:48px;flex:0 0 auto;padding:0 8px;margin-bottom:12px;white-space:nowrap;}
+  .crm-nav-full-brand{display:flex;align-items:center;gap:8px;}
+  .crm-nav-mark{position:absolute;left:8px;object-fit:contain;opacity:0;visibility:hidden;transition:opacity 130ms ease-out,visibility 0s linear 130ms;}
+  .crm-nav-expanded-content{opacity:1;visibility:visible;transition:opacity 130ms ease-out,visibility 0s;}
+  nav[data-expanded="false"] .crm-nav-expanded-content{opacity:0;visibility:hidden;transition-delay:0s,130ms;}
+  nav[data-expanded="false"] .crm-nav-mark{opacity:1;visibility:visible;transition-delay:0s;}
+  .crm-nav-links .crm-nav-item{overflow:hidden;}
+  .crm-nav-links .crm-nav-label{min-width:126px;}
   .crm-nav-wordmark{display:block;width:142px;height:auto;flex:0 0 auto;}
   .crm-nav-brand-label{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:600;letter-spacing:.06em;}
-  .crm-nav-links{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;overflow:auto;padding:2px;}
+  .crm-nav-links{display:flex;flex:0 1 auto;flex-direction:column;gap:4px;min-height:0;overflow-y:auto;overflow-x:hidden;padding:2px;}
   .crm-nav-footer{flex:0 0 auto;margin-top:auto;padding-top:8px;border-top:1px solid rgba(10,47,79,.08);}
   .crm-nav-pin{width:calc(100% - 4px);margin:0 2px 4px;font-size:13px;}
   .crm-nav-pin .crm-nav-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -144,6 +166,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:10px 14px;border-radius:11px;background:#0A2F4F;color:#fff;box-shadow:0 12px 36px rgba(10,47,79,.2);font-size:13px;line-height:1.4;overflow-wrap:anywhere;animation:fadeIn 150ms ease-out;}
   .crm-toast--success{background:#235A3C;}
   .crm-toast svg{flex:none;}
+  .crm-birthday-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid #E9EDF0;}
+  .crm-birthday-open{display:flex;align-items:center;gap:10px;flex:1;min-width:0;min-height:48px;padding:6px 8px;border:1px solid transparent;border-radius:10px;text-align:left;transition:background-color 130ms ease-out,border-color 130ms ease-out;}
+  .crm-birthday-open:hover,.crm-birthday-open:focus-visible{background:#EDF3F7;border-color:#D5E0E7;}
+  .crm-birthday-open:active{background:#DFEAF2;}
+  .crm-birthday-open .crm-birthday-chevron{flex:none;color:#526E84;}
+  .crm-birthday-whatsapp:hover{background:#EDF3F7;}
   .crm-prep-booking{display:grid;grid-template-columns:minmax(0,1fr) auto 14px;gap:12px;align-items:center;width:100%;min-height:68px;padding:10px 4px;border-top:1px solid #E9EDF0;text-align:left;}
   .crm-prep-booking:hover{background:#F4F7F9;}
   .crm-prep-booking > svg{color:#61798C;}
@@ -153,6 +181,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-prep-pill{padding:3px 7px;border-radius:999px;font-size:11px;font-weight:600;}
   .crm-prep-guest{overflow-wrap:anywhere;font-size:13px;color:#43566A;}
   .crm-prep-times{text-align:right;white-space:nowrap;font-size:12px;}
+  .crm-new-booking label,.crm-new-booking .crm-booking-date-label{font-weight:600;}
+  .crm-new-booking input:not([type="checkbox"]),.crm-new-booking select,.crm-new-booking .crm-booking-date-button{color:#0A2F4F;font-weight:600;}
+  .crm-new-booking input::placeholder{color:#687988;font-weight:400;}
+  .crm-new-booking select:disabled{color:#526271;background:#F3F5F6;opacity:1;}
+  .crm-new-service-name,.crm-new-service-price{font-weight:600;}
+  .crm-new-service-price{color:#0A2F4F;}
+  .crm-new-service:has(button:disabled){background:#F3F6F8;}
+  .crm-new-service button:disabled{color:#43566A;cursor:default;}
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
   .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
@@ -197,21 +233,19 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 <div data-screen-label="CRM" style="display:flex;height:100vh;min-width:1280px;background:#F6F3EE;color:#0A2F4F;font-size:14px;line-height:1.4;overflow:hidden;">
 
 <!-- Боковое меню -->
-<nav onMouseEnter="{{ navEnter }}" onMouseLeave="{{ navLeave }}" style="width:{{ navW }};flex:0 0 auto;background:#fff;border-right:1px solid rgba(10,47,79,.08);display:flex;flex-direction:column;padding:16px 12px;gap:4px;transition:width 200ms ease-out;overflow:hidden;z-index:5;">
+<nav data-expanded="{{ navExpanded }}" onMouseEnter="{{ navEnter }}" onMouseLeave="{{ navLeave }}" style="width:{{ navW }};flex:0 0 auto;background:#fff;border-right:1px solid rgba(10,47,79,.08);display:flex;flex-direction:column;padding:16px 12px;gap:4px;transition:width 170ms ease-out;overflow:hidden;z-index:5;">
   <div class="crm-nav-brand">
-    <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="crm-nav-full-brand crm-nav-expanded-content" aria-hidden="{{ navCollapsed }}">
       <img class="crm-nav-wordmark" src="../shipa-bani-front/brand/logo-h-navy.png" alt="SHIPÁ" width="782" height="231">
       <span class="crm-nav-brand-label">CRM</span>
-    </sc-if>
-    <sc-if value="{{ navCollapsed }}" hint-placeholder-val="{{ false }}">
-      <img src="brand/mark-navy.png" alt="SHIPÁ CRM" width="32" height="32" style="object-fit:contain;flex:0 0 auto;">
-    </sc-if>
+    </div>
+    <img class="crm-nav-mark" src="brand/mark-navy.png" alt="SHIPÁ CRM" width="32" height="32" aria-hidden="{{ navExpanded }}">
   </div>
   <div class="crm-nav-links">
     <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
       <button onClick="{{ n.go }}" title="{{ n.name }}" aria-label="{{ n.name }}" aria-current="{{ n.current }}" class="crm-nav-item">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="{{ n.icon }}"></path></svg>
-        <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-label">{{ n.name }}</span></sc-if>
+        <span class="crm-nav-label crm-nav-expanded-content" aria-hidden="true">{{ n.name }}</span>
         <sc-if value="{{ n.badgeShow }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-badge">{{ n.badge }}</span></sc-if>
       </button>
     </sc-for>
@@ -219,11 +253,11 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   <div class="crm-nav-footer">
     <button onClick="{{ togglePin }}" title="{{ pinTitle }}" aria-label="Закрепить панель" aria-pressed="{{ pinPressed }}" class="crm-nav-item crm-nav-pin">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"></path></svg>
-      <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span class="crm-nav-label">{{ pinTitle }}</span></sc-if>
+      <span class="crm-nav-label crm-nav-expanded-content" aria-hidden="true">{{ pinTitle }}</span>
     </button>
     <button onClick="{{ toggleRole }}" title="Переключить роль" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 6px;border-radius:12px;width:100%;text-align:left;" style-hover="background:rgba(10,47,79,.06);">
       <span style="width:36px;height:36px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;flex:0 0 auto;">{{ roleInitial }}</span>
-      <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}"><span style="white-space:nowrap;"><span style="display:block;font-weight:600;font-size:13px;">{{ roleName }}</span><span style="display:block;font-size:12px;color:rgba(59,47,42,.7);">{{ roleLabel }} · сменить</span></span></sc-if>
+      <span class="crm-nav-expanded-content" style="white-space:nowrap;" aria-hidden="{{ navCollapsed }}"><span style="display:block;font-weight:600;font-size:13px;">{{ roleName }}</span><span style="display:block;font-size:12px;color:rgba(59,47,42,.7);">{{ roleLabel }} · сменить</span></span>
     </button>
   </div>
 </nav>
@@ -353,13 +387,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           </div>
           <sc-if value="{{ noBdays }}" hint-placeholder-val="{{ false }}"><div style="padding:8px 0;font-size:13px;color:rgba(59,47,42,.7);">На этой неделе дней рождения нет.</div></sc-if>
           <sc-for list="{{ bdays }}" as="d" hint-placeholder-count="3">
-            <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-top:1px solid rgba(10,47,79,.08);">
-              <button onClick="{{ d.open }}" style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;text-align:left;">
+            <div class="crm-birthday-row">
+              <button type="button" onClick="{{ d.open }}" class="crm-birthday-open" title="Открыть карточку гостя">
                 <span style="width:36px;height:36px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;flex:0 0 auto;">{{ d.initial }}</span>
                 <span style="min-width:0;"><span style="display:block;font-weight:600;">{{ d.name }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ d.when }}</span></span><span style="display:block;font-size:12px;color:{{ d.stColor }};">{{ d.st }}</span></span>
+                <span style="margin-left:auto;font-size:12px;color:#526271;white-space:nowrap;">{{ d.age }}</span>
+                <svg class="crm-birthday-chevron" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
               </button>
-              <span style="font-size:12px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ d.age }}</span>
-              <a href="{{ d.wa }}" target="_blank" rel="noopener" title="Написать в WhatsApp" style="width:36px;height:36px;border-radius:12px;border:1px solid rgba(10,47,79,.15);display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
+              <a class="crm-birthday-whatsapp" href="{{ d.wa }}" target="_blank" rel="noopener" title="Написать в WhatsApp" style="width:36px;height:36px;border-radius:12px;border:1px solid rgba(10,47,79,.15);display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
             </div>
           </sc-for>
         </div>
@@ -533,7 +568,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <button onClick="{{ goCalendar }}" style="height:36px;padding:0 16px;border-radius:9px;font-weight:500;color:rgba(10,47,79,.7);">Календарь</button>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <sc-for list="{{ savedViews }}" as="v" hint-placeholder-count="3"><button onClick="{{ v.go }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ v.bg }};color:{{ v.fg }};font-weight:500;" style-hover="background:rgba(10,47,79,.06);">{{ v.name }}</button></sc-for>
+          <sc-for list="{{ savedViews }}" as="v" hint-placeholder-count="3"><button type="button" class="crm-booking-filter" onClick="{{ v.go }}" aria-pressed="{{ v.pressed }}">{{ v.name }}</button></sc-for>
         </div>
         <span class="crm-assignee-filter" data-active="{{ assigneeActive }}">
           <select class="crm-assignee-filter-select crm-picker" aria-label="Ответственный" title="Ответственный" value="{{ assigneeFilter }}" onChange="{{ setAssigneeFilter }}">
@@ -1341,19 +1376,19 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 <!-- ===== НОВАЯ БРОНЬ ===== -->
 <sc-if value="{{ hasNew }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ closeNew }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:50;animation:fadeIn 150ms ease-out;"></div>
-  <div data-screen-label="Новая бронь" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;max-height:92vh;overflow:auto;background:#fff;border-radius:20px;z-index:51;box-shadow:0 24px 64px rgba(10,47,79,.12);padding:24px;display:grid;grid-template-columns:1fr 280px;gap:24px;">
+  <div class="crm-new-booking" data-screen-label="Новая бронь" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;max-height:92vh;overflow:auto;background:#fff;border-radius:20px;z-index:51;box-shadow:0 24px 64px rgba(10,47,79,.12);padding:24px;display:grid;grid-template-columns:1fr 280px;gap:24px;">
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div style="display:flex;align-items:center;"><h2 style="font-size:20px;font-weight:600;margin:0;">Новая бронь</h2><span style="margin-left:12px;font-size:13px;color:rgba(59,47,42,.7);">цена считается движком сайта</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Телефон<input type="tel" autocomplete="tel" value="{{ nb.phone }}" onChange="{{ nbSet.phone }}" onPaste="{{ pasteNbPhone }}" placeholder="+7 7__ ___ __ __" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Имя <span style="color:#C15C22;">*</span><input value="{{ nb.first }}" onChange="{{ nbSet.first }}" placeholder="Данил" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Фамилия <span style="color:#C15C22;">*</span><input value="{{ nb.last }}" onChange="{{ nbSet.last }}" placeholder="Ковалёв" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Отчество <span style="color:rgba(59,47,42,.5);">· по желанию</span><input value="{{ nb.middle }}" onChange="{{ nbSet.middle }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+        <label style="font-size:13px;color:#43566A;grid-column:span 2;">Телефон<input type="tel" autocomplete="tel" value="{{ nb.phone }}" onChange="{{ nbSet.phone }}" onPaste="{{ pasteNbPhone }}" placeholder="+7 7__ ___ __ __" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+        <label style="font-size:13px;color:#43566A;">Имя <span style="color:#C15C22;">*</span><input value="{{ nb.first }}" onChange="{{ nbSet.first }}" placeholder="Данил" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+        <label style="font-size:13px;color:#43566A;">Фамилия <span style="color:#C15C22;">*</span><input value="{{ nb.last }}" onChange="{{ nbSet.last }}" placeholder="Ковалёв" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+        <label style="font-size:13px;color:#43566A;">Отчество <span style="color:rgba(59,47,42,.5);">· по желанию</span><input value="{{ nb.middle }}" onChange="{{ nbSet.middle }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <sc-if value="{{ hasNbKnown }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;font-size:12px;color:#3F6B43;background:rgba(94,140,97,.12);border-radius:10px;padding:8px 12px;">{{ nbKnown }}</div></sc-if>
-        <sc-if value="{{ hasNbSugg }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;display:flex;flex-direction:column;gap:4px;"><div style="font-size:12px;color:rgba(59,47,42,.7);">Найдены гости с таким номером — выберите, чтобы подставить ФИО</div><sc-for list="{{ nbSugg }}" as="g" hint-placeholder-count="2"><button onClick="{{ g.pick }}" style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:10px;border:1px solid rgba(10,47,79,.12);text-align:left;font-size:13px;" style-hover="background:rgba(10,47,79,.06);"><span style="font-weight:600;flex:1;">{{ g.name }}</span><span style="color:rgba(59,47,42,.7);">{{ g.phone }} · {{ g.hint }}</span></button></sc-for></div></sc-if>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);grid-column:span 2;">Дом<select value="{{ nb.house }}" onChange="{{ nbSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
+        <sc-if value="{{ hasNbSugg }}" hint-placeholder-val="{{ false }}"><div style="grid-column:span 2;display:flex;flex-direction:column;gap:4px;"><div style="font-size:13px;color:#43566A;">Найдены гости с таким номером — выберите, чтобы подставить ФИО</div><sc-for list="{{ nbSugg }}" as="g" hint-placeholder-count="2"><button onClick="{{ g.pick }}" style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:10px;border:1px solid rgba(10,47,79,.12);text-align:left;font-size:13px;" style-hover="background:rgba(10,47,79,.06);"><span style="font-weight:600;flex:1;">{{ g.name }}</span><span style="color:rgba(59,47,42,.7);">{{ g.phone }} · {{ g.hint }}</span></button></sc-for></div></sc-if>
+        <label style="font-size:13px;color:#43566A;grid-column:span 2;">Дом<select value="{{ nb.house }}" onChange="{{ nbSet.house }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
         <div class="crm-booking-date">
-          <span id="crm-booking-date-label" style="font-size:12px;color:rgba(59,47,42,.7);">Дата</span>
+          <span id="crm-booking-date-label" class="crm-booking-date-label" style="font-size:13px;color:#43566A;">Дата</span>
           <button type="button" id="crm-booking-date-toggle" class="tariff-input crm-booking-date-button" aria-labelledby="crm-booking-date-label crm-booking-date-value" aria-expanded="{{ nbCal.expanded }}" aria-controls="crm-booking-calendar" onClick="{{ toggleNbCalendar }}">
             <span id="crm-booking-date-value">{{ nbDateLabel }}</span>
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
@@ -1378,16 +1413,16 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             </div>
           </sc-if>
         </div>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Начало<select id="crm-booking-start" value="{{ nbStartValue }}" disabled="{{ nbNoStarts }}" onFocus="{{ closeNbCalendar }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Часов<select value="{{ nb.dur }}" onChange="{{ nbSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbDurs }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
-        <label style="font-size:12px;color:rgba(59,47,42,.7);">Гостей / детей<span style="display:flex;gap:6px;margin-top:4px;"><input type="number" min="1" max="{{ nbMaxGuests }}" value="{{ nb.guests }}" onChange="{{ nbSet.guests }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"><input type="number" min="0" value="{{ nb.kids }}" onChange="{{ nbSet.kids }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
+        <label style="font-size:13px;color:#43566A;">Начало<select id="crm-booking-start" value="{{ nbStartValue }}" disabled="{{ nbNoStarts }}" onFocus="{{ closeNbCalendar }}" onChange="{{ nbSet.start }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbStarts }}" as="o" hint-placeholder-count="12"><option value="{{ o.v }}">{{ o.name }}</option></sc-for></select></label>
+        <label style="font-size:13px;color:#43566A;">Часов<select value="{{ nb.dur }}" onChange="{{ nbSet.dur }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><sc-for list="{{ nbDurs }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></label>
+        <label style="font-size:13px;color:#43566A;">Гостей / детей<span style="display:flex;gap:6px;margin-top:4px;"><input type="number" min="1" max="{{ nbMaxGuests }}" value="{{ nb.guests }}" onChange="{{ nbSet.guests }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"><input type="number" min="0" value="{{ nb.kids }}" onChange="{{ nbSet.kids }}" style="width:50%;height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <sc-for list="{{ nbExtras }}" as="x" hint-placeholder-count="4">
-            <div style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 8px 0 12px;border-radius:12px;border:1px solid rgba(10,47,79,.12);background:{{ x.bg }};opacity:{{ x.opacity }};">
+            <div class="crm-new-service" style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 8px 0 12px;border-radius:12px;border:1px solid rgba(10,47,79,.12);background:{{ x.bg }};">
               <button onClick="{{ x.toggle }}" disabled="{{ x.locked }}" style="flex:1;display:flex;align-items:center;gap:12px;min-height:44px;text-align:left;">
                 <span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #0A2F4F;background:{{ x.boxBg }};display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><sc-if value="{{ x.on }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span>
-                <span style="flex:1;">{{ x.name }}<sc-if value="{{ x.kind }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:11px;color:rgba(59,47,42,.6);">{{ x.kind }}</span></sc-if></span><span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ x.price }}</span>
+                <span style="flex:1;"><span class="crm-new-service-name">{{ x.name }}</span><sc-if value="{{ x.kind }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:11px;color:#526271;">{{ x.kind }}</span></sc-if></span><span class="crm-new-service-price" style="font-size:13px;white-space:nowrap;">{{ x.price }}</span>
               </button>
               <sc-if value="{{ x.hasQty }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:2px;flex:0 0 auto;border-left:1px solid rgba(10,47,79,.1);padding-left:8px;"><button onClick="{{ x.dec }}" aria-label="Меньше" style="width:28px;height:28px;border-radius:8px;font-size:18px;line-height:1;opacity:{{ x.decOp }};" style-hover="background:rgba(10,47,79,.08);">−</button><span style="min-width:44px;text-align:center;font-weight:600;font-size:14px;">{{ x.qty }} <span style="font-weight:400;font-size:11px;color:rgba(59,47,42,.6);">{{ x.qtyUnit }}</span></span><button onClick="{{ x.inc }}" aria-label="Больше" style="width:28px;height:28px;border-radius:8px;font-size:18px;line-height:1;opacity:{{ x.incOp }};" style-hover="background:rgba(10,47,79,.08);">+</button></span></sc-if>
             </div>
@@ -1398,12 +1433,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     </div>
     <aside class="crm-booking-summary">
       <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;letter-spacing:.08em;">{{ nbHouseName }}</div>
-      <div style="font-size:12px;color:rgba(59,47,42,.7);margin-bottom:6px;">{{ nbWhen }}</div>
+      <div style="font-size:13px;color:#43566A;margin-bottom:6px;">{{ nbWhen }}</div>
       <div id="crm-booking-warnings" aria-live="polite">
         <sc-if value="{{ nbConflict }}" hint-placeholder-val="{{ false }}"><div class="crm-booking-warning crm-booking-warning--conflict">{{ nbConflictText }}</div></sc-if>
         <sc-if value="{{ hasNbMissing }}" hint-placeholder-val="{{ false }}"><div class="crm-booking-warning crm-booking-warning--missing" style="margin-top:4px;">{{ nbMissing }}</div></sc-if>
       </div>
-      <sc-for list="{{ nbRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(59,47,42,.85);">{{ r.l }}</span><span style="white-space:nowrap;">{{ r.v }}</span></div></sc-for>
+      <sc-for list="{{ nbRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:10px;"><span style="color:rgba(59,47,42,.85);">{{ r.l }}</span><span style="white-space:nowrap;font-weight:600;">{{ r.v }}</span></div></sc-for>
       <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(10,47,79,.1);padding-top:10px;margin-top:4px;"><span style="font-weight:600;">Итого</span><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1;">{{ nbTotal }}</span></div>
       <div style="display:flex;justify-content:space-between;color:rgba(59,47,42,.7);"><span>Предоплата</span><span>{{ nbPrepay }}</span></div>
       <button onClick="{{ createBooking }}" disabled="{{ nbDisabled }}" aria-describedby="crm-booking-warnings" style="margin-top:12px;height:48px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;font-size:15px;opacity:{{ nbBtnOpacity }};" style-hover="background:#A84D1B;">Создать бронь</button>
@@ -2235,7 +2270,7 @@ class Component extends DCLogic {
     this.upd(current.num,x=>this.log({...x,owner:value},`Ответственный: ${value||'Не назначен'}`));
   };
   let filtered=B.filter(b=>(b.board||'sales')===curB.id&&(s.assigneeFilter==null||bookingAssignee(b)===s.assigneeFilter));if(s.savedView==='today')filtered=filtered.filter(b=>b.day===0);if(s.savedView==='unpaid')filtered=filtered.filter(b=>['new','contact','prepay'].includes(b.stage));if(s.savedView==='vip')filtered=filtered.filter(b=>H[b.house]&&cats[H[b.house].cat].tier==='VIP'&&b.day>=0&&this.isWeekend(b.day));
-  const savedViews=(curB.id==='sales'?[{id:'today',name:'Мои на сегодня'},{id:'unpaid',name:'Ждут оплаты'},{id:'vip',name:'VIP на выходные'}]:[]).map(v=>({...v,bg:s.savedView===v.id?'#0A2F4F':'#fff',fg:s.savedView===v.id?'#fff':'#0A2F4F',go:()=>this.setState({savedView:s.savedView===v.id?null:v.id})}));
+  const savedViews=(curB.id==='sales'?[{id:'today',name:'Мои на сегодня'},{id:'unpaid',name:'Ждут оплаты'},{id:'vip',name:'VIP на выходные'}]:[]).map(v=>({...v,pressed:String(s.savedView===v.id),go:()=>this.setState({savedView:s.savedView===v.id?null:v.id})}));
   const ocount=curB.cols.filter(c=>c.type==='open').length;
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
   const updCol=(id,patch)=>updB(x=>({...x,cols:x.cols.map(c=>c.id===id?{...c,...patch}:c)}));
@@ -2691,7 +2726,7 @@ class Component extends DCLogic {
     };
   }
   const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen;
-  return {nav,navOpen,navCollapsed:!navOpen,navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
+  return {nav,navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
