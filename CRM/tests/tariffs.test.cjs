@@ -604,3 +604,30 @@ test('guest Excel export follows the current filter, search and sort order', () 
   crm.renderVals().exportGuests();
   assert.equal(downloads.length, 2);
 });
+
+test('kanban reports success only after a stage change is applied', () => {
+  const { crm } = demo();
+  const booking = crm.state.bookings.find(b => b.board === 'sales' && b.stage === 'new' && crm.paid(b) === 0);
+  const drop = name => {
+    crm.drag = booking.num;
+    crm.renderVals().columns.find(col => col.name === name).drop({ preventDefault() {} });
+  };
+  drop('Подтверждена');
+  assert.equal(storedBooking(crm, booking.num).stage, 'new');
+  assert.equal(crm.renderVals().toastSuccess, false);
+  assert.match(crm.state.toast, /Сначала зафиксируйте предоплату/);
+  drop('Связались');
+  assert.equal(storedBooking(crm, booking.num).stage, 'contact');
+  assert.equal(crm.renderVals().toastSuccess, true);
+  assert.match(crm.state.toast, /Бронь перемещена.*Связались/);
+  crm.setState({ toast: '', toastTone: 'info' });
+  drop('Отменена');
+  assert.equal(crm.state.reasonDialog.kanban, true);
+  assert.equal(crm.renderVals().toastSuccess, false);
+  assert.equal(storedBooking(crm, booking.num).stage, 'contact');
+  crm.setBookingReason('Гость отменил визит');
+  crm.confirmBookingReason();
+  assert.equal(storedBooking(crm, booking.num).stage, 'cancel');
+  assert.equal(crm.renderVals().toastSuccess, true);
+  assert.match(crm.state.toast, /Бронь перемещена.*Отменена/);
+});
