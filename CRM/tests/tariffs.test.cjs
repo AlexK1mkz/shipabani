@@ -268,3 +268,30 @@ test('localizes the tariff editor and restores Russian after switching back', ()
   assert.equal(localeChanges, 3);
   assert.deepEqual(nodes.map(n => n.nodeValue), labels);
 });
+
+test('retains a cancellation draft after reload and only closes the booking after confirmation', () => {
+  const storage = new Map();
+  let { crm, DEMO_KEY } = demo(storage);
+  const booking = crm.state.bookings.find(b => b.board === 'sales' && b.stage === 'confirmed' && crm.paid(b) > 0);
+  assert.ok(booking);
+  assert.equal(crm.move(booking.num, 'cancel'), false);
+  assert.equal(crm.state.reasonDialog.num, booking.num);
+  crm.setBookingReason('  ');
+  crm.confirmBookingReason();
+  assert.equal(storedBooking(crm, booking.num).stage, 'confirmed');
+  crm.setBookingReason('  Гость попросил отменить бронь  ');
+  crm.dismissBookingReason();
+  assert.equal(storedBooking(crm, booking.num).stage, 'confirmed');
+  crm = demo(storage).crm;
+  assert.equal(crm.state.reasonDialog, null);
+  crm.move(booking.num, 'cancel');
+  assert.equal(crm.renderVals().reasonInfo.draft, '  Гость попросил отменить бронь  ');
+  crm.confirmBookingReason();
+  assert.equal(crm.state.reasonDialog, null);
+  const saved = JSON.parse(storage.get(DEMO_KEY));
+  const cancelled = saved.bookings.find(b => b.num === booking.num);
+  assert.equal(cancelled.stage, 'cancel');
+  assert.equal(cancelled.events[0].reason, 'Гость попросил отменить бронь');
+  assert.match(cancelled.events[0].text, /Отменена/);
+  assert.deepEqual(saved.reasonDrafts, {});
+});
