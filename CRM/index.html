@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-calendar-move"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-calendar-guests"></script>
 </head>
 <body>
 <x-dc>
@@ -83,6 +83,25 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-cal-swatch{width:12px;height:12px;border-radius:3px;flex:none;}
   .crm-cal-drop-error{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid #E7B4AB;border-radius:12px;background:#FBEAE7;color:#862D22;font-size:13px;line-height:1.4;}
   .crm-cal-drop-error button{margin-left:auto;padding:0 7px;font-size:18px;}
+  [data-scroll-main]:has(.crm-guests-table){scrollbar-gutter:stable;}
+  .crm-guests-table-card{min-width:0;background:#fff;border-radius:20px;padding:8px 24px 16px;}
+  .crm-guests-table-scroll{overflow-x:auto;max-width:100%;}
+  .crm-guests-table{min-width:1130px;}
+  .crm-guest-table-line{display:grid;grid-template-columns:minmax(248px,1.9fr) minmax(122px,1.15fr) minmax(66px,.55fr) minmax(112px,1fr) minmax(122px,1fr) minmax(136px,1.1fr) minmax(96px,.72fr) minmax(108px,1fr);column-gap:12px;align-items:center;}
+  .crm-guest-table-head{min-height:46px;border-bottom:1px solid #DEE5EA;color:#526271;font-size:12px;font-weight:600;}
+  .crm-guest-table-head button{min-height:36px;text-align:left;font-weight:inherit;}
+  .crm-guest-table-head button:hover{color:#A84D1B;}
+  .crm-guest-table-row{min-height:62px;border-bottom:1px solid #E9EDF0;font-size:13px;cursor:pointer;}
+  .crm-guest-table-row:hover,.crm-guest-table-row:focus-within{background:#F4F7F9;}
+  .crm-guest-identity{display:flex;align-items:center;gap:10px;min-width:0;}
+  .crm-guest-avatar{display:grid;place-items:center;flex:0 0 34px;height:34px;border-radius:50%;background:#0A2F4F;color:#F9EFE3;font:600 16px 'Cormorant Garamond',serif;}
+  .crm-guest-name{display:block;max-width:100%;text-align:left;font-size:14px;font-weight:600;line-height:1.35;}
+  .crm-guest-identity-text{flex:1;min-width:0;}
+  .crm-guest-contact{display:flex;align-items:center;gap:8px;min-width:0;margin-top:2px;color:#526271;font-size:12px;}
+  .crm-guest-tier{margin-left:auto;max-width:94px;border-radius:999px;padding:2px 7px;font-size:11px;font-weight:600;}
+  .crm-guest-name,.crm-guest-tier,.crm-guest-phone,.crm-guest-tag,.crm-guest-table-cell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .crm-guest-tags{display:flex;flex-wrap:wrap;align-content:center;gap:4px;min-width:0;max-height:44px;overflow:hidden;}
+  .crm-guest-tag{flex:0 0 auto;max-width:100%;padding:2px 8px;border-radius:999px;background:#EAF0F4;font-size:12px;}
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
   .crm-booking-warning--conflict{border:1px solid #E7B4AB;background:#FBEAE7;color:#862D22;}
@@ -794,27 +813,38 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         </div>
         <span style="margin-left:auto;font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ clCount }}</span>
       </div>
-      <div style="background:#fff;border-radius:20px;padding:8px 24px 16px;">
-        <div style="display:grid;grid-template-columns:minmax(200px,1.6fr) 1.1fr .6fr 1fr 1fr 1fr .7fr 1fr;gap:12px;height:44px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
-          <button onClick="{{ clSortBy.name }}" style="text-align:left;font-weight:600;">Гость {{ clMark.name }}</button><span>Личный кабинет</span>
-          <button onClick="{{ clSortBy.visits }}" style="text-align:left;font-weight:600;">Визитов {{ clMark.visits }}</button>
-          <button onClick="{{ clSortBy.spent }}" style="text-align:left;font-weight:600;">Оплатил {{ clMark.spent }}</button>
-          <button onClick="{{ clSortBy.last }}" style="text-align:left;font-weight:600;">Последний визит {{ clMark.last }}</button>
-          <button onClick="{{ clSortBy.bday }}" style="text-align:left;font-weight:600;">День рождения {{ clMark.bday }}</button>
-          <span>Рассылка</span><span>Теги</span>
+      <div class="crm-guests-table-card">
+        <div class="crm-guests-table-scroll" tabindex="0" role="region" aria-label="Список гостей">
+          <div class="crm-guests-table" role="table" aria-label="Гости">
+            <div class="crm-guest-table-line crm-guest-table-head" role="row">
+              <div role="columnheader" aria-sort="{{ clAriaSort.name }}"><button type="button" onClick="{{ clSortBy.name }}">Гость {{ clMark.name }}</button></div>
+              <span role="columnheader">Личный кабинет</span>
+              <div role="columnheader" aria-sort="{{ clAriaSort.visits }}"><button type="button" onClick="{{ clSortBy.visits }}">Визитов {{ clMark.visits }}</button></div>
+              <div role="columnheader" aria-sort="{{ clAriaSort.spent }}"><button type="button" onClick="{{ clSortBy.spent }}">Оплатил {{ clMark.spent }}</button></div>
+              <div role="columnheader" aria-sort="{{ clAriaSort.last }}"><button type="button" onClick="{{ clSortBy.last }}">Последний визит {{ clMark.last }}</button></div>
+              <div role="columnheader" aria-sort="{{ clAriaSort.bday }}"><button type="button" onClick="{{ clSortBy.bday }}">День рождения {{ clMark.bday }}</button></div>
+              <span role="columnheader">Рассылка</span><span role="columnheader">Теги</span>
+            </div>
+            <sc-for list="{{ clRows }}" as="r" hint-placeholder-count="10">
+              <div class="crm-guest-table-line crm-guest-table-row" role="row" onClick="{{ r.open }}">
+                <div class="crm-guest-identity" role="cell">
+                  <span class="crm-guest-avatar" aria-hidden="true">{{ r.initial }}</span>
+                  <div class="crm-guest-identity-text">
+                    <button class="crm-guest-name" type="button" title="{{ r.name }}">{{ r.name }}</button>
+                    <div class="crm-guest-contact"><span class="crm-guest-phone" title="{{ r.phone }}">{{ r.phone }}</span><span class="crm-guest-tier" title="{{ r.tierTitle }}" style="background:{{ r.tierBg }};color:{{ r.tierFg }};">{{ r.tier }}</span></div>
+                  </div>
+                </div>
+                <span class="crm-guest-table-cell" role="cell" style="color:{{ r.accColor }};">{{ r.acc }}</span>
+                <span class="crm-guest-table-cell" role="cell" style="font-weight:600;">{{ r.visits }}</span>
+                <span class="crm-guest-table-cell" role="cell" title="{{ r.spent }}">{{ r.spent }}</span>
+                <span class="crm-guest-table-cell" role="cell" title="{{ r.last }}">{{ r.last }}</span>
+                <span class="crm-guest-table-cell" role="cell" title="{{ r.bday }}" style="color:{{ r.bdColor }};font-weight:{{ r.bdWeight }};">{{ r.bday }}</span>
+                <span class="crm-guest-table-cell" role="cell" style="color:{{ r.consentColor }};">{{ r.consent }}</span>
+                <div class="crm-guest-tags" role="cell" title="{{ r.tagsTitle }}"><sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="1"><span class="crm-guest-tag" title="{{ t }}">{{ t }}</span></sc-for></div>
+              </div>
+            </sc-for>
+          </div>
         </div>
-        <sc-for list="{{ clRows }}" as="r" hint-placeholder-count="10">
-          <button onClick="{{ r.open }}" style="display:grid;grid-template-columns:minmax(200px,1.6fr) 1.1fr .6fr 1fr 1fr 1fr .7fr 1fr;gap:12px;width:100%;min-height:56px;align-items:center;text-align:left;border-bottom:1px solid rgba(10,47,79,.06);font-size:13px;" style-hover="background:rgba(10,47,79,.03);">
-            <span style="display:flex;align-items:center;gap:10px;min-width:0;"><span style="width:32px;height:32px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:15px;flex:0 0 auto;">{{ r.initial }}</span><span style="min-width:0;"><span style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;">{{ r.name }}<span title="{{ r.tierTitle }}" style="font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;background:{{ r.tierBg }};color:{{ r.tierFg }};">{{ r.tier }}</span></span><span style="display:block;color:rgba(59,47,42,.6);white-space:nowrap;">{{ r.phone }}</span></span></span>
-            <span style="color:{{ r.accColor }};">{{ r.acc }}</span>
-            <span style="font-weight:600;">{{ r.visits }}</span>
-            <span>{{ r.spent }}</span>
-            <span>{{ r.last }}</span>
-            <span style="color:{{ r.bdColor }};font-weight:{{ r.bdWeight }};white-space:nowrap;">{{ r.bday }}</span>
-            <span style="color:{{ r.consentColor }};">{{ r.consent }}</span>
-            <span style="display:flex;gap:4px;flex-wrap:wrap;"><sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="1"><span style="padding:2px 8px;border-radius:999px;background:rgba(10,47,79,.06);font-size:12px;">{{ t }}</span></sc-for></span>
-          </button>
-        </sc-for>
         <sc-if value="{{ clEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 0;color:rgba(59,47,42,.7);">Никого не нашли. Проверьте номер или снимите фильтр.</div></sc-if>
         <div style="margin-top:12px;font-size:12px;color:rgba(59,47,42,.65);">Гость в базе — по номеру телефона. Регистрация на сайте, брони, оплаты, отзывы и сообщения привязываются к одной карточке; дубли по телефону объединяются автоматически.</div>
       </div>
@@ -2387,8 +2417,9 @@ class Component extends DCLogic {
   const cq=s.clSearch.trim().toLowerCase();const cqd=normP(cq);
   const clKey={name:x=>x.c.name,visits:x=>x.st.visits,spent:x=>x.st.spent,last:x=>x.st.last==null?-1e4:x.st.last,bday:x=>{const n=bdNext(x.c.birthday);return n==null?999:-n;}};
   const clList=CS.filter(clF[s.clFilter]||clF.all).filter(x=>!cq||x.c.name.toLowerCase().includes(cq)||(cqd.length>1&&normP(x.c.phone).includes(cqd))).sort((p,q)=>{const k=clKey[s.clSort.k];const a=k(p),b_=k(q);return (typeof a==='string'?a.localeCompare(b_):a-b_)*s.clSort.d;});
-  const clRows=clList.map(({c,st})=>{const n=bdNext(c.birthday);const lo=this.loyal(c,st);return {tier:lo.tier.name,tierTitle:`${lo.pts} баллов · скидка ${lo.tier.pct}%`,tierBg:hexA(lo.tier.color,.18),tierFg:'#0A2F4F',name:c.name,initial:c.name[0],phone:c.phone,acc:c.account?`с ${ddmm(c.account.reg)}`:'нет',accColor:c.account?'#3F6B43':GR(.55),visits:String(st.visits),spent:st.spent?fmt(st.spent):'—',last:st.last==null?'—':st.last===0?'сегодня':dlabel(st.last),bday:c.birthday?`${bdShort(c.birthday)}${n<=14?' · '+(n===0?'сегодня':n===1?'завтра':'через '+n+' дн.'):''}`:'—',bdColor:n!=null&&n<=7?'#C15C22':'#0A2F4F',bdWeight:n!=null&&n<=7?600:400,consent:c.consent?'да':'нет',consentColor:c.consent?'#3F6B43':'#B8432F',tags:(c.tags||'').split(',').map(t=>t.trim()).filter(Boolean),open:()=>this.setState({clientId:c.id,ctab:'profile'})};});
+  const clRows=clList.map(({c,st})=>{const n=bdNext(c.birthday);const lo=this.loyal(c,st);return {tier:lo.tier.name,tierTitle:`${lo.pts} баллов · скидка ${lo.tier.pct}%`,tierBg:hexA(lo.tier.color,.18),tierFg:'#0A2F4F',name:c.name,initial:c.name[0],phone:c.phone,acc:c.account?`с ${ddmm(c.account.reg)}`:'нет',accColor:c.account?'#3F6B43':GR(.55),visits:String(st.visits),spent:st.spent?fmt(st.spent):'—',last:st.last==null?'—':st.last===0?'сегодня':dlabel(st.last),bday:c.birthday?`${bdShort(c.birthday)}${n<=14?' · '+(n===0?'сегодня':n===1?'завтра':'через '+n+' дн.'):''}`:'—',bdColor:n!=null&&n<=7?'#C15C22':'#0A2F4F',bdWeight:n!=null&&n<=7?600:400,consent:c.consent?'да':'нет',consentColor:c.consent?'#3F6B43':'#B8432F',tags:(c.tags||'').split(',').map(t=>t.trim()).filter(Boolean),tagsTitle:c.tags||'',open:()=>this.setState({clientId:c.id,ctab:'profile'})};});
   const clSortBy=Object.fromEntries(Object.keys(clKey).map(k=>[k,()=>this.setState(S=>({clSort:{k,d:S.clSort.k===k?-S.clSort.d:(k==='name'?1:-1)}}))]));const clMark=Object.fromEntries(Object.keys(clKey).map(k=>[k,s.clSort.k===k?(s.clSort.d>0?'↑':'↓'):'']));
+  const clAriaSort=Object.fromEntries(Object.keys(clKey).map(k=>[k,s.clSort.k===k?(s.clSort.d>0?'ascending':'descending'):'none']));
   const cl=s.clients.find(c=>c.id===s.clientId);let cv={},ctabs=[],cvSet={};
   const panelClass=panel=>['crm-details-panel',panel==='guest'?'crm-guest-panel':'',
     cl&&b?'crm-details-panel--paired':'',cl&&b&&s.detailsLast!==panel?'crm-details-panel--behind':''
@@ -2538,7 +2569,7 @@ class Component extends DCLogic {
    askDelBoard:()=>{if(delWhyB)return;this.setState({boardDelAsk:true});},boardDelAsk:s.boardDelAsk,boardDelText:`Удалить доску «${curB.name}»? ${bCards.length?`${bCards.length} карт. перейдут на основную доску «${mainB.name}» в столбец «${mainB.cols[0].name}».`:'Карточек на доске нет.'}`,
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
-   clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,
+   clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,clAriaSort,
    hasClient:!!cl,guestPanelClass:panelClass('guest'),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
    cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }
