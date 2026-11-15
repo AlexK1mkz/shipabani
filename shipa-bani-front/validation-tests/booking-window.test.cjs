@@ -58,3 +58,17 @@ test('step 3 checks availability afresh before proceeding',()=>{
  assert.match(html,/this\.validHoursSelection\(bk\)/);
  assert.match(html,/durs:\[3,4,5,6,8,10,12\]/);
 });
+test('moving the date only preserves a start time that is still bookable',()=>{
+ const begin=html.indexOf('  moveDate(di,guests){');
+ assert.ok(begin>=0);
+ const moveDate=new Function('HOUSES','hh',`return ({${html.slice(begin,html.indexOf('  applyDateSheet()',begin))}}).moveDate`)(HOUSES,String);
+ for(const [start,dur,expected] of [[23,3,null],[20,7,null],[21,5,45]]){
+   const b=Object.assign(make(),{
+     state:{bk:selected(start,dur)},moOf:()=>0,dm:String,
+     initTime:()=>({start:null,dur:null}),setState(){},hint(){},
+     setBk(changes){this.state.bk={...this.state.bk,...changes};}
+   });
+   moveDate.call(b,1);
+   assert.equal(b.state.bk.start,expected);
+ }
+});
