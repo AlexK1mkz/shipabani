@@ -68,7 +68,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   @supports (appearance:base-select) and selector(select::picker(select)){
     .crm-stage-select,.crm-stage-select::picker(select){appearance:base-select;}
     .crm-stage-select::picker-icon{display:none;}
-    .crm-stage-select::picker(select){min-width:max(100%,208px);max-height:min(420px,70dvh);margin-top:6px;padding:5px;overflow:auto;border:1px solid #D5E0E7;border-radius:14px;background:#fff;color:#0A2F4F;box-shadow:0 12px 32px rgba(10,47,79,.18);}
+    .crm-stage-select::picker(select){min-width:208px;max-width:calc(100vw - 24px);max-height:min(420px,70dvh);margin-top:6px;padding:5px;overflow:auto;border:1px solid #D5E0E7;border-radius:14px;background:#fff;color:#0A2F4F;box-shadow:0 12px 32px rgba(10,47,79,.18);}
     .crm-stage-select option{display:flex;align-items:center;gap:10px;min-height:32px;padding:5px 10px;border-radius:8px;font-size:13px;line-height:1.4;}
     .crm-stage-select option:checked{background:#EAF1F6;font-weight:600;}
     .crm-stage-select option:hover,.crm-stage-select option:focus-visible{background:#DAE8F2;}
@@ -1721,7 +1721,11 @@ class Component extends DCLogic {
  }
 
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
- componentDidMount(){this._kd=e=>{if(this.state.reasonDialog)return;if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
+ componentDidMount(){this._kd=e=>{
+  if(this.state.reasonDialog)return;
+  // Let the native status picker handle Escape without dismissing the booking card.
+  if(e.key==='Escape'&&e.target.closest?.('.crm-stage-select'))return;
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
    this.setState(s=>({nb:{...s.nb,calendarMonth:null}}));
    document.querySelector('#crm-booking-date-toggle')?.focus();
    return;
