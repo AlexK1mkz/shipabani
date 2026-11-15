@@ -4042,7 +4042,7 @@ class Component extends DCLogic {
   moveDate(di,guests){const bk=this.state.bk;const hi=HOUSES.findIndex(x=>x.id===bk.houseId);const h=HOUSES[hi];
     const p={date:di,guests:guests??bk.guests,month:this.moOf(di)};let msg=null,scroll=false;
     if(bk.start!=null){const ns=bk.start+(di-bk.date)*24;const m=this.maxFrom(hi,ns);
-      const ok=this.cell(hi,ns)==='free'&&(bk.dur?bk.dur<=m:m>=h.min);
+      const ok=this.canStart(hi,ns)&&(!bk.dur||bk.dur<=m);
       if(ok){p.start=ns;msg=bk.dur?`Перенесли на ${this.dm(di)}, ${hh(ns)}-${hh(ns+bk.dur)}`:`Перенесли на ${this.dm(di)}, начало ${hh(ns)}`;}
       else{Object.assign(p,this.initTime(hi,di),{tub:bk.tub});msg=`На ${this.dm(di)} в ${hh(ns)} занято - выберите другое время`;scroll=true;}}
     else Object.assign(p,this.initTime(hi,di),{tub:bk.tub});
