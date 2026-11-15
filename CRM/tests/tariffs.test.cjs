@@ -434,3 +434,22 @@ test('opening and switching a guest’s bookings preserves the guest card and it
   assert.equal(ui.ctab.bookings, true);
   assert.equal(crm.state.clientId, guest.id);
 });
+
+test('opening a guest from a booking keeps the booking and its current tab open', () => {
+  const { crm } = demo();
+  const booking = crm.state.bookings.find(b => crm.clientOf(b.phone));
+  const guest = crm.clientOf(booking.phone);
+  crm.setState({ openId: booking.num, tab: 'pay' });
+  crm.renderVals().ob.openClient();
+  let ui = crm.renderVals();
+  assert.equal(ui.ob.num, booking.num);
+  assert.equal(ui.tab.pay, true);
+  assert.equal(ui.cv.name, guest.name);
+  assert.match(ui.bookingPanelClass, /--behind/);
+  assert.doesNotMatch(ui.guestPanelClass, /--behind/);
+  ui.closeDetails();
+  ui = crm.renderVals();
+  assert.equal(ui.hasClient, false);
+  assert.equal(ui.ob.num, booking.num);
+  assert.equal(ui.tab.pay, true);
+});
