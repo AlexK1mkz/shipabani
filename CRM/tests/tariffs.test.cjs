@@ -216,6 +216,9 @@ test('localizes the tariff editor and restores Russian after switching back', ()
     'Тарифы и правила', 'Сохранить версию', '4 ч вечером × 45 000 ₸', 'Укажите от 1 до 16 гостей.',
     'Малый Standard', 'Большой Standard', 'Малый VIP', 'Средний VIP', 'Большой VIP',
     '04 ЭНЕРГИЯ · Малый Standard', 'Большой VIP · Предоплата',
+    'Начало', 'Баллов за каждые 100 ₸', 'От, баллов', 'День защитника Отечества · 07.05.2027',
+    'Казахский пользовательский период',
+    'Баллы начисляются с оплаченных сумм: 3 балла за каждые 100 ₸. Уровень считается по сумме баллов за всё время. Скидка дня рождения действует 10 дн. до и после даты. При совпадении скидки складываются. Администратор видит настройки только для чтения.',
   ];
   const body = { nodeType: 1, tagName: 'BODY', getAttribute: () => null, hasAttribute: () => false };
   const nodes = labels.map(nodeValue => ({ nodeType: 3, nodeValue, parentElement: body }));
@@ -228,9 +231,11 @@ test('localizes the tariff editor and restores Russian after switching back', ()
       return { nextNode() { this.currentNode = nodes[i++]; return this.currentNode; } };
     },
   };
-  const window = {};
+  const window = new EventTarget();
+  let localeChanges = 0;
+  window.addEventListener('shipa:localechange', () => { localeChanges++; });
   vm.runInNewContext(script, {
-    window, document, NodeFilter: { SHOW_TEXT: 4 },
+    window, document, Event, NodeFilter: { SHOW_TEXT: 4 },
     MutationObserver: class { observe() {} },
     localStorage: { getItem: () => 'RU', setItem() {} },
   });
@@ -240,7 +245,13 @@ test('localizes the tariff editor and restores Russian after switching back', ()
     'Тарифтер мен ережелер', 'Нұсқаны сақтау', '4 сағ кешке × 45 000 ₸', 'Қонақ санын 1–16 аралығында көрсетіңіз.',
     'Шағын Standard', 'Үлкен Standard', 'Шағын VIP', 'Орташа VIP', 'Үлкен VIP',
     '04 ЭНЕРГИЯ · Шағын Standard', 'Үлкен VIP · Алдын ала төлем',
+    'Басталу уақыты', 'Әр 100 ₸ үшін ұпай', 'Ұпай шегі', 'Отан қорғаушы күні · 07.05.2027',
+    'Казахский пользовательский период',
+    'Төленген әр 100 ₸ үшін 3 ұпай беріледі. Деңгей барлық уақытта жиналған ұпай бойынша анықталады. Туған күн жеңілдігі туған күнге дейін және одан кейін 10 күн бойы қолданылады. Екі жеңілдік қатар қолданылса, олардың мөлшері қосылады. Әкімші баптауларды тек көре алады.',
   ]);
+  assert.equal(window.ShipaLocale.text('Бронза'), 'Қола');
   window.ShipaLocale.set('RU');
+  assert.equal(window.ShipaLocale.text('Бронза'), 'Бронза');
+  assert.equal(localeChanges, 3);
   assert.deepEqual(nodes.map(n => n.nodeValue), labels);
 });
