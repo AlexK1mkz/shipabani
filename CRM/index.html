@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-free-starts"></script>
+<script defer src="./shipa-ru-kz.js?v=20261115-stage-picker"></script>
 </head>
 <body>
 <x-dc>
@@ -56,7 +56,23 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-guest-booking[aria-current="true"]{background:#E8F0F5;}
   @media (max-width:900px){
     .crm-details-panel--paired{width:min(560px,100vw);}
-    .crm-guest-panel.crm-details-panel--paired{visibility:hidden;}
+    .crm-guest-panel.crm-details-panel--paired{right:0;border-right:0;}
+    .crm-details-panel--behind{visibility:hidden;}
+  }
+  .crm-stage-field{position:relative;min-width:0;max-width:55%;}
+  .crm-stage-select{appearance:none;display:block;width:100%;min-height:36px;border:1px solid rgba(10,47,79,.12);border-radius:999px;padding:6px 34px 6px 14px;cursor:pointer;font-size:13px;font-weight:600;text-overflow:ellipsis;white-space:nowrap;}
+  .crm-stage-select:focus-visible{outline:2px solid #6286A1;outline-offset:2px;}
+  .crm-stage-select option{background:#fff;color:#0A2F4F;}
+  .crm-stage-chevron{pointer-events:none;position:absolute;inset:0 13px 0 auto;width:12px;height:12px;margin:auto;}
+  .crm-stage-select:open + .crm-stage-chevron{transform:rotate(180deg);}
+  @supports (appearance:base-select) and selector(select::picker(select)){
+    .crm-stage-select,.crm-stage-select::picker(select){appearance:base-select;}
+    .crm-stage-select::picker-icon{display:none;}
+    .crm-stage-select::picker(select){min-width:max(100%,208px);max-height:min(420px,70dvh);margin-top:6px;padding:5px;overflow:auto;border:1px solid #D5E0E7;border-radius:14px;background:#fff;color:#0A2F4F;box-shadow:0 12px 32px rgba(10,47,79,.18);}
+    .crm-stage-select option{display:flex;align-items:center;gap:10px;min-height:32px;padding:5px 10px;border-radius:8px;font-size:13px;line-height:1.4;}
+    .crm-stage-select option:checked{background:#EAF1F6;font-weight:600;}
+    .crm-stage-select option:hover,.crm-stage-select option:focus-visible{background:#DAE8F2;}
+    .crm-stage-select option::checkmark{order:1;margin-inline-start:auto;color:#0A2F4F;}
   }
   .crm-booking-summary{position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:16px;background:#F6F3EE;font-size:13px;}
   .crm-booking-warning{padding:10px 12px;border-radius:10px;font-size:13px;overflow-wrap:anywhere;}
@@ -891,12 +907,17 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
 <!-- ===== КАРТОЧКА БРОНИ ===== -->
 <sc-if value="{{ hasOpen }}" hint-placeholder-val="{{ false }}">
-  <div onClick="{{ closeCard }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
+  <div onClick="{{ closeDetails }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
   <aside data-screen-label="Карточка брони" class="{{ bookingPanelClass }}">
     <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
       <div style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:20px;font-weight:600;">{{ ob.num }}</span>
-        <select value="{{ ob.stage }}" onChange="{{ setStage }}" style="height:36px;border-radius:999px;border:0;padding:0 12px;font-weight:600;font-size:13px;background:{{ ob.pillBg }};color:{{ ob.pillFg }};"><sc-for list="{{ stageOpts }}" as="s" hint-placeholder-count="12"><option value="{{ s.id }}">{{ s.name }}</option></sc-for></select>
+        <div class="crm-stage-field" style="color:{{ ob.pillFg }};">
+          <select class="crm-stage-select" aria-label="Статус брони" value="{{ ob.stage }}" onChange="{{ setStage }}" style="background-color:{{ ob.pillBg }};color:inherit;">
+            <sc-for list="{{ stageOpts }}" as="s" hint-placeholder-count="12"><option value="{{ s.id }}">{{ s.name }}</option></sc-for>
+          </select>
+          <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
+        </div>
         <span style="font-size:12px;color:rgba(59,47,42,.7);">на стадии {{ ob.timer }}</span>
         <button onClick="{{ closeCard }}" aria-label="Закрыть" style="margin-left:auto;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;" style-hover="background:rgba(10,47,79,.06);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       </div>
@@ -1569,7 +1590,7 @@ for(const b of DATA){const c=CLIENTS0.find(x=>normP(x.phone)===normP(b.phone));i
 
 
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -1695,13 +1716,17 @@ class Component extends DCLogic {
    return true;
  }
 
+ closeDetails(){
+   this.setState(s=>s.clientId&&s.detailsLast==='guest'?{clientId:null}:{openId:null,rs:null});
+ }
+
  toast(t){this.setState({toast:t});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:''}),2800);}
  componentDidMount(){this._kd=e=>{if(this.state.reasonDialog)return;if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
    this.setState(s=>({nb:{...s.nb,calendarMonth:null}}));
    document.querySelector('#crm-booking-date-toggle')?.focus();
    return;
   }if(e.key==='Escape'&&this.state.openId&&this.state.clientId&&!this.state.nb){
-   this.setState({openId:null,rs:null});return;
+   this.closeDetails();return;
   }if(e.key==='Escape')this.setState({openId:null,nb:null,search:'',clientId:null,rs:null,colDel:null,boardDelAsk:false});};window.addEventListener('keydown',this._kd);
   this._localeChanged=()=>this.forceUpdate();
   window.addEventListener('shipa:localechange',this._localeChanged);
@@ -1762,7 +1787,7 @@ class Component extends DCLogic {
  renderVals(){
   const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
-  const open=(num,keepGuest=false)=>()=>this.setState({openId:num,tab:'compose',search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
+  const open=(num,keepGuest=false)=>()=>this.setState({openId:num,detailsLast:'booking',tab:'compose',search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
   const newCount=B.filter(b=>b.stage==='new').length;
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
@@ -1918,7 +1943,7 @@ class Component extends DCLogic {
    const bookCfg=this.bookedRules(b).cfg;const holdH=b.day===0?bookCfg.holdTodayH:bookCfg.holdH;const cl0=this.clientOf(b.phone);const cst=cl0?this.stats(cl0):null;const dl=this.discFor(cl0,b.day);
    ob={num:b.num,stage:b.stage,pillBg:p.bg==='transparent'?'rgba(59,47,42,.08)':p.bg,pillFg:p.fg,timer:ago(b.stageAt),hasHouse:!!h,img:h?`img/h${h.img}_int.png`:'',house:h?`${h.n} ${h.name}`:'Дом не выбран',cat:h?cats[h.cat].name:'—',mode:b.mode==='daily'?'сутки 14:00 → 12:00':'по часам',when:this.whenText(b),owner:b.owner,initial:b.guest[0],guest:b.guest,lang:cl0?cl0.lang:b.lang,visits:cst&&cst.visits?`${cst.visits} ${cst.visits===1?'визит':cst.visits<5?'визита':'визитов'}${cst.rating?' · ★ '+cst.rating.toFixed(1).replace('.',','):''}`:'первый визит',phone:b.phone,tags:(cl0&&cl0.tags)||b.tags||(cst&&cst.visits>1?'постоянный':'новый гость'),tel:'tel:'+b.phone.replace(/\s/g,''),wa:`https://wa.me/${b.phone.replace(/\D/g,'')}?text=${waText}`,guests:b.guests||0,maxGuests:h?this.bookedRules(b).cats[h.cat].max:100,kids:b.kids||0,extras:this.extrasFor(b,(id,q)=>this.upd(b.num,x=>this.log(this.toggleExtra(x,id,q),q!=null?`Количество: ${SVC(id).name} × ${q} · цена пересчитана`:`Изменён состав: ${id==='tub'?'чан':SVC(id).name} · цена пересчитана`),{reprice:true})),priceRows:pr.rows,total:fmt(pr.total),tariffFrom:pr.from?ddmm(pr.from):'—',originalPrice:b.originalQuote?fmt(b.originalQuote.total):'—',
     originalTariff:b.originalQuote?ddmm(b.originalQuote.from):'—',originalRows:b.originalQuote?.rows||[],
-    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:payClosed?'—':fmt(rest),restColor:rest&&!payClosed?'#C15C22':'#5E8C61',hasRest:!payClosed&&rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState({clientId:cl0.id,ctab:'profile',openId:null,rs:null});else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
+    showOriginal:!!b.originalQuote&&JSON.stringify(b.originalQuote)!==JSON.stringify(pr),source:b.source,consent:b.consent?'да · '+b.created:'нет',hasComment:!!b.comment,comment:b.comment||'',paid:fmt(paidSum),rest:payClosed?'—':fmt(rest),restColor:rest&&!payClosed?'#C15C22':'#5E8C61',hasRest:!payClosed&&rest>0&&b.board!=='cert'&&['confirmed','prep','inhouse','done','review'].includes(b.stage),restBtn:`Добавить остаток ${fmt(rest)}`,restMethod:s.pf.method,noPays:!b.pays.length,prepayNeed:fmt(pr.prepay),holdUntil:stamp(0,Math.min(25,NOW.getHours()+holdH),NOW.getMinutes()).slice(6),pays:b.pays.map(x=>({...x,sum:(x.type==='Возврат'?'− ':'')+fmt(x.sum)})),inAt:b.inAt||(b.start!=null?`план ${hh(b.start)}`:'—'),outAt:b.outAt||(b.start!=null?`план ${hh(b.start+b.dur)}`:'—'),prepRows:[{what:'Дом',stage:b.stage==='prep'?'Топим':['inhouse','done','review'].includes(b.stage)?'Принят':'Запланирована',bg:b.stage==='prep'?'rgba(217,164,65,.22)':'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-bookCfg.prep):'—'},...(vip||b.tub?[{what:'Чан нагрет',stage:['inhouse','done','review'].includes(b.stage)?'Готов':'Запланирован',bg:'rgba(10,47,79,.08)',fg:'#0A2F4F',who:'Ержан',at:b.start!=null?hh(b.start-1):'—'}]:[])],table:b.services.includes('table')?'Стол к приезду · 18 000 ₸ · передан на кухню':'Заказа нет. Гость может заказать из e-menu — появится здесь.',events:b.events,created:'Создана '+b.created,board:b.board||'sales',disc:b.disc?(b.disc.kind||'tier'):'none',discOpts:[{id:'none',name:'Без скидки'},...dl.map(x=>({id:x.id,name:`${x.label[0].toUpperCase()+x.label.slice(1)} · −${x.pct}%`})),...(b.disc&&!dl.some(x=>x.id===(b.disc.kind||'tier'))?[{id:b.disc.kind||'tier',name:`${b.disc.label} · −${b.disc.pct}% (сохранена)`}]:[])],discHint:cl0?(()=>{const lo=this.loyal(cl0,cst);return `${lo.tier.name}, ${lo.pts.toLocaleString('ru-RU').replace(/\u00a0/g,' ')} баллов`;})():'гостя нет в базе',canRs:!!(ST[b.stage]&&ST[b.stage].type==='open'&&!['inhouse','done'].includes(b.stage)),rsBtn:b.start!=null?'Перенести':'Назначить дату и время',startRs:()=>this.startRs(b.num),movesText:b.moves?`Переносов: ${b.moves}`:'',openClient:()=>{if(cl0)this.setState(st=>({clientId:cl0.id,detailsLast:'guest',ctab:st.clientId===cl0.id?st.ctab:'profile'}));else this.toast('Гостя нет в базе — карточка появится после сохранения брони');}};
    tabs=[['compose','Состав'],['pay','Оплата'],['visit','Визит'],['feed','Лента']].map(([id,name])=>({name,go:()=>this.setState({tab:id}),fg:s.tab===id?'#0A2F4F':GR(.6),line:s.tab===id?'#C15C22':'transparent'}));
    const canIn=['confirmed','prep'].includes(b.stage),canOut=b.stage==='inhouse';const extended={...b,dur:b.dur+1};
    const ext=b.start!=null&&!slotError(this.bookedRules(b),extended,{extension:true})&&
@@ -2140,6 +2165,9 @@ class Component extends DCLogic {
   const clRows=clList.map(({c,st})=>{const n=bdNext(c.birthday);const lo=this.loyal(c,st);return {tier:lo.tier.name,tierTitle:`${lo.pts} баллов · скидка ${lo.tier.pct}%`,tierBg:hexA(lo.tier.color,.18),tierFg:'#0A2F4F',name:c.name,initial:c.name[0],phone:c.phone,acc:c.account?`с ${ddmm(c.account.reg)}`:'нет',accColor:c.account?'#3F6B43':GR(.55),visits:String(st.visits),spent:st.spent?fmt(st.spent):'—',last:st.last==null?'—':st.last===0?'сегодня':dlabel(st.last),bday:c.birthday?`${bdShort(c.birthday)}${n<=14?' · '+(n===0?'сегодня':n===1?'завтра':'через '+n+' дн.'):''}`:'—',bdColor:n!=null&&n<=7?'#C15C22':'#0A2F4F',bdWeight:n!=null&&n<=7?600:400,consent:c.consent?'да':'нет',consentColor:c.consent?'#3F6B43':'#B8432F',tags:(c.tags||'').split(',').map(t=>t.trim()).filter(Boolean),open:()=>this.setState({clientId:c.id,ctab:'profile'})};});
   const clSortBy=Object.fromEntries(Object.keys(clKey).map(k=>[k,()=>this.setState(S=>({clSort:{k,d:S.clSort.k===k?-S.clSort.d:(k==='name'?1:-1)}}))]));const clMark=Object.fromEntries(Object.keys(clKey).map(k=>[k,s.clSort.k===k?(s.clSort.d>0?'↑':'↓'):'']));
   const cl=s.clients.find(c=>c.id===s.clientId);let cv={},ctabs=[],cvSet={};
+  const panelClass=panel=>['crm-details-panel',panel==='guest'?'crm-guest-panel':'',
+    cl&&b?'crm-details-panel--paired':'',cl&&b&&s.detailsLast!==panel?'crm-details-panel--behind':''
+  ].filter(Boolean).join(' ');
   if(cl){const st=this.stats(cl);const n=bdNext(cl.birthday);const age=cl.birthday?bdAge(cl.birthday):null;const setC=patch=>this.setState(S=>({clients:S.clients.map(c=>c.id===cl.id?{...c,...patch}:c)}));
    cvSet=Object.fromEntries(['birthday','lang','tags','note'].map(k=>[k,e=>setC({[k]:e.target.value})]));
    for(const k of ['last','first','middle'])cvSet[k]=e=>{const v=e.target.value;this.setState(S=>{const u={...cl,...S.clients.find(c=>c.id===cl.id),[k]:v};u.name=fioOf(u)||u.first||'Гость';return {clients:S.clients.map(c=>c.id===cl.id?u:c),bookings:S.bookings.map(b=>normP(b.phone)===normP(cl.phone)?{...b,guest:u.name,first:u.first}:b)};});};
@@ -2255,7 +2283,7 @@ class Component extends DCLogic {
    calcRows:cp?.rows||[],calcTotal:cp?fmt(cp.total):'—',calcPrepay:cp?fmt(cp.prepay):'—',cfgRows,
 
    templates,adminNotifs,sendLog,
-   hasOpen:!!b,bookingPanelClass:'crm-details-panel'+(cl&&b?' crm-details-panel--paired':''),ob,closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>this.move(b.num,e.target.value),stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
+   hasOpen:!!b,bookingPanelClass:panelClass('booking'),ob,closeDetails:()=>this.closeDetails(),closeCard:()=>this.setState({openId:null,rs:null}),setStage:e=>this.move(b.num,e.target.value),stageOpts,tabs,tab:{[s.tab]:true},edit:{guests:e=>{
     const v=fieldValue(e),h=H[b.house],max=h?this.bookedRules(b).cats[h.cat].max:100;
     const error=capacityError({max},{...b,guests:v});if(error){this.toast(error);return;}
     this.upd(b.num,x=>this.log({...x,guests:+v},'Изменено число гостей · цена пересчитана'),{reprice:true});
@@ -2283,7 +2311,7 @@ class Component extends DCLogic {
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
    clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,
-   hasClient:!!cl,guestPanelClass:'crm-details-panel crm-guest-panel'+(cl&&b?' crm-details-panel--paired':''),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
+   hasClient:!!cl,guestPanelClass:panelClass('guest'),cv,cvSet,ctabs,ctab:{[s.ctab]:true},closeClient:()=>this.setState({clientId:null}),
    cmpList,ce,ceSet,addCmp,holOpts,timeOpts,holRows,addHol,cmpLog:s.cmpLog,bdays,noBdays:!bdays.length,goCampaigns:go('campaigns'),loy,loySet,setDisc,nbHasDisc,nbDiscLabel,nbDiscOn};
  }
 }
