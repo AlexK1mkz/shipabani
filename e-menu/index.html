@@ -15,7 +15,7 @@
 :root{--bg:#FFFFFF;--surface:#F5F5F4;--surface-2:#EDEDEB;--line:#EDEDED;--ink:#0A2F4F;--ink-2:rgba(10,47,79,.62);--brick:#C15C22;--brick-press:#9A4518;--brick-soft:#FBEEE6;--cream:#F9EFE3;--cocoa:#3B2F2A;--ok:#2F6B3A;--font-head:'Cormorant Garamond',serif;--font-body:Inter,system-ui,sans-serif;--r-xs:10px;--r-sm:14px;--r-md:18px;--r-lg:24px;--r-pill:999px;--shadow-1:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);--shadow-2:0 8px 24px rgba(16,24,40,.10);--shadow-bar:0 10px 30px rgba(193,92,34,.35);--ease-out:cubic-bezier(.22,1,.36,1);--ease-spring:cubic-bezier(.34,1.56,.64,1);--z-chips:20;--z-header:30;--z-bar:35;--z-cart:80;--z-sheet:90;--z-toast:95;}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;background:#FFFFFF;}
-body{font-family:Inter,system-ui,sans-serif;color:#0A2F4F;-webkit-font-smoothing:antialiased;overflow-x:hidden;font-variant-numeric:tabular-nums;}
+body{font-family:Inter,system-ui,sans-serif;color:#0A2F4F;-webkit-font-smoothing:antialiased;overflow-x:clip;font-variant-numeric:tabular-nums;}
 a{color:#0A2F4F;}
 a:hover{color:#C15C22;}
 button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cursor:pointer;}
@@ -23,6 +23,11 @@ input,textarea{font:inherit;color:inherit;}
 input::placeholder,textarea::placeholder{color:rgba(10,47,79,.5);}
 input[type=search]::-webkit-search-cancel-button{display:none;}
 [data-strip]{scrollbar-width:none;}
+[data-screen-label="Меню"]{--menu-chips-height:60px;}
+body{--menu-compact-height:52px;}
+[data-chips-anchor]{margin-top:20px;}
+[data-chips]{position:sticky;top:var(--menu-compact-height);height:var(--menu-chips-height);}
+[data-sub]{scroll-margin-top:calc(var(--menu-compact-height) + var(--menu-chips-height));}
 [data-strip]::-webkit-scrollbar{display:none;}
 :focus-visible{outline:2px solid #C15C22;outline-offset:2px;}
 @keyframes cntGrow{from{transform:scaleX(.35);opacity:.5}to{transform:none;opacity:1}}
@@ -190,7 +195,8 @@ input[type=search]::-webkit-search-cancel-button{display:none;}
       </div>
     </section>
 
-    <div data-chips style="position:sticky;top:{{ chipsTop }};transform:{{ chipsTf }};z-index:var(--z-chips);margin-top:20px;height:60px;display:flex;align-items:center;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);transition:top 250ms var(--ease-out),transform 250ms var(--ease-out);">
+    <div data-chips-anchor aria-hidden="true"></div>
+    <div data-chips style="z-index:var(--z-chips);display:flex;align-items:center;background:#FFFFFF;border-bottom:1px solid var(--line);">
       <div style="position:relative;flex:1;min-width:0;height:100%;">
         <nav data-strip="chips" data-drag="1" onScroll="{{ onStripScroll }}" aria-label="{{ t.sections }}" style="height:100%;display:flex;align-items:center;gap:8px;overflow-x:auto;padding:0 8px 0 16px;">
           <sc-for list="{{ chips }}" as="c" hint-placeholder-count="6">
@@ -336,8 +342,8 @@ input[type=search]::-webkit-search-cancel-button{display:none;}
   </footer>
 </div>
 
-<div style="position:fixed;top:0;left:0;right:0;z-index:var(--z-header);transform:{{ compactTf }};transition:transform 250ms var(--ease-out);pointer-events:none;">
-  <div style="max-width:480px;margin:0 auto;height:52px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 6px 0 14px;pointer-events:auto;">
+<div data-compact-header style="position:fixed;top:0;left:0;right:0;z-index:var(--z-header);visibility:{{ compactVisibility }};pointer-events:none;">
+  <div style="max-width:480px;margin:0 auto;height:var(--menu-compact-height);background:#FFFFFF;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 6px 0 14px;pointer-events:auto;">
     <img src="assets/mark-navy.png" alt="SHIPÁ" style="width:24px;height:auto;display:block;flex:0 0 auto;">
     <sc-if value="{{ hasHouse }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openHouse }}" style="flex:1;min-width:0;height:44px;display:flex;align-items:center;justify-content:center;gap:4px;font-size:15px;color:{{ pillFg }};"><span style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;">{{ compactLabel }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></button></sc-if>
     <button onClick="{{ openCart }}" aria-label="{{ t.yourOrder }}" style="position:relative;margin-left:auto;width:44px;height:44px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A2F4F" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg><sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:4px;right:2px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--brick);color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:{{ bumpAnim }};">{{ count }}</span></sc-if></button>
@@ -1022,9 +1028,9 @@ const plain=s=>s.normalize('NFC').replace(/[\uFE0F\u200B-\u200D]/g,'').replace(/
 const ceil15=ms=>Math.ceil(ms/STEP)*STEP;
 
 class Component extends DCLogic {
-  state=(()=>{const h=initHouse();const v=ls.get(LS_VIEW);return {lang:detectLang(),houseId:h,screen:'menu',pickSel:null,pickFade:false,q:'',qFocus:false,view:v==='grid'?'grid':'list',cart:loadCart(),comment:'',guest:'',when:'ready',slotMs:null,shifted:null,active:SUBS[0].id,showUp:false,bar:'top',panel:null,panelIn:false,drag:0,dragging:false,cartOpen:false,cartIn:false,swiped:null,bIdx:0,fine:false,edges:{},toast:null,svcShown:false,bump:0,pending:null,thanks:null,orders:loadOrders(),tick:0};})();
+  state=(()=>{const h=initHouse();const v=ls.get(LS_VIEW);return {lang:detectLang(),houseId:h,screen:'menu',pickSel:null,pickFade:false,q:'',qFocus:false,view:v==='grid'?'grid':'list',cart:loadCart(),comment:'',guest:'',when:'ready',slotMs:null,shifted:null,active:SUBS[0].id,showUp:false,compactPinned:false,panel:null,panelIn:false,drag:0,dragging:false,cartOpen:false,cartIn:false,swiped:null,bIdx:0,fine:false,edges:{},toast:null,svcShown:false,bump:0,pending:null,thanks:null,orders:loadOrders(),tick:0};})();
   savedCart=this.state.cart;
-  lockUntil=0;bannerPause=0;lastY=0;
+  lockUntil=0;bannerPause=0;
 
   componentDidMount(){
     window.addEventListener('scroll',this.onScroll,{passive:true});
@@ -1053,7 +1059,7 @@ class Component extends DCLogic {
     document.removeEventListener('mousedown',this.onMD);document.removeEventListener('click',this.onClickCap,true);
     clearInterval(this._auto);clearInterval(this._min);document.body.style.overflow='';
   }
-  onResize=()=>{const fine=!!(this._mq&&this._mq.matches);if(fine!==this.state.fine)this.setState({fine});this.updateEdges();};
+  onResize=()=>{const fine=!!(this._mq&&this._mq.matches);if(fine!==this.state.fine)this.setState({fine});this.updateEdges();this.onScroll();};
   onKey=e=>{if(e.key!=='Escape')return;if(this.state.thanks)this.setState({thanks:null});else if(this.state.panel)this.closePanel();else if(this.state.cartOpen)this.closeCart();};
   onVis=()=>{if(document.visibilityState==='visible'&&this.pending&&!(this.state.panel&&this.state.panel.type==='sent')){clearTimeout(this._pt);this.openPanel('sent');}};
 
@@ -1076,17 +1082,25 @@ class Component extends DCLogic {
   lockBody(){document.body.style.overflow='hidden';}
   unlockBody(){if(!this.state.panel&&!this.state.cartOpen)document.body.style.overflow='';}
 
-  chipsH(){const b=document.querySelector('[data-chips]');return b?b.offsetHeight:60;}
   onScroll=()=>{
-    const y=window.scrollY,dy=y-this.lastY;this.lastY=y;const s=this.state,up={};
-    const showUp=y>window.innerHeight*2;if(showUp!==s.showUp)up.showUp=showUp;
-    const b=document.querySelector('[data-strip="banners"]');const th=b?b.getBoundingClientRect().bottom+y:320;
-    let bar=s.bar;
-    if(y<th)bar='top';else if(Date.now()<this.lockUntil)bar='shown';else if(dy>6)bar='hidden';else if(dy<-6)bar='shown';else if(bar==='top')bar='shown';
-    if(bar!==s.bar)up.bar=bar;
+    const s=this.state,up={};
+    const showUp=window.scrollY>window.innerHeight*2;
+    if(showUp!==s.showUp)up.showUp=showUp;
+
+    // The marker stays in the document flow while the category bar sticks.
+    const anchor=document.querySelector('[data-chips-anchor]');
+    const header=document.querySelector('[data-compact-header]');
+    const headerHeight=header?.offsetHeight||0;
+    const pinned=!!anchor&&anchor.getBoundingClientRect().top<=headerHeight;
+    if(pinned!==s.compactPinned)up.compactPinned=pinned;
+
     if(!s.q&&Date.now()>=this.lockUntil){
-      const off=(bar==='shown'?52:0)+(bar==='hidden'?0:this.chipsH())+12;let cur=null;
-      document.querySelectorAll('[data-sub]').forEach((el,i)=>{if(i===0||el.getBoundingClientRect().top<=off)cur=el.getAttribute('data-sub');});
+      const bar=document.querySelector('[data-chips]');
+      const off=pinned?headerHeight+(bar?.offsetHeight||0)+12:0;
+      let cur=null;
+      document.querySelectorAll('[data-sub]').forEach((el,i)=>{
+        if(i===0||el.getBoundingClientRect().top<=off)cur=el.getAttribute('data-sub');
+      });
       if(cur&&cur!==s.active)up.active=cur;
     }
     if(Object.keys(up).length)this.setState(up,up.active?this.syncChips:undefined);
@@ -1095,9 +1109,8 @@ class Component extends DCLogic {
   goSub=id=>{
     const el=document.querySelector(`[data-sub="${id}"]`);if(!el)return;
     this.lockUntil=Date.now()+1000;
-    const top=el.getBoundingClientRect().top+window.scrollY-52-this.chipsH()+8;
-    this.setState({active:id,bar:'shown'},this.syncChips);
-    window.scrollTo({top,behavior:'smooth'});
+    this.setState({active:id},this.syncChips);
+    el.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   };
 
   bannerStep(){const el=document.querySelector('[data-strip="banners"]');const c=el&&el.children[0];return {el,step:c?c.getBoundingClientRect().width+12:332};}
@@ -1323,7 +1336,7 @@ class Component extends DCLogic {
       banners,bannerDots,onBannerScroll:this.onBannerScroll,pauseBanners:this.pauseBanners,bannerKey:this.bannerKey,onStripScroll:this.onStripScroll,
       tiles,popular,chips,sections,isList:s.view==='list',isGrid:s.view==='grid',viewLabel:s.view==='list'?t.viewGrid:t.viewList,
       toggleView:()=>this.setState(st=>{const v=st.view==='list'?'grid':'list';ls.set(LS_VIEW,v);return {view:v};}),
-      chipsTop:s.bar==='shown'?'52px':'0px',chipsTf:s.bar==='hidden'?'translateY(-110%)':'none',compactTf:s.bar==='shown'?'translateY(0)':'translateY(-110%)',
+      compactVisibility:s.compactPinned&&!q?'visible':'hidden',
       q:s.q,hasQ:!!q,notQ:!q,results,noResults:!!q&&!results.length,showCancel:s.qFocus||!!q,
       searchBg:s.qFocus?'#FFFFFF':SURF,searchSh:s.qFocus?'inset 0 0 0 1.5px #C15C22, 0 4px 14px rgba(193,92,34,.12)':'none',
       onQ:e=>{this.setState({q:e.target.value});if(!e.target.value)setTimeout(this.onScroll,0);},onQFocus:()=>this.setState({qFocus:true}),onQBlur:()=>setTimeout(()=>this.setState({qFocus:false}),120),
@@ -1332,7 +1345,7 @@ class Component extends DCLogic {
       bumpAnim:s.bump?`bump${s.bump%2} 250ms var(--ease-spring)`:'none',
       hasToast:!!(toastIt||toastMsg),toastText:toastMsg||(toastIt?`${t.added} · ${toastIt.name[L]}`:''),toastHasImg:!!toastIt,toastPadL:toastIt?'6px':'16px',toastBottom:s.cartOpen?'calc(130px + env(safe-area-inset-bottom))':(count>0?'calc(84px + env(safe-area-inset-bottom))':'calc(20px + env(safe-area-inset-bottom))'),hasPriceNote:!!s.priceNote,toastImg:toastIt?(toastIt.img||''):'',toastSvc:!!(s.toast&&s.toast.svc),
       padBottom:count>0?'calc(96px + env(safe-area-inset-bottom))':'calc(24px + env(safe-area-inset-bottom))',
-      showUp:s.showUp,goTop:()=>{this.lockUntil=Date.now()+900;this.setState({active:SUBS[0].id,bar:'top'},this.syncChips);window.scrollTo({top:0,behavior:'smooth'});},
+      showUp:s.showUp,goTop:()=>{this.lockUntil=Date.now()+900;this.setState({active:SUBS[0].id},this.syncChips);window.scrollTo({top:0,behavior:'smooth'});},
 
       cartOpen:s.cartOpen,cartTf:s.cartIn?'translateY(0)':'translateY(100%)',closeCart:this.closeCart,
       askClear:()=>this.openPanel('clear'),doClear:()=>{this._draftOrderRef=null;this.setState({cart:{}});this.closePanel();this.closeCart();},
