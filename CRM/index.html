@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261115-dashboard-metrics"></script>
+<script defer src="./shipa-ru-kz.js?v=20261116-employees-preview"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes crmAppear{from{opacity:.84;translate:0 4px}to{opacity:1;translate:none}}
   [data-scroll-main] > section[data-screen-label],
-  .crm-new-booking,.crm-reason-dialog[open],.crm-mini-guide[open],
+  .crm-new-booking,.crm-reason-dialog[open],.crm-mini-guide[open],.crm-staff-dialog[open],
   .crm-booking-calendar,.crm-cal-filter[open] .crm-cal-filter-menu{
     animation:crmAppear 160ms ease-out;
   }
@@ -268,6 +268,72 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .tariff-holiday-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;font-size:13px;}
   @media(max-width:1040px){.tariff-grid{grid-template-columns:minmax(0,1fr);}.tariff-grid>.tariff-card,.tariff-grid>.tariff-side{grid-column:1!important;grid-row:auto!important;}}
   @media(max-width:560px){.tariff-card{padding:14px;}.tariff-period,.tariff-holiday-options{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  .crm-app:has(.crm-staff){min-width:0;}
+  .crm-app:has(.crm-staff) .crm-header-search,.crm-app:has(.crm-staff) .crm-header-date,
+  .crm-app:has(.crm-staff) .crm-app-header>button:last-child{display:none;}
+  .crm-staff{max-width:1280px;margin:auto;color:#0A2F4F;}
+  .crm-staff h2,.crm-staff h3,.crm-staff p{margin:0;}
+  .crm-staff .staff-muted{color:#536575;}
+  .staff-intro{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;}
+  .staff-intro p{max-width:58ch;}
+  .staff-primary,.staff-secondary{min-height:42px;padding:0 15px;border-radius:10px;font-weight:600;white-space:nowrap;}
+  .staff-primary{background:#A84919;color:#fff;}
+  .staff-primary:hover{background:#8D3C14;}
+  .staff-secondary{background:#fff;border:1px solid #D9E2E8;}
+  .staff-secondary:hover{background:#EDF3F6;}
+  .staff-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px;}
+  .staff-kpi{padding:14px 18px;border-radius:14px;border:1px solid #E4E8EA;background:#fff;display:flex;align-items:center;gap:12px;}
+  .staff-kpi-mark,.staff-avatar{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:#EAF1F5;color:#0A2F4F;font-weight:600;}
+  .staff-kpi-mark.staff-active{background:#E9F2EA;color:#286242;}
+  .staff-kpi-mark.staff-blocked{background:#F7ECE5;color:#944717;}
+  .staff-kpi-data{display:grid;gap:2px;line-height:1.2;text-align:left;}
+  .staff-kpi-data strong{font-size:24px;font-weight:600;}
+  .staff-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(265px,320px);align-items:start;gap:16px;}
+  .staff-card{min-width:0;background:#fff;border:1px solid #E4E8EA;border-radius:16px;overflow:hidden;}
+  .staff-card h2{font-size:17px;}
+  .staff-toolbar{padding:18px 18px 15px;display:grid;gap:13px;}
+  .staff-fields{display:flex;flex-wrap:wrap;gap:8px;}
+  .staff-fields input{flex:1 1 160px;}
+  .staff-control{display:block;min-width:0;min-height:40px;padding:8px 11px;background:#fff;border:1px solid #D9E2E8;border-radius:9px;color:#0A2F4F;}
+  .staff-scroll{overflow-x:auto;}
+  .staff-table{min-width:492px;text-align:left;font-size:13px;}
+  .staff-table [role="row"]{display:grid;grid-template-columns:minmax(162px,1.5fr) minmax(112px,1fr) minmax(102px,.8fr) 88px;border-bottom:1px solid #EDF0F2;align-items:center;}
+  .staff-table [role="row"]>*{min-width:0;padding:12px 8px;}
+  .staff-table .staff-table-head{background:#F4F7F9;color:#536575;font-weight:600;white-space:nowrap;}
+  .staff-table [role="row"]>*:first-child{padding-left:18px;}
+  .staff-table [role="rowgroup"] [role="row"]:last-child{border-bottom:0;}
+  .staff-person{display:flex;align-items:center;gap:9px;}
+  .staff-person span:last-child{display:grid;gap:2px;overflow-wrap:anywhere;}
+  .staff-phone{white-space:nowrap;}
+  .staff-avatar{width:36px;height:36px;border-radius:50%;}
+  .staff-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#EDF3F6;font-weight:600;white-space:nowrap;}
+  .staff-tag.staff-active{background:#E9F2EA;color:#23603F;}
+  .staff-tag.staff-blocked{background:#F7ECE5;color:#86461E;}
+  .staff-tag .staff-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+  .staff-edit{min-height:36px;padding:0 8px;border-radius:8px;font-weight:600;}
+  .staff-edit:hover{background:#EDF3F6;}
+  .staff-empty{grid-column:1/-1;text-align:center;padding:28px 16px!important;color:#536575;}
+  .staff-side{padding:18px;display:grid;gap:14px;}
+  .staff-role{padding-top:13px;border-top:1px solid #E8EDF0;display:grid;gap:5px;}
+  .staff-role h3{font-size:14px;}
+  .staff-role p,.staff-demo{font-size:13px;line-height:1.45;}
+  .staff-demo{padding:11px 12px;border-radius:10px;background:#F4F7F9;color:#536575;}
+  .crm-staff-dialog{width:min(480px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:0;border-radius:20px;padding:24px;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.25);}
+  .crm-staff-dialog::backdrop{background:rgba(10,47,79,.48);}
+  .staff-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px;}
+  .staff-dialog-heading h2{margin:0;font-size:21px;font-weight:600;line-height:1.2;}
+  .staff-dialog-heading button{width:36px;height:36px;flex:none;border-radius:10px;background:#EDF3F6;font-size:22px;line-height:1;}
+  .staff-dialog-heading button:hover{background:#E0EAF0;}
+  .crm-staff-dialog .staff-muted{color:#536575;margin:0;}
+  .staff-editor{display:grid;gap:12px;}
+  .staff-editor label{display:grid;gap:5px;font-weight:600;}
+  .staff-editor input,.staff-editor select{width:100%;font-size:14px;}
+  .staff-editor .staff-access{display:flex;align-items:center;gap:8px;min-height:38px;}
+  .staff-access input{width:17px;height:17px;accent-color:#0A2F4F;}
+  .staff-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .staff-error{color:#A03527;font-size:13px;}
+  @media(max-width:980px){.staff-layout{grid-template-columns:minmax(0,1fr);}}
+  @media(max-width:640px){.crm-app:has(.crm-staff){--crm-gutter:14px;}.crm-app:has(.crm-staff) .crm-app-header{gap:8px;}.crm-app:has(.crm-staff) .crm-app-header h1{font-size:18px;}.staff-intro{align-items:flex-start;flex-direction:column;}.staff-kpis{grid-template-columns:1fr;gap:6px;}.staff-kpi{padding:8px 12px;}}
 </style>
 </helmet>
 <div class="crm-app" data-screen-label="CRM" style="display:flex;height:100vh;background:#F6F3EE;color:#0A2F4F;font-size:14px;line-height:1.4;overflow:hidden;">
@@ -898,6 +964,73 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   </sc-if>
 
   <!-- ===== УВЕДОМЛЕНИЯ ===== -->
+  <sc-if value="{{ is.staff }}" hint-placeholder-val="{{ false }}">
+    <section class="crm-staff" data-screen-label="Сотрудники">
+      <div class="staff-intro">
+        <p class="staff-muted">Добавляйте сотрудников и управляйте их доступом к CRM.</p>
+        <button class="staff-primary" type="button" onClick="{{ staff.add }}">+ Добавить сотрудника</button>
+      </div>
+      <div class="staff-kpis">
+        <div class="staff-kpi"><span class="staff-kpi-mark" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m1-15a3 3 0 0 1 0 6m5 9v-2a4 4 0 0 0-3-4"></path></svg></span><span class="staff-kpi-data"><span class="staff-muted">Всего сотрудников</span><strong>{{ staff.total }}</strong></span></div>
+        <div class="staff-kpi"><span class="staff-kpi-mark staff-active" aria-hidden="true">✓</span><span class="staff-kpi-data"><span class="staff-muted">Доступ открыт</span><strong>{{ staff.active }}</strong></span></div>
+        <div class="staff-kpi"><span class="staff-kpi-mark staff-blocked" aria-hidden="true">−</span><span class="staff-kpi-data"><span class="staff-muted">Доступ закрыт</span><strong>{{ staff.blocked }}</strong></span></div>
+      </div>
+      <div class="staff-layout">
+        <div class="staff-card">
+          <div class="staff-toolbar">
+            <h2>Команда</h2>
+            <div class="staff-fields">
+              <input class="staff-control" type="search" onChange="{{ staff.setQuery }}" value="{{ staff.query }}" aria-label="Поиск сотрудников" placeholder="Имя или телефон">
+              <select class="staff-control" value="{{ staff.filter }}" onChange="{{ staff.setFilter }}" aria-label="Доступ сотрудников">
+                <option value="all">Любой доступ</option><option value="active">Доступ открыт</option><option value="blocked">Доступ закрыт</option>
+              </select>
+            </div>
+          </div>
+          <div class="staff-scroll">
+            <div class="staff-table" role="table" aria-label="Сотрудники">
+              <div class="staff-table-head" role="row"><span role="columnheader">Сотрудник</span><span role="columnheader">Роль</span><span role="columnheader">Доступ</span><span role="columnheader">Действие</span></div>
+              <div role="rowgroup">
+                <sc-for list="{{ staff.rows }}" as="person">
+                  <div role="row">
+                    <div role="cell"><div class="staff-person"><span class="staff-avatar" aria-hidden="true">{{ person.initial }}</span><span><strong>{{ person.name }}</strong><span class="staff-phone staff-muted" data-shipa-no-translate>{{ person.phone }}</span></span></div></div>
+                    <div role="cell"><span class="staff-tag">{{ person.roleName }}</span></div>
+                    <div role="cell"><span class="staff-tag {{ person.accessClass }}"><span class="staff-dot" aria-hidden="true"></span>{{ person.access }}</span></div>
+                    <div role="cell"><button class="staff-edit" type="button" onClick="{{ person.edit }}">Изменить</button></div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ staff.empty }}"><div role="row"><div role="cell" class="staff-empty">Сотрудники не найдены</div></div></sc-if>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside class="staff-card staff-side">
+          <h2>Роли и права</h2>
+          <div class="staff-role"><h3>Собственник</h3><p class="staff-muted">Управляет сотрудниками, тарифами и настройками. Видит выручку.</p></div>
+          <div class="staff-role"><h3>Администратор</h3><p class="staff-muted">Работает с бронями, гостями и оплатами. Просматривает тарифы.</p></div>
+          <p class="staff-demo">Деморежим. Настройки сохраняются в этом браузере. Для входа по телефону нужен сервер.</p>
+        </aside>
+      </div>
+
+      <sc-if value="{{ staff.editing }}" hint-placeholder-val="{{ false }}">
+        <dialog class="crm-staff-dialog" aria-labelledby="crm-staff-dialog-title">
+          <header class="staff-dialog-heading">
+            <h2 id="crm-staff-dialog-title">{{ staff.heading }}</h2>
+            <button type="button" onClick="{{ staff.cancel }}" aria-label="Закрыть">×</button>
+          </header>
+          <form class="staff-editor" onSubmit="{{ staff.save }}" novalidate>
+            <label>Имя сотрудника<input class="staff-control" type="text" maxlength="100" autocomplete="name" autofocus value="{{ staff.name }}" onChange="{{ staff.setName }}" required></label>
+            <label>Телефон для входа<input class="staff-control" type="tel" maxlength="25" autocomplete="tel" value="{{ staff.phone }}" onChange="{{ staff.setPhone }}" placeholder="+7 700 000 00 00" required></label>
+            <label>Роль<select class="staff-control" value="{{ staff.role }}" onChange="{{ staff.setRole }}" disabled="{{ staff.locked }}"><option value="admin">Администратор</option><option value="owner">Собственник</option></select></label>
+            <label class="staff-access"><input type="checkbox" checked="{{ staff.enabled }}" onChange="{{ staff.setEnabled }}" disabled="{{ staff.locked }}">Открыть доступ к CRM</label>
+            <sc-if value="{{ staff.locked }}"><p class="staff-muted">Роль и доступ текущего собственника защищены.</p></sc-if>
+            <sc-if value="{{ staff.hasError }}"><p class="staff-error" role="alert">{{ staff.error }}</p></sc-if>
+            <div class="staff-actions"><button type="submit" class="staff-primary">{{ staff.saveLabel }}</button><button type="button" class="staff-secondary" onClick="{{ staff.cancel }}">Отмена</button></div>
+          </form>
+        </dialog>
+      </sc-if>
+    </section>
+  </sc-if>
+
   <sc-if value="{{ is.notif }}" hint-placeholder-val="{{ false }}">
     <section data-screen-label="Уведомления" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
       <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;">
@@ -1644,7 +1777,7 @@ const holNext=h=>{
 const holOn=(hols,di)=>hols.find(h=>holidayStarts(h,dateAt(di).getFullYear()).some(n=>n<=di&&di<n+h.days));
 const BASE_VERSION={from:STD.from,tar:TAR0,cats:CATS0,cfg:CFG0,specials:[],holidays:HOLIDAYS0.filter(h=>h.tariff)};
 const DEMO_KEY='shipa_crm_demo_v1';
-const DEMO_FIELDS=['versions','bookings','reasonDrafts','clients','loyalty','holidays','boards','campaigns','cmpLog','reviews','templates'];
+const DEMO_FIELDS=['versions','bookings','reasonDrafts','clients','loyalty','holidays','boards','campaigns','cmpLog','reviews','employees','templates'];
 const clone=value=>JSON.parse(JSON.stringify(value));
 const versionAt=(versions,key)=>versions.findLast(v=>v.from<=key)||versions[0];
 const sessionRules=(st,day)=>versionAt(st.versions||[BASE_VERSION],dkey(day));
@@ -1854,7 +1987,22 @@ function calendarStatus(b){
 const BOOKING_STAFF=['Айдана','Сергей'];
 const bookingAssignee=b=>typeof b.owner==='string'?b.owner.trim():'';
 const bookingAssignees=bookings=>[...new Set([...BOOKING_STAFF,...bookings.map(bookingAssignee).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'ru'));
-const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif'];
+const STAFF_ROLES={owner:'Собственник',admin:'Администратор'};
+const STAFF_OWNER='demo-owner';
+const STAFF_SEED=[
+  {id:STAFF_OWNER,name:'Сергей',phone:'+77000000001',role:'owner',enabled:true},
+  {id:'demo-admin',name:'Айдана',phone:'+77000000002',role:'admin',enabled:true},
+  {id:'demo-staff',name:'Мадина',phone:'+77000000003',role:'admin',enabled:false}
+];
+const staffPhone=value=>{
+  const raw=String(value).trim();
+  if(!/^\+?[\d\s().-]+$/.test(raw))return '';
+  const digits=raw.replace(/\D/g,'');
+  if(!raw.startsWith('+')&&/^[78]\d{10}$/.test(digits))return '+7'+digits.slice(1);
+  return /^[1-9]\d{9,14}$/.test(digits)?'+'+digits:'';
+};
+const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff'];
+const ownerScreen=screen=>screen==='notif'||screen==='staff';
 function crmHash(s){
   const params=new URLSearchParams();
   if(s.screen==='today'&&s.dashDay)params.set('day',s.dashDay);
@@ -1886,7 +2034,7 @@ function crmHash(s){
 }
 function crmRoute(hash,s){
   const [name,query]=hash.replace(/^#/,'').split('?',2);
-  const screen=CRM_SCREENS.includes(name)&&(name!=='notif'||s.role==='owner')?name:'today';
+  const screen=CRM_SCREENS.includes(name)&&(!ownerScreen(name)||s.role==='owner')?name:'today';
   const params=new URLSearchParams(query);
   const pick=(key,choices,fallback)=>choices.includes(params.get(key))?params.get(key):fallback;
   const openId=s.bookings.find(b=>b.num==='№ '+params.get('booking'))?.num??null;
@@ -1928,7 +2076,7 @@ function crmViewMotion(s){
   }
 }
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -1955,7 +2103,7 @@ class Component extends DCLogic {
    this.navHash=crmHash({...s,...route});
    if(this.navHash!==hash)window.history.replaceState(window.history.state,'',this.navHash);
    const payment=route.openId===s.openId?s.pf:{sum:'',type:'Остаток',method:'Kaspi'};
-   this.setState({...route,calDropError:null,search:'',nb:null,rs:null,reasonDialog:null,boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
+   this.setState({...route,calDropError:null,search:'',nb:null,rs:null,reasonDialog:null,staffDraft:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
      if(route.screen!==s.screen){
        const main=document.querySelector('[data-scroll-main]');
        if(main)main.scrollTop=0;
@@ -1987,11 +2135,77 @@ class Component extends DCLogic {
      const dialog=document.querySelector('.crm-reason-dialog');
      if(dialog&&!dialog.open)dialog.showModal();
    }
+   if(this.state.screen==='staff'&&this.state.role==='owner'&&this.state.staffDraft){
+     const dialog=document.querySelector('.crm-staff-dialog');
+     if(dialog&&!dialog.open){
+       dialog.addEventListener('cancel',e=>{e.preventDefault();this.dismissStaff();},{once:true});
+       dialog.showModal();
+       document.querySelector('.staff-editor input')?.focus();
+     }
+   }
    const next=DEMO_FIELDS.map(k=>this.state[k]);
    if(next.every((v,i)=>v===this.persisted[i]))return;
    this.persisted=next;
    try{localStorage.setItem(DEMO_KEY,JSON.stringify(Object.fromEntries(DEMO_FIELDS.map((k,i)=>[k,next[i]]))));}
    catch(e){this.toast('Не удалось сохранить демоданные в браузере.');}
+ }
+ editStaff(id){
+   if(this.state.role!=='owner')return;
+   const employee=id==null?{id:null,name:'',phone:'',role:'admin',enabled:false}:this.state.employees.find(x=>x.id===id);
+   if(!employee)return;
+   this.setState({staffDraft:{...employee},staffError:''});
+ }
+ closeStaffDialog(){
+   const dialog=document.querySelector('.crm-staff-dialog');
+   if(dialog?.open)dialog.close();
+ }
+ dismissStaff(){
+   this.closeStaffDialog();
+   this.setState({staffDraft:null,staffError:''});
+ }
+ setStaffDraft(patch){
+   if(this.state.role!=='owner'||!this.state.staffDraft)return;
+   this.setState({staffDraft:{...this.state.staffDraft,...patch},staffError:''});
+ }
+ saveStaff(e){
+   e.preventDefault();
+   const {role,staffDraft:draft,employees}=this.state;
+   if(role!=='owner'||!draft)return;
+   const name=draft.name.trim(),phone=staffPhone(draft.phone);
+   const previous=employees.find(x=>x.id===draft.id);
+   if(draft.id!=null&&!previous)return;
+   const locked=previous?.id===STAFF_OWNER;
+   let error='';
+   if(!name||name.length>100)error='Укажите имя сотрудника.';
+   else if(!phone)error='Укажите корректный номер телефона.';
+   else if(employees.some(x=>x.id!==draft.id&&x.phone===phone))error='Сотрудник с таким телефоном уже есть.';
+   else if(!Object.hasOwn(STAFF_ROLES,draft.role))error='Выберите роль сотрудника.';
+   if(error){this.setState({staffError:error});return;}
+   const employee={id:previous?.id??'staff-'+(employees.length+1),name,phone,
+     role:locked?previous.role:draft.role,enabled:locked?previous.enabled:!!draft.enabled};
+   this.closeStaffDialog();
+   this.setState({employees:previous?employees.map(x=>x.id===employee.id?employee:x):[...employees,employee],
+     staffDraft:null,staffError:'',...(!previous?{staffQuery:'',staffFilter:'all'}:{})});
+   this.toast(previous?'Изменения сохранены':'Сотрудник добавлен','success');
+ }
+ staffView(){
+   const {employees,staffDraft:draft,staffError:error,staffQuery:query,staffFilter:filter}=this.state;
+   const term=query.trim().toLocaleLowerCase('ru');
+   const digits=term.replace(/\D/g,'');
+   const active=employees.filter(x=>x.enabled).length;
+   const rows=employees.filter(x=>(filter==='all'||x.enabled===(filter==='active'))&&
+     (!term||x.name.toLocaleLowerCase('ru').includes(term)||(digits&&x.phone.includes(digits)))).map(x=>({
+     ...x,initial:x.name.slice(0,1).toUpperCase(),roleName:STAFF_ROLES[x.role],
+     access:x.enabled?'Открыт':'Закрыт',accessClass:x.enabled?'staff-active':'staff-blocked',edit:()=>this.editStaff(x.id)
+   }));
+   return {total:employees.length,active,blocked:employees.length-active,rows,empty:!rows.length,query,filter,
+     setQuery:e=>this.setState({staffQuery:e.target.value}),setFilter:e=>this.setState({staffFilter:e.target.value}),
+     add:()=>this.editStaff(null),editing:!!draft,heading:draft?.id?'Редактирование сотрудника':'Новый сотрудник',
+     locked:draft?.id===STAFF_OWNER,name:draft?.name??'',phone:draft?.phone??'',role:draft?.role??'admin',enabled:!!draft?.enabled,
+     error,hasError:!!error,saveLabel:draft?.id?'Сохранить':'Добавить',save:e=>this.saveStaff(e),cancel:()=>this.dismissStaff(),
+     setName:e=>this.setStaffDraft({name:e.target.value}),setPhone:e=>this.setStaffDraft({phone:e.target.value}),
+     setRole:e=>this.setStaffDraft({role:e.target.value}),setEnabled:e=>this.setStaffDraft({enabled:e.target.checked})
+   };
  }
  resetDemo(){
    if(this.state.role!=='owner')return;
@@ -2109,6 +2323,7 @@ class Component extends DCLogic {
   window.addEventListener('hashchange',this._navigationChanged);
   this._kd=e=>{
   if(this.state.reasonDialog||e.target.closest?.('.crm-mini-guide'))return;
+  if(e.key==='Escape'&&this.state.staffDraft)return;
   // Let the native status picker handle Escape without dismissing the booking card.
   if(e.key==='Escape'&&e.target.closest?.('.crm-picker'))return;
   if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();const i=document.querySelector('input[placeholder^="Телефон"]');i&&i.focus();}if(e.key==='Escape'&&this.state.nb?.calendarMonth!=null){
@@ -2246,16 +2461,17 @@ class Component extends DCLogic {
  }
 
  renderVals(){
-  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{this.setState({screen,search:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
+  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',staffDraft:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=(num,{keepGuest=false,tab='compose'}={})=>()=>this.setState({openId:num,detailsLast:'booking',tab,search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
   const newCount=B.filter(b=>b.stage==='new').length;
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
+  if(owner)navItems.push({id:'staff',name:'Сотрудники',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M18 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'});
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
   const nav=navItems.map(n=>({...n,go:go(n.id),current:s.screen===n.id?'page':'false',badge:n.badge||false,badgeShow:!!n.badge&&s.navOpen}));
-  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления'};
-  const is={[s.screen]:true};
+  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники'};
+  const is={[s.screen]:!ownerScreen(s.screen)||owner};
   // поиск
   const q=s.search.trim().toLowerCase();const norm=x=>(x||'').toLowerCase().replace(/[\s()+-]/g,'');
   const searchRes=q?B.filter(b=>norm(b.guest).includes(norm(q))||norm(b.phone).includes(norm(q))||norm(b.num).includes(norm(q))||(H[b.house]&&norm(H[b.house].name).includes(norm(q)))).slice(0,6).map(b=>({num:b.num,guest:b.guest,phone:b.phone,meta:(H[b.house]?H[b.house].name+' · ':'')+ST[b.stage].name,color:ST[b.stage].color,open:open(b.num)})):[];
@@ -2824,9 +3040,9 @@ class Component extends DCLogic {
     };
   }
   const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen;
-  return {nav,navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
+  return {staff:owner?this.staffView():{},nav,navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
-   roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:st.screen==='notif'?'today':st.screen,tarDraft:null,tarError:''})),
+   roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
    is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
    calendarKey:CAL_STATUS.filter(o=>o.id!=='all'),calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
