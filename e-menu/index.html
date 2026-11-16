@@ -941,7 +941,23 @@ const TILE_IMG={kitchen:()=>imgOf('besh'),drinks:()=>imgOf('samovar'),steam:()=>
 const BANNER_IMG={besh:()=>imgOf('besh'),steam:()=>'assets/h2_acc.png',tub:()=>'assets/h1_int.png',samovar:()=>imgOf('samovar'),shashlik:()=>imgOf('shashlik'),drinks:()=>imgOf('mors'),besoms:()=>imgOf('oak')||'assets/h8_acc.png',take:()=>'assets/h3_acc.png'};
 const GROUPS={order:{name:['Кухня и напитки','Ас және сусындар','Food & drinks'],ru:'Кухня и напитки'},steam:{name:['Парение — заявка','Бу — өтінім','Steam — request'],ru:'Парение — подтвердить мастера и время',note:'steamRequest'},rent:{name:['Аренда','Жалға','Rent'],ru:'Аренда — вернуть при выезде',note:'returnNote'},buy:{name:['Покупки','Сатып алулар','Purchases'],ru:'Покупки'}};
 const GROUP_ORDER=['order','steam','rent','buy'];
-const LANG_WORD={RU:'русский',KZ:'қазақша'};
+const ORDER_TEXT={
+  RU:{
+    title:'Заказ из меню SHIPÁ',orderNo:'Заказ №',bookingNo:'Бронь №',
+    serveAt:'Подать к',approx:'время уточнить',ready:'Подать: по готовности',
+    subtotal:'Сумма',service:'Обслуживание 10% (еда и напитки)',guestLanguage:'Язык гостя: русский'
+  },
+  KZ:{
+    title:'SHIPÁ мәзірінен тапсырыс',orderNo:'Тапсырыс №',bookingNo:'Брондау №',
+    serveAt:'Әкелу уақыты',approx:'уақыт нақтыланады',ready:'Әкелу: дайын болғанда',
+    subtotal:'Сома',service:'Тағамдар мен сусындарға 10%',guestLanguage:'Қонақ тілі: қазақша'
+  },
+  EN:{
+    title:'Order from the SHIPÁ menu',orderNo:'Order no.',bookingNo:'Booking no.',
+    serveAt:'Serve at',approx:'time to be confirmed',ready:'Serve when ready',
+    subtotal:'Subtotal',service:'10% service charge (food & drinks)',guestLanguage:'Guest language: English'
+  }
+};
 Object.assign(I18N.RU,{details:'Подробнее',steamRequest:'Мастера и время уточняйте у администратора в WhatsApp',askMasterWa:'Уточнить мастера в WhatsApp',order:'Заказ',today:'Сегодня',yesterday:'Вчера',sentWa:'Отправлен в WhatsApp',serveReady:'По готовности',serveAt:'К {t}',guestK:'Гость',commentK:'Комментарий',repeatOrder:'Повторить заказ',askAbout:'Написать администратору об этом заказе',cartHasItems:'В корзине уже есть позиции',addToCurrent:'Добавить к текущим',replaceCart:'Заменить корзину',orderAdded:'Заказ добавлен в корзину',pricesUpdated:'Цены обновлены по текущему меню',noOrders:'Здесь появятся отправленные заказы',serveK:'Подать',pickHouse:'Где вы отдыхаете?',pickHouseSub:'Выберите дом, чтобы заказ пришёл точно к вам',house:'Дом',changeHouse:'Сменить',chooseHouse:'Выберите дом',skipHouse:'Сначала посмотреть меню',soon:'Скоро',searchPh:'Блюда, чай, веники…',cancel:'Отмена',popularOver:'Выбор гостей',popular:'Популярное',hit:'Хит',viewList:'Список',viewGrid:'Плитка',yourOrder:'Ваш заказ',when:'Когда подать',whenReady:'По готовности',atTime:'Ко времени',name:'Как к вам обращаться',upsell:'Добавить к заказу?',goesWith:'С этим берут',sendOrder:'Отправить заказ',waHint:'Откроется WhatsApp',needHouse:'Выберите дом после того, как добавите блюда в заказ',selectHouseAndContinue:'Выбрать дом и продолжить',sentQ:'Заказ отправлен?',sentYes:'Да, отправил',sentNo:'Нет, вернуться к заказу',thanks:'Спасибо! Администратор подтвердит заказ в WhatsApp',backToMenu:'Вернуться в меню',writeHost:'Написать администратору',myOrders:'Мои заказы',repeat:'Повторить',added:'Добавлено',clearQ:'Очистить заказ?',yesClear:'Да, очистить',remove:'Удалить',tubIncl:'Чан уже входит в ваш дом',recFor:'Рекомендуем для дома',recShort:'Рекомендуем',where:'Куда',etaReady:'Примерно через ~{n} мин. Точное время уточнит официант',etaSoon:'Принесём в ближайшее время',earliestHint:'Ближайшее время — {t}. Точное время подачи уточните у официанта',shifted:'Время сдвинули на {t} — {dish} готовится ~{n} мин',shiftedPlain:'Время сдвинули на {t}',tomorrow:'Завтра',prepTime:'Время приготовления',orderAhead:'Лучше заказать заранее',service:'Обслуживание 10%',subtotal:'Сумма',serviceHint:'+ 10% на еду и напитки',serviceToast:'Обслуживание 10% только на еду и напитки',ctaOrder:'Заказать',ctaPick:'Выбрать',ctaView:'Смотреть',forHouse:'Для дома {h}',empty:'Ничего не нашли',askHost:'Спросить администратора',commentPh:'Без лука, приборы на 6…',clear:'Очистить',minShort:'мин'});
 Object.assign(I18N.KZ,{details:'Толығырақ',steamRequest:'Монша шебері мен уақытын WhatsApp арқылы әкімшіден нақтылаңыз',askMasterWa:'Шеберді WhatsApp-та нақтылау',order:'Тапсырыс',today:'Бүгін',yesterday:'Кеше',sentWa:'WhatsApp-қа жіберілді',serveReady:'Дайын болғанда',serveAt:'{t}-ге',guestK:'Қонақ',commentK:'Түсініктеме',repeatOrder:'Тапсырысты қайталау',askAbout:'Осы тапсырыс туралы әкімшіге жазу',cartHasItems:'Себетте тағамдар бар',addToCurrent:'Барына қосу',replaceCart:'Себетті ауыстыру',orderAdded:'Тапсырыс себетке қосылды',pricesUpdated:'Бағалар қазіргі мәзір бойынша жаңартылды',noOrders:'Жіберілген тапсырыстар осында көрсетіледі',serveK:'Әкелу',pickHouse:'Қай үйде демалып жатырсыз?',pickHouseSub:'Тапсырыс дәл сізге жетуі үшін үйді таңдаңыз',house:'Үй',changeHouse:'Ауыстыру',chooseHouse:'Үйді таңдаңыз',skipHouse:'Алдымен мәзірді көру',soon:'Жақында',searchPh:'Тағамдар, шай, сыпыртқы…',cancel:'Болдырмау',popularOver:'Қонақтар таңдауы',popular:'Танымал',hit:'Хит',viewList:'Тізім',viewGrid:'Тор',yourOrder:'Тапсырысыңыз',when:'Қашан әкелу керек',whenReady:'Дайын болғанда',atTime:'Белгілі уақытқа',name:'Сізге қалай жүгінейік',upsell:'Тапсырысқа қосасыз ба?',goesWith:'Мұнымен бірге алады',sendOrder:'Тапсырысты жіберу',waHint:'WhatsApp ашылады',needHouse:'Тағамдарды таңдағаннан кейін үйді көрсетіңіз',selectHouseAndContinue:'Үйді таңдап, жалғастыру',sentQ:'Тапсырыс жіберілді ме?',sentYes:'Иә, жібердім',sentNo:'Жоқ, тапсырысқа оралу',thanks:'Рақмет! Әкімші тапсырысты WhatsApp арқылы растайды',backToMenu:'Мәзірге оралу',writeHost:'Әкімшіге жазу',myOrders:'Менің тапсырыстарым',repeat:'Қайталау',added:'Қосылды',clearQ:'Тапсырысты тазалау керек пе?',yesClear:'Иә, тазалау',remove:'Жою',tubIncl:'Шан үйіңіздің бағасына кіреді',recFor:'Осы үйге ұсынамыз',recShort:'Ұсынамыз',where:'Қайда',etaReady:'Шамамен ~{n} минуттан кейін. Нақты уақытты даяшы нақтылайды',etaSoon:'Жақын арада әкелеміз',earliestHint:'Ең жақын уақыт — {t}. Нақты уақытты даяшыдан нақтылаңыз',shifted:'Уақыт {t}-ге ауыстырылды — {dish} ~{n} мин дайындалады',shiftedPlain:'Уақыт {t}-ге ауыстырылды',tomorrow:'Ертең',prepTime:'Дайындалу уақыты',orderAhead:'Алдын ала тапсырыс берген дұрыс',service:'Қызмет көрсету 10%',subtotal:'Сома',serviceHint:'+ 10% ас пен сусынға',serviceToast:'10% қызмет ақысы тек тағамдар мен сусындарға есептеледі',ctaOrder:'Тапсырыс беру',ctaPick:'Таңдау',ctaView:'Қарау',forHouse:'{h} үйі үшін',empty:'Ештеңе табылмады',askHost:'Әкімшіден сұрау',commentPh:'Пиязсыз, 6 адамға құрал…',clear:'Тазалау',minShort:'мин'});
 Object.assign(I18N.EN,{details:'Details',steamRequest:'Check master availability and timing with the host on WhatsApp',askMasterWa:'Ask the host about a master',order:'Order',today:'Today',yesterday:'Yesterday',sentWa:'Sent via WhatsApp',serveReady:'When ready',serveAt:'At {t}',guestK:'Guest',commentK:'Note',repeatOrder:'Order again',askAbout:'Message the host about this order',cartHasItems:'Your cart already has items',addToCurrent:'Add to current',replaceCart:'Replace cart',orderAdded:'Order added to cart',pricesUpdated:'Prices updated to the current menu',noOrders:'Your sent orders will appear here',serveK:'Serve',pickHouse:'Which house are you in?',pickHouseSub:'Choose your house so the order comes straight to you',house:'House',changeHouse:'Change',chooseHouse:'Choose a house',skipHouse:'Browse the menu first',soon:'Soon',searchPh:'Dishes, tea, besoms…',cancel:'Cancel',popularOver:"Guests' choice",popular:'Popular',hit:'Top pick',viewList:'List',viewGrid:'Grid',yourOrder:'Your order',when:'When to serve',whenReady:'When ready',atTime:'At a set time',name:'Your name',upsell:'Add to your order?',goesWith:'Goes well with',sendOrder:'Send order',waHint:'Opens WhatsApp',needHouse:'Choose your house after adding dishes',selectHouseAndContinue:'Choose a house and continue',sentQ:'Did you send the order?',sentYes:'Yes, sent',sentNo:'No, back to order',thanks:'Thank you! The host will confirm your order on WhatsApp',backToMenu:'Back to menu',writeHost:'Message the host',myOrders:'My orders',repeat:'Order again',added:'Added',clearQ:'Clear the order?',yesClear:'Yes, clear',remove:'Remove',tubIncl:'Hot tub is included in your house',recFor:'Recommended for this house',recShort:'Recommended',where:'Where',etaReady:'In about ~{n} min. Your server will confirm the exact time',etaSoon:"We'll bring it shortly",earliestHint:'Earliest time is {t}. Please confirm the exact time with your server',shifted:'Time moved to {t} — {dish} takes ~{n} min',shiftedPlain:'Time moved to {t}',tomorrow:'Tomorrow',prepTime:'Cooking time',orderAhead:'Best ordered in advance',service:'Service 10%',subtotal:'Subtotal',serviceHint:'+ 10% food & drinks',serviceToast:'10% service only on food and drinks',ctaOrder:'Order',ctaPick:'Choose',ctaView:'View',forHouse:'For {h}',empty:'Nothing found',askHost:'Ask the host',commentPh:'No onion, cutlery for 6…',clear:'Clear',minShort:'min'});
@@ -971,7 +987,7 @@ const detectLang=()=>{
   try {
     const requested=new URLSearchParams(location.search).get('lang');
     if(requested&&LANGS.includes(requested.toUpperCase()))return requested.toUpperCase();
-    const saved=localStorage.getItem('shipa-emenu-lang')||localStorage.getItem('shipa-lang');
+    const saved=localStorage.getItem(LS_KEY)||localStorage.getItem('shipa-lang');
     if(LANGS.includes(saved))return saved;
   }catch(e){}
   const n=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();
@@ -1119,7 +1135,16 @@ class Component extends DCLogic {
   pauseBanners=()=>{this.bannerPause=Date.now()+8000;};
   bannerKey=e=>{if(e.key==='ArrowRight'){e.preventDefault();this.pauseBanners();this.bannerGo(this.state.bIdx+1);}if(e.key==='ArrowLeft'){e.preventDefault();this.pauseBanners();this.bannerGo(this.state.bIdx-1);}};
 
-  setLang=l=>{if(!LANGS.includes(l))l='RU';try{localStorage.setItem(LS_KEY,l);localStorage.setItem('shipa-lang',l);}catch(e){}this.setState({lang:l});};
+  setLang=l=>{
+    if(!LANGS.includes(l))l='RU';
+    try{localStorage.setItem(LS_KEY,l);localStorage.setItem('shipa-lang',l);}catch(e){}
+    const url=new URL(window.location.href);
+    if(url.searchParams.get('lang')!==l){
+      url.searchParams.set('lang',l);
+      window.history.replaceState(window.history.state,'',url);
+    }
+    this.setState({lang:l});
+  };
   setHouse=id=>{
     if(!Object.hasOwn(HOUSE_BY,id)||!HOUSE_BY[id].open)return;
     ls.set(LS_HOUSE,{id,ts:Date.now()});
@@ -1201,32 +1226,33 @@ class Component extends DCLogic {
   }
 
   buildOrderText(house,groups,sums,orderRef,bookingRef){
-    const s=this.state,kk=s.lang==='KZ',idx=kk?1:0;
+    const s=this.state,lang=s.lang,idx=LI[lang],t=I18N[lang],labels=ORDER_TEXT[lang];
     const L=[
-      kk?'*SHIPÁ мәзірінен тапсырыс*':'*Заказ из меню SHIPÁ*',
-      `${kk?'Тапсырыс №':'Заказ №'}: *${orderRef}*`,
-      ...(bookingRef?[`${kk?'Брондау №':'Бронь №'}: ${bookingRef}`]:[]),
-      `*${kk?'Үй':'Дом'} ${house.n} · ${house.name[idx]}*`,
+      `*${labels.title}*`,
+      `${labels.orderNo}: *${orderRef}*`,
+      ...(bookingRef?[`${labels.bookingNo}: ${bookingRef}`]:[]),
+      `*${t.house} ${house.n} · ${house.name[idx]}*`,
       ''
     ];
     if(s.when==='time'&&s.slotMs){
       const tomorrow=dayKey(s.slotMs)!==dayKey(Date.now());
-      L.push(`${kk?'Әкелу уақыты':'Подать к'} ${hm(s.slotMs)}${tomorrow?', '+dm(s.slotMs):''} ${kk?'(уақыт нақтыланады)':'(время уточнить)'}`);
+      L.push(`${labels.serveAt} ${hm(s.slotMs)}${tomorrow?', '+dm(s.slotMs):''} (${labels.approx})`);
     }else{
-      L.push(kk?'Әкелу: дайын болғанда':'Подать: по готовности');
+      L.push(labels.ready);
     }
-    if(s.guest.trim())L.push(`${kk?'Қонақ':'Гость'}: ${s.guest.trim()}`);
+    if(s.guest.trim())L.push(`${t.guestK}: ${s.guest.trim()}`);
     groups.forEach(g=>{
-      L.push('',`*${kk?GROUPS[g.g].name[1]:GROUPS[g.g].ru}*`);
+      const group=GROUPS[g.g];
+      L.push('',`*${lang==='RU'?group.ru:group.name[idx]}*`);
       g.ls.forEach(({it,qty})=>{
         L.push(`• ${it.name[idx]} × ${qty} — ${fmt(it.price*qty)}`);
       });
     });
-    L.push('',`${kk?'Сома':'Сумма'}: ${fmt(sums.subtotal)}`);
-    if(sums.service)L.push(`${kk?'Тағамдар мен сусындарға 10%':'Обслуживание 10% (еда и напитки)'}: ${fmt(sums.service)}`);
-    L.push(`*${kk?'Барлығы':'Итого'}: ${fmt(sums.total)}*`);
-    if(s.comment.trim())L.push('',`${kk?'Түсініктеме':'Комментарий'}: ${s.comment.trim()}`);
-    L.push(`${s.comment.trim()?'':'\n'}${kk?'Қонақ тілі':'Язык гостя'}: ${LANG_WORD[s.lang]}`);
+    L.push('',`${labels.subtotal}: ${fmt(sums.subtotal)}`);
+    if(sums.service)L.push(`${labels.service}: ${fmt(sums.service)}`);
+    L.push(`*${t.total}: ${fmt(sums.total)}*`);
+    if(s.comment.trim())L.push('',`${t.commentK}: ${s.comment.trim()}`);
+    L.push(`${s.comment.trim()?'':'\n'}${labels.guestLanguage}`);
     return plain(L.join('\n'));
   }
   renderVals(){
