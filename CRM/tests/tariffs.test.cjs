@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const html = readFileSync(join(__dirname, '..', 'index.html'), 'utf8');
 const script = html.match(/<script type="text\/x-dc" data-dc-script>([\s\S]+?)<\/script>/)[1];
 
-function demo(storage = new Map(), confirm = () => false, browser = {}) {
+function demo(storage = new Map(), confirm = () => false, browser = {}, document = { querySelector: () => null }) {
   const context = vm.createContext({
     DCLogic: class {
       setState(change, callback) {
@@ -24,7 +24,7 @@ function demo(storage = new Map(), confirm = () => false, browser = {}) {
     },
     URLSearchParams,
     window: { confirm, location: { reload() {} }, ...browser },
-    document: { querySelector: () => null },
+    document,
     setTimeout: () => 1,
     clearTimeout() {},
   });
@@ -702,4 +702,80 @@ test('dashboard preparation rows show the guest and open the correct visit witho
   assert.equal(ui.tab.visit, true);
   assert.equal(crm.state.screen, 'today');
   assert.equal(crm.state.dashDay, 1);
+});
+
+test('owners manage employee roles and access, and staff records survive reload', () => {
+  const storage = new Map();
+  const { crm } = demo(storage);
+  const submit = { preventDefault() {} };
+
+  assert.equal(crm.renderVals().nav.some(item => item.name === 'Сотрудники'), false);
+  crm.editStaff(null);
+  assert.equal(crm.state.staffDraft, null);
+
+  crm.renderVals().toggleRole();
+  crm.renderVals().nav.find(item => item.name === 'Сотрудники').go();
+  crm.renderVals().staff.add();
+  crm.setStaffDraft({ name: 'Новый сотрудник', phone: '8 700 000 00 02', enabled: true });
+  crm.saveStaff(submit);
+  assert.match(crm.state.staffError, /уже есть/);
+  assert.equal(crm.state.employees.length, 3);
+
+  crm.setStaffDraft({ phone: '+7 (701) 234-56-78' });
+  crm.saveStaff(submit);
+  const employee = crm.state.employees.find(item => item.phone === '+77012345678');
+  assert.deepEqual({ name: employee.name, role: employee.role, enabled: employee.enabled },
+    { name: 'Новый сотрудник', role: 'admin', enabled: true });
+
+  crm.editStaff(employee.id);
+  crm.setStaffDraft({ role: 'owner', enabled: false });
+  crm.saveStaff(submit);
+  const restored = demo(storage).crm.state.employees.find(item => item.id === employee.id);
+  assert.equal(restored.role, 'owner');
+  assert.equal(restored.enabled, false);
+
+  crm.editStaff('demo-owner');
+  crm.setStaffDraft({ role: 'admin', enabled: false });
+  crm.saveStaff(submit);
+  const owner = crm.state.employees.find(item => item.id === 'demo-owner');
+  assert.equal(owner.role, 'owner');
+  assert.equal(owner.enabled, true);
+
+  crm.renderVals().toggleRole();
+  assert.equal(crm.state.screen, 'today');
+  assert.equal(demo(storage, undefined, { location: { hash: '#staff' } }).crm.state.screen, 'today');
+});
+
+
+test('staff editing opens a modal and Escape discards only the draft', () => {
+  let cancel;
+  const dialog = {
+    open: false,
+    addEventListener(name, handler, options) {
+      assert.equal(name, 'cancel');
+      assert.equal(options.once, true);
+      cancel = handler;
+    },
+    showModal() { this.open = true; },
+    close() { this.open = false; },
+  };
+  const document = { querySelector: selector => selector === '.crm-staff-dialog' ? dialog : null };
+  const { crm } = demo(undefined, undefined, undefined, document);
+  crm.renderVals().toggleRole();
+  crm.renderVals().nav.find(item => item.name === 'Сотрудники').go();
+
+  crm.editStaff('demo-admin');
+  assert.equal(dialog.open, true);
+  crm.setStaffDraft({ name: 'Черновик' });
+  cancel({ preventDefault() {} });
+  assert.equal(dialog.open, false);
+  assert.equal(crm.state.staffDraft, null);
+  assert.equal(crm.state.employees.find(item => item.id === 'demo-admin').name, 'Айдана');
+  assert.equal(crm.state.screen, 'staff');
+
+  crm.editStaff('demo-admin');
+  crm.setStaffDraft({ enabled: false });
+  crm.saveStaff({ preventDefault() {} });
+  assert.equal(dialog.open, false);
+  assert.equal(crm.state.employees.find(item => item.id === 'demo-admin').enabled, false);
 });
