@@ -757,8 +757,8 @@ const itemsWord=(lang,n)=>{
 };
 const fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+'\u00a0₸';
 
-// Какие дома открыты — одна константа
-const OPEN_HOUSES=['dyhanie','sila','balans','energiya','svoboda'];
+// Дома, открытые для бронирования на витрине SHIPÁ.
+const OPEN_HOUSES=['dyhanie','sila','balans'];
 const HOUSES=[
  {id:'dyhanie',n:'01',tier:'VIP',name:['ДЫХАНИЕ','ТЫНЫС','BREATH'],slogan:['Вдохни глубже','Тереңірек тыныста','Breathe deeper'],prog:'herbal'},
  {id:'sila',n:'02',tier:'VIP',name:['СИЛА','КҮШ','STRENGTH'],slogan:['Верни свою энергию','Қуатыңды қайтар','Get your energy back'],prog:'conifer'},
@@ -943,7 +943,7 @@ const ITEMS_N={RU:n=>`${n} ${plural(n,['позиция','позиции','поз
 const UNAVAIL_N={RU:(n,l)=>`${n} ${plural(n,['позиция сейчас недоступна','позиции сейчас недоступны','позиций сейчас недоступны'])}: ${l}`,KZ:(n,l)=>`${n} позиция қазір қолжетімсіз: ${l}`,EN:(n,l)=>`${n} ${n===1?'item is':'items are'} unavailable now: ${l}`};
 const tpl=(s,v)=>s.replace(/\{(\w+)\}/g,(_,k)=>v[k]??'');
 
-const LS_HOUSE='shipa-emenu-house',LS_ORDERS='shipa-emenu-orders',LS_VIEW='shipa-emenu-view',TTL=12*3600e3,STEP=15*60e3;
+const LS_HOUSE='shipa-emenu-house',LS_ORDERS='shipa-emenu-orders',LS_CART='shipa-emenu-cart',LS_VIEW='shipa-emenu-view',TTL=12*3600e3,STEP=15*60e3;
 const ls={get(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 const KZ=ms=>new Date(ms+5*3600e3);
 const p2=n=>String(n).padStart(2,'0');
@@ -951,7 +951,13 @@ const hm=ms=>{const d=KZ(ms);return p2(d.getUTCHours())+':'+p2(d.getUTCMinutes()
 const dayKey=ms=>{const d=KZ(ms);return d.getUTCFullYear()*400+d.getUTCMonth()*32+d.getUTCDate();};
 const dm=ms=>{const d=KZ(ms);return p2(d.getUTCDate())+'.'+p2(d.getUTCMonth()+1);};
 const HOUSE_BY=Object.fromEntries(HOUSES.map(h=>[h.id,h]));
-const initHouse=()=>{let q=null;try{q=new URLSearchParams(location.search).get('house');}catch(e){}return q&&HOUSE_BY[q]?q:null;};
+const initHouse=()=>{let q=null;try{q=new URLSearchParams(location.search).get('house');}catch(e){}return q&&HOUSE_BY[q]?.open?q:null;};
+const loadCart=()=>{
+  const saved=ls.get(LS_CART);
+  if(!saved||typeof saved!=='object'||Array.isArray(saved))return {};
+  return Object.fromEntries(Object.entries(saved).filter(([id,qty])=>
+    Object.hasOwn(BY_ID,id)&&Number.isSafeInteger(qty)&&qty>0));
+};
 const ORD_TTL=24*3600e3,ORD_MAX=10;
 const loadOrders=()=>{const a=ls.get(LS_ORDERS);return Array.isArray(a)?a.filter(o=>o&&Array.isArray(o.lines)&&Date.now()-o.sentAt<ORD_TTL):[];};
 const plural=(n,f)=>{const a=n%10,b=n%100;return a===1&&b!==11?f[0]:a>=2&&a<=4&&(b<12||b>14)?f[1]:f[2];};
@@ -1016,7 +1022,8 @@ const plain=s=>s.normalize('NFC').replace(/[\uFE0F\u200B-\u200D]/g,'').replace(/
 const ceil15=ms=>Math.ceil(ms/STEP)*STEP;
 
 class Component extends DCLogic {
-  state=(()=>{const h=initHouse();const v=ls.get(LS_VIEW);return {lang:detectLang(),houseId:h,screen:'menu',pickSel:null,pickFade:false,q:'',qFocus:false,view:v==='grid'?'grid':'list',cart:{},comment:'',guest:'',when:'ready',slotMs:null,shifted:null,active:SUBS[0].id,showUp:false,bar:'top',panel:null,panelIn:false,drag:0,dragging:false,cartOpen:false,cartIn:false,swiped:null,bIdx:0,fine:false,edges:{},toast:null,svcShown:false,bump:0,pending:null,thanks:null,orders:loadOrders(),tick:0};})();
+  state=(()=>{const h=initHouse();const v=ls.get(LS_VIEW);return {lang:detectLang(),houseId:h,screen:'menu',pickSel:null,pickFade:false,q:'',qFocus:false,view:v==='grid'?'grid':'list',cart:loadCart(),comment:'',guest:'',when:'ready',slotMs:null,shifted:null,active:SUBS[0].id,showUp:false,bar:'top',panel:null,panelIn:false,drag:0,dragging:false,cartOpen:false,cartIn:false,swiped:null,bIdx:0,fine:false,edges:{},toast:null,svcShown:false,bump:0,pending:null,thanks:null,orders:loadOrders(),tick:0};})();
+  savedCart=this.state.cart;
   lockUntil=0;bannerPause=0;lastY=0;
 
   componentDidMount(){
@@ -1032,7 +1039,14 @@ class Component extends DCLogic {
     this._auto=setInterval(()=>{const s=this.state;if(s.screen!=='menu'||s.panel||s.cartOpen||s.q||Date.now()<this.bannerPause)return;this.bannerGo(s.bIdx+1,true);},5000);
     this._min=setInterval(()=>{if(this.state.cartOpen)this.setState(s=>({tick:s.tick+1}));},60000);
   }
-  componentDidUpdate(){this.checkSlot();if(!this._ue){this._ue=requestAnimationFrame(()=>{this._ue=0;this.updateEdges();});}}
+  componentDidUpdate(){
+    if(this.state.cart!==this.savedCart){
+      this.savedCart=this.state.cart;
+      ls.set(LS_CART,this.savedCart);
+    }
+    this.checkSlot();
+    if(!this._ue){this._ue=requestAnimationFrame(()=>{this._ue=0;this.updateEdges();});}
+  }
   componentWillUnmount(){
     window.removeEventListener('scroll',this.onScroll);window.removeEventListener('keydown',this.onKey);window.removeEventListener('resize',this.onResize);
     document.removeEventListener('visibilitychange',this.onVis);window.removeEventListener('focus',this.onVis);
@@ -1093,7 +1107,11 @@ class Component extends DCLogic {
   bannerKey=e=>{if(e.key==='ArrowRight'){e.preventDefault();this.pauseBanners();this.bannerGo(this.state.bIdx+1);}if(e.key==='ArrowLeft'){e.preventDefault();this.pauseBanners();this.bannerGo(this.state.bIdx-1);}};
 
   setLang=l=>{if(!LANGS.includes(l))l='RU';try{localStorage.setItem(LS_KEY,l);localStorage.setItem('shipa-lang',l);}catch(e){}this.setState({lang:l});};
-  setHouse=id=>{ls.set(LS_HOUSE,{id,ts:Date.now()});this.setState({houseId:id});};
+  setHouse=id=>{
+    if(!Object.hasOwn(HOUSE_BY,id)||!HOUSE_BY[id].open)return;
+    ls.set(LS_HOUSE,{id,ts:Date.now()});
+    this.setState({houseId:id});
+  };
   pickFromScreen=id=>{this.setState({pickSel:id});setTimeout(()=>{this.setHouse(id);this.setState({pickFade:true});setTimeout(()=>{this.setState({screen:'menu',pickFade:false});window.scrollTo(0,0);},250);},250);};
   pickFromPanel=id=>{this.setHouse(id);setTimeout(this.closePanel,180);};
 
