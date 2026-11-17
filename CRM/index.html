@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261117-staff-access"></script>
+<script defer src="./shipa-ru-kz.js?v=20261117-staff-name"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -293,7 +293,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .staff-card h2{font-size:17px;}
   .staff-toolbar{padding:18px 18px 15px;display:grid;gap:13px;}
   .staff-fields{display:flex;flex-wrap:wrap;gap:8px;}
-  .staff-fields input{flex:1 1 160px;}
+  .staff-fields input{flex:1 1 220px;}
+  .staff-filter{position:relative;flex:0 1 auto;min-width:0;max-width:100%;}
+  .staff-filter .crm-picker{min-height:40px;max-width:100%;padding-inline-start:34px;border-radius:9px;background:#F8FAFB;}
+  .staff-filter .crm-picker:hover{background:#EDF3F6;}
+  .staff-filter[data-active="true"]{color:#fff;}
+  .staff-filter[data-active="true"] .crm-picker{background:#0A2F4F;border-color:#0A2F4F;}
+  .staff-filter-icon{pointer-events:none;position:absolute;inset:0 auto 0 12px;width:14px;height:14px;margin:auto;}
   .staff-control{display:block;min-width:0;min-height:40px;padding:8px 11px;background:#fff;border:1px solid #D9E2E8;border-radius:9px;color:#0A2F4F;}
   .staff-list{container-type:inline-size;}
   .staff-table{text-align:left;font-size:13px;}
@@ -329,6 +335,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .staff-dialog-heading button:hover{background:#E0EAF0;}
   .crm-staff-dialog .staff-muted{color:#536575;margin:0;}
   .staff-editor{display:grid;gap:12px;}
+  .staff-name-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  @media(max-width:420px){.staff-name-fields{grid-template-columns:1fr;}}
   .staff-editor label{display:grid;gap:5px;font-weight:600;}
   .staff-editor input,.staff-editor select{width:100%;font-size:14px;}
   .staff-permissions{min-width:0;margin:3px 0 0;padding:5px 12px 8px;border:1px solid #DFE7EC;border-radius:12px;background:#F7F9FA;}
@@ -1000,10 +1008,17 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <div class="staff-toolbar">
             <h2>Команда</h2>
             <div class="staff-fields">
-              <input class="staff-control" type="search" onChange="{{ staff.setQuery }}" value="{{ staff.query }}" aria-label="Поиск сотрудников" placeholder="Имя или телефон">
-              <select class="staff-control" value="{{ staff.filter }}" onChange="{{ staff.setFilter }}" aria-label="Доступ сотрудников">
-                <option value="all">Любой доступ</option><option value="active">Доступ открыт</option><option value="blocked">Доступ закрыт</option><option value="deactivated">Аккаунт деактивирован</option>
-              </select>
+              <input class="staff-control" type="search" onChange="{{ staff.setQuery }}" value="{{ staff.query }}" aria-label="Поиск сотрудников" placeholder="Имя, фамилия или телефон">
+              <span class="staff-filter" data-active="{{ staff.filterActive }}">
+                <select class="crm-picker" value="{{ staff.filter }}" onChange="{{ staff.setFilter }}" aria-label="Статус доступа сотрудников">
+                  <option value="all">Все статусы</option>
+                  <option value="active">Доступ открыт</option>
+                  <option value="blocked">Доступ закрыт</option>
+                  <option value="deactivated">Аккаунт деактивирован</option>
+                </select>
+                <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
+                <svg class="staff-filter-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 4h12M4 8h8m-6 4h4"></path></svg>
+              </span>
             </div>
           </div>
           <div class="staff-list">
@@ -1012,7 +1027,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               <div role="rowgroup">
                 <sc-for list="{{ staff.rows }}" as="person">
                   <div role="row">
-                    <div role="cell"><div class="staff-person"><span class="staff-avatar" aria-hidden="true">{{ person.initial }}</span><span><strong>{{ person.name }}</strong><span class="staff-phone staff-muted" data-shipa-no-translate>{{ person.phone }}</span></span></div></div>
+                    <div role="cell"><div class="staff-person"><span class="staff-avatar" aria-hidden="true">{{ person.initial }}</span><span><strong>{{ person.fullName }}</strong><span class="staff-phone staff-muted" data-shipa-no-translate>{{ person.phone }}</span></span></div></div>
                     <div role="cell"><span class="staff-tag">{{ person.roleName }}</span></div>
                     <div role="cell"><span class="staff-tag {{ person.accessClass }}"><span class="staff-dot" aria-hidden="true"></span>{{ person.access }}</span></div>
                     <div role="cell"><button class="staff-edit" type="button" onClick="{{ person.edit }}">Изменить</button></div>
@@ -1038,7 +1053,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <button type="button" onClick="{{ staff.cancel }}" aria-label="Закрыть">×</button>
           </header>
           <form class="staff-editor" onSubmit="{{ staff.save }}" novalidate>
-            <label>Имя сотрудника<input class="staff-control" type="text" maxlength="100" autocomplete="name" autofocus value="{{ staff.name }}" onChange="{{ staff.setName }}" required></label>
+            <div class="staff-name-fields">
+              <label>Имя<input class="staff-control" type="text" maxlength="100" autocomplete="given-name" autofocus value="{{ staff.name }}" onChange="{{ staff.setName }}" required></label>
+              <label>Фамилия<input class="staff-control" type="text" maxlength="100" autocomplete="family-name" value="{{ staff.surname }}" onChange="{{ staff.setSurname }}" required="{{ staff.requiresSurname }}"></label>
+            </div>
             <label>Телефон для входа<input class="staff-control" type="tel" maxlength="25" autocomplete="tel" value="{{ staff.phone }}" onChange="{{ staff.setPhone }}" placeholder="+7 700 000 00 00" required></label>
             <label>Роль<select class="staff-control" value="{{ staff.role }}" onChange="{{ staff.setRole }}" disabled="{{ staff.locked }}"><option value="admin">Администратор</option><option value="owner">Собственник</option></select></label>
             <fieldset class="staff-permissions">
@@ -2030,6 +2048,7 @@ const STAFF_SEED=[
   {id:'demo-admin',name:'Айдана',phone:'+77000000002',role:'admin',enabled:true},
   {id:'demo-staff',name:'Мадина',phone:'+77000000003',role:'admin',enabled:false}
 ];
+const staffRequiresSurname=employee=>!employee||!!employee.surname;
 const staffAccess=employee=>employee.deactivated?'deactivated':employee.enabled?'active':'blocked';
 const staffPhone=value=>{
   const raw=String(value).trim();
@@ -2188,7 +2207,7 @@ class Component extends DCLogic {
  }
  editStaff(id){
    if(this.state.role!=='owner')return;
-   const employee=id==null?{id:null,name:'',phone:'',role:'admin',enabled:false}:this.state.employees.find(x=>x.id===id);
+   const employee=id==null?{id:null,name:'',surname:'',phone:'',role:'admin',enabled:false}:this.state.employees.find(x=>x.id===id);
    if(!employee)return;
    this.setState({staffDraft:{...employee},staffError:''});
  }
@@ -2208,17 +2227,18 @@ class Component extends DCLogic {
    e.preventDefault();
    const {role,staffDraft:draft,employees}=this.state;
    if(role!=='owner'||!draft)return;
-   const name=draft.name.trim(),phone=staffPhone(draft.phone);
+   const name=draft.name.trim(),surname=(draft.surname??'').trim(),phone=staffPhone(draft.phone);
    const previous=employees.find(x=>x.id===draft.id);
    if(draft.id!=null&&!previous)return;
    const locked=previous?.id===STAFF_OWNER;
    let error='';
    if(!name||name.length>100)error='Укажите имя сотрудника.';
+   else if(surname.length>100||(!surname&&staffRequiresSurname(previous)))error='Укажите фамилию сотрудника.';
    else if(!phone)error='Укажите корректный номер телефона.';
    else if(employees.some(x=>x.id!==draft.id&&x.phone===phone))error='Сотрудник с таким телефоном уже есть.';
    else if(!Object.hasOwn(STAFF_ROLES,draft.role))error='Выберите роль сотрудника.';
    if(error){this.setState({staffError:error});return;}
-   const employee={id:previous?.id??'staff-'+(employees.length+1),name,phone,
+   const employee={id:previous?.id??'staff-'+(employees.length+1),name,surname,phone,
      role:locked?previous.role:draft.role,enabled:locked?previous.enabled:!!draft.enabled,
      deactivated:locked?!!previous.deactivated:!!draft.deactivated};
    this.closeStaffDialog();
@@ -2236,17 +2256,20 @@ class Component extends DCLogic {
      deactivated:{access:'Аккаунт деактивирован',accessClass:'staff-disabled'}
    };
    const active=employees.filter(x=>staffAccess(x)==='active').length;
-   const rows=employees.filter(x=>(filter==='all'||staffAccess(x)===filter)&&
-     (!term||x.name.toLocaleLowerCase('ru').includes(term)||(digits&&x.phone.includes(digits)))).map(x=>({
-     ...x,initial:x.name.slice(0,1).toUpperCase(),roleName:STAFF_ROLES[x.role],
-     ...statuses[staffAccess(x)],edit:()=>this.editStaff(x.id)
-   }));
-   return {total:employees.length,active,blocked:employees.length-active,rows,empty:!rows.length,query,filter,
+   const words=term.split(/\s+/);
+   const rows=employees.map(x=>{
+     const fullName=[x.name,x.surname].filter(Boolean).join(' ');
+     return {...x,fullName,initial:x.name.slice(0,1).toUpperCase(),roleName:STAFF_ROLES[x.role],
+       ...statuses[staffAccess(x)],edit:()=>this.editStaff(x.id)};
+   }).filter(x=>(filter==='all'||staffAccess(x)===filter)&&
+     (!term||words.every(word=>x.fullName.toLocaleLowerCase('ru').includes(word))||(digits&&x.phone.includes(digits))));
+   return {total:employees.length,active,blocked:employees.length-active,rows,empty:!rows.length,query,filter,filterActive:String(filter!=='all'),
      setQuery:e=>this.setState({staffQuery:e.target.value}),setFilter:e=>this.setState({staffFilter:e.target.value}),
      add:()=>this.editStaff(null),editing:!!draft,heading:draft?.id?'Редактирование сотрудника':'Новый сотрудник',
-     locked:draft?.id===STAFF_OWNER,name:draft?.name??'',phone:draft?.phone??'',role:draft?.role??'admin',enabled:!!draft?.enabled,deactivated:!!draft?.deactivated,
+     locked:draft?.id===STAFF_OWNER,name:draft?.name??'',surname:draft?.surname??'',
+     requiresSurname:staffRequiresSurname(employees.find(x=>x.id===draft?.id)),phone:draft?.phone??'',role:draft?.role??'admin',enabled:!!draft?.enabled,deactivated:!!draft?.deactivated,
      error,hasError:!!error,saveLabel:draft?.id?'Сохранить':'Добавить',save:e=>this.saveStaff(e),cancel:()=>this.dismissStaff(),
-     setName:e=>this.setStaffDraft({name:e.target.value}),setPhone:e=>this.setStaffDraft({phone:e.target.value}),
+     setName:e=>this.setStaffDraft({name:e.target.value}),setSurname:e=>this.setStaffDraft({surname:e.target.value}),setPhone:e=>this.setStaffDraft({phone:e.target.value}),
      setRole:e=>this.setStaffDraft({role:e.target.value}),setEnabled:e=>this.setStaffDraft({enabled:e.target.checked}),
      setDeactivated:e=>this.setStaffDraft({deactivated:e.target.checked})
    };
