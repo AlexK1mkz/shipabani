@@ -293,6 +293,7 @@
 </style>
 
 <style id="shipa-en-switcher-ui">
+  @media(max-width:767px){.shipa-cookie-wrap{right:0!important;padding:0 12px!important}.shipa-cookie-card{width:100%;max-width:560px;border-radius:14px;line-height:1.45}}
   /* One language selector across desktop and mobile. */
   .shipa-mobile-language{position:relative;display:flex;align-items:center;flex:0 0 auto;z-index:150}
   .shipa-mobile-language__trigger{display:flex;align-items:center;justify-content:center;gap:4px;
@@ -2347,10 +2348,10 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
 
 <!-- COOKIE STRIP -->
 <sc-if value="{{ showCookie }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;left:0;right:88px;bottom:{{ cookieBottom }};z-index:var(--z-bar);display:flex;justify-content:center;padding:0 20px;pointer-events:none;">
-  <div style="pointer-events:auto;display:flex;align-items:center;gap:12px;background:#3B2F2A;color:#F9EFE3;font-size:13px;padding:8px 8px 8px 14px;max-width:560px;">
-    <span>Мы используем cookie для работы брони.</span>
-    <button data-hit="1" onClick="{{ acceptCookie }}" style="height:32px;padding:0 12px;background:#F9EFE3;color:#3B2F2A;font-weight:600;font-size:13px;">Хорошо</button>
+<div class="shipa-cookie-wrap" style="position:fixed;left:0;right:88px;bottom:{{ cookieBottom }};z-index:var(--z-bar);display:flex;justify-content:center;padding:0 20px;pointer-events:none;">
+  <div class="shipa-cookie-card" style="pointer-events:auto;display:flex;align-items:center;gap:12px;background:#3B2F2A;color:#F9EFE3;font-size:13px;padding:8px 8px 8px 14px;max-width:560px;">
+    <span style="flex:1;min-width:0;">Мы используем cookie для работы брони.</span>
+    <button data-hit="1" onClick="{{ acceptCookie }}" style="min-height:44px;flex:0 0 auto;padding:0 12px;background:#F9EFE3;color:#3B2F2A;font-weight:600;font-size:13px;">Хорошо</button>
   </div>
 </div>
 </sc-if>
@@ -3821,19 +3822,25 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){if(this.state.pd)document.body.style.overflow=this._pdPreviousOverflow??'';try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('pointerdown',this.onLanguageOutside);document.removeEventListener('focusin',this.onLanguageOutside);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){this.syncOverlayScroll(false);try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('pointerdown',this.onLanguageOutside);document.removeEventListener('focusin',this.onLanguageOutside);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  syncOverlayScroll(locked){
+    if(locked&&!this._scrollLock){
+      this._scrollLock={body:document.body.style.overflow,html:document.documentElement.style.overflow};
+      document.body.style.overflow="hidden";document.documentElement.style.overflow="hidden";
+    }else if(!locked&&this._scrollLock){
+      document.body.style.overflow=this._scrollLock.body;document.documentElement.style.overflow=this._scrollLock.html;this._scrollLock=null;
+    }
+  }
   componentDidUpdate(pp,prev){
     pp=pp||this.props;prev=prev||this.state;
     const s=this.state,b=s.bk;
+    this.syncOverlayScroll(!!(s.menuOpen||b||s.pd||s.sheet||s.callOpen||s.gal>=0||s.lightbox>=0));
     if(s.playing&&prev.screen!==s.screen){this.setState({playing:null});}
     if(!prev.playing&&s.playing){requestAnimationFrame(()=>document.querySelector('[data-playing="1"] [data-vid-stop]')?.focus({preventScroll:true}));}
     else if(prev.playing&&!s.playing){if(this._vidTrigger?.isConnected)this._vidTrigger.focus({preventScroll:true});this._vidTrigger=null;}
     if(!prev.pd&&s.pd){
-      this._pdPreviousOverflow=document.body.style.overflow;
-      document.body.style.overflow='hidden';
       requestAnimationFrame(()=>this.pdRef.current?.querySelector('[data-pd-close]')?.focus({preventScroll:true}));
     }else if(prev.pd&&!s.pd){
-      document.body.style.overflow=this._pdPreviousOverflow??'';
       const trigger=this._pdTrigger;
       if(trigger?.isConnected&&typeof trigger.focus==='function')requestAnimationFrame(()=>trigger.focus({preventScroll:true}));
       this._pdTrigger=null;
@@ -4957,7 +4964,7 @@ const LANGS=['RU','KZ','EN'];
       heroEnter:e=>{this._hoverHero=true;this.heroPause(true);},heroLeave:()=>{this._hoverHero=false;if(!document.hidden)this.heroPause(false);},heroDown:e=>{this._hx=e.clientX;this._hy=e.clientY;},heroCancel:()=>{this._hx=null;this._hy=null;},heroUp:e=>{if(this._hx==null)return;const dx=e.clientX-this._hx,dy=e.clientY-this._hy;this._hx=null;if(e.pointerType!=='mouse'&&Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){const n=HERO_SLIDES.length;this.heroGo((this.state.hero+(dx<0?1:n-1))%n);}},
       atmOpen:!!s.atmOpen,atmVideo:ATM_VIDEO||undefined,openAtm:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-(wide?72:56),behavior:this.reduced?'auto':'smooth'});},closeAtm:()=>this.setState({atmOpen:false}),
       greetTitle:s.lang==='KZ'?'Сәлеметсіз бе! Мен SHIPÁ монша шеберімін.':'Здравствуйте, я пармастер SHIPÁ',greetMin:!!(this.props.showVideoGreeting||this.greetDemo)&&!s.greetClosed&&!s.greetOpen&&!bk&&!s.menuOpen,greetOpen:!!s.greetOpen&&!bk,
-      waBottom:(s.stickyH?(s.stickyH+12)+'px':'calc(24px + env(safe-area-inset-bottom))'),cookieBottom:(s.stickyH?(s.stickyH+8)+'px':'calc(12px + env(safe-area-inset-bottom))'),greetBottom:wide?'24px':'calc(96px + env(safe-area-inset-bottom))',openGreet:()=>this.setState({greetOpen:true}),
+      waBottom:(s.stickyH?(s.stickyH+12)+'px':'calc(24px + env(safe-area-inset-bottom))'),cookieBottom:wide?(s.stickyH?(s.stickyH+8)+'px':'calc(12px + env(safe-area-inset-bottom))'):`calc(${(s.stickyH||0)+92}px + env(safe-area-inset-bottom))`,greetBottom:wide?'24px':'calc(96px + env(safe-area-inset-bottom))',openGreet:()=>this.setState({greetOpen:true}),
       closeGreet:()=>{try{sessionStorage.setItem('shipa_greet','1');}catch(e){}this.setState({greetOpen:false,greetClosed:true});},
       greetBook:()=>{this.setState({greetOpen:false,greetClosed:true});this.openBooking(null);},navLeave:()=>{const p=this.pillRef.current;if(p)p.style.opacity='0';},
       toggleMenu:()=>{const el=this.headerRef.current;if(el)el.style.transform='translateY(0)';this.setState({menuOpen:!s.menuOpen});},
@@ -5076,7 +5083,7 @@ const LANGS=['RU','KZ','EN'];
       kitchenOrderInstruction:s.lang==='KZ'?'Алдымен тағамдарды таңдаңыз, содан кейін күн мен үйді таңдаңыз. Тапсырысты әкімші WhatsApp-та растайды.':'Сначала выберите блюда, затем дату и дом. Администратор подтвердит заказ в WhatsApp.',
       kitchenTabs,kitchenItems,reviewFilters,filteredReviews,
       showSticky:(!wide)&&(inHouse||screen!=='home'||!!s.pastHalf)&&!(s.cart.length&&!bk)&&!bk&&!s.menuOpen&&!s.callOpen&&s.lightbox<0,stickyLabel,stickyAction:()=>{if(s.savedBk&&inHouse){this.returnToBooking();return;}this.openBooking(inHouse?hRaw.id:null);},
-      showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
+      showCookie:(this.props.showCookieBar??true)&&s.cookie&&!bk&&!s.menuOpen,acceptCookie:()=>{try{localStorage.setItem('shipa_cookie','1');}catch(e){}this.setState({cookie:false});},
       bookingOpen:!!bk,closeBooking:()=>this.closeBooking(),
       exitConfirm:!!s.exitConfirm,exitTitle:s.lang==='KZ'?'Брондаудан шығасыз ба?':'Выйти из бронирования?',
       exitDescription:s.lang==='KZ'?'Таңдаған күн, үй және қызметтер сақталуы мүмкін.':'Можно сохранить выбранную дату, дом и услуги и продолжить позже.',
