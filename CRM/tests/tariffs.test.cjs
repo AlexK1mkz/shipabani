@@ -735,11 +735,12 @@ test('owners manage employee roles and access, and staff records survive reload'
   assert.equal(restored.enabled, false);
 
   crm.editStaff('demo-owner');
-  crm.setStaffDraft({ role: 'admin', enabled: false });
+  crm.setStaffDraft({ role: 'admin', enabled: false, deactivated: true });
   crm.saveStaff(submit);
   const owner = crm.state.employees.find(item => item.id === 'demo-owner');
   assert.equal(owner.role, 'owner');
   assert.equal(owner.enabled, true);
+  assert.equal(owner.deactivated, false);
 
   crm.renderVals().toggleRole();
   assert.equal(crm.state.screen, 'today');
@@ -778,4 +779,33 @@ test('staff editing opens a modal and Escape discards only the draft', () => {
   crm.saveStaff({ preventDefault() {} });
   assert.equal(dialog.open, false);
   assert.equal(crm.state.employees.find(item => item.id === 'demo-admin').enabled, false);
+});
+
+test('deactivating an employee overrides access and keeps the saved permission for reactivation', () => {
+  const storage = new Map();
+  const { crm } = demo(storage);
+  const submit = { preventDefault() {} };
+
+  crm.renderVals().toggleRole();
+  crm.editStaff('demo-admin');
+  assert.equal(crm.staffView().deactivated, false);
+  crm.staffView().setDeactivated({ target: { checked: true } });
+  crm.saveStaff(submit);
+
+  const { crm: restored } = demo(storage);
+  restored.renderVals().toggleRole();
+  assert.equal(restored.staffView().active, 1);
+  restored.staffView().setFilter({ target: { value: 'deactivated' } });
+  const [employee] = restored.staffView().rows;
+  assert.equal(restored.staffView().rows.length, 1);
+  assert.equal(employee.id, 'demo-admin');
+  assert.equal(employee.access, 'Аккаунт деактивирован');
+  assert.equal(employee.enabled, true);
+
+  restored.editStaff(employee.id);
+  restored.staffView().setDeactivated({ target: { checked: false } });
+  restored.saveStaff(submit);
+  assert.equal(restored.staffView().rows.length, 0);
+  restored.staffView().setFilter({ target: { value: 'active' } });
+  assert.equal(restored.staffView().rows.find(item => item.id === employee.id).access, 'Открыт');
 });
