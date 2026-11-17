@@ -1559,7 +1559,6 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <a href="{{ legalPrivacyUrl }}" class="shipa-site-footer__muted">{{ legalPrivacyLabel }}</a>
         <a href="{{ legalOfferUrl }}" class="shipa-site-footer__muted">{{ legalOfferLabel }}</a>
         <a href="{{ legalConsentUrl }}" class="shipa-site-footer__muted">{{ legalConsentLabel }}</a>
-        <button type="button" onclick="window.shipaAnalyticsSettings && window.shipaAnalyticsSettings()" class="shipa-site-footer__muted shipa-site-footer__settings">{{ analyticsSettingsLabel }}</button>
         <div class="shipa-site-footer__bottom">
           <span class="shipa-site-footer__copyright">© <span class="shipa-brand-wordmark">SHIP<span class="shipa-brand-steam-a">A</span></span>, 2026</span>
           <div class="shipa-site-footer__languages" aria-label="Язык сайта">
@@ -5116,7 +5115,6 @@ const LANGS=['RU','KZ','EN'];
       ...(s.lang==='KZ' && window.ShipaBookingI18n ? window.ShipaBookingI18n.view(B) : B),
       addTableLabel:s.lang==='KZ'?'Брондауға тағам таңдау':'Выбрать блюда к бронированию',
       addTableHint:s.lang==='KZ'?'Алдымен тағамдарды, содан кейін күн мен үйді таңдаңыз':'Сначала блюда, затем дата и дом',
-      analyticsSettingsLabel:s.lang==='KZ'?'Аналитика және жарнама параметрлері':s.lang==='EN'?'Analytics and advertising settings':'Настройки аналитики и рекламы',
       ...PAGE_COPY[s.lang],
       ...(s.lang==='EN'?{
         houseHeadingStart:'EIGHT HOUSES - ',houseHeadingEnd:'EIGHT STATES OF MIND',
