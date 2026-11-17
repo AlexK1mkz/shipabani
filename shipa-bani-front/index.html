@@ -293,12 +293,18 @@
 </style>
 
 <style id="shipa-en-switcher-ui">
-  /* Consistent, premium language switcher for mobile header. */
+  /* One language selector across desktop and mobile. */
   .shipa-mobile-language{position:relative;display:flex;align-items:center;flex:0 0 auto;z-index:150}
   .shipa-mobile-language__trigger{display:flex;align-items:center;justify-content:center;gap:4px;
-    height:36px;min-width:54px;padding:0 8px;border-radius:999px;border:1px solid rgba(249,239,227,.38);
-    background:rgba(10,47,79,.42);color:#F9EFE3;font:700 12px/1 Inter,sans-serif;
-    letter-spacing:.04em;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+    height:44px;min-width:64px;padding:0 10px;border-radius:10px;border:0;
+    background:transparent;color:#F9EFE3;font:600 14px/1 Inter,sans-serif;
+    letter-spacing:.04em;transition:background .18s ease}
+  .shipa-mobile-language__trigger:hover,.shipa-mobile-language__trigger[aria-expanded="true"]{background:rgba(249,239,227,.1)}
+  @media(max-width:767px){.shipa-mobile-language__trigger{height:40px;min-width:54px;padding:0 8px}}
+  .shipa-primary-nav button,.shipa-primary-nav .shipa-header-blog{position:relative}
+  .shipa-primary-nav button::after,.shipa-primary-nav .shipa-header-blog::after{content:"";position:absolute;left:0;right:0;bottom:3px;height:2px;background:#EAA66F;transform:scaleX(0);transition:transform 180ms ease;transform-origin:left}
+  .shipa-primary-nav button:hover::after,.shipa-primary-nav button[data-cur="1"]::after,.shipa-primary-nav .shipa-header-blog:hover::after{transform:scaleX(1)}
+  .shipa-primary-nav button[data-cur="1"]{color:#F9EFE3!important}
   /* SVG chevron: exact centering with no font-dependent baseline. */
   .shipa-mobile-language__caret{display:block;width:10px;height:10px;flex:0 0 10px;
     color:inherit;opacity:.9;transform:none;transition:transform .18s ease}
@@ -1009,11 +1015,11 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     </div>
     <div data-shipa-header-nav="1" style="justify-self:center;display:flex;align-items:center;min-width:0;">
       <sc-if value="{{ hdrNav }}" hint-placeholder-val="{{ true }}">
-        <nav aria-label="{{ headerNavAria }}" style="display:flex;gap:{{ hdrNavGap }};align-items:center;padding:5px 8px;border:1px solid rgba(249,239,227,.16);border-radius:999px;background:rgba(10,47,79,.24);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
+        <nav aria-label="{{ headerNavAria }}" class="shipa-primary-nav" style="display:flex;gap:{{ hdrNavGap }};align-items:center;">
           <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
-            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:36px;padding:0 8px;display:flex;align-items:center;font-size:{{ hdrNavFont }};font-weight:500;letter-spacing:0;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
+            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;padding:0;display:flex;align-items:center;font-size:{{ hdrNavFont }};font-weight:600;letter-spacing:0;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
           </sc-for>
-          <a class="shipa-header-blog" href="{{ journalHref }}" style="font-size:{{ hdrNavFont }};padding:0 8px;height:36px;display:flex;align-items:center">{{ journalLabel }}</a>
+          <a class="shipa-header-blog" href="{{ journalHref }}" style="font-size:{{ hdrNavFont }};font-weight:600;padding:0;height:44px;display:flex;align-items:center">{{ journalLabel }}</a>
         </nav>
       </sc-if>
     </div>
@@ -1025,32 +1031,15 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <sc-if value="{{ hdrPhoneIcon }}" hint-placeholder-val="{{ false }}">
         <a href="{{ telHref }}" aria-label="{{ phoneAria }}" title="{{ phoneText }}" style="width:{{ hdrIcon }};height:{{ hdrIcon }};border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:#F9EFE3;flex:0 0 auto;transition:background-color 150ms ease-out;" style-hover="background:rgba(249,239,227,.15);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></a>
       </sc-if>
-      <!-- Minimal language switch -->
-      <sc-if value="{{ hdrLangDesktop }}" hint-placeholder-val="{{ true }}">
-        <div data-shipa-header-lang="desktop"
-             role="group"
-             aria-label="RU / KZ / EN"
-             style="display:flex;align-items:center;gap:4px;
-                    padding:4px;flex:0 0 auto;border-radius:999px;
-                    background:rgba(10,47,79,.50);border:1px solid rgba(249,239,227,.20);
-                    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
-          <sc-for list="{{ langsHeader }}" as="l" hint-placeholder-count="3">
-            <button onClick="{{ l.select }}"
-                    aria-pressed="{{ l.pressed }}"
-                    style="{{ l.style }}">{{ l.code }}</button>
-          </sc-for>
-        </div>
-      </sc-if>
-
-      <sc-if value="{{ hdrLangMobile }}" hint-placeholder-val="{{ false }}">
-        <div class="shipa-mobile-language" aria-label="Language selector">
+      <!-- One stable language dropdown at every screen width. -->
+        <div class="shipa-mobile-language" data-shipa-header-lang="dropdown">
           <button type="button" class="shipa-mobile-language__trigger"
                   onClick="{{ hdrLangToggle }}" aria-expanded="{{ hdrLangMenuOpen }}"
-                  aria-label="Choose language">
+                  aria-label="{{ languageSelectLabel }}" aria-controls="shipa-language-options">
             <span>{{ langActive }}</span><svg class="shipa-mobile-language__caret" aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.25 4.25L6 7.75L9.75 4.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <sc-if value="{{ hdrLangMenuOpen }}" hint-placeholder-val="{{ false }}">
-            <div class="shipa-mobile-language__panel" role="group" aria-label="Select language">
+            <div id="shipa-language-options" class="shipa-mobile-language__panel" role="group" aria-label="{{ languageSelectLabel }}">
               <sc-for list="{{ langChoices }}" as="l" hint-placeholder-count="3">
                 <button type="button" onClick="{{ l.select }}" class="shipa-mobile-language__option"
                         aria-pressed="{{ l.pressed }}" style="{{ l.style }}">
@@ -1060,7 +1049,6 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             </div>
           </sc-if>
         </div>
-      </sc-if>
       <sc-if value="{{ hdrBook }}" hint-placeholder-val="{{ true }}">
         <button onClick="{{ startBooking }}" style="height:44px;min-width:176px;padding:0 {{ hdrBookPad }};border-radius:999px;background:#C15C22;color:#F9EFE3;font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,background-color 150ms ease-out;" style-hover="transform:translateY(-1px);background:#B3551F;">{{ bookLabel }}</button>
       </sc-if>
@@ -3759,6 +3747,7 @@ class Component extends DCLogic {
     this.onTouchLane=e=>{const l=e.target&&e.target.closest&&e.target.closest('.noscroll');if(l)l._touched=true;};document.addEventListener('touchstart',this.onTouchLane,{passive:true,capture:true});
     this._laneT=setInterval(()=>this.attachLanes(),500);this.attachLanes();this.onLaneResize=()=>document.querySelectorAll('.lane.center').forEach(el=>this.paintLane(el));window.addEventListener('resize',this.onLaneResize,{passive:true});
     // Рамка фокуса - только с клавиатуры: после тапа или клика по ссылке фокус снимаем
+    this.onLanguageOutside=e=>{if(this.state.langPopup&&!e.target?.closest?.('.shipa-mobile-language'))this.setState({langPopup:false});};document.addEventListener('pointerdown',this.onLanguageOutside);document.addEventListener('focusin',this.onLanguageOutside);
     this.onLinkTap=e=>{const a=e.target&&e.target.closest&&e.target.closest('a');if(a)setTimeout(()=>a.blur(),0);};document.addEventListener('pointerup',this.onLinkTap,{passive:true});
     // Direct Kitchen links to sibling e-menu, even when legacy runtime
     // handlers on a button are stale.
@@ -3794,7 +3783,7 @@ class Component extends DCLogic {
     this.onVis=()=>{if(document.hidden)this.heroPause(true);else if(!this._hoverHero)this.heroPause(false);};document.addEventListener('visibilitychange',this.onVis);
     this.injectLd();
     try{const c=JSON.parse(localStorage.getItem('shipa_cart')||'[]');if(Array.isArray(c)&&c.length)this.setState({cart:c});}catch(e){}
-    this.onKey=e=>{if(window.ShipaPhotoViewer?.isOpen())return;if(this.state.playing&&e.key==='Escape'){e.preventDefault();this.stopVideo();return;}if(this.state.pd&&e.key==='Tab'){const dlg=this.pdRef.current;const nodes=dlg&&Array.from(dlg.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),[tabindex]:not([tabindex="-1"])')).filter(el=>el.getClientRects().length>0);if(nodes&&nodes.length){const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&(document.activeElement===first||!dlg.contains(document.activeElement))){e.preventDefault();last.focus();return;}if(!e.shiftKey&&(document.activeElement===last||!dlg.contains(document.activeElement))){e.preventDefault();first.focus();return;}}}if(this.state.gal>=0){if(e.key==='Escape'){e.preventDefault();const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));return;}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const dir=e.key==='ArrowRight'?1:-1;const el=this.galRef.current;if(el&&el.clientWidth)el.scrollBy({left:dir*el.clientWidth,behavior:this.reduced?'auto':'smooth'});return;}}if(this.state.exitConfirm&&e.key==='Escape'){e.preventDefault();this.setState({exitConfirm:false});return;}if(this.state.lightbox>=0){if(e.key==='Escape'){e.preventDefault();this.setState({lightbox:-1});return;}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.setState(s=>({lightbox:(s.lightbox+(e.key==='ArrowRight'?1:2))%3}));return;}}if(e.key==='Escape'&&this.state.pd)this.setState({pd:null});};document.addEventListener('keydown',this.onKey);
+    this.onKey=e=>{if(e.key==='Escape'&&this.state.langPopup){e.preventDefault();this.setState({langPopup:false},()=>document.querySelector('.shipa-mobile-language__trigger')?.focus());return;}if(window.ShipaPhotoViewer?.isOpen())return;if(this.state.playing&&e.key==='Escape'){e.preventDefault();this.stopVideo();return;}if(this.state.pd&&e.key==='Tab'){const dlg=this.pdRef.current;const nodes=dlg&&Array.from(dlg.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),[tabindex]:not([tabindex="-1"])')).filter(el=>el.getClientRects().length>0);if(nodes&&nodes.length){const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&(document.activeElement===first||!dlg.contains(document.activeElement))){e.preventDefault();last.focus();return;}if(!e.shiftKey&&(document.activeElement===last||!dlg.contains(document.activeElement))){e.preventDefault();first.focus();return;}}}if(this.state.gal>=0){if(e.key==='Escape'){e.preventDefault();const i=Math.max(0,this.state.gal);this.setState({gal:-1},()=>this.carGo(i,false));return;}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const dir=e.key==='ArrowRight'?1:-1;const el=this.galRef.current;if(el&&el.clientWidth)el.scrollBy({left:dir*el.clientWidth,behavior:this.reduced?'auto':'smooth'});return;}}if(this.state.exitConfirm&&e.key==='Escape'){e.preventDefault();this.setState({exitConfirm:false});return;}if(this.state.lightbox>=0){if(e.key==='Escape'){e.preventDefault();this.setState({lightbox:-1});return;}if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.setState(s=>({lightbox:(s.lightbox+(e.key==='ArrowRight'?1:2))%3}));return;}}if(e.key==='Escape'&&this.state.pd)this.setState({pd:null});};document.addEventListener('keydown',this.onKey);
     this.applyStress();this.onVisSw=()=>{if(document.hidden)this.swReset();};document.addEventListener('visibilitychange',this.onVisSw);this.onPopState=()=>this.onPop();window.addEventListener('popstate',this.onPopState);this._hd=0;
     try{if(!sessionStorage.getItem('shipa_watip')&&!this.hdrDemo&&this.introT==null)this._tipT=setTimeout(()=>{try{sessionStorage.setItem('shipa_watip','1');}catch(e){}this.setState({waTip:true});this._tipT2=setTimeout(()=>this.setState({waTip:false}),5000);},20000);}catch(e){}
     if(this.reduced||(this.hdrDemo&&this.introT==null)){this.setState({intro:false});this.fillStats(1);}
@@ -3832,7 +3821,7 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){if(this.state.pd)document.body.style.overflow=this._pdPreviousOverflow??'';try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){if(this.state.pd)document.body.style.overflow=this._pdPreviousOverflow??'';try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('pointerdown',this.onLanguageOutside);document.removeEventListener('focusin',this.onLanguageOutside);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
   componentDidUpdate(pp,prev){
     pp=pp||this.props;prev=prev||this.state;
     const s=this.state,b=s.bk;
@@ -4586,7 +4575,8 @@ if(s.lang==='EN'){
     const setSiteLanguage=(code)=>{
   if(!['RU','KZ','EN'].includes(code))return;
   try{localStorage.setItem('shipa-lang',code)}catch(e){}
-  this.setState({lang:code,langPopup:false});
+  const returnFocus=!!document.activeElement?.closest?.('.shipa-mobile-language');
+  this.setState({lang:code,langPopup:false},()=>{if(returnFocus)document.querySelector('.shipa-mobile-language__trigger')?.focus();});
   if(window.ShipaLocale)window.ShipaLocale.set(code);
 };
 const LANGS=['RU','KZ','EN'];
@@ -4940,7 +4930,7 @@ const LANGS=['RU','KZ','EN'];
       menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':s.lang==='EN'?'Open the full dining menu':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
       journalLabel:s.lang==='EN'?'Blog':'Блог',
       journalHref:s.lang==='KZ'?'blog/kk.html':s.lang==='EN'?'blog/en.html':'blog/',
-      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:'2px',hdrNavFont:'14px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:false,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
+      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:'22px',hdrNavFont:'16px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:false,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,languageSelectLabel:s.lang==='KZ'?'Тілді таңдау':s.lang==='EN'?'Choose language':'Выбрать язык',langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
       masters:MASTERS.map((m,i)=>({...m,...(s.lang==='KZ'?MASTERS_KZ[i]:{}),slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),
