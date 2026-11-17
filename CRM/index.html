@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261117-staff-name"></script>
+<script defer src="./shipa-ru-kz.js?v=20261117-kanban-icons"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -104,6 +104,10 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-cal-filter-menu button{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:5px 8px;text-align:left;border-radius:7px;white-space:nowrap;}
   .crm-cal-filter-menu button:hover,.crm-cal-filter-menu button[aria-pressed="true"]{background:#EAF1F6;}
   .crm-cal-swatch{width:12px;height:12px;border-radius:3px;flex:none;}
+  .crm-kanban-legend{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin:0;padding:6px 10px;border:1px solid #E2E8ED;border-radius:9px;background:#fff;color:#526271;font-size:12px;line-height:1.4;}
+  .crm-kanban-legend strong{color:#0A2F4F;font-weight:600;}
+  .crm-kanban-legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+  .crm-kanban-legend svg{color:#0A2F4F;flex:none;}
   .crm-cal-key{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin-top:-6px;padding:12px 16px;border:1px solid #E2E8ED;border-radius:12px;background:#fff;color:#526271;font-size:12px;}
   .crm-cal-key-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
   .crm-cal-drop-error{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid #E7B4AB;border-radius:12px;background:#FBEAE7;color:#862D22;font-size:13px;line-height:1.4;}
@@ -342,7 +346,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .staff-permissions{min-width:0;margin:3px 0 0;padding:5px 12px 8px;border:1px solid #DFE7EC;border-radius:12px;background:#F7F9FA;}
   .staff-permissions legend{padding:0 5px;font-size:13px;font-weight:600;}
   .staff-permission{display:grid;grid-template-columns:minmax(0,1fr) 36px;align-items:start;}
-  .staff-permission+.staff-permission{border-top:1px solid #DFE7EC;}
+  .staff-permission--deactivate{border-top:1px solid #DFE7EC;}
   .staff-editor .staff-access{display:flex;align-items:center;gap:9px;min-height:46px;padding-block:5px;font-size:14px;line-height:1.35;}
   .staff-access input{flex:none;width:18px;height:18px;margin:0;accent-color:#0A2F4F;}
   .staff-help{grid-column:1/-1;grid-row:1;pointer-events:none;}
@@ -719,6 +723,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </div>
 
       <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
+        <div class="crm-kanban-legend" role="group" aria-labelledby="crm-kanban-legend-label">
+          <strong id="crm-kanban-legend-label">Значки на карточках</strong>
+          <sc-for list="{{ kanbanIcons }}" as="icon" hint-placeholder-count="3">
+            <span><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ icon.path }}"></path></svg>{{ icon.label }}</span>
+          </sc-for>
+        </div>
         <div data-crm-view-motion="bookings" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;flex:1;min-height:0;align-items:flex-start;">
           <sc-for list="{{ columns }}" as="col" hint-placeholder-count="8">
             <div onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="width:264px;flex:0 0 auto;background:{{ col.bg }};border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;border:{{ col.border }};box-shadow:{{ col.shadow }};">
@@ -773,9 +783,9 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                     <span style="padding:2px 8px;border-radius:999px;background:{{ c.payBg }};color:{{ c.payFg }};font-weight:600;white-space:nowrap;">{{ c.pay }}</span>
                     <span style="color:rgba(59,47,42,.7);white-space:nowrap;">{{ c.sum }}</span>
                     <span style="margin-left:auto;display:flex;gap:4px;color:rgba(10,47,79,.6);flex:0 0 auto;">
-                      <sc-if value="{{ c.tub }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></sc-if>
-                      <sc-if value="{{ c.food }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></sc-if>
-                      <sc-if value="{{ c.steam }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg></sc-if>
+                      <sc-for list="{{ c.icons }}" as="icon" hint-placeholder-count="0">
+                        <span title="{{ icon.label }}" aria-label="{{ icon.label }}" role="img" style="display:flex;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ icon.path }}"></path></svg></span>
+                      </sc-for>
                     </span>
                   </div>
                   <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:rgba(59,47,42,.7);">
@@ -1068,13 +1078,15 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                   <p>Активный сотрудник может войти в админ-панель. Доступные разделы и действия определяет его роль.</p>
                 </details>
               </div>
-              <div class="staff-permission">
-                <label class="staff-access"><input type="checkbox" checked="{{ staff.deactivated }}" onChange="{{ staff.setDeactivated }}" disabled="{{ staff.locked }}"><span>Деактивировать аккаунт</span></label>
-                <details class="staff-help">
-                  <summary aria-label="Что такое деактивация аккаунта?">?</summary>
-                  <p>Вход будет заблокирован, даже если доступ разрешён. Карточка сотрудника и его роль сохранятся. Чтобы снова активировать аккаунт, снимите галочку и сохраните изменения.</p>
-                </details>
-              </div>
+              <sc-if value="{{ staff.isExisting }}" hint-placeholder-val="{{ false }}">
+                <div class="staff-permission staff-permission--deactivate">
+                  <label class="staff-access"><input type="checkbox" checked="{{ staff.deactivated }}" onChange="{{ staff.setDeactivated }}" disabled="{{ staff.locked }}"><span>Деактивировать аккаунт</span></label>
+                  <details class="staff-help">
+                    <summary aria-label="Что такое деактивация аккаунта?">?</summary>
+                    <p>Вход будет заблокирован, даже если доступ разрешён. Карточка сотрудника и его роль сохранятся. Чтобы снова активировать аккаунт, снимите галочку и сохраните изменения.</p>
+                  </details>
+                </div>
+              </sc-if>
             </fieldset>
             <sc-if value="{{ staff.locked }}"><p class="staff-muted">Роль, доступ и статус аккаунта текущего собственника защищены.</p></sc-if>
             <sc-if value="{{ staff.hasError }}"><p class="staff-error" role="alert">{{ staff.error }}</p></sc-if>
@@ -2038,6 +2050,11 @@ function calendarStatus(b){
   if(stage.color==='#0A2F4F')return 'confirmed';
   return 'work';
 }
+const KANBAN_ICONS=[
+  {label:'Горячий чан',path:'M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z',matches:(b,h,cats)=>!!(b.tub||(h&&cats[h.cat].tier==='VIP'))},
+  {label:'Стол к приезду',path:'M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7',matches:b=>b.services.includes('table')},
+  {label:'Парение',path:'M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12',matches:b=>b.services.some(id=>PROGRAMS.some(p=>p.id===id))},
+];
 const BOOKING_STAFF=['Айдана','Сергей'];
 const bookingAssignee=b=>typeof b.owner==='string'?b.owner.trim():'';
 const bookingAssignees=bookings=>[...new Set([...BOOKING_STAFF,...bookings.map(bookingAssignee).filter(Boolean)])].sort((a,b)=>a.localeCompare(b,'ru'));
@@ -2240,7 +2257,7 @@ class Component extends DCLogic {
    if(error){this.setState({staffError:error});return;}
    const employee={id:previous?.id??'staff-'+(employees.length+1),name,surname,phone,
      role:locked?previous.role:draft.role,enabled:locked?previous.enabled:!!draft.enabled,
-     deactivated:locked?!!previous.deactivated:!!draft.deactivated};
+     deactivated:locked?!!previous.deactivated:!!(previous&&draft.deactivated)};
    this.closeStaffDialog();
    this.setState({employees:previous?employees.map(x=>x.id===employee.id?employee:x):[...employees,employee],
      staffDraft:null,staffError:'',...(!previous?{staffQuery:'',staffFilter:'all'}:{})});
@@ -2265,7 +2282,7 @@ class Component extends DCLogic {
      (!term||words.every(word=>x.fullName.toLocaleLowerCase('ru').includes(word))||(digits&&x.phone.includes(digits))));
    return {total:employees.length,active,blocked:employees.length-active,rows,empty:!rows.length,query,filter,filterActive:String(filter!=='all'),
      setQuery:e=>this.setState({staffQuery:e.target.value}),setFilter:e=>this.setState({staffFilter:e.target.value}),
-     add:()=>this.editStaff(null),editing:!!draft,heading:draft?.id?'Редактирование сотрудника':'Новый сотрудник',
+     add:()=>this.editStaff(null),editing:!!draft,isExisting:!!draft?.id,heading:draft?.id?'Редактирование сотрудника':'Новый сотрудник',
      locked:draft?.id===STAFF_OWNER,name:draft?.name??'',surname:draft?.surname??'',
      requiresSurname:staffRequiresSurname(employees.find(x=>x.id===draft?.id)),phone:draft?.phone??'',role:draft?.role??'admin',enabled:!!draft?.enabled,deactivated:!!draft?.deactivated,
      error,hasError:!!error,saveLabel:draft?.id?'Сохранить':'Добавить',save:e=>this.saveStaff(e),cancel:()=>this.dismissStaff(),
@@ -2656,7 +2673,7 @@ class Component extends DCLogic {
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
   const updCol=(id,patch)=>updB(x=>({...x,cols:x.cols.map(c=>c.id===id?{...c,...patch}:c)}));
   const columns=curB.cols.map((st,ci)=>{const all=filtered.filter(b=>b.stage===st.id);const closed=st.type!=='open';const shown=closed?all.filter(b=>b.day>=-7):all;const norm=+st.norm||0;
-   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,assignee:bookingAssignee(b)||'Не назначен',guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),tub:!!(b.tub||(h&&cats[h.cat].tier==='VIP')),food:b.services.includes('table'),steam:b.services.some(x=>PROGRAMS.some(p=>p.id===x)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);}};});
+   const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,assignee:bookingAssignee(b)||'Не назначен',guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),icons:KANBAN_ICONS.filter(icon=>icon.matches(b,h,cats)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);}};});
    const sum=all.reduce((a,b)=>a+(b.start!=null?this.price(b).total:0),0);const prev=curB.cols[ci-1],next=curB.cols[ci+1];
    const noLeft=closed||!prev||prev.type!=='open',noRight=closed||!next||next.type!=='open';
    let delWhy='';if(st.sys)delWhy='Системная стадия: на неё завязаны календарь, оплаты и уведомления. Переименовать и перекрасить можно, удалить — нет.';else if(closed)delWhy='Итоговый столбец нужен для отчётов «успех / провал». Переименовать можно, удалить — нет.';else if(ocount<=1)delWhy='На доске должен остаться хотя бы один рабочий столбец.';
@@ -3116,7 +3133,7 @@ class Component extends DCLogic {
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
-   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
+   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
    setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,
    readOnly,canEdit:owner,editingTariff,tariffLocked:!editingTariff,canStartDraft:owner&&!editingTariff,
