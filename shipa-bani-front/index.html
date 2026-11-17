@@ -4,6 +4,7 @@
 <meta name="shipa-build" content="2026-11-11-kitchen-sibling-e-menu-v1">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="sitemap" type="application/xml" href="./blog/sitemap-index.xml">
 <script src="./support.js"></script>
 
 
@@ -396,6 +397,10 @@
 })();
 </script>
   <style>
+    .shipa-header-blog{display:inline-flex;align-items:center;height:44px;color:rgba(249,239,227,.85);font-size:inherit;font-weight:500;white-space:nowrap;text-decoration:none}
+    .shipa-header-blog:hover,.shipa-menu-blog:hover{color:#EAA66F}
+    .shipa-menu-blog{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,44px);font-weight:600;letter-spacing:.06em;line-height:1.1;text-transform:uppercase;color:#F9EFE3;text-decoration:none}
+
 
     /* User-flow UX: clear exit, resumable draft, intuitive tariff/status legends, compact mobile extras. */
     .shipa-ux-exit-overlay{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,29,44,.65);backdrop-filter:blur(4px)}
@@ -565,8 +570,8 @@
     .shipa-site-footer__phone{color:#F9EFE3;font-family:'Cormorant Garamond',serif;font-size:clamp(21px,1.8vw,27px);line-height:1.05;letter-spacing:.01em;white-space:nowrap;font-weight:600;font-variant-numeric:lining-nums tabular-nums;}
     .shipa-site-footer__link{color:rgba(249,239,227,.86);font-size:13px;text-decoration:underline;text-underline-offset:4px;}
     .shipa-site-footer__nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px;min-width:0;}
-    .shipa-site-footer__nav button{color:#F9EFE3;font-size:14px;font-weight:500;line-height:1.25;min-height:32px;white-space:nowrap;transition:color .2s ease;}
-    .shipa-site-footer__nav button:hover,.shipa-site-footer__home:hover,.shipa-site-footer__phone:hover,.shipa-site-footer__link:hover,.shipa-site-footer__muted:hover{color:#F0A577;}
+    .shipa-site-footer__nav button,.shipa-site-footer__nav a{color:#F9EFE3;font-size:14px;font-weight:500;line-height:1.25;min-height:32px;white-space:nowrap;transition:color .2s ease;}
+    .shipa-site-footer__nav button:hover,.shipa-site-footer__nav a:hover,.shipa-site-footer__home:hover,.shipa-site-footer__phone:hover,.shipa-site-footer__link:hover,.shipa-site-footer__muted:hover{color:#F0A577;}
     .shipa-site-footer__legal{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;font-size:12px;}
     .shipa-site-footer__muted{color:rgba(249,239,227,.76);font-size:12px;line-height:1.35;text-align:left;}
     .shipa-site-footer__settings{text-decoration:underline;text-underline-offset:3px;}
@@ -1008,6 +1013,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
             <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;display:flex;align-items:center;font-size:{{ hdrNavFont }};font-weight:500;letter-spacing:0;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
           </sc-for>
+          <a class="shipa-header-blog" href="{{ journalHref }}" style="font-size:{{ hdrNavFont }}">{{ journalLabel }}</a>
         </nav>
       </sc-if>
     </div>
@@ -1546,6 +1552,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
           <button type="button" data-shipa-nav-screen="{{ n.screen }}" onClick="{{ n.go }}">{{ n.label }}</button>
         </sc-for>
+        <a href="{{ journalHref }}">{{ journalLabel }}</a>
       </nav>
 
       <div class="shipa-site-footer__legal">
@@ -2369,6 +2376,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
         <button data-mi="1" data-shipa-nav-screen="{{ m.screen }}" onClick="{{ m.go }}" onMouseEnter="{{ m.enter }}" onFocus="{{ m.enter }}" aria-current="{{ m.aria }}" style="{{ m.btnStyle }}"><span style="{{ m.style }}">{{ m.label }}</span></button>
       </sc-for>
+      <a class="shipa-menu-blog" href="{{ journalHref }}">{{ journalLabel }}</a>
     </nav>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
       <div aria-hidden="true" style="position:relative;aspect-ratio:4/5;max-height:62vh;justify-self:end;width:100%;max-width:440px;border-radius:20px;overflow:hidden;background:#3B2F2A;">
@@ -3764,6 +3772,10 @@ class Component extends DCLogic {
     };
     document.addEventListener('click',this.onKitchenRouteClick,true);
     if(!this.hdrDemo&&window.location.hash==='#kitchen')this.goKitchenSection();
+    const journalSection=new URLSearchParams(location.search).get('section');
+    if(!this.hdrDemo&&!this.bkDemo&&['houses','services'].includes(journalSection)){
+      this.setState({screen:journalSection,intro:false});
+    }
     if(this.hdrDemo){this.setState({cookie:false,menuOpen:this.hdrDemo==='menu'});if(this.hdrDemo==='scrolled')this.demoScroll(640);}
     try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):/^\d+$/.test(sy)?+sy:(()=>{const el=document.querySelector(sy);return el?el.getBoundingClientRect().top+window.scrollY-72:0;})());const fq=q.get('faq');if(fq!=null)setTimeout(()=>this.setState({faqOpen:+fq}),200);}catch(e){}
     this.reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -4947,6 +4959,8 @@ const LANGS=['RU','KZ','EN'];
       kitchenMenuFullLabel:s.lang==='EN'?'View full menu':s.lang==='KZ'?'Толық мәзірді көру':'Смотреть всё меню',
       kitchenHouseAfterOrderHint:s.lang==='EN'?'Choose your house when placing your order':s.lang==='KZ'?'Үйді тапсырысты рәсімдегенде таңдайсыз':'Дом выберете при оформлении заказа',
       menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':s.lang==='EN'?'Open the full dining menu':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
+      journalLabel:s.lang==='EN'?'Blog':'Блог',
+      journalHref:s.lang==='KZ'?'blog/kk.html':s.lang==='EN'?'blog/en.html':'blog/',
       openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:vw>=1850?'20px':vw>=1600?'16px':'10px',hdrNavFont:vw<1600?'14px':'15px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:vw>=1770,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
