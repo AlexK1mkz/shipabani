@@ -716,16 +716,21 @@ test('owners manage employee roles and access, and staff records survive reload'
   crm.renderVals().toggleRole();
   crm.renderVals().nav.find(item => item.name === 'Сотрудники').go();
   crm.renderVals().staff.add();
-  crm.setStaffDraft({ name: 'Новый сотрудник', phone: '8 700 000 00 02', enabled: true });
+  crm.setStaffDraft({ name: 'Арман', surname: 'Тестов', phone: '8 700 000 00 02', enabled: true });
   crm.saveStaff(submit);
   assert.match(crm.state.staffError, /уже есть/);
   assert.equal(crm.state.employees.length, 3);
 
-  crm.setStaffDraft({ phone: '+7 (701) 234-56-78' });
+  crm.setStaffDraft({ phone: '+7 (701) 234-56-78', surname: '' });
+  crm.saveStaff(submit);
+  assert.match(crm.state.staffError, /фамилию/);
+  crm.staffView().setSurname({ target: { value: 'Тестов' } });
   crm.saveStaff(submit);
   const employee = crm.state.employees.find(item => item.phone === '+77012345678');
-  assert.deepEqual({ name: employee.name, role: employee.role, enabled: employee.enabled },
-    { name: 'Новый сотрудник', role: 'admin', enabled: true });
+  assert.deepEqual({ name: employee.name, surname: employee.surname, role: employee.role, enabled: employee.enabled },
+    { name: 'Арман', surname: 'Тестов', role: 'admin', enabled: true });
+  crm.staffView().setQuery({ target: { value: 'Тестов Арман' } });
+  assert.equal(crm.staffView().rows[0].fullName, 'Арман Тестов');
 
   crm.editStaff(employee.id);
   crm.setStaffDraft({ role: 'owner', enabled: false });
@@ -733,6 +738,7 @@ test('owners manage employee roles and access, and staff records survive reload'
   const restored = demo(storage).crm.state.employees.find(item => item.id === employee.id);
   assert.equal(restored.role, 'owner');
   assert.equal(restored.enabled, false);
+  assert.equal(restored.surname, 'Тестов');
 
   crm.editStaff('demo-owner');
   crm.setStaffDraft({ role: 'admin', enabled: false, deactivated: true });
