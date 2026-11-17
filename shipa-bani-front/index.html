@@ -1009,11 +1009,11 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     </div>
     <div data-shipa-header-nav="1" style="justify-self:center;display:flex;align-items:center;min-width:0;">
       <sc-if value="{{ hdrNav }}" hint-placeholder-val="{{ true }}">
-        <nav aria-label="{{ headerNavAria }}" style="display:flex;gap:{{ hdrNavGap }};align-items:center;">
+        <nav aria-label="{{ headerNavAria }}" style="display:flex;gap:{{ hdrNavGap }};align-items:center;padding:5px 8px;border:1px solid rgba(249,239,227,.16);border-radius:999px;background:rgba(10,47,79,.24);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
           <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
-            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:44px;display:flex;align-items:center;font-size:{{ hdrNavFont }};font-weight:500;letter-spacing:0;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
+            <button data-nav="1" data-shipa-nav-screen="{{ n.screen }}" data-cur="{{ n.cur }}" aria-current="{{ n.aria }}" onClick="{{ n.go }}" style="height:36px;padding:0 8px;display:flex;align-items:center;font-size:{{ hdrNavFont }};font-weight:500;letter-spacing:0;line-height:1;white-space:nowrap;color:rgba(249,239,227,.85);border-radius:8px;transition:color 200ms ease-out;" style-hover="color:#F9EFE3;"><span>{{ n.label }}</span></button>
           </sc-for>
-          <a class="shipa-header-blog" href="{{ journalHref }}" style="font-size:{{ hdrNavFont }}">{{ journalLabel }}</a>
+          <a class="shipa-header-blog" href="{{ journalHref }}" style="font-size:{{ hdrNavFont }};padding:0 8px;height:36px;display:flex;align-items:center">{{ journalLabel }}</a>
         </nav>
       </sc-if>
     </div>
@@ -4567,19 +4567,19 @@ if(s.lang==='EN'){
  about:'\u0411\u0456\u0437 \u0442\u0443\u0440\u0430\u043b\u044b',
  contacts:'\u0411\u0430\u0439\u043b\u0430\u043d\u044b\u0441'
 };
-    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({screen:sc,label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):s.lang==='EN'?MENU_EN[sc]:label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
+    const navItems=[['Дома','houses'],['Парение','services'],['Кухня','kitchen'],['Отзывы','reviews'],['О нас','about'],['Контакты','contacts']].map(([label,sc])=>({screen:sc,label:s.lang==='KZ'?(SHIPA_KZ_NAV[sc]||label):s.lang==='EN'?(sc==='services'?'Steam rituals':MENU_EN[sc]):label,cur:screen===sc||(sc==='houses'&&screen==='house')?'1':'0',aria:screen===sc?'page':undefined,go:()=>sc==='houses'?(this.setState({catalogFilter:'VIP'}),this.go('houses')):sc==='kitchen'?this.goKitchenSection():this.go(sc)}));
     const ratingOn=!!this.props.showHeaderRating||!!this.ratingDemo;
     const mo=s.menuOpen;const solid=!mo&&(s.hdrScrolled||screen!=='home'||this.hdrDemo==='scrolled'||this.hdrDemo==='block');
     const vw=s.vw??(window.innerWidth||document.documentElement.clientWidth||1440);
     // Stable breakpoints reserve space for the longest RU/KZ/EN labels.
     // Language changes never replace navigation with a hamburger mid-click.
     const fullNav=vw>=1600;
-    const headerPhoneInline=vw>=1850;
+    const headerPhoneInline=false;
     const hw=vw>=768;const hH=hw?(solid?72:88):(solid?56:64);const lh=hw?(solid?34:40):(solid?28:32);
     const line=(top,w)=>`position:absolute;left:0;top:${top}px;width:${w}px;height:1.5px;border-radius:999px;background:${CREAM};transition:transform 250ms ease-out,top 250ms ease-out,width 250ms ease-out;`;
     const hdr={solid:solid?'1':'0',burgerLabel:s.lang==='EN'?(mo?'Close menu':'Open menu'):s.lang==='KZ'?(mo?'Мәзірді жабу':'Мәзірді ашу'):(mo?'Закрыть меню':'Открыть меню'),menuWord:s.lang==='EN'?(mo?'Close':'Menu'):s.lang==='KZ'?(mo?'Жабу':'Мәзір'):(mo?'Закрыть':'Меню'),
       style:`position:fixed;top:0;left:0;right:0;z-index:var(--z-header);background:${solid?'rgba(10,47,79,.92)':'rgba(10,47,79,0)'};${solid?'-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);':''}border-bottom:1px solid ${solid?'rgba(249,239,227,.1)':'rgba(249,239,227,0)'};transition:transform 300ms ease-out,background-color 300ms ease-out,border-color 300ms ease-out;`,
-      rowStyle:`max-width:1760px;margin:0 auto;height:${hH}px;padding:0 ${vw>=1280?40:hw?24:16}px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:${vw>=1600?24:vw>=1280?18:16}px;transition:height 300ms ease-out;${screen==='home'?heroFx.hdr:''}`,
+      rowStyle:`max-width:1760px;margin:0 auto;height:${hH}px;padding:0 ${vw>=1280?40:hw?24:16}px;display:grid;grid-template-columns:${fullNav?'minmax(0,1fr) max-content minmax(0,1fr)':'auto minmax(0,1fr) auto'};align-items:center;gap:${vw>=1600?20:vw>=1280?18:16}px;transition:height 300ms ease-out;${screen==='home'?heroFx.hdr:''}`,
       menuBtnStyle:vw<768?`width:40px;height:40px;border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:${CREAM};`:`display:flex;align-items:center;gap:12px;height:44px;padding:0 4px;border-radius:8px;color:${CREAM};font-size:15px;font-weight:500;`,
       logo:`height:${lh}px;width:auto;display:block;transition:height 300ms ease-out;`,
       l1:line(mo?7:3,22)+(mo?'transform:rotate(45deg);':''),l2:line(mo?7:11,mo?22:14)+(mo?'transform:rotate(-45deg);':'')};
@@ -4941,7 +4941,7 @@ const LANGS=['RU','KZ','EN'];
       menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':s.lang==='EN'?'Open the full dining menu':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
       journalLabel:s.lang==='EN'?'Blog':'Блог',
       journalHref:s.lang==='KZ'?'blog/kk.html':s.lang==='EN'?'blog/en.html':'blog/',
-      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:vw>=1850?'20px':vw>=1600?'16px':'10px',hdrNavFont:vw<1600?'14px':'15px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:vw>=1850,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
+      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:'2px',hdrNavFont:'14px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:false,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
       masters:MASTERS.map((m,i)=>({...m,...(s.lang==='KZ'?MASTERS_KZ[i]:{}),slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),
