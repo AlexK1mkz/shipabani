@@ -1062,7 +1062,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
       </sc-if>
       <sc-if value="{{ hdrBook }}" hint-placeholder-val="{{ true }}">
-        <button onClick="{{ startBooking }}" style="height:44px;padding:0 {{ hdrBookPad }};border-radius:999px;background:#C15C22;color:#F9EFE3;font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,background-color 150ms ease-out;" style-hover="transform:translateY(-1px);background:#B3551F;">{{ bookLabel }}</button>
+        <button onClick="{{ startBooking }}" style="height:44px;min-width:176px;padding:0 {{ hdrBookPad }};border-radius:999px;background:#C15C22;color:#F9EFE3;font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1;white-space:nowrap;flex:0 0 auto;transition:transform 150ms ease-out,background-color 150ms ease-out;" style-hover="transform:translateY(-1px);background:#B3551F;">{{ bookLabel }}</button>
       </sc-if>
       <sc-if value="{{ hdrMenuBtn }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleMenu }}" aria-label="{{ hdr.burgerLabel }}" aria-expanded="{{ menuOpen }}" style="{{ hdr.menuBtnStyle }}">
@@ -3687,7 +3687,7 @@ const phoneFmt=d=>{if(!d)return '';let s='+7 ('+d.slice(0,3);if(d.length>3)s+=')
 class Component extends DCLogic {
   state={vw:(typeof window!=='undefined'&&(window.innerWidth||document.documentElement.clientWidth))||undefined,isWide:typeof window!=='undefined'&&(window.innerWidth||0)>=960,screen:'home',houseId:null,history:[],menuOpen:false,callOpen:false,callSent:false,
     form:{name:'',phone:'',agree:false,privacy:false},fe:FE0,faqOpen:-1,catalogFilter:'VIP',kitchenTab:'Горячее',reviewFilter:-1,
-    galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:2},bk:null,savedBk:null,draftBk:null,exitConfirm:false,extrasExpanded:false,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,hdrLv:0,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,playing:null,lang:(()=>{try{const l=localStorage.getItem('shipa-lang');return ['RU','KZ','EN'].includes(l)?l:'RU'}catch(e){return 'RU'}})(),langPopup:false,hw:0,rf:EMPTY_RF,
+    galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:2},bk:null,savedBk:null,draftBk:null,exitConfirm:false,extrasExpanded:false,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,playing:null,lang:(()=>{try{const l=localStorage.getItem('shipa-lang');return ['RU','KZ','EN'].includes(l)?l:'RU'}catch(e){return 'RU'}})(),langPopup:false,hw:0,rf:EMPTY_RF,
     carIdx:0,carPaused:false,gal:-1,sheet:null,s3hint:null,s3n:0,sending:false,returning:null,
     maps:{home:{show:false,ok:false,armed:false,failed:false},contacts:{show:false,ok:false,armed:false,failed:false}},addrCopied:false};
   setMap(k,p){this.setState(s=>({maps:{...s.maps,[k]:{...s.maps[k],...p}}}));}
@@ -3737,7 +3737,7 @@ class Component extends DCLogic {
     // ?w=390 - показать сайт в рамке телефона для проверки (ширина кадра вместо ширины окна)
     try{const fw=+new URLSearchParams(location.search).get('w');if(fw>=320&&fw<=1600){this.frameW=fw;const host=document.querySelector('.sc-host')||document.getElementById('dc-root');const fh=+new URLSearchParams(location.search).get('h')||844;
       if(host){host.style.cssText+=`width:${fw}px;height:${fh}px;margin:0 auto;overflow:hidden;contain:layout paint;position:relative;background:#F9EFE3;`;document.body.style.background='#E8E0D6';document.documentElement.style.overflow='hidden';}}}catch(e){}
-    this.onResize=()=>{setTimeout(()=>this.checkHdr&&this.checkHdr(),0);const iw=this.frameW||window.innerWidth||document.documentElement.clientWidth||0;if(iw<=0)return;const w=iw>=960;if(w!==this.state.isWide||iw!==this.state.vw)this.setState({isWide:w,vw:iw});};
+    this.onResize=()=>{const iw=this.frameW||window.innerWidth||document.documentElement.clientWidth||0;if(iw<=0)return;const w=iw>=960;if(w!==this.state.isWide||iw!==this.state.vw)this.setState({isWide:w,vw:iw});};
     {const p=this.kzNow();this._dayKey=p.y+'-'+p.m+'-'+p.d;this._lastH=p.h;this._clk=setInterval(()=>this.clockTick(),15000);
      const q=this.firstOpenDay();if(q!==this.state.quick.date)this.setState(s=>({quick:{...s.quick,date:q}}));}
     this.onGScroll=e=>{if(!this.state.gOpen)return;const el=e.target;if(!el||el.id!=='bk-scroll')return;if(this._gY==null){this._gY=el.scrollTop;return;}if(Math.abs(el.scrollTop-this._gY)>80){this._gY=null;this.setState({gOpen:false});}};document.addEventListener('scroll',this.onGScroll,true);
@@ -3815,26 +3815,6 @@ class Component extends DCLogic {
   goSvc(id){const sec=document.querySelector('[data-svc="'+id+'"]');if(!sec)return;const hh=(window.innerWidth>=768?72:56);const y=sec.getBoundingClientRect().top+window.scrollY-hh-72;this._spyLock=Date.now()+1200;clearTimeout(this._spyT);this._spyT=setTimeout(()=>{this._spyLock=0;},1200);window.scrollTo({top:y,behavior:this.reduced?'auto':'smooth'});this.setState({svcCat:id});
     const box=this.svcTabsRef.current;const b=box&&box.querySelector('[data-tab="'+id+'"]');if(box&&b)box.scrollTo({left:Math.max(0,b.offsetLeft-box.clientWidth/2+b.offsetWidth/2),behavior:'smooth'});}
   toggleCart(it){this.setState(s=>{const has=s.cart.some(x=>x.id===it.id);const cart=has?s.cart.filter(x=>x.id!==it.id):[...s.cart,it];try{localStorage.setItem('shipa_cart',JSON.stringify(cart));}catch(e){}return {cart};});}
-  checkHdr(){
-    const h=this.headerRef.current, row=h&&h.firstElementChild;
-    if(!row)return;
-    const vw=window.innerWidth;
-    if(vw<768)return;
-    const brand=row.querySelector('[data-shipa-header-brand]');
-    const nav=row.querySelector('[data-shipa-header-nav] nav');
-    const actions=row.querySelector('[data-shipa-header-actions]');
-    const left=brand?.getBoundingClientRect(), middle=nav?.getBoundingClientRect();
-    const right=actions?.getBoundingClientRect(), bounds=row.getBoundingClientRect();
-    // Real element bounds catch collisions even when CSS grid reports no overflow.
-    const collision=!!(left&&middle&&right&&(middle.left<left.right+16||middle.right>right.left-16));
-    const overflow=!!(right&&(right.right>bounds.right+1||right.left<bounds.left))||row.scrollWidth>row.clientWidth+1;
-    const lv=this.state.hdrLv||0;
-    if((collision||overflow)&&lv<2){
-      this.setState({hdrLv:2,hdrLvAt:vw});
-    }else if(!collision&&!overflow&&lv>0&&vw>(this.state.hdrLvAt||0)+72){
-      this.setState({hdrLv:0,hdrLvAt:vw});
-    }
-  }
   dragClose(e,ref,close){const el=ref.current;if(!el||window.innerWidth>=960)return;const y0=e.clientY;
     const mv=ev=>{const dy=Math.max(0,ev.clientY-y0);el.style.transition='none';el.style.transform='translateY('+dy+'px)';};
     const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cn);const dy=ev.clientY-y0;el.style.transition='transform 200ms ease-out';el.style.transform='';if(dy>80)close();};
@@ -3886,7 +3866,7 @@ class Component extends DCLogic {
     {const se=document.querySelector('[data-sticky]');const sh=se?Math.round(se.getBoundingClientRect().height):0;if(sh!==(this.state.stickyH||0))this.setState({stickyH:sh});}
     const ce=this.carRef.current;if(ce&&ce!==this._carEl){this._carEl=ce;if(ce.clientWidth)ce.scrollLeft=(s.carIdx||0)*ce.clientWidth;}if(!ce)this._carEl=null;
     const ge=this.galRef.current;if(ge&&ge!==this._galEl){this._galEl=ge;ge.scrollLeft=Math.max(0,s.gal)*ge.clientWidth;}if(!ge)this._galEl=null;
-    this.schedCar();this.animTotal();this.checkHdr();
+    this.schedCar();this.animTotal();
     if(prev.screen!==s.screen&&s.screen==='services')setTimeout(()=>this.spySvc(),50);
     if(prev.hero!==s.hero)this.schedHero(true);
     if(pp.sitePhone!==this.props.sitePhone)this.injectLd();
@@ -4591,15 +4571,15 @@ if(s.lang==='EN'){
     const ratingOn=!!this.props.showHeaderRating||!!this.ratingDemo;
     const mo=s.menuOpen;const solid=!mo&&(s.hdrScrolled||screen!=='home'||this.hdrDemo==='scrolled'||this.hdrDemo==='block');
     const vw=s.vw??(window.innerWidth||document.documentElement.clientWidth||1440);
-    // Full navigation is shown only when it actually fits the English labels.
-    // At intermediate desktop widths, the hamburger menu preserves every link.
-    const fullNav=vw>=1400&&(s.hdrLv||0)<2;
-    const headerPhoneInline=vw>=1850&&(s.hdrLv||0)<1;
+    // Stable breakpoints reserve space for the longest RU/KZ/EN labels.
+    // Language changes never replace navigation with a hamburger mid-click.
+    const fullNav=vw>=1600;
+    const headerPhoneInline=vw>=1850;
     const hw=vw>=768;const hH=hw?(solid?72:88):(solid?56:64);const lh=hw?(solid?34:40):(solid?28:32);
     const line=(top,w)=>`position:absolute;left:0;top:${top}px;width:${w}px;height:1.5px;border-radius:999px;background:${CREAM};transition:transform 250ms ease-out,top 250ms ease-out,width 250ms ease-out;`;
     const hdr={solid:solid?'1':'0',burgerLabel:s.lang==='EN'?(mo?'Close menu':'Open menu'):s.lang==='KZ'?(mo?'Мәзірді жабу':'Мәзірді ашу'):(mo?'Закрыть меню':'Открыть меню'),menuWord:s.lang==='EN'?(mo?'Close':'Menu'):s.lang==='KZ'?(mo?'Жабу':'Мәзір'):(mo?'Закрыть':'Меню'),
       style:`position:fixed;top:0;left:0;right:0;z-index:var(--z-header);background:${solid?'rgba(10,47,79,.92)':'rgba(10,47,79,0)'};${solid?'-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);':''}border-bottom:1px solid ${solid?'rgba(249,239,227,.1)':'rgba(249,239,227,0)'};transition:transform 300ms ease-out,background-color 300ms ease-out,border-color 300ms ease-out;`,
-      rowStyle:`max-width:1760px;margin:0 auto;height:${hH}px;padding:0 ${vw>=1280?40:hw?24:16}px;display:grid;grid-template-columns:${fullNav?'minmax(0,1fr) max-content minmax(0,1fr)':'auto minmax(0,1fr) auto'};align-items:center;gap:${vw>=1600?24:vw>=1280?18:16}px;transition:height 300ms ease-out;${screen==='home'?heroFx.hdr:''}`,
+      rowStyle:`max-width:1760px;margin:0 auto;height:${hH}px;padding:0 ${vw>=1280?40:hw?24:16}px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:${vw>=1600?24:vw>=1280?18:16}px;transition:height 300ms ease-out;${screen==='home'?heroFx.hdr:''}`,
       menuBtnStyle:vw<768?`width:40px;height:40px;border-radius:999px;border:1px solid rgba(249,239,227,.3);display:flex;align-items:center;justify-content:center;color:${CREAM};`:`display:flex;align-items:center;gap:12px;height:44px;padding:0 4px;border-radius:8px;color:${CREAM};font-size:15px;font-weight:500;`,
       logo:`height:${lh}px;width:auto;display:block;transition:height 300ms ease-out;`,
       l1:line(mo?7:3,22)+(mo?'transform:rotate(45deg);':''),l2:line(mo?7:11,mo?22:14)+(mo?'transform:rotate(-45deg);':'')};
@@ -4961,7 +4941,7 @@ const LANGS=['RU','KZ','EN'];
       menuCtaAccessibleLabel:s.lang==='KZ'?'Ас мәзірінің толық нұсқасын ашу':s.lang==='EN'?'Open the full dining menu':'Открыть полное меню кухни',goServices:()=>this.go('services'),goKitchen:()=>this.goKitchenSection(),goKitchenSection:()=>this.goKitchenSection(),menuUrl:this.props.menuUrl||'',goReviews:()=>this.go('reviews'),goAbout:()=>this.go('about'),goContacts:()=>this.go('contacts'),goBack:()=>this.goBack(),
       journalLabel:s.lang==='EN'?'Blog':'Блог',
       journalHref:s.lang==='KZ'?'blog/kk.html':s.lang==='EN'?'blog/en.html':'blog/',
-      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:vw>=1850?'20px':vw>=1600?'16px':'10px',hdrNavFont:vw<1600?'14px':'15px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:vw>=1770,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
+      openMenu:()=>this.setState({menuOpen:true}),closeMenu:()=>this.setState({menuOpen:false}),menuOpen:s.menuOpen,menuItems,langsDark,langsLight,langsHeader,navItems,hdr,pillRef:this.pillRef,menuPreview,menuWrap,menuIndent:wide?'40px':'0',heroRatingRow:ratingOn,hdrNav:fullNav,hdrNavGap:vw>=1850?'20px':vw>=1600?'16px':'10px',hdrNavFont:vw<1600?'14px':'15px',hdrBookPad:vw>=1850?'24px':vw>=1280?'17px':'20px',hdrSub:vw>=1850,hdrPhoneText:headerPhoneInline,hdrPhoneIcon:vw>=380&&!headerPhoneInline,hdrLangDesktop:vw>=768,hdrLangMobile:vw<768,langActive:s.lang,langChoices:LANGS.map(c=>({code:c,name:({RU:'Русский',KZ:'Қазақша',EN:'English'})[c],pressed:s.lang===c?'true':'false',select:()=>setSiteLanguage(c),style:s.lang===c?'background:rgba(193,92,34,.12);color:#C15C22;font-weight:700;':'background:transparent;color:#0A2F4F;'})),hdrLangMenuOpen:!!s.langPopup,hdrLangToggle:()=>this.setState({langPopup:!s.langPopup}),hdrBook:vw>=768,hdrMenuBtn:!fullNav,hdrMenuWord:vw>=768&&!fullNav,hdrIcon:vw<768?'40px':'44px',hdrGap:vw<768?'8px':vw<1600?'8px':'12px',
       bandPad:wide?'152px 40px 64px':'104px 20px 40px',pagePad:wide?'56px 40px 40px':'32px 20px 40px',grid4:wide?'repeat(4,minmax(0,1fr))':'repeat(2,minmax(0,1fr))',grid2:wide||(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',grid3:wide?'repeat(3,minmax(0,1fr))':(s.vw||0)>=600?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',gridAside:wide?'minmax(0,1fr) minmax(0,1.6fr)':'minmax(0,1fr)',gridContacts:wide?'minmax(0,1.2fr) minmax(0,1fr)':'minmax(0,1fr)',
       svcTabs,svcSections,svcTabsRef:this.svcTabsRef,kitchenCards,showMasters:!!this.props.showMasters,
       masters:MASTERS.map((m,i)=>({...m,...(s.lang==='KZ'?MASTERS_KZ[i]:{}),slot:'master-'+i,open:()=>this.setState({pd:{type:'master',idx:i},pdContra:false})})),
