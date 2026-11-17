@@ -716,6 +716,8 @@ test('owners manage employee roles and access, and staff records survive reload'
   crm.renderVals().toggleRole();
   crm.renderVals().nav.find(item => item.name === 'Сотрудники').go();
   crm.renderVals().staff.add();
+  assert.equal(crm.staffView().isExisting, false);
+  crm.setStaffDraft({ deactivated: true });
   crm.setStaffDraft({ name: 'Арман', surname: 'Тестов', phone: '8 700 000 00 02', enabled: true });
   crm.saveStaff(submit);
   assert.match(crm.state.staffError, /уже есть/);
@@ -732,7 +734,9 @@ test('owners manage employee roles and access, and staff records survive reload'
   crm.staffView().setQuery({ target: { value: 'Тестов Арман' } });
   assert.equal(crm.staffView().rows[0].fullName, 'Арман Тестов');
 
+  assert.equal(employee.deactivated, false);
   crm.editStaff(employee.id);
+  assert.equal(crm.staffView().isExisting, true);
   crm.setStaffDraft({ role: 'owner', enabled: false });
   crm.saveStaff(submit);
   const restored = demo(storage).crm.state.employees.find(item => item.id === employee.id);
