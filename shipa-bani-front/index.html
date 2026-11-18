@@ -35,6 +35,11 @@
   .shipa-legal-links--pay{margin-top:4px}
   .shipa-legal-links a:focus-visible,.shipa-legal-terms:focus-visible,.shipa-legal-inline:focus-visible{outline:3px solid #c15c22;outline-offset:3px;border-radius:3px}
   @media(max-width:480px){.shipa-legal-links{padding:13px 12px}.shipa-legal-links a{font-size:13px}}
+
+/* Draw dash marks geometrically so serif/italic fonts cannot slant them. */
+.shipa-minus{display:inline-block;width:14px;height:2px;background:currentColor;vertical-align:middle;flex-shrink:0;transform:none}
+.shipa-price-dash{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:26px;font-size:0!important}
+.shipa-price-dash::before{content:"";width:22px;height:2px;background:currentColor;transform:none}
 </style>
 
 <style id="shipa-legal-modal-css">
@@ -1161,7 +1166,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0;padding-top:16px;border-top:1px solid rgba(59,47,42,.1);">
         <div><div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">Дети до 7 лет не считаются</div></div>
         <div style="display:flex;align-items:center;">
-          <button onClick="{{ quickGuestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:999px;font-size:22px;">−</button>
+          <button onClick="{{ quickGuestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:999px;font-size:22px;"><span class="shipa-minus" aria-hidden="true"></span></button>
           <div style="width:56px;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;">{{ quickGuests }}</div>
           <button onClick="{{ quickGuestsPlus }}" aria-label="Больше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:999px;font-size:22px;">+</button>
         </div>
@@ -2488,7 +2493,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 10px;">
         <div><div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">Дети до 7 лет не считаются</div></div>
         <div style="display:flex;align-items:center;">
-          <button onClick="{{ guestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;">−</button>
+          <button onClick="{{ guestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;"><span class="shipa-minus" aria-hidden="true"></span></button>
           <div style="width:52px;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;">{{ bk.guests }}</div>
           <button onClick="{{ guestsPlus }}" aria-label="Больше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;">+</button>
         </div>
@@ -2640,7 +2645,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
         <div style="{{ g.wrapStyle }}"><div style="{{ g.innerStyle }}"><div data-screen-label="Шаг 3 - счётчик гостей" style="padding:0 16px 16px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px;">
-            <button onClick="{{ g.minus }}" disabled="{{ g.atMin }}" aria-label="Меньше гостей" style="{{ g.minusStyle }}">−</button>
+            <button onClick="{{ g.minus }}" disabled="{{ g.atMin }}" aria-label="Меньше гостей" style="{{ g.minusStyle }}"><span class="shipa-minus" aria-hidden="true"></span></button>
             <div aria-live="polite" style="flex:1 1 auto;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:36px;line-height:1.05;font-variant-numeric:lining-nums tabular-nums;">{{ g.num }}</div>
             <button onClick="{{ g.plus }}" aria-disabled="{{ g.plusOffAttr }}" aria-label="Больше гостей" style="{{ g.plusStyle }}">+</button>
           </div>
@@ -2658,7 +2663,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;">
             <div style="font-size:14px;color:#0A2F4F;">+ Дети до 7 лет: <span style="font-weight:600;font-variant-numeric:tabular-nums;">{{ g.kids }}</span></div>
             <div style="display:flex;align-items:center;gap:8px;">
-              <button onClick="{{ g.kidsMinus }}" disabled="{{ g.kidsMinusOff }}" aria-label="Меньше детей" style="{{ g.kidsMinusStyle }}">−</button>
+              <button onClick="{{ g.kidsMinus }}" disabled="{{ g.kidsMinusOff }}" aria-label="Меньше детей" style="{{ g.kidsMinusStyle }}"><span class="shipa-minus" aria-hidden="true"></span></button>
               <button onClick="{{ g.kidsPlus }}" aria-label="Больше детей" style="{{ g.kidsPlusStyle }}">+</button>
             </div>
           </div>
@@ -2742,7 +2747,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <div style="font-size:13px;color:rgba(10,47,79,.7);margin-bottom:10px;">{{ durNote }}</div>
         <div id="bk-durs" data-screen-label="Шаг 3 - счётчик часов" style="border-radius:16px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 4px;">
-            <button onPointerDown="{{ cnt.minusDown }}" onClick="{{ cnt.minusClick }}" disabled="{{ cnt.atMin }}" aria-label="Меньше на час" style="{{ cnt.minusStyle }}">−</button>
+            <button onPointerDown="{{ cnt.minusDown }}" onClick="{{ cnt.minusClick }}" disabled="{{ cnt.atMin }}" aria-label="Меньше на час" style="{{ cnt.minusStyle }}"><span class="shipa-minus" aria-hidden="true"></span></button>
             <div aria-live="polite" style="flex:1 1 auto;min-width:0;text-align:center;">
               <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:36px;line-height:1.05;font-variant-numeric:lining-nums tabular-nums;text-wrap:balance;">{{ cnt.num }}</div>
               <div style="font-family:Inter,system-ui,sans-serif;font-size:15px;margin-top:4px;font-variant-numeric:tabular-nums;">{{ cnt.range }}</div>
@@ -3187,7 +3192,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0 4px;">
           <div><div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(10,47,79,.7);font-weight:600;">Гостей</div><div style="font-size:13px;color:rgba(10,47,79,.7);margin-top:4px;">Дети до 7 лет не считаются</div></div>
           <div style="display:flex;align-items:center;">
-            <button onClick="{{ ds.guestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;">−</button>
+            <button onClick="{{ ds.guestsMinus }}" aria-label="Меньше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;"><span class="shipa-minus" aria-hidden="true"></span></button>
             <div style="width:52px;text-align:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;">{{ ds.guests }}</div>
             <button onClick="{{ ds.guestsPlus }}" aria-label="Больше" style="width:48px;height:48px;border:1px solid rgba(10,47,79,.3);border-radius:50%;font-size:22px;">+</button>
           </div>
@@ -3666,6 +3671,7 @@ const RULES=[{t:'Предоплата',d:'Бронь подтверждаетс�
 const EXTRA_SHORT={program:'парение',table:'стол к приезду',kit:'набор для парения'};
 const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}};
 // Accept Kazakhstan numbers in +7, 8 or local ten-digit notation; never reinterpret +1/+44 as +7.
+const bookingDisplay=view=>{const out={...view};const clean=v=>typeof v==='string'?v.replace(/\s*·\s*/g,' ').replace(/([\p{L}])\./gu,'$1'):v;for(const key of ['s3DateText','panelLine','successWhen','cLine1','calLine','dailyIn','dailyOut','searchDate','step2Title'])if(key in out)out[key]=clean(out[key]);if(out.card)out.card={...out.card,when:clean(out.card.when)};if(out.pay)out.pay={...out.pay,line:clean(out.pay.line)};return out;};
 const phoneDigits=v=>{const raw=String(v||'').trim();let d=raw.replace(/\D/g,'');if(raw.startsWith('+')){if(!raw.startsWith('+7'))return '';d=d.slice(1);}else if(d.length===11&&/^[78]/.test(d))d=d.slice(1);else if(d.startsWith('8')&&d.length<11)d=d.slice(1);return d.slice(0,10);};
 const phoneValid=v=>{const raw=String(v||'').trim();const digits=raw.replace(/\D/g,'');if(raw.startsWith('+')&&!raw.startsWith('+7'))return false;if(digits.length!==10&&!(digits.length===11&&/^[78]/.test(digits)))return false;return phoneDigits(raw).length===10;};
 // Shared email validator for email inputs (the current booking form only requests name and phone).
@@ -3878,6 +3884,7 @@ class Component extends DCLogic {
     if(fade&&el){el.style.opacity='.15';setTimeout(()=>{jump();el.style.opacity='1';},250);}else jump();}
   animTotal(){const el=this.totalRef.current;const t=this._panelTotal;const txt=v=>v==null?(this._panelDash||' - '):fmt(v);
     if(!el){this._totEl=null;return;}
+    const dash=t==null&&(!this._panelDash||this._panelDash.trim()==='-');el.classList.toggle('shipa-price-dash',dash);if(dash){el.setAttribute('role','img');el.setAttribute('aria-label',this.state.lang==='KZ'?'Уақытты таңдаңыз':this.state.lang==='EN'?'Choose a time':'Выберите время');}else{el.removeAttribute('role');el.removeAttribute('aria-label');}
     el.style.fontSize=t==null&&this._panelDash&&this._panelDash.length>3?'15px':'';el.style.fontFamily=t==null&&this._panelDash&&this._panelDash.length>3?'Inter,system-ui,sans-serif':'';
     if(el!==this._totEl){this._totEl=el;this._shownT=t;this._targetT=t;el.textContent=txt(t);return;}
     if(t===this._targetT){if(t==null&&el.textContent!==txt(t))el.textContent=txt(t);return;}const from=this._shownT;this._targetT=t;cancelAnimationFrame(this._taf);
@@ -5110,7 +5117,7 @@ const LANGS=['RU','KZ','EN'];
       pre,notPre:!pre,bookLabel,showMeaning:this.props.showMeaning??true,showMerch:this.props.showMerch??false,
       merch:MERCH.map((m,i)=>({...m,name:s.lang==='KZ'?MERCH_KZ[i]:this.stressText(m.name),priceText:fmt(m.price),slot:'merch-'+i,img:['img/h1_acc.png','img/h2_acc.png','img/h5_acc.png','img/h4_acc.png','img/h6_acc.png','img/h3_acc.png'][i],link:C.wa(C.t('waTextMerch',{товар:m.name}))})),
       serviceCats:SERVICE_CATS.map((c,i)=>({...c,...(s.lang==='KZ'?SERVICE_CATS_KZ[i]:{}),soon:!!c.soon,hasImg:!c.soon,slot:'svc-'+i,style:`border-radius:20px;overflow:hidden;display:flex;flex-direction:column;${c.soon?'border:1px dashed rgba(10,47,79,.35);':'background:rgba(10,47,79,.06);'}`})),
-      ...(s.lang==='KZ' && window.ShipaBookingI18n ? window.ShipaBookingI18n.view(B) : B),
+      ...bookingDisplay(s.lang==='KZ' && window.ShipaBookingI18n ? window.ShipaBookingI18n.view(B) : B),
       addTableLabel:s.lang==='KZ'?'Брондауға тағам таңдау':'Выбрать блюда к бронированию',
       addTableHint:s.lang==='KZ'?'Алдымен тағамдарды, содан кейін күн мен үйді таңдаңыз':'Сначала блюда, затем дата и дом',
       ...PAGE_COPY[s.lang],
