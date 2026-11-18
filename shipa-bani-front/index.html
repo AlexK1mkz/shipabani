@@ -5,6 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="sitemap" type="application/xml" href="./blog/sitemap-index.xml">
+<script src="./shipa-typography.js"></script>
 <script src="./support.js"></script>
 
 
@@ -1150,7 +1151,6 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
                     <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.76;white-space:nowrap;">{{ d.wd }}</span>
                     <span style="{{ d.numStyle }}">{{ d.day }}</span>
                     <sc-if value="{{ d.discOn }}" hint-placeholder-val="{{ false }}"><span style="{{ d.discStyle }}">{{ d.discText }}</span></sc-if>
-                    <span aria-hidden="true" style="{{ d.dotStyle }}"></span>
                   </button>
                 </sc-for>
               </div>
@@ -1762,7 +1762,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
           <sc-for list="{{ hm.monthDays }}" as="d" hint-placeholder-count="35">
-            <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" aria-label="{{ d.aria }}" style="{{ d.style }}"><span>{{ d.day }}</span><sc-if value="{{ d.dot }}" hint-placeholder-val="{{ false }}"><span style="{{ d.dotStyle }}"></span></sc-if></button>
+            <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" aria-label="{{ d.aria }}" style="{{ d.style }}"><span>{{ d.day }}</span></button>
           </sc-for>
         </div>
         </sc-if>
@@ -3183,7 +3183,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
           <sc-for list="{{ ds.monthDays }}" as="d" hint-placeholder-count="35">
-            <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" style="{{ d.style }}"><span>{{ d.day }}</span><sc-if value="{{ d.dot }}" hint-placeholder-val="{{ false }}"><span style="{{ d.dotStyle }}"></span></sc-if></button>
+            <button onClick="{{ d.select }}" disabled="{{ d.disabled }}" style="{{ d.style }}"><span>{{ d.day }}</span></button>
           </sc-for>
         </div>
         <sc-if value="{{ ds.hasLegend }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(10,47,79,.7);margin:8px 0 0;"><span style="width:4px;height:4px;border-radius:50%;background:#0A2F4F;flex:0 0 auto;"></span>{{ ds.legend }}</div></sc-if>
@@ -4424,7 +4424,7 @@ if(s.lang==='EN'){
         label:s.lang==='EN'?`${d.toLocaleDateString('en-GB',{day:'numeric',month:'long'})}${full?', fully booked':few?', limited availability':''}`:`${this.dayWords(i)}${full?', всё занято':few?', осталось мало окон':''}`,
         select:()=>{if(full){this.hint(s.lang==='EN'?`Fully booked for ${d.toLocaleDateString('en-GB',{day:'numeric',month:'long'})}. Choose another day.`:`На ${this.dm(i)} всё занято - выберите другой день`);return;}vib(8);this.setState({quick:{...s.quick,date:i}});},
         numStyle:`font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;line-height:1;${full?'text-decoration:line-through;':''}`,
-        dotStyle:`width:4px;height:4px;border-radius:50%;background:${few?(act?CREAM:BRICK):'transparent'};`,discOn:!full&&this.homeDisc(i)>0,discText:'−'+this.homeDisc(i)+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
+        discOn:!full&&this.homeDisc(i)>0,discText:'−'+this.homeDisc(i)+'%',discStyle:`font-size:11px;font-weight:600;line-height:1;color:${act?CREAM:'#9A4518'};`,
         style:`flex:0 0 auto;width:${w}px;height:72px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid ${act?NAVY:'rgba(10,47,79,.25)'};background:${act?NAVY:CREAM};color:${act?CREAM:NAVY};opacity:${full&&!act?.45:1};transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;`};});
     if(s.lang==='EN')quickDays.forEach((day,i)=>{const d=this.dateAt(i);if(day.mon)day.mon=d.toLocaleString('en-US',{month:'long'}).toUpperCase();});
     const quickMonths=groupDateRibbon(quickDays,0,i=>this.dateAt(i),s.lang);

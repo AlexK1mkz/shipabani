@@ -570,14 +570,14 @@
     const txt = node.nodeValue ?? "";
     if (!txt.includes("{{")) {
       if (!txt.trim() && !txt.includes(" ")) return null;
-      return () => txt;
+      return () => window.ShipaTypography?.renderText(txt) ?? txt;
     }
     const parts = txt.split(/\{\{([\s\S]+?)\}\}/g);
     return (vals, ctx, key) => h(
       getReact().Fragment,
       { key },
       ...parts.map((p, i) => {
-        if (!(i & 1)) return p;
+        if (!(i & 1)) return window.ShipaTypography?.renderText(p) ?? p;
         const v = resolve(vals, p);
         if (v === void 0) {
           if (!ctx?.__streamingNow) {
@@ -604,7 +604,7 @@
           return h(getReact().Fragment, { key: i }, v);
         }
         if (v === null || typeof v === "boolean") return null;
-        return h("span", { key: i, className: "sc-interp" }, String(v));
+        return h("span", { key: i, className: "sc-interp" }, window.ShipaTypography?.renderText(String(v)) ?? String(v));
       })
     );
   }

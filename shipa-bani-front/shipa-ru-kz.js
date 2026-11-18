@@ -411,6 +411,7 @@ function translate(source){
  return result;
 }
 function setNode(n){
+ if(n?.parentElement?.closest('[data-shipa-typography]'))return;
  if(!n||!n.parentElement||/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE|OPTION)$/i.test(n.parentElement.tagName))return;
  const actual=n.nodeValue||'',old=originalText.get(n);
  let source=old&&actual===old.output?old.source:actual;
