@@ -3675,7 +3675,7 @@ const phoneFmt=d=>{if(!d)return '';let s='+7 ('+d.slice(0,3);if(d.length>3)s+=')
 class Component extends DCLogic {
   state={vw:(typeof window!=='undefined'&&(window.innerWidth||document.documentElement.clientWidth))||undefined,isWide:typeof window!=='undefined'&&(window.innerWidth||0)>=960,screen:'home',houseId:null,history:[],menuOpen:false,callOpen:false,callSent:false,
     form:{name:'',phone:'',agree:false,privacy:false},fe:FE0,faqOpen:-1,catalogFilter:'VIP',kitchenTab:'Горячее',reviewFilter:-1,
-    galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:2},bk:null,savedBk:null,draftBk:null,exitConfirm:false,extrasExpanded:false,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,playing:null,lang:(()=>{try{const l=localStorage.getItem('shipa-lang');return ['RU','KZ','EN'].includes(l)?l:'RU'}catch(e){return 'RU'}})(),langPopup:false,hw:0,rf:EMPTY_RF,
+    galleryIdx:0,lightbox:-1,cookie:true,quick:{date:0,guests:2},bk:null,savedBk:null,draftBk:null,exitConfirm:false,extrasExpanded:false,sendError:false,loadingSlots:false,hero:0,heroPrev:-1,intro:true,cart:[],pd:null,pdContra:false,svcCat:'steam',svcFaq:-1,catIdx:{},menuHover:0,atmOpen:false,greetOpen:false,greetClosed:false,playing:null,lang:(()=>{try{const l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('shipa-lang');return ['RU','KZ','EN'].includes(l)?l:'RU'}catch(e){return 'RU'}})(),langPopup:false,hw:0,rf:EMPTY_RF,
     carIdx:0,carPaused:false,gal:-1,sheet:null,s3hint:null,s3n:0,sending:false,returning:null,
     maps:{home:{show:false,ok:false,armed:false,failed:false},contacts:{show:false,ok:false,armed:false,failed:false}},addrCopied:false};
   setMap(k,p){this.setState(s=>({maps:{...s.maps,[k]:{...s.maps[k],...p}}}));}
@@ -3762,9 +3762,10 @@ class Component extends DCLogic {
     document.addEventListener('click',this.onKitchenRouteClick,true);
     if(!this.hdrDemo&&window.location.hash==='#kitchen')this.goKitchenSection();
     const journalSection=new URLSearchParams(location.search).get('section');
-    if(!this.hdrDemo&&!this.bkDemo&&['houses','services'].includes(journalSection)){
+    if(!this.hdrDemo&&!this.bkDemo&&['houses','services','reviews','about','contacts'].includes(journalSection)){
       this.setState({screen:journalSection,intro:false});
     }
+    if(!this.hdrDemo&&!this.bkDemo&&new URLSearchParams(location.search).get('booking')==='1')setTimeout(()=>this.openBooking(),0);
     if(this.hdrDemo){this.setState({cookie:false,menuOpen:this.hdrDemo==='menu'});if(this.hdrDemo==='scrolled')this.demoScroll(640);}
     try{const q=new URLSearchParams(location.search);const sl=q.get('slide');if(sl!=null)this.setState({hero:Math.max(0,Math.min(HERO_SLIDES.length-1,+sl))});const sy=q.get('scroll');if(sy!=null)this.demoScroll(()=>sy==='block'?Math.max(0,window.innerHeight-360):/^\d+$/.test(sy)?+sy:(()=>{const el=document.querySelector(sy);return el?el.getBoundingClientRect().top+window.scrollY-72:0;})());const fq=q.get('faq');if(fq!=null)setTimeout(()=>this.setState({faqOpen:+fq}),200);}catch(e){}
     this.reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
