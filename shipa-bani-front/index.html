@@ -5052,7 +5052,7 @@ const LANGS=['RU','KZ','EN'];
       keyOpen:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click();}},
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
-      houseHeadingStart:s.lang==='KZ'?'СЕГІЗ ҮЙ - ':'ВОСЕМЬ ДОМОВ - ',
+      houseHeadingStart:s.lang==='KZ'?'СЕГІЗ ҮЙ ':'ВОСЕМЬ ДОМОВ ',
       houseHeadingEnd:s.lang==='KZ'?'СЕГІЗ ТҮРЛІ КҮЙ':'ВОСЕМЬ СОСТОЯНИЙ',
       faqHeadingStart:s.lang==='KZ'?'ЖИІ ҚОЙЫЛАТЫН':'НАМ ЧАСТО ЗАДАЮТ ЭТИ',
       faqHeadingEnd:s.lang==='KZ'?'СҰРАҚТАР':'ВОПРОСЫ',
@@ -5122,7 +5122,7 @@ const LANGS=['RU','KZ','EN'];
       addTableHint:s.lang==='KZ'?'Алдымен тағамдарды, содан кейін күн мен үйді таңдаңыз':'Сначала блюда, затем дата и дом',
       ...PAGE_COPY[s.lang],
       ...(s.lang==='EN'?{
-        houseHeadingStart:'EIGHT HOUSES - ',houseHeadingEnd:'EIGHT STATES OF MIND',
+        houseHeadingStart:'EIGHT HOUSES ',houseHeadingEnd:'EIGHT STATES OF MIND',
         faqHeadingStart:'FREQUENTLY ASKED',faqHeadingEnd:'QUESTIONS',
         requisiteAria:'Registered business details',
         requisiteBusinessName:'Sole proprietorship “Kor Food”',
