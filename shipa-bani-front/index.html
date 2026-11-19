@@ -195,7 +195,7 @@
     const value=node?.nodeValue;
     if(!value || !HAS_BRAND.test(value))return;
     const parent=node.parentNode;
-    if(!parent || parent.nodeType!==1 || SKIP.has(parent.tagName) || parent.closest('.shipa-brand-wordmark'))return;
+    if(!parent || parent.nodeType!==1 || SKIP.has(parent.tagName) || parent.closest('.shipa-brand-wordmark,[data-shipa-brand-text]'))return;
     const doc=parent.ownerDocument,frag=doc.createDocumentFragment();
     let end=0;
     for(const match of value.matchAll(BRANDS)){
@@ -229,7 +229,7 @@
         acceptNode(node){
           if(!node.nodeValue || !HAS_BRAND.test(node.nodeValue))return NodeFilter.FILTER_REJECT;
           const parent=node.parentNode;
-          if(!parent || parent.nodeType!==1 || SKIP.has(parent.tagName) || parent.closest('.shipa-brand-wordmark'))return NodeFilter.FILTER_REJECT;
+          if(!parent || parent.nodeType!==1 || SKIP.has(parent.tagName) || parent.closest('.shipa-brand-wordmark,[data-shipa-brand-text]'))return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         }
       });
@@ -1386,7 +1386,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
   <section data-reveal style="max-width:var(--wrap);margin:0 auto;padding:64px 0 0;">
     <div style="padding:0 20px;text-align:center;">
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0;"><span style="color:#C15C22;">ВИДЕО-ОТЗЫВЫ</span> НАШИХ ГОСТЕЙ</h2>
-      <p style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">{{ homeReviewsIntroText }}</p>
+      <p data-shipa-brand-text="1" style="margin:14px auto 0;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);max-width:560px;">{{ homeReviewsIntroText }}</p>
     </div>
     <sc-if value="{{ isWide }}" hint-placeholder-val="{{ false }}"><nav class="shipa-carousel-nav" data-carousel-target="car-vrev" data-active="0" aria-label="Навигация по карточкам" style="padding:16px 20px 0;"><button type="button" data-carousel-dir="-1" aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button type="button" data-carousel-dir="1" aria-label="Вперёд" title="Вперёд"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button></nav></sc-if>
     <div id="car-vrev" class="noscroll lane center" data-cap-desktop="1" style="margin-top:8px;align-items:flex-start;--kd:4.25;--kt:2.6;--km:1.25;">
