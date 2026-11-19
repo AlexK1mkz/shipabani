@@ -4,7 +4,7 @@
   const DASH = /[\u2012-\u2015\u2212]|(?<!\S)-(?=\s|$)|(?<=\d)-(?=\d)/gu;
   const hasDash = value => { DASH.lastIndex = 0; return DASH.test(value); };
   const style = document.createElement('style');
-  style.textContent = '.shipa-text-dash{display:inline-block;position:relative;inline-size:.65em;block-size:1em;vertical-align:-.08em;font-style:normal!important;transform:none!important}.shipa-text-dash::after{content:"";position:absolute;inset-inline:0;top:50%;height:1.5px;background:currentColor;transform:none!important}.shipa-text-dash--short{inline-size:.4em}';
+  style.textContent = '.shipa-text-dash{display:inline-block;inline-size:.32em;block-size:max(1px,.035em);vertical-align:.22em;background:currentColor;font-style:normal!important;transform:none!important}.shipa-text-dash--short{inline-size:.32em}';
   document.head.append(style);
   function pieces(text, makeDash) {
     DASH.lastIndex = 0;
