@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261120-birthdays-readability"></script>
+<script defer src="./shipa-ru-kz.js?v=20261120-handbook"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -127,6 +127,20 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-assignee-select{max-width:180px;min-height:36px;padding:0 8px;border:1px solid #CCD9E2;border-radius:10px;background:#fff;font-size:13px;color:#0A2F4F;}
   .crm-booking-assignee{display:flex;align-items:center;gap:5px;min-width:0;padding-top:6px;border-top:1px solid #E9EDF0;font-size:12px;color:#526271;}
   .crm-booking-assignee strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0A2F4F;}
+  .crm-handbook{max-width:1160px;container-type:inline-size;}
+  .crm-handbook-intro{padding:24px 26px;margin-bottom:16px;background:#EAF1F6;border:1px solid #D5E0E7;border-radius:18px;}
+  .crm-handbook h2{margin:0;font-size:24px;line-height:1.25;}
+  .crm-handbook-intro p{margin:8px 0 0;font-size:15px;color:#43566A;}
+  .crm-handbook-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .crm-handbook-topic{display:flex;flex-direction:column;align-items:flex-start;padding:20px 22px;border:1px solid #E4E9ED;border-radius:16px;background:#fff;}
+  .crm-handbook-topic h3{margin:0;font-size:17px;line-height:1.3;}
+  .crm-handbook-topic ol{display:grid;gap:8px;margin:12px 0 18px;padding-left:22px;color:#43566A;font-size:14px;line-height:1.5;}
+  .crm-handbook-topic li::marker{color:#0A2F4F;font-weight:600;}
+  .crm-handbook-topic button{margin-top:auto;min-height:40px;text-align:left;}
+  @container (max-width:680px){
+    .crm-handbook-grid{grid-template-columns:1fr;}
+    .crm-handbook-intro,.crm-handbook-topic{padding:16px;}
+  }
   .crm-mini-guide{width:min(530px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:22px 24px;border:1px solid #D5E0E7;border-radius:18px;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.22);}
   .crm-mini-guide::backdrop{background:rgba(10,47,79,.44);}
   .crm-mini-guide header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
@@ -1304,6 +1318,28 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     </section>
   </sc-if>
 
+  <sc-if value="{{ is.instructions }}" hint-placeholder-val="{{ false }}">
+    <section class="crm-handbook" data-screen-label="Инструкции" aria-labelledby="crm-handbook-heading">
+      <header class="crm-handbook-intro">
+        <h2 id="crm-handbook-heading">Руководство по CRM</h2>
+        <p>Пошаговые подсказки для сотрудников: от начала смены до выгрузки отчёта.</p>
+      </header>
+      <div class="crm-handbook-grid">
+        <sc-for list="{{ handbookTopics }}" as="topic" hint-placeholder-count="2">
+          <article class="crm-handbook-topic">
+            <h3>{{ topic.title }}</h3>
+            <ol>
+              <sc-for list="{{ topic.steps }}" as="step" hint-placeholder-count="2">
+                <li>{{ step.text }}</li>
+              </sc-for>
+            </ol>
+            <button type="button" class="crm-guest-export" onClick="{{ topic.open }}">{{ topic.action }}</button>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
   </div>
 </main>
 
@@ -2074,7 +2110,87 @@ const staffPhone=value=>{
   if(!raw.startsWith('+')&&/^[78]\d{10}$/.test(digits))return '+7'+digits.slice(1);
   return /^[1-9]\d{9,14}$/.test(digits)?'+'+digits:'';
 };
-const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff'];
+const CRM_HANDBOOK = [
+  {
+    title: "Дашборд и начало смены",
+    target: "today",
+    action: "Открыть дашборд",
+    steps: [
+      "Откройте «Сегодня» и проверьте заезды, выезды и подготовку домов.",
+      "В необработанных заявках нажмите «Взять», чтобы перевести заявку в работу и открыть её карточку.",
+      "В блоке дней рождения можно открыть карточку гостя или перейти в WhatsApp. Список охватывает ближайшие 14 дней.",
+    ],
+  },
+  {
+    title: "Создание брони",
+    target: "new",
+    action: "Открыть форму брони",
+    steps: [
+      "Нажмите «Новая бронь». Введите телефон, имя и фамилию гостя.",
+      "Выберите дом, дату, свободное время, длительность и количество гостей. Добавьте нужные услуги.",
+      "Проверьте итог и предоплату. Если наличная предоплата уже получена, отметьте это перед созданием брони.",
+    ],
+  },
+  {
+    title: "Календарь и перенос брони",
+    target: "calendar",
+    action: "Открыть календарь",
+    steps: [
+      "Выберите «День», «Неделя» или «Месяц» и найдите нужную дату.",
+      "В режиме «День» нажмите на бронь, чтобы открыть карточку, или на свободную ячейку, чтобы создать новую бронь.",
+      "Для переноса перетащите бронь на другой слот. Проверьте время, дом и доступность в окне переноса перед подтверждением.",
+    ],
+  },
+  {
+    title: "Стадии и оплата брони",
+    target: "bookings",
+    action: "Открыть брони",
+    steps: [
+      "Найдите бронь в канбане или списке и откройте карточку. Обновляйте стадию по мере работы с гостем.",
+      "Во вкладке «Оплата» сверьте общую сумму, уже полученные платежи и остаток.",
+      "Чтобы записать полученный платёж, укажите сумму, тип и способ оплаты, затем нажмите «Зафиксировать».",
+    ],
+  },
+  {
+    title: "Карточка гостя",
+    target: "clients",
+    action: "Открыть гостей",
+    steps: [
+      "В разделе «Гости» найдите человека по имени или телефону. Нажмите на строку, чтобы открыть карточку.",
+      "В профиле проверьте контакты, дату рождения и согласие на рассылку. В карточке также доступны брони и сообщения гостя.",
+    ],
+  },
+  {
+    title: "Поздравления и рассылки",
+    target: "campaigns",
+    action: "Открыть рассылки",
+    steps: [
+      "Откройте нужную рассылку и проверьте повод, время отправки и список получателей.",
+      "Проверьте тексты RU и KZ в предпросмотре. Для рассылки учитывается согласие гостя.",
+    ],
+  },
+  {
+    title: "Работа с отзывами",
+    target: "reviews",
+    action: "Открыть отзывы",
+    steps: [
+      "Начните с фильтров «На проверке» и «Оценка ≤ 3», чтобы увидеть новые и низкие оценки.",
+      "Откройте «Ответить», чтобы подготовить ответ. Статус публикации можно изменить в карточке отзыва.",
+    ],
+  },
+  {
+    title: "Выгрузка в Excel",
+    target: "export",
+    action: "Открыть подсказку по Excel",
+    steps: [
+      "В разделе «Гости» настройте поиск и фильтры, затем нажмите «Скачать Excel».",
+      "В «Брони и продажи» переключитесь на «Список», выберите доску и фильтры, затем нажмите «Выгрузить в Excel».",
+      "В файл попадут строки, которые видны после применения фильтров, в текущем порядке.",
+    ],
+  },
+];
+
+const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff','instructions'];
 const ownerScreen=screen=>screen==='notif'||screen==='staff';
 function crmHash(s){
   const params=new URLSearchParams();
@@ -2553,9 +2669,18 @@ class Component extends DCLogic {
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
   if(owner)navItems.push({id:'staff',name:'Сотрудники',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M18 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'});
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
+  navItems.push({id:'instructions',name:'Инструкции',icon:'M4 3h7l1 2 1-2h7v16h-7l-1 2-1-2H4zM12 5v16M7 8h2M15 8h2M7 12h2M15 12h2'});
   const nav=navItems.map(n=>({...n,go:go(n.id),current:s.screen===n.id?'page':'false',badge:n.badge||false,badgeShow:!!n.badge&&s.navOpen}));
-  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники'};
+  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники',instructions:'Инструкции'};
   const is={[s.screen]:!ownerScreen(s.screen)||owner};
+  const openNew = () => this.setState({nb:this.newNb()});
+  const openGuide = () => document.querySelector('.crm-mini-guide')?.showModal();
+  const handbookTopics = is.instructions ? CRM_HANDBOOK.map(topic => ({
+    title: topic.title,
+    action: topic.action,
+    steps: topic.steps.map(text => ({text})),
+    open: topic.target === 'new' ? openNew : topic.target === 'export' ? openGuide : go(topic.target),
+  })) : [];
   // поиск
   const q=s.search.trim().toLowerCase();const norm=x=>(x||'').toLowerCase().replace(/[\s()+-]/g,'');
   const searchRes=q?B.filter(b=>norm(b.guest).includes(norm(q))||norm(b.phone).includes(norm(q))||norm(b.num).includes(norm(q))||(H[b.house]&&norm(H[b.house].name).includes(norm(q)))).slice(0,6).map(b=>({num:b.num,guest:b.guest,phone:b.phone,meta:(H[b.house]?H[b.house].name+' · ':'')+ST[b.stage].name,color:ST[b.stage].color,open:open(b.num)})):[];
@@ -3127,8 +3252,8 @@ class Component extends DCLogic {
   return {staff:owner?this.staffView():{},nav,navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
-   screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew:()=>this.setState({nb:this.newNb()}),
-   is,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
+   screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew,
+   is,handbookTopics,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
    calendarKey:CAL_STATUS.filter(o=>o.id!=='all'),calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
@@ -3183,7 +3308,7 @@ class Component extends DCLogic {
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
    clTiles,clFilters,clSearch:s.clSearch,setClSearch:e=>this.setState({clSearch:e.target.value}),clCount:`${clList.length} из ${CS.length}`,clRows,clEmpty:!clRows.length,clSortBy,clMark,clAriaSort,exportGuests,
-   openGuide:()=>document.querySelector('.crm-mini-guide')?.showModal(),closeGuide:()=>document.querySelector('.crm-mini-guide')?.close(),
+   openGuide,closeGuide:()=>document.querySelector('.crm-mini-guide')?.close(),
    pressGuideBackdrop:e=>{this.guideBackdropPressed=this.guideBackdrop(e);},
    clickGuideBackdrop:e=>{
      const pressed=this.guideBackdropPressed;
