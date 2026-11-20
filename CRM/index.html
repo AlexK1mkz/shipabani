@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../shipa-bani-front/review-store.js?v=1"></script>
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261120-handbook"></script>
+<script defer src="./shipa-ru-kz.js?v=20261120-review-followup"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -140,6 +141,16 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   @container (max-width:680px){
     .crm-handbook-grid{grid-template-columns:1fr;}
     .crm-handbook-intro,.crm-handbook-topic{padding:16px;}
+  }
+  .crm-review-alert{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 18px;border:1px solid #EFD6C4;border-radius:14px;background:#FFF8F2;}
+  .crm-review-alert strong{display:block;}
+  .crm-review-alert p{margin:3px 0 0;color:#62554C;}
+  .crm-review-filters,.crm-review-actions{display:flex;flex-wrap:wrap;gap:8px;}
+  .crm-review-followup{margin-top:4px;padding-top:12px;border-top:1px solid #E4E9ED;}
+  .crm-review-followup p{margin:0 0 8px;color:#43566A;}
+  .crm-reviews{container-type:inline-size;}
+  @container (max-width:760px){
+    .crm-reviews > .crm-review-stats,.crm-reviews > .crm-review-list{grid-column:1/-1!important;position:static!important;}
   }
   .crm-mini-guide{width:min(530px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:22px 24px;border:1px solid #D5E0E7;border-radius:18px;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.22);}
   .crm-mini-guide::backdrop{background:rgba(10,47,79,.44);}
@@ -450,6 +461,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   <!-- ===== ДАШБОРД ===== -->
   <sc-if value="{{ is.today }}" hint-placeholder-val="{{ true }}">
     <section class="crm-dashboard" data-screen-label="Дашборд" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;">
+      <sc-if value="{{ hasReviewTodo }}" hint-placeholder-val="{{ false }}">
+        <div class="crm-review-alert" role="status">
+          <div><strong>Связаться с гостями после отзывов</strong><p>Ожидают связи: {{ reviewTodo }}</p></div>
+          <button class="crm-guest-export" type="button" onClick="{{ openReviewQueue }}">Открыть задачи по отзывам</button>
+        </div>
+      </sc-if>
+
       <div style="grid-column:span 12;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border-radius:16px;padding:10px 12px;">
         <div style="display:flex;gap:2px;background:#F6F3EE;border-radius:12px;padding:3px;">
           <sc-for list="{{ dashSeg }}" as="d" hint-placeholder-count="3"><button onClick="{{ d.go }}" style="height:34px;padding:0 14px;border-radius:9px;font-size:13px;font-weight:600;background:{{ d.bg }};color:{{ d.fg }};">{{ d.name }}</button></sc-for>
@@ -847,9 +865,9 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <!-- ===== ОТЗЫВЫ ===== -->
   <sc-if value="{{ is.reviews }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Отзывы" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
-      <div style="grid-column:span 4;background:#fff;border-radius:20px;padding:24px;position:sticky;top:0;">
-        <div style="font-size:13px;color:rgba(59,47,42,.7);">Средняя оценка · 30 дней</div>
+    <section class="crm-reviews" data-screen-label="Отзывы" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
+      <div class="crm-review-stats" style="grid-column:span 4;background:#fff;border-radius:20px;padding:24px;position:sticky;top:0;">
+        <div style="font-size:13px;color:rgba(59,47,42,.7);">Средняя оценка</div>
         <div style="display:flex;align-items:baseline;gap:10px;margin:6px 0 16px;"><span style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:56px;line-height:1;">{{ rv.avg }}</span><span style="color:#C15C22;letter-spacing:2px;">★★★★★</span><span style="font-size:13px;color:rgba(59,47,42,.7);">{{ rv.count }} отзывов</span></div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           <sc-for list="{{ rv.dist }}" as="d" hint-placeholder-count="5">
@@ -860,16 +878,17 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <sc-for list="{{ rv.cats }}" as="c" hint-placeholder-count="5"><div><div style="font-size:12px;color:rgba(59,47,42,.7);">{{ c.name }}</div><div style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:24px;line-height:1.1;">{{ c.v }}</div></div></sc-for>
         </div>
       </div>
-      <div style="grid-column:span 8;display:flex;flex-direction:column;gap:12px;">
-        <div style="display:flex;gap:6px;">
-          <sc-for list="{{ rvFilters }}" as="f" hint-placeholder-count="4"><button onClick="{{ f.go }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ f.bg }};color:{{ f.fg }};font-weight:500;">{{ f.name }}</button></sc-for>
+      <div class="crm-review-list" style="grid-column:span 8;min-width:0;display:flex;flex-direction:column;gap:12px;">
+        <div class="crm-review-filters">
+          <sc-for list="{{ rvFilters }}" as="f" hint-placeholder-count="4"><button onClick="{{ f.go }}" aria-pressed="{{ f.active }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ f.bg }};color:{{ f.fg }};font-weight:500;">{{ f.name }}</button></sc-for>
         </div>
+        <sc-if value="{{ noReviews }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:20px;border-radius:16px;background:#fff;">По этому фильтру отзывов нет.</p></sc-if>
         <div data-crm-view-motion="reviews" style="display:flex;flex-direction:column;gap:12px;">
           <sc-for list="{{ reviewsView }}" as="r" hint-placeholder-count="3">
             <div style="background:#fff;border-radius:20px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
               <div style="display:flex;align-items:center;gap:12px;">
                 <span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:18px;">{{ r.initial }}</span>
-                <div><div style="font-weight:600;">{{ r.guest }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ r.house }} · {{ r.num }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ r.date }} · {{ r.source }}</div></div>
+                <div><div style="font-weight:600;">{{ r.guest }} <span style="font-weight:400;color:rgba(59,47,42,.7);">· {{ r.house }}{{ r.bookingLabel }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ r.date }} · {{ r.source }}</div></div>
                 <span style="margin-left:auto;font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:28px;line-height:1;color:{{ r.ratingColor }};">{{ r.rating }}<span style="font-size:18px;color:#C15C22;"> ★</span></span>
                 <span style="padding:4px 10px;border-radius:999px;background:{{ r.stBg }};color:{{ r.stFg }};font-size:12px;font-weight:600;">{{ r.status }}</span>
               </div>
@@ -879,11 +898,22 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               <sc-if value="{{ r.replying }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;gap:8px;"><textarea value="{{ r.draft }}" onChange="{{ r.setDraft }}" rows="2" placeholder="Ответ будет виден на сайте" style="flex:1;border:1px solid rgba(10,47,79,.2);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;"></textarea><button onClick="{{ r.sendReply }}" style="height:44px;padding:0 16px;border-radius:12px;background:#0A2F4F;color:#fff;font-weight:600;align-self:flex-end;">Отправить</button></div>
               </sc-if>
-              <div style="display:flex;gap:8px;">
-                <sc-if value="{{ r.canPublish }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.publish }}" style="height:36px;padding:0 14px;border-radius:12px;background:#C15C22;color:#fff;font-size:13px;font-weight:600;" style-hover="background:#A84D1B;">Опубликовать на сайт</button></sc-if>
-                <button onClick="{{ r.toggleReply }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Ответить</button>
-                <sc-if value="{{ r.canHide }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.hide }}" style="height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Скрыть</button></sc-if>
-                <sc-if value="{{ r.low }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;font-size:13px;color:#B8432F;font-weight:500;">Обращение создано · собственник уведомлён</span></sc-if>
+              <div class="crm-review-actions">
+                <button class="crm-guest-export" type="button" onClick="{{ r.toggleReply }}">Ответить</button>
+              </div>
+              <div class="crm-review-followup">
+                <sc-if value="{{ r.contacted }}" hint-placeholder-val="{{ false }}"><p>С гостем связались</p></sc-if>
+                <sc-if value="{{ r.needsFollowup }}" hint-placeholder-val="{{ true }}">
+                  <p><strong>Связаться с гостем</strong><sc-if value="{{ r.callback }}" hint-placeholder-val="{{ false }}"> · Гость просит перезвонить</sc-if></p>
+                  <sc-if value="{{ r.noPhone }}" hint-placeholder-val="{{ false }}"><p>Телефон не указан.</p></sc-if>
+                  <div class="crm-review-actions">
+                    <sc-if value="{{ r.hasPhone }}" hint-placeholder-val="{{ true }}">
+                      <a class="crm-guest-export" href="{{ r.tel }}">Позвонить</a>
+                      <a class="crm-guest-export" href="{{ r.wa }}" target="_blank" rel="noopener">WhatsApp</a>
+                    </sc-if>
+                    <button class="crm-guest-export" type="button" onClick="{{ r.complete }}">Отметить, что связались</button>
+                  </div>
+                </sc-if>
               </div>
             </div>
           </sc-for>
@@ -1826,13 +1856,6 @@ mk({num:'№ 1053',guest:'Инна',phone:'+7 701 300 77 15',house:'svoboda',day
 ];
 DATA.find(b=>b.num==='№ 1038').pays.push({sum:120000,type:'Остаток',method:'Наличные',at:stamp(-1,22,5),who:'Айдана'});
 
-const REVIEWS=[
-{id:1,guest:'Арман',num:'№ 1038',house:'balans',rating:5,cats:['парение','чистота','дом'],text:'Лучшее парение в городе. Мягкий пар, лаванда, никто не торопит. Чай после — отдельное удовольствие.',date:'16.10, 09:15',source:'WhatsApp',status:'pending'},
-{id:2,guest:'Марат',num:'№ 1044',house:'energiya',rating:3,cats:['кухня','сервис'],text:'Дом отличный, чан горячий. Но стол привезли на 40 минут позже, чем договаривались, и без приборов.',date:'16.10, 13:40',source:'WhatsApp',status:'pending'},
-{id:3,guest:'Сауле',num:'№ 1029',house:'dyhanie',rating:5,cats:['дом','сервис'],text:'Третий раз в ДЫХАНИИ. Всё как всегда: светло, чисто, пахнет эвкалиптом. Администратор помнит, как нас зовут.',date:'12.10, 10:02',source:'сайт',status:'published',reply:'Сауле, спасибо, что возвращаетесь. Ждём в ноябре!'},
-{id:4,guest:'Данияр',num:'№ 1027',house:'sila',rating:4,cats:['парение','дом'],text:'Хвойное парение сильное, но контраст в чане в октябре уже холодноват. Хотелось бы подогрев повыше.',date:'11.10, 20:30',source:'2ГИС',status:'published'},
-{id:5,guest:'Ольга',num:'№ 1022',house:'svoboda',rating:5,cats:['чистота','кухня'],text:'Отмечали день рождения. Терраса, чай на травах, всё убрано идеально.',date:'09.10, 23:10',source:'сайт',status:'hidden'},
-{id:6,guest:'Серик',num:'№ 1019',house:'balans',rating:2,cats:['сервис'],text:'Ждали дом 25 минут после заявленного времени — ещё убирали.',date:'05.10, 19:05',source:'WhatsApp',status:'pending'}];
 const TEMPLATES=[
 {id:'accepted',name:'Заявка принята',when:'сразу',channel:'WhatsApp',on:true,ru:'{имя}, здравствуйте! Заявка на {дом}, {дата} в {время} принята. Администратор свяжется в течение 15 минут.',kz:'{имя}, сәлеметсіз бе! {дом} үйіне {дата} күні {время} уақытына өтінім қабылданды.'},
 {id:'paylink',name:'Ссылка на оплату',when:'стадия «Ждём предоплату»',channel:'WhatsApp',on:true,ru:'{имя}, чтобы закрепить {дом} на {дата} {время}, внесите предоплату {сумма}: {ссылка}. Бронь держим 6 часов.',kz:''},
@@ -2174,8 +2197,8 @@ const CRM_HANDBOOK = [
     target: "reviews",
     action: "Открыть отзывы",
     steps: [
-      "Начните с фильтров «На проверке» и «Оценка ≤ 3», чтобы увидеть новые и низкие оценки.",
-      "Откройте «Ответить», чтобы подготовить ответ. Статус публикации можно изменить в карточке отзыва.",
+      "Откройте фильтр «Нужно связаться», чтобы увидеть отзывы, по которым гость ещё не получил обратную связь.",
+      "Отзывы публикуются сразу. После разговора нажмите «Отметить, что связались», чтобы закрыть задачу.",
     ],
   },
   {
@@ -2265,7 +2288,7 @@ function crmViewMotion(s){
   }
 }
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:REVIEWS,templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -2516,6 +2539,9 @@ class Component extends DCLogic {
 
  toast(t,tone='info'){this.setState({toast:t,toastTone:tone});clearTimeout(this._tt);this._tt=setTimeout(()=>this.setState({toast:'',toastTone:'info'}),2800);}
  componentDidMount(){
+  this._unsubscribeReviews = window.ShipaReviews?.subscribe(() => {
+    this.setState({receivedReviews: window.ShipaReviews.list()});
+  });
   this.syncNavigation(true);
   this.updateViewMotion();
   this._navigationChanged=()=>this.restoreNavigation();
@@ -2539,6 +2565,7 @@ class Component extends DCLogic {
   window.addEventListener('shipa:localechange',this._localeChanged);
  }
  componentWillUnmount(){
+  this._unsubscribeReviews?.();
   window.removeEventListener('popstate',this._navigationChanged);
   window.removeEventListener('hashchange',this._navigationChanged);
   window.removeEventListener('keydown',this._kd);
@@ -2665,8 +2692,14 @@ class Component extends DCLogic {
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=(num,{keepGuest=false,tab='compose'}={})=>()=>this.setState({openId:num,detailsLast:'booking',tab,search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
+  const rvs = s.receivedReviews;
+  const reviewTodo = rvs.filter(review => !review.contacted).length;
+  const openReviewQueue = () => {
+    this.setState({rvFilter:'followup'});
+    go('reviews')();
+  };
   const newCount=B.filter(b=>b.stage==='new').length;
-  const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
+  const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',badge:reviewTodo,icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
   if(owner)navItems.push({id:'staff',name:'Сотрудники',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M18 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'});
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
   navItems.push({id:'instructions',name:'Инструкции',icon:'M4 3h7l1 2 1-2h7v16h-7l-1 2-1-2H4zM12 5v16M7 8h2M15 8h2M7 12h2M15 12h2'});
@@ -2835,14 +2868,72 @@ class Component extends DCLogic {
   };
   const listRows=sortedBookings.map(b=>{const p=this.pill(b.stage);const pay=this.payInfo(b);return {num:b.num,guest:b.guest,phone:b.phone,house:H[b.house]?H[b.house].name:'—',when:b.start!=null?`${dlabel(b.day)} ${hh(b.start)}–${hh(b.start+b.dur)}`:'—',stage:ST[b.stage].name,pillBg:p.bg==='transparent'?'rgba(59,47,42,.06)':p.bg,pillFg:p.fg,pay:pay.t,payColor:pay.c,sum:b.start!=null?fmt(this.price(b).total):'—',source:b.source,open:open(b.num)};});
   const setSort=k=>()=>this.setState(st=>({sort:{k,d:st.sort.k===k?-st.sort.d:1}}));
-  // отзывы
-  const rvs=s.reviews;const avg=(rvs.reduce((a,r)=>a+r.rating,0)/rvs.length).toFixed(1).replace('.',',');
-  const dist=[5,4,3,2,1].map(st=>{const n=rvs.filter(r=>r.rating===st).length;return {star:st,n,pct:(n/rvs.length*100)+'%'};});
-  const catAvg=['чистота','сервис','кухня','парение','дом'].map(c=>{const rs=rvs.filter(r=>r.cats.includes(c));return {name:c[0].toUpperCase()+c.slice(1),v:rs.length?(rs.reduce((a,r)=>a+r.rating,0)/rs.length).toFixed(1).replace('.',','):'—'};});
-  const rvFilters=[{id:'all',name:'Все'},{id:'pending',name:'На проверке'},{id:'published',name:'Опубликованы'},{id:'hidden',name:'Скрыты'},{id:'low',name:'Оценка ≤ 3'}].map(f=>({...f,bg:s.rvFilter===f.id?'#0A2F4F':'#fff',fg:s.rvFilter===f.id?'#fff':'#0A2F4F',go:()=>this.setState({rvFilter:f.id})}));
-  const stMap={pending:['На проверке','rgba(217,164,65,.22)'],published:['Опубликован','rgba(94,140,97,.15)'],hidden:['Скрыт','rgba(59,47,42,.1)']};
-  const updR=(id,fn)=>this.setState(st=>({reviews:st.reviews.map(r=>r.id===id?fn({...r}):r)}));
-  const reviewsView=rvs.filter(r=>s.rvFilter==='all'||(s.rvFilter==='low'?r.rating<=3:r.status===s.rvFilter)).map(r=>({...r,initial:r.guest[0],house:H[r.house].name,status:stMap[r.status][0],stBg:stMap[r.status][1],stFg:'#0A2F4F',ratingColor:r.rating<=3?'#B8432F':'#0A2F4F',low:r.rating<=3,hasReply:!!r.reply,canPublish:r.status!=='published',canHide:r.status!=='hidden',replying:s.rvReplying===r.id,draft:s.rvDraft[r.id]||'',setDraft:e=>this.setState({rvDraft:{...s.rvDraft,[r.id]:e.target.value}}),toggleReply:()=>this.setState({rvReplying:s.rvReplying===r.id?null:r.id}),sendReply:()=>{const t=(s.rvDraft[r.id]||'').trim();if(!t)return;updR(r.id,x=>{x.reply=t;return x;});this.setState({rvReplying:null});this.toast('Ответ сохранён и показан на сайте');},publish:()=>{updR(r.id,x=>{x.status='published';return x;});this.toast('Отзыв опубликован на сайте');},hide:()=>{const why=window.prompt(uiText('Причина скрытия'));if(why==null)return;updR(r.id,x=>{x.status='hidden';x.hideReason=why;return x;});this.toast('Отзыв скрыт · причина записана в аудит');}}));
+  // Автопубликация и обратная связь с гостем отслеживаются независимо.
+  const average = items => items.length
+    ? (items.reduce((sum,r)=>sum+r.rating,0)/items.length).toFixed(1).replace('.',',')
+    : '—';
+  const avg = average(rvs);
+  const dist = [5,4,3,2,1].map(star => {
+    const n = rvs.filter(review => review.rating === star).length;
+    return {star,n,pct: (rvs.length ? n/rvs.length*100 : 0)+'%'};
+  });
+  const catAvg = ['чистота','сервис','кухня','парение','дом'].map(category => ({
+    name:category[0].toUpperCase()+category.slice(1),
+    v:average(rvs.filter(review => review.cats?.includes(category))),
+  }));
+  const reviewFilter = ['followup','low'].includes(s.rvFilter) ? s.rvFilter : 'all';
+  const rvFilters = [
+    {id:'all',name:'Все'},
+    {id:'followup',name:'Нужно связаться'},
+    {id:'low',name:'Оценка ≤ 3'},
+  ].map(filter => ({
+    ...filter,
+    active:String(reviewFilter === filter.id),
+    bg:reviewFilter === filter.id?'#0A2F4F':'#fff',
+    fg:reviewFilter === filter.id?'#fff':'#0A2F4F',
+    go:()=>this.setState({rvFilter:filter.id}),
+  }));
+  const updateReview = (id,patch,message) => {
+    try {
+      window.ShipaReviews.updateFollowUp(id,patch);
+      this.toast(message,'ok');
+      return true;
+    } catch {
+      this.toast('Не удалось сохранить изменения отзыва.');
+      return false;
+    }
+  };
+  const reviewsView = rvs.filter(review => {
+    if(reviewFilter === 'followup')return !review.contacted;
+    if(reviewFilter === 'low')return review.rating<=3;
+    return true;
+  }).map(r => {
+    const booking = r.num && B.find(item =>
+      item.num===r.num && (item.guest===r.guest || item.first===r.guest)
+    );
+    const digits = normP(r.phone || booking?.phone);
+    const phone = /^8\d{10}$/.test(digits) ? '7'+digits.slice(1) : digits;
+    const hasPhone = /^7\d{10}$/.test(phone);
+    const guest = r.guest || 'Гость';
+    return {
+      ...r, guest, initial:guest[0], house:H[r.house]?.name || '—',
+      bookingLabel:r.num ? ' · '+r.num : '',
+      status:'Опубликован', stBg:'rgba(94,140,97,.15)', stFg:'#0A2F4F',
+      ratingColor:r.rating<=3?'#B8432F':'#0A2F4F',
+      hasReply:!!r.reply, needsFollowup:!r.contacted, hasPhone, noPhone:!hasPhone,
+      tel:hasPhone?'tel:+'+phone:'', wa:hasPhone?'https://wa.me/'+phone:'',
+      complete:()=>updateReview(r.id,{contacted:true},'Задача по отзыву закрыта'),
+      replying:s.rvReplying===r.id, draft:s.rvDraft[r.id]||'',
+      setDraft:e=>this.setState(st=>({rvDraft:{...st.rvDraft,[r.id]:e.target.value}})),
+      toggleReply:()=>this.setState({rvReplying:s.rvReplying===r.id?null:r.id}),
+      sendReply:()=>{
+        const reply=(s.rvDraft[r.id]||'').trim();
+        if(reply && updateReview(r.id,{reply},'Ответ сохранён и показан на сайте')){
+          this.setState({rvReplying:null});
+        }
+      },
+    };
+  });
   // тарифы
   const readOnly=!owner;
   const selectedVersion=s.versions.find(v=>v.from===s.tarView)||todayRules;
@@ -3253,14 +3344,14 @@ class Component extends DCLogic {
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew,
-   is,handbookTopics,tiles,feed,nowText,pending,noPending:!pending.length,prepList,
+   is,handbookTopics,tiles,feed,hasReviewTodo:reviewTodo>0,reviewTodo,openReviewQueue,nowText,pending,noPending:!pending.length,prepList,
    calendarKey:CAL_STATUS.filter(o=>o.id!=='all'),calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
    viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
    setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
-   rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,
+   rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,noReviews:!reviewsView.length,
    readOnly,canEdit:owner,editingTariff,tariffLocked:!editingTariff,canStartDraft:owner&&!editingTariff,
    selectedTariff:selectedVersion.from,tariffVersions:s.versions.map(v=>({from:v.from,name:ddmm(v.from)})),
    tariffStatus:readOnly?'Настройки доступны для просмотра.':editingTariff?'Черновик. Калькулятор использует сохранённую версию.':'Версия выбирается по дате заезда. Цена сохранённых броней зафиксирована.',
