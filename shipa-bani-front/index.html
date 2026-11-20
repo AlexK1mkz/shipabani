@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="sitemap" type="application/xml" href="./blog/sitemap-index.xml">
 <script src="./shipa-typography.js?v=20261119-video-dash"></script>
+<script src="./review-store.js?v=1"></script>
 <script src="./support.js"></script>
 
 
@@ -2143,7 +2144,12 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
             <div style="display:flex;align-items:center;gap:12px;"><span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;">{{ r.initial }}</span><div><div style="font-weight:600;">{{ r.name }}</div><div style="font-size:13px;color:rgba(10,47,79,.7);">{{ r.date }}</div></div></div>
             <div style="color:#C15C22;font-size:13px;letter-spacing:2px;">{{ r.stars }}</div>
           </div>
-          <p style="margin:0;font-size:15px;line-height:1.6;flex:1;">{{ r.text }}</p>
+          <p data-shipa-no-translate style="margin:0;font-size:15px;line-height:1.6;flex:1;overflow-wrap:anywhere;">{{ r.text }}</p>
+          <sc-if value="{{ r.hasReply }}" hint-placeholder-val="{{ false }}">
+            <div style="border-left:2px solid #C15C22;padding-left:12px;font-size:14px;overflow-wrap:anywhere;">
+              <strong>{{ reviewReplyLabel }}</strong> <span data-shipa-no-translate>{{ r.replyText }}</span>
+            </div>
+          </sc-if>
           <div><span style="height:28px;padding:0 12px;border-radius:999px;background:rgba(10,47,79,.06);font-size:12px;letter-spacing:.08em;display:inline-flex;align-items:center;">{{ r.house }}</span></div>
         </div>
       </sc-for>
@@ -3113,12 +3119,13 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
           <div style="padding:8px 0 4px;">
             <div style="width:56px;height:56px;border-radius:50%;background:#C15C22;display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F9EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></div>
             <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:28px;line-height:1.1;">Спасибо!</div>
-            <p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:#3B2F2A;">Отзыв появится после проверки администратором. Пока он виден только вам - с меткой «На проверке».</p>
+            <p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:#3B2F2A;">{{ reviewPublishedNotice }}</p>
             <button onClick="{{ closeSheet }}" style="width:100%;height:52px;margin-top:24px;border:1px solid #0A2F4F;border-radius:999px;font-weight:600;font-size:15px;">Понятно</button>
           </div>
         </sc-if>
         <sc-if value="{{ reviewNotSent }}" hint-placeholder-val="{{ true }}">
           <div style="font-size:13px;color:rgba(10,47,79,.7);">{{ rfHouseLine }}</div>
+          <sc-if value="{{ rf.error }}" hint-placeholder-val="{{ false }}"><p role="alert">{{ reviewSaveError }}</p></sc-if>
           <div style="display:flex;gap:2px;margin:10px 0 2px;">
             <sc-for list="{{ rfStars }}" as="st" hint-placeholder-count="5"><button onClick="{{ st.set }}" aria-label="{{ st.aria }}" aria-pressed="{{ st.on }}" style="{{ st.style }}">★</button></sc-for>
           </div>
@@ -3649,7 +3656,7 @@ const RATING=['4,9','4,9','5,0','4,8','4,9','4,8','5,0','4,7'];
 // Сводка по дому: число отзывов и распределение 5→1 - из админки и выгрузки 2ГИС
 const REVIEW_STATS=[{count:128,dist:[112,12,3,1,0]},{count:96,dist:[86,8,2,0,0]},{count:41,dist:[40,1,0,0,0]},{count:4,dist:[3,1,0,0,0]},{count:57,dist:[50,6,1,0,0]},{count:22,dist:[18,3,1,0,0]},{count:0,dist:[0,0,0,0,0]},{count:0,dist:[0,0,0,0,0]}];
 const STAR_LABELS=['','Плохо','Так себе','Нормально','Хорошо','Отлично'];
-const EMPTY_RF={sent:false,name:'',stars:0,text:'',photos:[],agree:false};
+const EMPTY_RF={sent:false,name:'',stars:0,text:'',photos:[],agree:false,error:false};
 
 const FE0={scope:null,name:false,phone:false,agree:false,privacy:false,n:0};
 const MON_S=MON;
@@ -3729,6 +3736,11 @@ class Component extends DCLogic {
   holdEnd(){clearTimeout(this._holdT);clearInterval(this._holdI);}
 
   componentDidMount(){
+    if(window.ShipaReviews){
+      const refreshReviews=()=>this.setState({publishedFeedback:window.ShipaReviews.published()});
+      this._unsubscribeReviews=window.ShipaReviews.subscribe(refreshReviews);
+      refreshReviews();
+    }
     window.__shipa=this;
     try{this._priorScrollRestoration=history.scrollRestoration;history.scrollRestoration='manual';}catch(e){}
     // Карта грузится только когда блок попал в экран
@@ -3836,7 +3848,7 @@ class Component extends DCLogic {
     else{if(this.state.heroPaused)this.setState({heroPaused:false},()=>this.schedHero(false));else this.schedHero(false);}}
   movePill(el){const p=this.pillRef.current;if(!p||!el)return;const tr=p.style.transition;const first=p.style.opacity!=='1';if(first)p.style.transition='none';p.style.transform='translateX('+el.offsetLeft+'px)';p.style.width=el.offsetWidth+'px';if(first){void p.offsetWidth;p.style.transition=tr;}p.style.opacity='1';
   }
-  componentWillUnmount(){this.syncOverlayScroll(false);try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('pointerdown',this.onLanguageOutside);document.removeEventListener('focusin',this.onLanguageOutside);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
+  componentWillUnmount(){this._unsubscribeReviews?.();this.syncOverlayScroll(false);try{if(this._priorScrollRestoration)history.scrollRestoration=this._priorScrollRestoration;}catch(e){}clearInterval(this._clk);document.removeEventListener('scroll',this.onGScroll,true);this.holdEnd();document.removeEventListener('keydown',this.onKey);document.removeEventListener('pointerdown',this.onLanguageOutside);document.removeEventListener('focusin',this.onLanguageOutside);document.removeEventListener('click',this.onKitchenRouteClick,true);window.removeEventListener('popstate',this.onPopState);document.removeEventListener('visibilitychange',this.onVisSw);document.removeEventListener('scrollend',this.onScrollEnd,true);document.removeEventListener('touchstart',this.onTouchLane,true);clearTimeout(this._tipT);clearTimeout(this._tipT2);clearInterval(this._rsPoll);document.removeEventListener('visibilitychange',this.onVis);this.ro&&this.ro.disconnect();window.removeEventListener('load',this.onResize);clearTimeout(this._carT);cancelAnimationFrame(this._taf);window.removeEventListener('resize',this.onResize);window.removeEventListener('scroll',this.onScroll);this.io&&this.io.disconnect();this.mo&&this.mo.disconnect();clearInterval(this.heroTimer);clearTimeout(this._heroT);}
   syncOverlayScroll(locked){
     if(locked&&!this._scrollLock){
       this._scrollLock={body:document.body.style.overflow,html:document.documentElement.style.overflow};
@@ -4437,6 +4449,19 @@ if(s.lang==='EN'){
     const quickMonths=groupDateRibbon(quickDays,0,i=>this.dateAt(i),s.lang);
     const quickDaysOld=Array.from({length:7},(_,i)=>{const d=this.dateAt(i);const act=s.quick.date===i;return {wd:i===0?'сегодня':WD[d.getDay()],day:d.getDate(),style:this.dayStyle(act,FULL_DAYS.includes(i),i===0?'72px':'56px'),select:()=>this.setState({quick:{...s.quick,date:i}})};});
     const faq=(s.lang==='KZ'?FAQ_KZ:s.lang==='EN'?FAQ_EN:FAQ).map((q,i)=>({...q,paras:paras(q.a),open:s.faqOpen===i,closed:s.faqOpen!==i,toggle:()=>this.setState({faqOpen:s.faqOpen===i?-1:i}),iconStyle:`width:36px;height:36px;border-radius:50%;background:${BRICK};color:${CREAM};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400;line-height:1;flex:0 0 auto;transition:transform 200ms;transform:rotate(${s.faqOpen===i?45:0}deg);`}));
+    const demoReviews = (s.publishedFeedback || window.ShipaReviews?.published() || []).map(item => {
+      const hi=HOUSES.findIndex(house=>house.id===item.house);
+      const house=HOUSES[hi];
+      const name=item.guest || (s.lang==='KZ'?'Қонақ':s.lang==='EN'?'Guest':'Гость');
+      return {
+        id:'demo-'+item.id, hi, name, initial:name[0].toUpperCase(), date:item.date,
+        house:house.n+' / '+(s.lang==='KZ'?KZ_PAGE_HOUSES[hi]:s.lang==='EN'?HOUSE_DETAILS_EN[hi].name:house.name),
+        stars:'★'.repeat(item.rating)+'☆'.repeat(5-item.rating), text:item.text,
+        hasReply:!!item.reply, replyText:item.reply,
+        reply:item.reply?{text:item.reply,date:''}:null,
+        photos:s.feedbackPhotos?.[item.id] || [], useful:0,
+      };
+    });
     const reviews=REVIEWS.map((r,i)=>{const localized=s.lang==='KZ'?REVIEWS_KZ[i]:s.lang==='EN'?REVIEWS_EN[i]:{};const item={...r,...localized};return {...item,id:'r'+i,long:item.text.length>200,initial:item.name[0],hi:item.house,stars:'★'.repeat(item.stars)+'☆'.repeat(5-item.stars),house:HOUSES[item.house].n+' / '+(s.lang==='KZ'?KZ_PAGE_HOUSES[item.house]:HOUSES[item.house].name)};});
     const PROG_IMG=['img/h1_acc.png','img/h5_art.png','img/h2_int.png','img/h3_art.png','img/h6_acc.png'];
     const programs=PROGRAMS.map((p,i)=>{const un=!!p.unavailable;return {...p,unavailable:un,slot:'prog-'+i,img:PROG_IMG[i],openPhotos:()=>window.ShipaPhotoViewer?.open([PROG_IMG[i],...PDATA[P_IDS[i]].imgs.filter(src=>src!==PROG_IMG[i])],0,svcText(p.name,s.lang)),openPhotosLabel:s.lang==='KZ'?'Бағдарлама фотосуреттерін ашу':'Посмотреть фотографии программы',priceText:fmt(p.price),addToBooking:()=>!un&&this.openBooking(null),
@@ -4505,7 +4530,7 @@ if(s.lang==='EN'){
     const otherHouses=openView.filter(h=>h.id!==hRaw.id);
     // Отзывы о доме: сортировка, постранично (3, потом +10), «Полезно» - один голос на устройство
     const voted=s.useful||{};const rvSort=s.rvSort||'new';
-    const rvAllBase=[...(s.rfPosted||[]).filter(r=>r.hi===hIdx),...reviews.filter(r=>r.hi===hIdx)];
+    const rvAllBase=[...demoReviews,...reviews].filter(r=>r.hi===hIdx);
     const rvAll=rvSort==='photo'?rvAllBase.filter(r=>r.photos&&r.photos.length):rvSort==='useful'?[...rvAllBase].sort((a,b)=>((b.useful||0)+(voted[b.id]?1:0))-((a.useful||0)+(voted[a.id]?1:0))):rvAllBase;
     const rvShow=s.rvShow||3;
     const houseReviews=rvAll.slice(0,rvShow).map(r=>{const open=!!(s.rvOpen||{})[r.id];const v=!!voted[r.id];const canMore=r.text.length>180&&!open;
@@ -4522,7 +4547,7 @@ if(s.lang==='EN'){
     const kitchenTabs=Object.keys(KITCHEN).map(t=>{const a=s.kitchenTab===t;return {label:s.lang==='KZ'?KITCHEN_LABEL_KZ[t]:s.lang==='EN'?KITCHEN_LABEL_EN[t]:t,sel:a?'true':'false',select:()=>this.setState({kitchenTab:t}),style:`flex:0 0 auto;height:44px;padding:0 20px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;border:1px solid ${a?NAVY:'rgba(10,47,79,.25)'};background:${a?NAVY:'transparent'};color:${a?CREAM:NAVY};transition:background-color 200ms ease-out,color 200ms ease-out;`};});
     const kitchenItems=(KITCHEN[s.kitchenTab]||[]).map((_,i)=>{const k=menuDish(s.kitchenTab,i,s.lang);return {...k,priceText:fmt(k.price),slot:'dish-'+s.kitchenTab.length+'-'+i,img:['img/h4_acc.png','img/h8_acc.png','img/h7_acc.png'][i%3],photo:(s.lang==='KZ'?'Фото: ':s.lang==='EN'?'Photo: ':'Фото: ')+k.name+' - '+k.desc.split(',')[0]};});
     const reviewFilters=[{label:s.lang==='KZ'?'Барлығы':s.lang==='EN'?'All':'Все',v:-1},...OPEN_HOUSES.map(h=>({label:s.lang==='KZ'?KZ_PAGE_HOUSES[HOUSES.indexOf(h)]:s.lang==='EN'?HOUSE_DETAILS_EN[HOUSES.indexOf(h)].name:h.name,v:HOUSES.indexOf(h)}))].map(f=>({label:f.label,style:this.chip(s.reviewFilter===f.v),select:()=>this.setState({reviewFilter:f.v})}));
-    const filteredReviews=reviews.filter(r=>s.reviewFilter<0||r.hi===s.reviewFilter);
+    const filteredReviews=[...demoReviews,...reviews].filter(r=>s.reviewFilter<0||r.hi===s.reviewFilter);
     const catalogHouses=catalogHouses0.map(h=>{const ph=this.housePhotos(h);return {...h,photos:ph.map((p,i)=>({src:p.src,alt:s.lang==='EN'?`${h.name}, photo ${i+1}`:`${h.name}, фото ${i+1}`,loading:i===0?'eager':'lazy'})),
       photoOpen:e=>{e?.stopPropagation();const lane=e?.currentTarget?.parentElement?.querySelector('.shipa-catalog-photo-track');const active=lane?Math.min(ph.length-1,Math.max(0,Math.round(lane.scrollLeft/Math.max(1,lane.clientWidth)))):0;window.ShipaPhotoViewer?.open(ph.map(p=>p.src),active,h.name);},
       photoOpenText:s.lang==='KZ'?'Фотолар':s.lang==='EN'?'Photos':'Фото',photoOpenLabel:s.lang==='KZ'?`${h.name} үйінің фотоларын қарау`:s.lang==='EN'?`View photos of ${h.name}`:`Посмотреть фотографии дома ${h.name}`};});
@@ -5086,14 +5111,28 @@ const LANGS=['RU','KZ','EN'];
       laneTap:e=>this.laneTap(e,true),laneCenter:e=>this.laneTap(e,false),
       houseReviews,houseReviewsEmpty:houseReviews.length===0,houseRating:RATING[hIdx],
       rs,rvSorts,rvHasAny:rvAllBase.length>0,rvEmptyText:houseKz?(rvSort==='photo'?'Әзірге фотосы бар пікірлер жоқ.':'Бұл үй туралы әзірге пікірлер жоқ. Алғашқы пікірді қалдырыңыз.'):(rvSort==='photo'?'Отзывов с фото пока нет.':'Отзывов об этом доме пока нет - станьте первым.'),rvMore:rvAll.length>rvShow,rvShowMore:()=>this.setState({rvShow:rvShow+10}),
+      reviewReplyLabel:s.lang==='KZ'?'SHIPÁ жауабы:':s.lang==='EN'?'SHIPÁ replied:':'Ответ SHIPÁ:',
+      reviewPublishedNotice:s.lang==='KZ'?'Пікір осы браузердегі демо-сайтта жарияланды.':s.lang==='EN'?'Your review is published on the demo site in this browser.':'Отзыв опубликован на демо-сайте в этом браузере.',
+      reviewSaveError:s.lang==='KZ'?'Пікірді сақтау мүмкін болмады. Қайталап көріңіз.':s.lang==='EN'?'Could not save the review. Please try again.':'Не удалось сохранить отзыв. Попробуйте ещё раз.',
       rf,sheetReview:s.sheet==='review',sheetReviewForm:s.sheet==='review'&&!rf.sent,reviewSent:rf.sent,reviewNotSent:!rf.sent,rfHouseLine:houseKz?`Үй: ${hk.name} · ${hRaw.n} / ${hRaw.tier}`:`Дом ${hRaw.name} · ${hRaw.n} / ${hRaw.tier}`,
       openReviewForm:()=>{let name=rf.name;try{const u=JSON.parse(localStorage.getItem('shipa_user')||'null');if(u&&u.name&&!name)name=u.name;}catch(e){}this.setState({sheet:'review',rf:{...EMPTY_RF,name}});},
       rfName:e=>this.setState({rf:{...rf,name:e.target.value}}),rfText:e=>this.setState({rf:{...rf,text:e.target.value.slice(0,1500)}}),rfCount:`${rf.text.trim().length} / 20${rf.text.trim().length>=20?' ✓':''}`,rfStarLabel:houseKz?(['Баға қойыңыз','Нашар','Орташа','Қалыпты','Жақсы','Өте жақсы'][rf.stars]||'Баға қойыңыз'):(STAR_LABELS[rf.stars]||'Поставьте оценку'),
       rfStars:[1,2,3,4,5].map(n=>({set:()=>{vib(8);this.setState({rf:{...rf,stars:n}});},aria:`${n} - ${houseKz?['','Нашар','Орташа','Қалыпты','Жақсы','Өте жақсы'][n]:STAR_LABELS[n]}`,on:n<=rf.stars?'true':'false',style:`width:44px;height:44px;font-size:30px;line-height:1;color:${n<=rf.stars?BRICK:'rgba(10,47,79,.25)'};transition:color 150ms ease-out,transform 120ms;`})),
       rfCanPhoto:rf.photos.length<3,rfPhoto:e=>{const fs=[...(e.target.files||[])].slice(0,3-rf.photos.length);const ph=fs.map(f=>({src:URL.createObjectURL(f)}));e.target.value='';this.setState({rf:{...rf,photos:[...rf.photos,...ph].map((p,i)=>({src:p.src,remove:()=>this.setState(st=>({rf:{...st.rf,photos:st.rf.photos.filter((_,j)=>j!==i)}}))}))}});},
       rfAgreeAttr:rf.agree?'true':'false',rfAgreeToggle:()=>this.setState({rf:{...rf,agree:!rf.agree}}),rfAgreeBox:`flex:0 0 auto;width:22px;height:22px;margin-top:1px;border-radius:6px;border:1px solid ${rf.agree?NAVY:'rgba(10,47,79,.4)'};background:${rf.agree?NAVY:'transparent'};display:flex;align-items:center;justify-content:center;`,
-      rfSend:()=>{if(!rfOk)return;const r={id:'p'+Date.now(),name:rf.name.trim()||(s.lang==='KZ'?'Қонақ':'Гость'),date:s.lang==='KZ'?'бүгін':'сегодня',stars:rf.stars,hi:hIdx,text:rf.text.trim(),photos:rf.photos.map(p=>p.src),pending:true,useful:0,initial:(rf.name.trim()||'Г')[0].toUpperCase(),starsTxt:''};
-        this.setState(st=>({rf:{...st.rf,sent:true},rfPosted:[{...r,stars:'★'.repeat(rf.stars)+'☆'.repeat(5-rf.stars)},...(st.rfPosted||[])],rvSort:'new',rvShow:Math.max(3,st.rvShow||3)}));},
+      rfSend:()=>{
+        if(!rfOk)return;
+        try{
+          const id=window.ShipaReviews.submit({guest:rf.name,house:hRaw.id,rating:rf.stars,text:rf.text});
+          this.setState(st=>({
+            rf:{...st.rf,sent:true,error:false},
+            feedbackPhotos:{...st.feedbackPhotos,[id]:rf.photos.map(photo=>photo.src)},
+            rvSort:'new',rvShow:Math.max(3,st.rvShow||3),
+          }));
+        }catch{
+          this.setState(st=>({rf:{...st.rf,error:true}}));
+        }
+      },
       rfDisabled:!rfOk,rfBtnStyle:`width:100%;height:56px;border-radius:999px;background:${rfOk?BRICK:'rgba(10,47,79,.15)'};color:${rfOk?CREAM:'rgba(10,47,79,.45)'};font-weight:600;font-size:16px;letter-spacing:.02em;transition:background-color 200ms ease-out,color 200ms ease-out;`,
       kitchenOrderInstruction:s.lang==='KZ'?'Алдымен тағамдарды таңдаңыз, содан кейін күн мен үйді таңдаңыз. Тапсырысты әкімші WhatsApp-та растайды.':'Сначала выберите блюда, затем дату и дом. Администратор подтвердит заказ в WhatsApp.',
       kitchenTabs,kitchenItems,reviewFilters,filteredReviews,
