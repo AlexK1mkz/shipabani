@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="../shipa-bani-front/review-store.js?v=1"></script>
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261120-review-followup"></script>
+<script defer src="./shipa-ru-kz.js?v=20261120-review-breakdown"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -149,8 +149,28 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-review-followup{margin-top:4px;padding-top:12px;border-top:1px solid #E4E9ED;}
   .crm-review-followup p{margin:0 0 8px;color:#43566A;}
   .crm-reviews{container-type:inline-size;}
+  .crm-review-stats{grid-column:span 4;display:grid;gap:12px;min-width:0;}
+  .crm-rating-panel{background:#fff;border-radius:18px;padding:20px;}
+  .crm-rating-panel h2{margin:0;font-size:16px;line-height:1.35;}
+  .crm-rating-panel p{margin:6px 0 0;color:#526271;font-size:13px;line-height:1.45;}
+  .crm-rating-value{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:8px 0 14px;}
+  .crm-rating-value strong{font-size:42px;line-height:1.05;}
+  .crm-rating-value span{font-size:14px;color:#526271;}
+  .crm-criterion-list{display:grid;gap:5px;margin-top:14px;}
+  .crm-criterion{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;padding:9px 12px;min-height:44px;border:1px solid #E4E9ED;border-radius:9px;text-align:left;background:#fff;}
+  .crm-criterion:hover,.crm-criterion[aria-pressed="true"]{background:#EEF4F7;border-color:#9CB3C4;}
+  .crm-criterion[aria-pressed="true"]{box-shadow:inset 3px 0 #0A2F4F;}
+  .crm-criterion-name{font-size:14px;font-weight:600;}
+  .crm-criterion-score{font-size:17px;font-weight:700;}
+  .crm-criterion-count,.crm-review-result-count{color:#526271;font-size:13px;}
+  .crm-rating-header,.crm-review-result{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .crm-rating-reset{padding:4px 0;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+  .crm-rating-external .crm-rating-value{margin:8px 0 0;}
+  .crm-rating-external .crm-rating-value strong{color:#296344;font-size:30px;}
+  .crm-review-result{gap:4px 12px;padding:0 2px;}
+  .crm-review-result h2{font-size:15px;margin:0;}
   @container (max-width:760px){
-    .crm-reviews > .crm-review-stats,.crm-reviews > .crm-review-list{grid-column:1/-1!important;position:static!important;}
+    .crm-reviews > .crm-review-stats,.crm-reviews > .crm-review-list{grid-column:1/-1!important;}
   }
   .crm-mini-guide{width:min(530px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:22px 24px;border:1px solid #D5E0E7;border-radius:18px;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.22);}
   .crm-mini-guide::backdrop{background:rgba(10,47,79,.44);}
@@ -866,24 +886,41 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   <!-- ===== ОТЗЫВЫ ===== -->
   <sc-if value="{{ is.reviews }}" hint-placeholder-val="{{ false }}">
     <section class="crm-reviews" data-screen-label="Отзывы" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
-      <div class="crm-review-stats" style="grid-column:span 4;background:#fff;border-radius:20px;padding:24px;position:sticky;top:0;">
-        <div style="font-size:13px;color:rgba(59,47,42,.7);">Средняя оценка</div>
-        <div style="display:flex;align-items:baseline;gap:10px;margin:6px 0 16px;"><span style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:56px;line-height:1;">{{ rv.avg }}</span><span style="color:#C15C22;letter-spacing:2px;">★★★★★</span><span style="font-size:13px;color:rgba(59,47,42,.7);">{{ rv.count }} отзывов</span></div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <sc-for list="{{ rv.dist }}" as="d" hint-placeholder-count="5">
-            <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="width:12px;">{{ d.star }}</span><span style="flex:1;height:8px;background:rgba(10,47,79,.08);border-radius:999px;overflow:hidden;"><span style="display:block;height:100%;width:{{ d.pct }};background:#0A2F4F;border-radius:999px;"></span></span><span style="width:24px;text-align:right;color:rgba(59,47,42,.7);">{{ d.n }}</span></div>
-          </sc-for>
-        </div>
-        <div style="margin-top:20px;border-top:1px solid rgba(10,47,79,.08);padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <sc-for list="{{ rv.cats }}" as="c" hint-placeholder-count="5"><div><div style="font-size:12px;color:rgba(59,47,42,.7);">{{ c.name }}</div><div style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:24px;line-height:1.1;">{{ c.v }}</div></div></sc-for>
-        </div>
+      <div class="crm-review-stats">
+        <section class="crm-rating-panel" aria-labelledby="crm-rating-title">
+          <h2 id="crm-rating-title">Оценка по отзывам CRM</h2>
+          <div class="crm-rating-value"><strong>{{ rv.avg }}</strong> <span>/ 5</span><span>{{ rv.countLabel }}</span></div>
+          <div style="display:grid;gap:8px;">
+            <sc-for list="{{ rv.dist }}" as="d" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:10px;font-size:13px;"><span style="width:18px;white-space:nowrap;">{{ d.star }}★</span><span aria-hidden="true" style="flex:1;height:8px;background:#E9EDF0;border-radius:999px;overflow:hidden;"><span style="display:block;height:100%;width:{{ d.pct }};background:#0A2F4F;border-radius:999px;"></span></span><span style="min-width:16px;text-align:right;color:#526271;">{{ d.n }}</span></div>
+            </sc-for>
+          </div>
+        </section>
+        <section class="crm-rating-panel" aria-labelledby="crm-criteria-title">
+          <div class="crm-rating-header"><h2 id="crm-criteria-title">Оценки по критериям</h2><sc-if value="{{ rv.hasCategory }}"><button class="crm-rating-reset" type="button" onClick="{{ rv.clearCategory }}">Сбросить</button></sc-if></div>
+          <p>Средняя оценка отзывов с этой отметкой. Нажмите на критерий, чтобы открыть отзывы.</p>
+          <div class="crm-criterion-list">
+            <sc-for list="{{ rv.cats }}" as="c" hint-placeholder-count="5">
+              <button class="crm-criterion" type="button" onClick="{{ c.select }}" aria-pressed="{{ c.active }}" aria-controls="crm-review-results">
+                <span><span class="crm-criterion-name">{{ c.name }}</span><br><span class="crm-criterion-count">{{ c.countLabel }}</span></span>
+                <span class="crm-criterion-score">{{ c.avg }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </section>
+        <section class="crm-rating-panel crm-rating-external" aria-labelledby="crm-2gis-title">
+          <h2 id="crm-2gis-title">Рейтинг 2ГИС</h2>
+          <div class="crm-rating-value"><strong>4,9</strong> <span>/ 5</span><span>128 оценок</span></div>
+          <p>Данные демо-сайта без синхронизации с 2ГИС.</p>
+        </section>
       </div>
       <div class="crm-review-list" style="grid-column:span 8;min-width:0;display:flex;flex-direction:column;gap:12px;">
         <div class="crm-review-filters">
           <sc-for list="{{ rvFilters }}" as="f" hint-placeholder-count="4"><button onClick="{{ f.go }}" aria-pressed="{{ f.active }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(10,47,79,.15);font-size:13px;background:{{ f.bg }};color:{{ f.fg }};font-weight:500;">{{ f.name }}</button></sc-for>
         </div>
-        <sc-if value="{{ noReviews }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:20px;border-radius:16px;background:#fff;">По этому фильтру отзывов нет.</p></sc-if>
-        <div data-crm-view-motion="reviews" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="crm-review-result" role="status"><h2>{{ rv.listTitle }}</h2><span class="crm-review-result-count">{{ rv.resultLabel }}</span></div>
+        <div id="crm-review-results" data-crm-view-motion="reviews" style="display:flex;flex-direction:column;gap:12px;">
+          <sc-if value="{{ noReviews }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:20px;border-radius:16px;background:#fff;">По этому фильтру отзывов нет.</p></sc-if>
           <sc-for list="{{ reviewsView }}" as="r" hint-placeholder-count="3">
             <div style="background:#fff;border-radius:20px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
               <div style="display:flex;align-items:center;gap:12px;">
@@ -2282,7 +2319,7 @@ function crmViewMotion(s){
       return {'campaign-editor':[campaign?.id,campaign?.kind],'campaign-audience':campaign?.aud||[]};
     }
     case 'reviews':
-      return {reviews:[s.rvFilter]};
+      return {reviews:[s.rvFilter,s.rvCategory]};
     default:
       return {};
   }
@@ -2695,7 +2732,7 @@ class Component extends DCLogic {
   const rvs = s.receivedReviews;
   const reviewTodo = rvs.filter(review => !review.contacted).length;
   const openReviewQueue = () => {
-    this.setState({rvFilter:'followup'});
+    this.setState({rvFilter:'followup',rvCategory:null});
     go('reviews')();
   };
   const newCount=B.filter(b=>b.stage==='new').length;
@@ -2872,20 +2909,28 @@ class Component extends DCLogic {
   const average = items => items.length
     ? (items.reduce((sum,r)=>sum+r.rating,0)/items.length).toFixed(1).replace('.',',')
     : '—';
+  const reviewCountLabel = n => `${n} ${pl(n,'отзыв','отзыва','отзывов')}`;
+  const criteria = ['Чистота','Кухня','Дом','Парение','Сервис'];
+  const matchesCriterion = (review, criterion) => review.cats?.includes(criterion.toLowerCase());
   const avg = average(rvs);
   const dist = [5,4,3,2,1].map(star => {
     const n = rvs.filter(review => review.rating === star).length;
     return {star,n,pct: (rvs.length ? n/rvs.length*100 : 0)+'%'};
   });
-  const catAvg = ['чистота','сервис','кухня','парение','дом'].map(category => ({
-    name:category[0].toUpperCase()+category.slice(1),
-    v:average(rvs.filter(review => review.cats?.includes(category))),
-  }));
-  const reviewFilter = ['followup','low'].includes(s.rvFilter) ? s.rvFilter : 'all';
+  const catAvg = criteria.map(name => {
+    const items = rvs.filter(review => matchesCriterion(review,name));
+    const active = s.rvCategory === name;
+    return {
+      name, avg:average(items), countLabel:reviewCountLabel(items.length), active:String(active),
+      select:()=>this.setState({rvCategory:active ? null : name}),
+    };
+  });
+  const reviewFilter = ['followup','low','2gis'].includes(s.rvFilter) ? s.rvFilter : 'all';
   const rvFilters = [
     {id:'all',name:'Все'},
     {id:'followup',name:'Нужно связаться'},
     {id:'low',name:'Оценка ≤ 3'},
+    {id:'2gis',name:'2ГИС'},
   ].map(filter => ({
     ...filter,
     active:String(reviewFilter === filter.id),
@@ -2904,8 +2949,10 @@ class Component extends DCLogic {
     }
   };
   const reviewsView = rvs.filter(review => {
+    if(s.rvCategory && !matchesCriterion(review,s.rvCategory))return false;
     if(reviewFilter === 'followup')return !review.contacted;
     if(reviewFilter === 'low')return review.rating<=3;
+    if(reviewFilter === '2gis')return review.source === '2ГИС';
     return true;
   }).map(r => {
     const booking = r.num && B.find(item =>
@@ -3351,7 +3398,10 @@ class Component extends DCLogic {
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
    viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),goCalendar:go('calendar'),isKanban:s.view==='kanban',kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
    setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${filtered.length} ${pl(filtered.length,'карточка','карточки','карточек')}`,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
-   rv:{avg,count:rvs.length,dist,cats:catAvg},rvFilters,reviewsView,noReviews:!reviewsView.length,
+   rv:{avg,countLabel:reviewCountLabel(rvs.length),dist,cats:catAvg,
+     hasCategory:!!s.rvCategory,clearCategory:()=>this.setState({rvCategory:null}),
+     listTitle:s.rvCategory || 'Отзывы гостей',resultLabel:reviewCountLabel(reviewsView.length)},
+   rvFilters,reviewsView,noReviews:!reviewsView.length,
    readOnly,canEdit:owner,editingTariff,tariffLocked:!editingTariff,canStartDraft:owner&&!editingTariff,
    selectedTariff:selectedVersion.from,tariffVersions:s.versions.map(v=>({from:v.from,name:ddmm(v.from)})),
    tariffStatus:readOnly?'Настройки доступны для просмотра.':editingTariff?'Черновик. Калькулятор использует сохранённую версию.':'Версия выбирается по дате заезда. Цена сохранённых броней зафиксирована.',
