@@ -36,6 +36,37 @@ function field(value,id,change,lang='RU'){
  setCountry:e=>{const next=get(e.target.value);change('+'+next.code+(next.code===c.code?p.digits:''),next.id)},setPhone:e=>apply(e.target.value),
  paste:e=>{const v=e.clipboardData?.getData('text')||'';if(v.trim().startsWith('+')||v.trim().startsWith('00')||(c.code==='7'&&/^[78]\d{10}$/.test(digits(v)))){e.preventDefault();apply(v)}}};
 }
+// Website picker uses the same local flag graphics as CRM, independent of emoji fonts.
+// Native select remains the source of truth for country selection and form updates.
+if(root.document){
+ const doc=root.document;
+ let active=null;
+ function openCountryPicker(select){
+  if(active)return;
+  const lang=(doc.documentElement.lang||'ru').toLowerCase();
+  const heading=lang==='en'?'Select country':lang==='kk'||lang==='kz'?'Елді таңдаңыз':'Выберите страну';
+  const dialog=doc.createElement('dialog');dialog.className='shipa-country-dialog';dialog.setAttribute('aria-label',heading);
+  const top=doc.createElement('div');top.className='shipa-country-heading';const title=doc.createElement('span');title.textContent=heading;
+  const close=doc.createElement('button');close.type='button';close.className='shipa-country-close';close.textContent='×';close.setAttribute('aria-label',lang==='en'?'Close':lang==='kk'||lang==='kz'?'Жабу':'Закрыть');close.onclick=()=>dialog.close();top.append(title,close);
+  const list=doc.createElement('div');list.className='shipa-country-list';let selected;
+  for(const option of select.options){const c=countries.find(x=>x.id===option.value);if(!c)continue;
+   const b=doc.createElement('button');b.type='button';b.className='shipa-country-option';b.setAttribute('aria-pressed',String(option.value===select.value));
+   const flag=doc.createElement('span');flag.className='shipa-phone-flag';flag.dataset.country=c.id;flag.setAttribute('aria-hidden','true');
+   const name=doc.createElement('span');name.textContent=c[lang==='kk'||lang==='kz'?'kz':lang==='en'?'en':'ru'];
+   const code=doc.createElement('span');code.className='shipa-country-option-code';code.textContent='+'+c.code;
+   b.append(flag,name,code);if(option.value===select.value)selected=b;
+   b.onclick=()=>{select.value=c.id;select.dispatchEvent(new Event('change',{bubbles:true}));dialog.close();};list.append(b);
+  }
+  dialog.append(top,list);doc.body.append(dialog);active=dialog;
+  dialog.addEventListener('close',()=>{active=null;dialog.remove();if(select.isConnected)select.focus({preventScroll:true});},{once:true});
+  dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
+  dialog.addEventListener('keydown',e=>{if(!['ArrowDown','ArrowUp','Home','End'].includes(e.key))return;const rows=[...list.children];const i=rows.indexOf(doc.activeElement);e.preventDefault();rows[e.key==='Home'?0:e.key==='End'?rows.length-1:Math.max(0,Math.min(rows.length-1,i+(e.key==='ArrowDown'?1:-1)))]?.focus();});
+  dialog.showModal();(selected||list.firstElementChild||close).focus();
+ }
+ const isSiteSelect=e=>e.target.matches?.('.shipa-site-phone .shipa-phone-choice select');
+ doc.addEventListener('pointerdown',e=>{if(isSiteSelect(e)&&e.button===0&&typeof root.HTMLDialogElement?.prototype.showModal==='function'){e.preventDefault();openCountryPicker(e.target);}},true);
+ doc.addEventListener('keydown',e=>{if(isSiteSelect(e)&&['Enter',' ','ArrowDown','ArrowUp'].includes(e.key)&&typeof root.HTMLDialogElement?.prototype.showModal==='function'){e.preventDefault();openCountryPicker(e.target);}},true);
+}
 const api={countries,parse,format,valid,canonical,field};
 root.ShipaPhone=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

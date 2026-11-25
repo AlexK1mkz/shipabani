@@ -8,8 +8,8 @@
 <script src="./shipa-typography.js?v=20261125-vip-dash"></script>
 <script src="./review-store.js?v=1"></script>
 <script src="./support.js"></script>
-<script src="./phone-input.js?v=1"></script>
-<link rel="stylesheet" href="./phone-input.css?v=1">
+<script src="./phone-input.js?v=20261125-flags"></script>
+<link rel="stylesheet" href="./phone-input.css?v=20261125-flags">
 
 
 
@@ -2854,7 +2854,7 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
         <div>
           <label for="bk-phone" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></label>
-          <div class="shipa-phone-field"><span class="shipa-phone-choice"><span class="shipa-phone-flag" aria-hidden="true">{{ phoneField.flag }}</span><span aria-hidden="true">{{ phoneField.code }}</span><span class="shipa-phone-arrow" aria-hidden="true">⌄</span><select aria-label="Код страны" value="{{ phoneField.country }}" onChange="{{ phoneField.setCountry }}"><sc-for list="{{ phoneField.options }}" as="country"><option value="{{ country.id }}">{{ country.label }}</option></sc-for></select></span>
+          <div class="shipa-phone-field shipa-site-phone"><span class="shipa-phone-choice"><span class="shipa-phone-flag" data-country="{{ phoneField.country }}" aria-hidden="true"></span><span aria-hidden="true">{{ phoneField.code }}</span><span class="shipa-phone-arrow" aria-hidden="true">⌄</span><select aria-label="Код страны" value="{{ phoneField.country }}" onChange="{{ phoneField.setCountry }}"><sc-for list="{{ phoneField.options }}" as="country"><option value="{{ country.id }}">{{ country.label }}</option></sc-for></select></span>
             <input id="bk-phone" name="tel" maxLength="32" data-field="phone" data-err="{{ fbk.phoneAttr }}" value="{{ phoneField.value }}" onChange="{{ phoneField.setPhone }}" onPaste="{{ phoneField.paste }}" placeholder="{{ phoneField.placeholder }}" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fbk.phoneErr }}" style="{{ fbk.phoneStyle }}">
             <sc-if value="{{ phoneOk }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Номер введён" style="position:absolute;right:16px;top:50%;margin-top:-10px;pointer-events:none;animation:tickIn 200ms ease-out;"><path d="M4 10.5l4 4 8-9"/></svg></sc-if>
           </div>
