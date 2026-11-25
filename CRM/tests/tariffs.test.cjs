@@ -698,6 +698,53 @@ test('Kanban shows thirty calendar days and current bookings while the list reta
   assert.equal(demo(storage).crm.state.bookings.length, 7);
 });
 
+test('Kanban period presets and custom dates combine with the existing board filters', () => {
+  const storage = new Map();
+  const { crm } = demo(storage);
+  const scheduled = crm.state.bookings.find(b => b.stage === 'confirmed');
+  const request = crm.state.bookings.find(b => b.stage === 'new' && b.start == null);
+  crm.setState({screen:'bookings',view:'kanban',bookings:[
+    {...scheduled,num:'past',day:-10,stage:'review',stageAt:9*1440},
+    {...scheduled,num:'future',day:3,stageAt:1},
+    {...scheduled,num:'old',day:-60,stage:'review',stageAt:59*1440},
+    {...request,num:'request',stageAt:1},
+  ]});
+  const ids = (instance=crm) => Array.from(instance.renderVals().columns.flatMap(c=>c.cards),card=>card.num).sort();
+  const control=()=>crm.renderVals().kanbanPeriod;
+  assert.deepEqual(ids(),['future','past','request']);
+  control().select(event('7'));
+  assert.deepEqual(ids(),['future','request']);
+  control().select(event('14'));
+  assert.deepEqual(ids(),['future','past','request']);
+  control().select(event('90'));
+  assert.equal(ids().length,4);
+  control().select(event('all'));
+  assert.equal(crm.renderVals().olderBookingsCount,0);
+  control().select(event('custom'));
+  control().setFrom(event('2026-10-19'));
+  assert.equal(control().cannotApply,true);
+  control().apply();
+  assert.equal(ids().length,4);
+  control().setTo(event('2026-10-19'));
+  control().apply();
+  assert.deepEqual(ids(),['future']);
+  assert.equal(crm.renderVals().kanbanDateRange,'19.10 – 19.10');
+  assert.equal(control().includeUpcoming,false);
+  control().setFrom(event('2026-10-01'));
+  control().setTo(event('2026-10-08'));
+  control().apply();
+  assert.deepEqual(ids(),['past']);
+  assert.equal(crm.renderVals().olderBookingsCount,3);
+  const restored=demo(storage,()=>false,{location:{hash:'#bookings?period=custom&from=2026-10-01&to=2026-10-08'}}).crm;
+  assert.deepEqual(ids(restored),['past']);
+  const invalid=demo(storage,()=>false,{location:{hash:'#bookings?period=custom&from=2026-02-30&to=2026-10-08'}}).crm;
+  assert.equal(invalid.renderVals().kanbanPeriod.value,'30');
+  crm.renderVals().viewBookingHistory();
+  assert.equal(crm.renderVals().listRows.length,4);
+  crm.renderVals().viewKanban();
+  assert.deepEqual(ids(),['past']);
+});
+
 test('bookings Excel exports the selected board, preset, assignee and list order', () => {
   const downloads = [];
   const { crm } = demo(new Map(), () => false, {
