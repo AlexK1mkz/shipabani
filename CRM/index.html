@@ -7,7 +7,7 @@
 <script src="./support.js"></script>
 <script src="../shipa-bani-front/phone-input.js?v=1"></script>
 <link rel="stylesheet" href="../shipa-bani-front/phone-input.css?v=1">
-<script defer src="./shipa-ru-kz.js?v=20261125-staff-tabs"></script>
+<script defer src="./shipa-ru-kz.js?v=20261125-list-period"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -981,12 +981,11 @@ SOFTWARE.
         </sc-if>
       </div>
 
-      <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
         <div class="crm-kanban-period">
           <div class="crm-kanban-period-controls">
             <strong>Период</strong>
             <span class="crm-kanban-period-picker">
-              <select class="crm-picker" aria-label="Период канбана" value="{{ kanbanPeriod.value }}" onChange="{{ kanbanPeriod.select }}">
+              <select class="crm-picker" aria-label="Период бронирований" value="{{ kanbanPeriod.value }}" onChange="{{ kanbanPeriod.select }}">
                 <sc-for list="{{ kanbanPeriod.options }}" as="o"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
               </select>
               <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
@@ -1002,8 +1001,9 @@ SOFTWARE.
             <span><sc-if value="{{ kanbanPeriod.editing }}">Показано: </sc-if>{{ kanbanDateRange }}<sc-if value="{{ kanbanPeriod.includeUpcoming }}"> · будущие брони и гости в доме</sc-if></span>
             <sc-if value="{{ kanbanPeriod.error }}"><span class="crm-kanban-period-error" role="alert">{{ kanbanPeriod.error }}</span></sc-if>
           </div>
-          <button class="crm-kanban-history" type="button" onClick="{{ viewBookingHistory }}">Вся история в списке<sc-if value="{{ hasOlderBookings }}"> · {{ olderBookingsCount }} вне периода</sc-if></button>
+          <sc-if value="{{ isKanban }}"><button class="crm-kanban-history" type="button" onClick="{{ viewBookingHistory }}">Вся история в списке<sc-if value="{{ hasOlderBookings }}"> · {{ olderBookingsCount }} вне периода</sc-if></button></sc-if>
         </div>
+      <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
         <div class="crm-kanban-legend" role="group" aria-labelledby="crm-kanban-legend-label">
           <strong id="crm-kanban-legend-label">Значки на карточках</strong>
           <sc-for list="{{ kanbanIcons }}" as="icon" hint-placeholder-count="3">
@@ -1090,6 +1090,7 @@ SOFTWARE.
       </sc-if>
 
       <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ bookingExportEmpty }}"><div role="status" style="padding:24px;background:#fff;border-radius:16px;color:#526271;text-align:center;">Нет бронирований за выбранный период.</div></sc-if>
         <div class="crm-bookings-list" data-crm-view-motion="bookings" style="background:#fff;border-radius:20px;padding:8px 24px 16px;">
           <div class="crm-bookings-list-head" style="display:grid;grid-template-columns:72px 1fr 1.2fr 1fr 1fr 1fr 1fr 110px;height:44px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
             <button onClick="{{ sortNum }}" style="text-align:left;font-weight:600;">№ {{ sortMark.num }}</button><span>Гость</span><span>Дом</span>
@@ -2703,7 +2704,7 @@ function crmViewMotion(s){
     case 'calendar':
       return {calendar:[s.calMode,s.calDay,s.calStatus,s.calMode==='month'?s.calHouse:null]};
     case 'bookings':
-      return {bookings:[s.view,s.board,s.savedView,s.assigneeFilter,s.view==='kanban'?s.kanbanPeriod:null,s.view==='list'?s.sort.k:null,s.view==='list'?s.sort.d:null]};
+      return {bookings:[s.view,s.board,s.savedView,s.assigneeFilter,s.kanbanPeriod,s.view==='list'?s.sort.k:null,s.view==='list'?s.sort.d:null]};
     case 'clients':
       return {clients:[s.clFilter,s.clSort.k,s.clSort.d]};
     case 'campaigns': {
@@ -3357,7 +3358,7 @@ class Component extends DCLogic {
   const bounds=kanbanBounds(period);
   const matchesPeriod=b=>isKanbanCurrent(b,period,bounds);
   const kanbanBookings=filtered.filter(matchesPeriod);
-  const visibleBookings=s.view==='kanban'?kanbanBookings:filtered;
+  const visibleBookings=kanbanBookings;
   const olderBookingsCount=bCards.filter(b=>!matchesPeriod(b)).length;
   const periodDates=(bounds||kanbanBounds(DEFAULT_KANBAN_PERIOD)).map(dkey);
   const fullYear=periodDates[0].slice(0,4)!==periodDates[1].slice(0,4);
@@ -3402,12 +3403,12 @@ class Component extends DCLogic {
     del:()=>{if(delWhy)return;if(all.length){const to=(curB.cols.slice(0,ci).reverse().find(c=>c.type==='open')||curB.cols.find(c=>c.type==='open'&&c.id!==st.id)).id;this.setState({colDel:{id:st.id,to}});return;}updB(x=>({...x,cols:x.cols.filter(c=>c.id!==st.id)}));this.toast(`Столбец «${st.name}» удалён`);},
     delAsk:isDel,delAskText:`В столбце ${all.length} ${all.length===1?'карточка':all.length<5?'карточки':'карточек'}. Куда перенести?`,delTo:isDel?s.colDel.to:'',moveOpts,setDelTo:e=>this.setState({colDel:{...s.colDel,to:e.target.value}}),cancelDel:()=>this.setState({colDel:null}),
     confirmDel:()=>{const to=s.colDel.to;const tn=ST[to].name;this.setState(S=>({bookings:S.bookings.map(b=>b.stage===st.id&&(b.board||'sales')===curB.id?this.log({...b,events:[...b.events],stage:to,stageAt:0},`Столбец «${st.name}» удалён → карточка в «${tn}»`):b),boards:S.boards.map(x=>x.id===curB.id?{...x,cols:x.cols.filter(c=>c.id!==st.id)}:x),colDel:null}));this.toast(`Столбец удалён · карточки в «${tn}»`);}};});
-  const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open'&&(s.view!=='kanban'||matchesPeriod(b))).length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false,mobileStage:null})};});
+  const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open'&&matchesPeriod(b)).length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false,mobileStage:null})};});
   const delWhyB=curB.main?'Основную доску удалить нельзя. Сначала сделайте основной другую доску.':curB.sys?'Доска броней связана с календарём, сайтом и оплатами — её нельзя удалить.':'';
   const curBoard={name:builtInName(curB,BOARDS0),main:!!curB.main,noDel:!!delWhyB,delWhy:delWhyB||'Удалить доску',delOpacity:delWhyB?.4:1,delCursor:delWhyB?'not-allowed':'pointer',hint:curB.main?'Основная доска открывается первой у всех сотрудников, удалить её нельзя. У столбцов меняются название, цвет, подсветка, норматив и порядок.':delWhyB||'Пустой столбец удаляется сразу, из непустого карточки сначала переносятся в выбранный столбец.'};
   const failOf=b=>{if((b.board||'sales')==='sales')return 'cancel';const bd=boards.find(x=>x.id===b.board);const f=bd&&bd.cols.find(c=>c.type==='fail');return f?f.id:'cancel';};
   const sortIcon=k=>s.sort.k===k?(s.sort.d>0?'↑':'↓'):'';
-  const sortedBookings=[...filtered].sort((a,b)=>{const k=s.sort.k;const va=k==='num'?a.num:k==='sum'?this.price(a).total:(a.day*100+(a.start||0));const vb=k==='num'?b.num:k==='sum'?this.price(b).total:(b.day*100+(b.start||0));return (va>vb?1:va<vb?-1:0)*s.sort.d;});
+  const sortedBookings=[...visibleBookings].sort((a,b)=>{const k=s.sort.k;const va=k==='num'?a.num:k==='sum'?this.price(a).total:(a.day*100+(a.start||0));const vb=k==='num'?b.num:k==='sum'?this.price(b).total:(b.day*100+(b.start||0));return (va>vb?1:va<vb?-1:0)*s.sort.d;});
   const exportBookings=()=>{
     if(!sortedBookings.length)return;
     const headers=['№','Гость','Телефон','Дом','Дата заезда','Начало','Окончание','Стадия','Оплата','Сумма','Источник','Ответственный'].map(uiText);
@@ -3919,7 +3920,7 @@ class Component extends DCLogic {
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
-   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),viewBookingHistory:()=>this.setState({view:'list',savedView:null,assigneeFilter:null,kanbanDraft:null}),goCalendar:go('calendar'),isKanban:s.view==='kanban',mobileStage,setMobileStage:e=>this.setState({mobileStage:e.target.value}),kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
+   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),viewBookingHistory:()=>this.setState({view:'list',savedView:null,assigneeFilter:null,kanbanPeriod:{kind:'all'},kanbanDraft:null}),goCalendar:go('calendar'),isKanban:s.view==='kanban',mobileStage,setMobileStage:e=>this.setState({mobileStage:e.target.value}),kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
    setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${visibleBookings.length} ${pl(visibleBookings.length,'карточка','карточки','карточек')}`,kanbanPeriod,kanbanDateRange,olderBookingsCount,hasOlderBookings:olderBookingsCount>0,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,countLabel:reviewCountLabel(rvs.length),dist,cats:catAvg,
      hasCategory:!!s.rvCategory,clearCategory:()=>this.setState({rvCategory:null}),
