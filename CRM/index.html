@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="../shipa-bani-front/review-store.js?v=1"></script>
 <script src="./support.js"></script>
+<script src="../shipa-bani-front/phone-input.js?v=1"></script>
+<link rel="stylesheet" href="../shipa-bani-front/phone-input.css?v=1">
 <script defer src="./shipa-ru-kz.js?v=20261125-lessons"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
@@ -1236,7 +1238,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               <label>Имя<input class="staff-control" type="text" maxlength="100" autocomplete="given-name" autofocus value="{{ staff.name }}" onChange="{{ staff.setName }}" required></label>
               <label>Фамилия<input class="staff-control" type="text" maxlength="100" autocomplete="family-name" value="{{ staff.surname }}" onChange="{{ staff.setSurname }}" required="{{ staff.requiresSurname }}"></label>
             </div>
-            <label>Телефон для входа<input class="staff-control" type="tel" maxlength="25" autocomplete="tel" value="{{ staff.phone }}" onChange="{{ staff.setPhone }}" placeholder="+7 700 000 00 00" required></label>
+            <label>Телефон для входа<span class="shipa-phone-field" style="margin-top:4px"><span class="shipa-phone-choice"><span class="shipa-phone-flag" aria-hidden="true">{{ staffPhoneField.flag }}</span><span aria-hidden="true">{{ staffPhoneField.code }}</span><span class="shipa-phone-arrow" aria-hidden="true">⌄</span><select aria-label="Код страны" value="{{ staffPhoneField.country }}" onChange="{{ staffPhoneField.setCountry }}"><sc-for list="{{ staffPhoneField.options }}" as="country"><option value="{{ country.id }}">{{ country.label }}</option></sc-for></select></span><input class="staff-control" type="tel" aria-label="Телефон для входа" maxlength="32" autocomplete="tel-national" value="{{ staffPhoneField.value }}" onChange="{{ staffPhoneField.setPhone }}" onPaste="{{ staffPhoneField.paste }}" placeholder="{{ staffPhoneField.placeholder }}" required></span></label>
             <label>Роль<select class="staff-control" value="{{ staff.role }}" onChange="{{ staff.setRole }}" disabled="{{ staff.locked }}"><option value="admin">Администратор</option><option value="owner">Собственник</option></select></label>
             <fieldset class="staff-permissions">
               <legend>Настройки доступа</legend>
@@ -1851,7 +1853,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div class="crm-new-booking-title" style="display:flex;align-items:center;"><h2 style="font-size:20px;font-weight:600;margin:0;">Новая бронь</h2><button class="crm-mobile-icon crm-mobile-new-close" type="button" onClick="{{ closeNew }}" aria-label="Закрыть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button><span style="margin-left:12px;font-size:13px;color:rgba(59,47,42,.7);">цена считается движком сайта</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <label style="font-size:13px;color:#43566A;grid-column:span 2;">Телефон<input type="tel" autocomplete="tel" value="{{ nb.phone }}" onChange="{{ nbSet.phone }}" onPaste="{{ pasteNbPhone }}" placeholder="+7 7__ ___ __ __" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
+        <label style="font-size:13px;color:#43566A;grid-column:span 2;">Телефон<span class="shipa-phone-field" style="margin-top:4px"><span class="shipa-phone-choice"><span class="shipa-phone-flag" aria-hidden="true">{{ nbPhoneField.flag }}</span><span aria-hidden="true">{{ nbPhoneField.code }}</span><span class="shipa-phone-arrow" aria-hidden="true">⌄</span><select aria-label="Код страны" value="{{ nbPhoneField.country }}" onChange="{{ nbPhoneField.setCountry }}"><sc-for list="{{ nbPhoneField.options }}" as="country"><option value="{{ country.id }}">{{ country.label }}</option></sc-for></select></span><input type="tel" aria-label="Телефон" inputmode="tel" autocomplete="tel-national" value="{{ nbPhoneField.value }}" onChange="{{ nbPhoneField.setPhone }}" onPaste="{{ nbPhoneField.paste }}" placeholder="{{ nbPhoneField.placeholder }}" maxlength="32" style="height:40px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></span></label>
         <label style="font-size:13px;color:#43566A;">Имя <span style="color:#C15C22;">*</span><input value="{{ nb.first }}" onChange="{{ nbSet.first }}" placeholder="Данил" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <label style="font-size:13px;color:#43566A;">Фамилия <span style="color:#C15C22;">*</span><input value="{{ nb.last }}" onChange="{{ nbSet.last }}" placeholder="Ковалёв" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <label style="font-size:13px;color:#43566A;">Отчество <span style="color:rgba(59,47,42,.5);">· по желанию</span><input value="{{ nb.middle }}" onChange="{{ nbSet.middle }}" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
@@ -2083,7 +2085,7 @@ const whenDays=n=>n===0?'сегодня':n===1?'завтра':n<7?`через ${
 const pl=(n,a,b_,c)=>{n=Math.abs(Math.round(n));const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<10||h>=20)?b_:c;};
 const normP=x=>String(x||'').replace(/\D/g,'');
 const BOOKING_PHONE_PREFIX='+7';
-const bookingPhone=value=>normP(value).length>1?String(value).trim():'';
+const bookingPhone=value=>window.ShipaPhone?window.ShipaPhone.canonical(value):normP(value).length>1?String(value).trim():'';
 const tmin=t=>{const [h,m]=String(t).split(':').map(Number);return h*60+(m||0);};
 const fillT=(t,v)=>String(t||'').replace(/\{([^}]+)\}/g,(m,k)=>v[k]!=null&&v[k]!==''?v[k]:m);
 const fmtK=n=>n>=1e6?(n/1e6).toFixed(1).replace('.',',')+' млн':n>=1e3?Math.round(n/1e3)+' тыс':String(n);
@@ -2325,6 +2327,7 @@ const STAFF_SEED=[
 const staffRequiresSurname=employee=>!employee||!!employee.surname;
 const staffAccess=employee=>employee.deactivated?'deactivated':employee.enabled?'active':'blocked';
 const staffPhone=value=>{
+  if(window.ShipaPhone)return window.ShipaPhone.valid(value)?window.ShipaPhone.canonical(value):'';
   const raw=String(value).trim();
   if(!/^\+?[\d\s().-]+$/.test(raw))return '';
   const digits=raw.replace(/\D/g,'');
@@ -3405,7 +3408,8 @@ class Component extends DCLogic {
 
    const kc=nb.phone.length>8?this.clientOf(nb.phone):null;if(kc){const kst=this.stats(kc);nbKnown=`Гость в базе: ${kc.name}${kst.visits?' · визитов '+kst.visits:''}${kc.account?' · есть кабинет':''}`;}
    const qd=normP(nb.phone);if(!kc&&qd.length>=3){nbSugg=s.clients.filter(c=>normP(c.phone).includes(qd)).slice(0,5).map(c=>{const cs=this.stats(c);return {name:c.name,phone:c.phone,hint:cs.visits?`визитов ${cs.visits}`:'без визитов',pick:()=>this.setState({nb:{...nb,phone:c.phone,last:c.last||'',first:c.first||c.name,middle:c.middle||''}})};});}
-   if(!String(nb.last||'').trim()||!String(nb.first||'').trim())nbMissing='Укажите фамилию и имя гостя — так не перепутаем однофамильцев и тёзок.';
+   if(window.ShipaPhone&&window.ShipaPhone.parse(nb.phone,nb.country).digits&&!window.ShipaPhone.valid(nb.phone,nb.country))nbMissing='Введите полный номер телефона.';
+   else if(!String(nb.last||'').trim()||!String(nb.first||'').trim())nbMissing='Укажите фамилию и имя гостя — так не перепутаем однофамильцев и тёзок.';
 
   }
   const nbSet=Object.fromEntries(['phone','last','first','middle','house','start','dur','guests','kids'].map(k=>[k,e=>{const v=e.target.value;this.setState(st=>{const n={...st.nb,[k]:v};
@@ -3416,6 +3420,7 @@ class Component extends DCLogic {
       n.start=this.chooseBookingStart(n.start,starts);
     }
     return {nb:n};});}]));nbSet.paid=e=>this.setState({nb:{...nb,paid:e.target.checked}});nbSet.discOn=e=>this.setState({nb:{...nb,discOn:e.target.checked}});
+  const nbPhoneField=nb&&window.ShipaPhone?.field(nb.phone,nb.country,(phone,country)=>{nbSet.phone({target:{value:phone}});this.setState(st=>({nb:{...st.nb,country}}));},window.ShipaLocale?.get?.());
   const pasteNbPhone=e=>{
     if(e.target.value.trim()!==BOOKING_PHONE_PREFIX)return;
     const value=e.clipboardData?.getData('text').trim()||'';
@@ -3637,7 +3642,7 @@ class Component extends DCLogic {
     };
   }
   const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen||s.mobileNavOpen;
-  return {staff:owner?this.staffView():{},nav,mobileNavOpen:s.mobileNavOpen,mobileNavExpanded:String(s.mobileNavOpen),toggleMobileNav:()=>this.setState({mobileNavOpen:!s.mobileNavOpen}),closeMobileNav:()=>this.setState({mobileNavOpen:false}),navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>{if(!window.matchMedia('(max-width:1024px)').matches)this.setState({navOpen:true});},navLeave:()=>{if(!pinned&&!window.matchMedia('(max-width:1024px)').matches)this.setState({navOpen:false});},
+  return {staffPhoneField:s.staffDraft&&window.ShipaPhone?.field(s.staffDraft.phone,s.staffDraft.country,(phone,country)=>this.setStaffDraft({phone,country}),window.ShipaLocale?.get?.())||{},staff:owner?this.staffView():{},nav,mobileNavOpen:s.mobileNavOpen,mobileNavExpanded:String(s.mobileNavOpen),toggleMobileNav:()=>this.setState({mobileNavOpen:!s.mobileNavOpen}),closeMobileNav:()=>this.setState({mobileNavOpen:false}),navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>{if(!window.matchMedia('(max-width:1024px)').matches)this.setState({navOpen:true});},navLeave:()=>{if(!pinned&&!window.matchMedia('(max-width:1024px)').matches)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew,
@@ -3690,7 +3695,7 @@ class Component extends DCLogic {
    setReason:e=>this.setBookingReason(e.target.value),
    dismissReason:e=>{e?.preventDefault();this.dismissBookingReason();},
    confirmReason:e=>{e?.preventDefault();this.confirmBookingReason();},
-   addRest,hasNew:!!nb,nb:nb||{},nbDateLabel:Number.isInteger(nb?.day)?ddmm(dkey(nb.day)):'Выберите дату',nbCal,toggleNbCalendar,closeNbCalendar,pasteNbPhone,
+   addRest,hasNew:!!nb,nb:nb||{},nbPhoneField:nbPhoneField||{},nbDateLabel:Number.isInteger(nb?.day)?ddmm(dkey(nb.day)):'Выберите дату',nbCal,toggleNbCalendar,closeNbCalendar,pasteNbPhone,
    nbMaxGuests:nb?nbRules.cats[H[nb.house].cat].max:100,nbStarts,nbNoStarts,nbStartValue:nbNoStarts?'':nb?.start??'',nbDurs:durationOptions(nbRules),nbDisabled:nbConflict||!!nbMissing,nbSet,nbExtras,nbRows,nbTotal,nbPrepay,nbHouseName,nbWhen,nbConflict,nbConflictText,nbKnown,hasNbKnown:!!nbKnown,nbSugg,hasNbSugg:nbSugg.length>0,nbMissing,hasNbMissing:!!nbMissing,nbBtnOpacity:nbConflict||nbMissing?.5:1,createBooking,closeNew:()=>this.setState({nb:null}),
    hasToast:!!s.toast,toast:s.toast,toastSuccess:s.toastTone==='success',
    toastClass:s.toastTone==='success'?'crm-toast crm-toast--success':'crm-toast',clearKanbanDrag:()=>{this.drag=null;},
