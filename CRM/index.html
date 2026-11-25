@@ -7,7 +7,7 @@
 <script src="./support.js"></script>
 <script src="../shipa-bani-front/phone-input.js?v=1"></script>
 <link rel="stylesheet" href="../shipa-bani-front/phone-input.css?v=1">
-<script defer src="./shipa-ru-kz.js?v=20261125-lessons"></script>
+<script defer src="./shipa-ru-kz.js?v=20261125-reports"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -207,6 +207,43 @@ SOFTWARE.
 .crm-phone-field .shipa-phone-flag[data-country="AU"]{background-image:url("data:image/png;base64,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")}
 .crm-phone-field .shipa-phone-flag[data-country="IL"]{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAA2CAYAAABkxd/2AAAACXBIWXMAABJ0AAASdAHeZh94AAAEBklEQVRoge2aW2xURRjHjyCXWCDIJVpJFAQfEAmCRktpiW2RcmkFuURBy8WiJrYEkFKr8cFEICRVCSB9RGlMhJD4Apqzu13are32XksL25aW2kqBWpfer7vd8zfzLXtoQ3dPCenZ2TL/5MtmvrPzML/Md5k5R4KQT0m+HwsJQBoSgDQkAGlIevptM4SZvTKQpBAZwmTvDAQc2fcGEYBkAUh6lDQidpAsAEmPsoOKK9shrN0rA64aRXubA7yJG0DWilaEfpwPRQFX4gKQogBvfJRHMZ/+xy3wJC4A/XSpkeC8tDUbz6y7jLZOJ3iR3wF19gzguZhMRCYW4p+mXgRFmJB0qgq8yO+Avky7jidXGFBe20Hjo2dvYEKYAZX1XcDjDqjuVg8mrzRi//FK1dfvcGHh+39i1d4ijHlATXf78WZ8Hl7bZR3WprPrhBCZ/sOAeGz+5mzys9+oxPv+wbYxuRS9/S4E/A7a+72NFhuyJx9bvypT7eVtOeRff7AEnxy7+oC9sNGiPh88jyVx5j+WXgc9NOqAWjocmLXmMiVhj5wDCoXRkrhcuFzDNz6XcpoJxLdnalVfbWM3JoUbsWBLNvoco797dMtBpy400GJ/y2qi8Y/3xsYCu895a/YXY0qEiUKVie0mNu/33GboJV0ADbgULP4gF89vyMK/Lf14dn0m1h4o1pxn+7uLKlzidzaCyeDEJpVgTFaxjCK72gyOD71f1rX0WaqNyv7cdy2YGG5EdUPX2C3zkQmFBGnP0asjnnO33YEZq93VjvVMessvgJIeolNmx47gmEyal/qLPpXLryE2fVUGhUrNze4RzUtIdbcJLFlPi8rAHXsfxhwg54CCV7bnYGa0mXLPU2+ZsCG5VHNeka2d8lXYpwW4YG4iUPFHRh6eAQPoxPl6Whw7tTOlpFXT2JBv91n5lu20EqCy6+6EHr2vGONCDSi41ga9pEujODPaPOQyrLXTST7WTbPdNZx++NUNdd+gcxor+6yivb7b6rXBDDhACfdyCAupL05Xq/ZqXC753zlUSkcLlrg9z478fANTIzPo+Xtflw2Z9+Jmy5DdGNCAam52Y94mCy1qOGN3P2yxQRFGTIsyqTZppYH8s9eah/yf5THPQXfd5yVwOJXH47rjw2/KVV9HtxNzYrMIgl5hxPWFWUpaNZ5YLsPyVwuND56sonFeRSt4EBdXrsExmVi6w4orNR2UhHcfrgAv8jsgpjMX3Zf27FqENYO3/9O3GeQekMulqK99jp+rB0/iApDnxeGi7Tm6VKaABMTU2NwL3sQVIB4leWvihFncXbv4gEoWH1BJ4hM8efQ+ZRYhJgtAkthB8uiFmKnQDmF2rwxEo6ghAUhDApCGBCD41v9gSeoCTsANNAAAAABJRU5ErkJggg==")}
 .crm-phone-field .shipa-phone-flag[data-country="TH"]{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAA2CAYAAABkxd/2AAAACXBIWXMAABJ0AAASdAHeZh94AAAA8klEQVRoge2bsQ3DMAwEtQZXIJBCa3iMIFN4H82QxoU7b5EpTMDdZwLJhSDIxRVc4HD/MmQqFcticpVBAk5uCgIgA5B6UoJBBiBhkI07iYmYAUhdBv2+u5i9yiCdcYm5qgwAFG1BABQAUk+FYFAASBgU405iIhY3gD7vVcxaZZBevohZqgwA5G1BAOQAUk+FYJADSBjk405iIuYAEgY5EdOsr306yAEkDHIiJjrIn3ntQkn7DaBtO8QcVQbcSQeX9uKvRvDbR7M2UOigAJAwKIiYpnUQbzUya8CFPenMInmZ9K6NDjIACYOMiIkOsmc+Lv4D7Qd21FQoXlkAAAAASUVORK5CYII=")}
+
+
+  .crm-report-page,.crm-account-page{max-width:1440px;display:grid;gap:16px}
+  .crm-report-head,.crm-account-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .crm-report-head h2,.crm-account-intro h2{margin:0 0 6px;font-size:23px}
+  .crm-report-head p,.crm-account-intro p{margin:0;color:#526271;font-size:14px;line-height:1.5}
+  .crm-report-card,.crm-account-card{background:#fff;border:1px solid #E4E9ED;border-radius:16px;padding:20px;min-width:0}
+  .crm-report-filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+  .crm-report-filters label,.crm-account-form label{display:grid;gap:6px;font-size:13px;font-weight:600;color:#43566A;min-width:0}
+  .crm-report-filters input,.crm-report-filters select,.crm-account-form input{min-height:42px;border:1px solid #D5E0E7;border-radius:10px;background:#fff;padding:9px 12px;color:#0A2F4F;font-size:14px;min-width:0;width:100%}
+  .crm-report-seg{display:flex;gap:4px;padding:4px;background:#F1F4F5;border-radius:12px}
+  .crm-report-seg button{min-height:36px;border-radius:8px;padding:0 14px;font-weight:600;white-space:nowrap}
+  .crm-report-seg button[aria-pressed=true]{background:#0A2F4F;color:#fff}
+  .crm-report-button{min-height:42px;padding:10px 16px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #D5E0E7;border-radius:10px;background:#fff;color:#0A2F4F;font-weight:600;text-align:center}
+  .crm-report-button:hover{background:#EAF1F6}
+  .crm-report-primary{background:#0A2F4F;border-color:#0A2F4F;color:#fff}.crm-report-primary:hover{background:#163F60}
+  .crm-report-button:disabled{opacity:.45;cursor:not-allowed}
+  .crm-report-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .crm-report-kpi{background:#fff;border:1px solid #E4E9ED;border-radius:14px;padding:16px;min-width:0}
+  .crm-report-kpi>span{font-size:13px;color:#526271;display:block;margin-bottom:7px}
+  .crm-report-kpi strong{font-size:25px;line-height:1.25;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+  .crm-report-card h3,.crm-account-card h3{margin:0 0 14px;font-size:17px}
+  .crm-report-chart{display:grid;gap:12px;max-height:440px;overflow:auto}
+  .crm-report-chart-row{display:grid;grid-template-columns:minmax(110px,150px) minmax(0,1fr) 46px;align-items:center;gap:10px;font-size:13px}
+  .crm-report-track{height:16px;background:#EDF2F5;border-radius:5px;overflow:hidden}.crm-report-bar{height:100%;background:#0A2F4F;border-radius:5px}
+  .crm-report-table-wrap{max-width:100%;overflow-x:auto}
+  .crm-report-table{border-collapse:collapse;width:100%;min-width:620px;font-size:13px;text-align:left}
+  .crm-report-table td,.crm-report-table th{padding:12px 10px;border-bottom:1px solid #E8EDF0;white-space:nowrap}
+  .crm-report-table th{color:#526271;background:#F5F7F8;font-weight:600}
+  .crm-report-note{font-size:12px;color:#526271;line-height:1.5}
+  .crm-account-card{max-width:640px}
+  .crm-account-form{display:grid;gap:14px;max-width:440px}
+  .crm-account-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .crm-account-notice{border:1px solid #E3D7C8;background:#FFF8EF;padding:14px;border-radius:12px;color:#6D4A2D;font-size:13px;line-height:1.5}
+  .crm-account-result{padding:12px;border-radius:10px;background:#EDF5EE;color:#27623F;font-size:14px}
+  .crm-account-error{padding:12px;border-radius:10px;background:#FFF0ED;color:#A03527;font-size:14px}
+  @media(max-width:760px){.crm-report-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.crm-report-kpi{padding:12px}.crm-report-kpi strong{font-size:20px}.crm-report-card,.crm-account-card{padding:14px}.crm-report-filters>*{flex:1 1 130px}.crm-report-seg{flex:1 1 100%}.crm-report-seg button{flex:1}.crm-report-chart-row{grid-template-columns:104px minmax(0,1fr) 30px;gap:6px}.crm-report-chart-row span{overflow-wrap:anywhere}.crm-account-actions button{flex:1 1 150px}}
 
   .crm-handbook{max-width:1440px;container-type:inline-size;}
   .crm-handbook-intro{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 26px;margin-bottom:16px;background:#EAF1F6;border:1px solid #D5E0E7;border-radius:18px;}
@@ -1543,6 +1580,40 @@ SOFTWARE.
     </section>
   </sc-if>
 
+
+  <sc-if value="{{ is.reports }}">
+    <section class="crm-report-page" data-screen-label="Отчёты">
+      <div class="crm-report-head"><div><h2>Отчёты по бронированиям</h2><p>Динамика визитов по дате заезда. Выберите период и группировку.</p></div><button class="crm-report-button" type="button" onClick="{{ report.export }}" disabled="{{ !report.canExport }}">Выгрузить в Excel</button></div>
+      <div class="crm-report-card crm-report-filters">
+        <div class="crm-report-seg" role="group" aria-label="Группировка"><button aria-pressed="{{ report.week }}" onClick="{{ report.setWeek }}">По неделям</button><button aria-pressed="{{ report.month }}" onClick="{{ report.setMonth }}">По месяцам</button></div>
+        <label>Дата с<input type="date" value="{{ report.from }}" onChange="{{ report.setFrom }}"></label>
+        <label>Дата по<input type="date" value="{{ report.to }}" onChange="{{ report.setTo }}"></label>
+        <label>Дом<select value="{{ report.house }}" onChange="{{ report.setHouse }}"><option value="all">Все дома</option><sc-for list="{{ report.houses }}" as="h"><option value="{{ h.id }}">{{ h.name }}</option></sc-for></select></label>
+      </div>
+      <sc-if value="{{ report.error }}"><p class="crm-account-error" role="alert">{{ report.error }}</p></sc-if>
+      <div class="crm-report-kpis"><sc-for list="{{ report.metrics }}" as="m"><div class="crm-report-kpi"><span>{{ m.label }}</span><strong>{{ m.value }}</strong></div></sc-for></div>
+      <div class="crm-report-card"><h3>Количество бронирований</h3><div class="crm-report-chart"><sc-for list="{{ report.rows }}" as="r"><div class="crm-report-chart-row"><span>{{ r.label }}</span><div class="crm-report-track"><div class="crm-report-bar" style="width:{{ r.width }}"></div></div><strong>{{ r.count }}</strong></div></sc-for></div><sc-if value="{{ report.empty }}"><p class="crm-report-note">За выбранный период бронирований нет.</p></sc-if></div>
+      <div class="crm-report-card"><h3>Сводка по периодам</h3><div class="crm-report-table-wrap" tabindex="0" role="region" aria-label="Сводка по периодам"><table class="crm-report-table"><thead><tr><th>Период</th><th>Брони</th><th>Завершены</th><th>Отмены / неявки</th><th>Гостей</th><sc-if value="{{ report.finance }}"><th>Сумма броней</th><th>Получено</th><th>Остаток</th></sc-if></tr></thead><tbody><sc-for list="{{ report.rows }}" as="r"><tr><td>{{ r.label }}</td><td>{{ r.count }}</td><td>{{ r.completed }}</td><td>{{ r.cancelled }}</td><td>{{ r.guests }}</td><sc-if value="{{ report.finance }}"><td>{{ r.totalText }}</td><td>{{ r.paidText }}</td><td>{{ r.restText }}</td></sc-if></tr></sc-for></tbody></table></div><p class="crm-report-note">Учитываются назначенные визиты с домом и временем. Отмены и неявки включены в количество, но исключены из суммы броней. Получено — платежи за выбранные брони за вычетом возвратов. Суммы доступны собственнику.</p></div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ is.account }}">
+    <section class="crm-account-page" data-screen-label="Безопасность аккаунта">
+      <div class="crm-account-intro"><div><h2>Безопасность аккаунта</h2><p>Управление паролем и восстановление доступа.</p></div></div>
+      <div class="crm-account-notice"><strong>Демонстрационный режим.</strong> Это отдельный тестовый аккаунт. Не вводите реальный пароль. Код восстановления показывается на экране; отправка SMS и серверная авторизация не подключены.</div>
+      <div class="crm-account-card">
+        <sc-if value="{{ auth.message }}"><p role="status" class="crm-account-result">{{ auth.message }}</p></sc-if>
+        <sc-if value="{{ auth.error }}"><p role="alert" class="crm-account-error">{{ auth.error }}</p></sc-if>
+        <sc-if value="{{ auth.home }}"><h3>Демо-аккаунт</h3><p class="crm-report-note">Начальный пароль: Demo1234! (до первой смены). Демо-сессия активна.</p><div class="crm-account-actions"><button class="crm-report-button crm-report-primary" onClick="{{ auth.change }}">Сменить пароль</button><button class="crm-report-button" onClick="{{ auth.logout }}">Выйти из демо-аккаунта</button></div></sc-if>
+        <sc-if value="{{ auth.changeMode }}"><h3>Смена пароля</h3><form class="crm-account-form" onSubmit="{{ auth.submitChange }}"><label>Текущий пароль<input type="password" autocomplete="current-password" value="{{ auth.old }}" onChange="{{ auth.setOld }}" required></label><label>Новый пароль<input type="password" autocomplete="new-password" value="{{ auth.new }}" onChange="{{ auth.setNew }}" required></label><label>Повторите пароль<input type="password" autocomplete="new-password" value="{{ auth.confirm }}" onChange="{{ auth.setConfirm }}" required></label><p class="crm-report-note">Минимум 8 символов, буква и цифра.</p><div class="crm-account-actions"><button class="crm-report-button crm-report-primary" type="submit" disabled="{{ auth.busy }}">Сохранить пароль</button><button class="crm-report-button" type="button" onClick="{{ auth.back }}">Отмена</button></div></form></sc-if>
+        <sc-if value="{{ auth.loginMode }}"><h3>Вход в демо-аккаунт</h3><form class="crm-account-form" onSubmit="{{ auth.submitLogin }}"><label>Пароль<input type="password" autocomplete="current-password" value="{{ auth.login }}" onChange="{{ auth.setLogin }}" required></label><div class="crm-account-actions"><button class="crm-report-button crm-report-primary" type="submit" disabled="{{ auth.busy }}">Войти</button><button class="crm-report-button" type="button" onClick="{{ auth.recover }}">Забыли пароль?</button></div></form></sc-if>
+        <sc-if value="{{ auth.recoverMode }}"><h3>Восстановление пароля</h3><p class="crm-report-note">Запросите демонстрационный одноразовый код для восстановления.</p><div class="crm-account-actions"><button class="crm-report-button crm-report-primary" onClick="{{ auth.issue }}">Получить код</button><button class="crm-report-button" onClick="{{ auth.back }}">Назад</button></div></sc-if>
+        <sc-if value="{{ auth.codeMode }}"><h3>Подтверждение кода</h3><div class="crm-account-notice">Демо-код: <strong>{{ auth.demoCode }}</strong> · действует 5 минут.</div><form class="crm-account-form" onSubmit="{{ auth.verify }}"><label>Код подтверждения<input inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="{{ auth.code }}" onChange="{{ auth.setCode }}" required></label><div class="crm-account-actions"><button class="crm-report-button crm-report-primary" type="submit">Подтвердить</button><button class="crm-report-button" type="button" onClick="{{ auth.recover }}">Запросить новый код</button></div></form></sc-if>
+        <sc-if value="{{ auth.resetMode }}"><h3>Новый пароль</h3><form class="crm-account-form" onSubmit="{{ auth.submitReset }}"><label>Новый пароль<input type="password" autocomplete="new-password" value="{{ auth.new }}" onChange="{{ auth.setNew }}" required></label><label>Повторите пароль<input type="password" autocomplete="new-password" value="{{ auth.confirm }}" onChange="{{ auth.setConfirm }}" required></label><p class="crm-report-note">Минимум 8 символов, буква и цифра.</p><div class="crm-account-actions"><button class="crm-report-button crm-report-primary" type="submit" disabled="{{ auth.busy }}">Установить пароль</button><button class="crm-report-button" type="button" onClick="{{ auth.back }}">Отмена</button></div></form></sc-if>
+      </div>
+    </section>
+  </sc-if>
+
   <sc-if value="{{ is.instructions }}" hint-placeholder-val="{{ false }}">
     <section class="crm-handbook" data-screen-label="Инструкции" aria-labelledby="crm-handbook-heading">
       <header class="crm-handbook-intro">
@@ -2508,7 +2579,7 @@ const CRM_HANDBOOK = [
   },
 ];
 
-const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff','instructions'];
+const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff','instructions','reports','account'];
 const ownerScreen=screen=>screen==='notif'||screen==='staff';
 function crmHash(s){
   const params=new URLSearchParams();
@@ -2592,8 +2663,43 @@ function crmViewMotion(s){
       return {};
   }
 }
+
+function bookingReport(bookings,{from,to,group,house},price,paid){
+ const start=keyOff(from),end=keyOff(to);
+ if(!Number.isInteger(start)||!Number.isInteger(end)||start>end||end-start>366*3)return {error:'Укажите корректный период (не более 3 лет).',rows:[],totals:{count:0,completed:0,cancelled:0,guests:0,total:0,paid:0,rest:0}};
+ const buckets=new Map(),zero=()=>({count:0,completed:0,cancelled:0,guests:0,total:0,paid:0,rest:0});
+ for(let i=start;i<=end;i++){
+   const d=dateAt(i),k=group==='month'?dkey(i).slice(0,7):dkey(i-(d.getDay()+6)%7);
+   if(!buckets.has(k))buckets.set(k,{key:k,label:group==='month'?k.slice(5)+'.'+k.slice(0,4):k.slice(8)+'.'+k.slice(5,7)+' — '+dkey(keyOff(k)+6).split('-').reverse().join('.'),...zero()});
+ }
+ for(const b of bookings){
+   if(!Number.isInteger(b.day)||b.day<start||b.day>end||b.start==null||!b.house||(house!=='all'&&b.house!==house))continue;
+   const d=dateAt(b.day),k=group==='month'?dkey(b.day).slice(0,7):dkey(b.day-(d.getDay()+6)%7),r=buckets.get(k);
+   if(!r)continue; const fail=paymentsClosed(b),sum=fail?0:Number(price(b).total)||0,received=Number(paid(b))||0;
+   r.count++;r.completed+=['done','review'].includes(b.stage)?1:0;r.cancelled+=['cancel','noshow'].includes(b.stage)?1:0;
+   r.guests+=fail?0:Number(b.guests||0);r.total+=sum;r.paid+=received;r.rest+=fail?0:Math.max(0,sum-received);
+ }
+ const rows=[...buckets.values()],totals=zero();
+ for(const r of rows)for(const k of Object.keys(totals))totals[k]+=r[k];
+ const max=Math.max(1,...rows.map(r=>r.count));
+ return {error:'',totals,rows:rows.map(r=>({...r,width:(100*r.count/max).toFixed(1)+'%',totalText:fmt(r.total),paidText:fmt(r.paid),restText:fmt(r.rest)}))};
+}
+// Isolated demo password exercise. This does not authenticate or protect CRM data.
+const DEMO_AUTH_KEY='shipa_crm_demo_password_v1';
+const demoPasswordValid=p=>typeof p==='string'&&p.length>=8&&p.length<=128&&/[a-zа-яё]/i.test(p)&&/\d/.test(p);
+const demoDigest=async (password,salt)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(salt+'|'+password)))).map(x=>x.toString(16).padStart(2,'0')).join('');
+async function demoPasswordMatches(password){
+ let record=null;try{record=JSON.parse(sessionStorage.getItem(DEMO_AUTH_KEY)||'null')}catch{}
+ if(!record)return password==='Demo1234!';
+ return (await demoDigest(password,record.salt))===record.hash;
+}
+async function demoPasswordSave(password){
+ const salt=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(x=>x.toString(16).padStart(2,'0')).join('');
+ const hash=await demoDigest(password,salt);sessionStorage.setItem(DEMO_AUTH_KEY,JSON.stringify({salt,hash}));
+}
+
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,handbookSelection:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',mobileStage:null,mobileNavOpen:false,kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={reportGroup:'week',reportFrom:'2026-10-01',reportTo:'2026-11-30',reportHouse:'all',authMode:'home',authMessage:'',authError:'',authOld:'',authNew:'',authConfirm:'',authCode:'',authLogin:'',authRecovery:null,authBusy:false,authSignedIn:(()=>{try{return sessionStorage.getItem('shipa_crm_demo_signed_in')!=='0'}catch{return true}})(),screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,handbookSelection:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',mobileStage:null,mobileNavOpen:false,kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -2998,12 +3104,36 @@ class Component extends DCLogic {
  }
 
  renderVals(){
-  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',staffDraft:null,handbookSelection:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,mobileNavOpen:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
+  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',authMode:'home',authOld:'',authNew:'',authConfirm:'',authCode:'',authLogin:'',authRecovery:null,authError:'',authMessage:'',staffDraft:null,handbookSelection:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,mobileNavOpen:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=(num,{keepGuest=false,tab='compose'}={})=>()=>this.setState({openId:num,detailsLast:'booking',tab,search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
   const rvs = s.receivedReviews;
   const reviewTodo = rvs.filter(review => !review.contacted).length;
+
+  const rr=s.screen==='reports'?bookingReport(B,{from:s.reportFrom,to:s.reportTo,group:s.reportGroup,house:s.reportHouse},b=>this.price(b),b=>this.paid(b)):{error:'',rows:[],totals:{count:0,completed:0,cancelled:0,guests:0,total:0,paid:0,rest:0}};
+  const report={from:s.reportFrom,to:s.reportTo,house:s.reportHouse,houses:HOUSES.filter(h=>!h.soon),week:s.reportGroup==='week',month:s.reportGroup==='month',finance:owner,error:rr.error,rows:rr.rows,empty:!rr.totals.count,canExport:!rr.error&&!!rr.totals.count,
+    setWeek:()=>this.setState({reportGroup:'week'}),setMonth:()=>this.setState({reportGroup:'month'}),setFrom:e=>this.setState({reportFrom:e.target.value}),setTo:e=>this.setState({reportTo:e.target.value}),setHouse:e=>this.setState({reportHouse:e.target.value}),
+    metrics:[{label:'Брони',value:rr.totals.count},{label:'Завершены',value:rr.totals.completed},{label:'Отмены / неявки',value:rr.totals.cancelled},{label:'Гостей',value:rr.totals.guests},...(owner?[{label:'Сумма броней',value:fmt(rr.totals.total)},{label:'Получено',value:fmt(rr.totals.paid)},{label:'Остаток',value:fmt(rr.totals.rest)}]:[])],
+    export:()=>{if(rr.error||!rr.totals.count)return;const headers=['Период','Брони','Завершены','Отмены / неявки','Гостей',...(owner?['Сумма броней','Получено','Остаток']:[])].map(uiText);this.downloadExcel('booking-report','Отчёты',headers,rr.rows.map(r=>[r.label,r.count,r.completed,r.cancelled,r.guests,...(owner?[r.total,r.paid,r.rest]:[])]),headers.map((_,i)=>i===0?32:20))}
+  };
+  const authClear={authOld:'',authNew:'',authConfirm:'',authCode:'',authLogin:'',authError:'',authMessage:'',authRecovery:null};
+  const authGo=(mode,extra={})=>{if(Object.hasOwn(extra,'authSignedIn'))try{sessionStorage.setItem('shipa_crm_demo_signed_in',extra.authSignedIn?'1':'0')}catch{};this.setState({...authClear,authMode:mode,...extra})};
+  const authFail=message=>this.setState({authError:message,authMessage:''});
+  const authSet=key=>e=>this.setState({[key]:e.target.value,authError:''});
+  const authNewOk=()=>{if(!demoPasswordValid(this.state.authNew)){authFail('Введите пароль длиной от 8 символов с буквой и цифрой.');return false}if(this.state.authNew!==this.state.authConfirm){authFail('Пароли не совпадают.');return false}return true};
+  const authRun=async(e,fn)=>{e.preventDefault();if(this.state.authBusy)return;this.setState({authBusy:true,authError:''});try{await fn()}catch{authFail('Не удалось завершить демо-операцию. Повторите попытку.')}finally{this.setState({authBusy:false})}};
+  const am=s.authMode==='home'&&!s.authSignedIn?'login':s.authMode;
+  const auth={home:am==='home',changeMode:am==='change',loginMode:am==='login',recoverMode:am==='recover',codeMode:am==='code',resetMode:am==='reset',busy:s.authBusy,message:s.authMessage,error:s.authError,old:s.authOld,new:s.authNew,confirm:s.authConfirm,code:s.authCode,login:s.authLogin,demoCode:s.authRecovery?.code||'',
+    setOld:authSet('authOld'),setNew:authSet('authNew'),setConfirm:authSet('authConfirm'),setCode:authSet('authCode'),setLogin:authSet('authLogin'),
+    change:()=>authGo('change'),logout:()=>authGo('login',{authSignedIn:false}),back:()=>authGo(s.authSignedIn?'home':'login'),recover:()=>authGo('recover'),
+    issue:()=>{const code=String(100000+crypto.getRandomValues(new Uint32Array(1))[0]%900000);authGo('code',{authRecovery:{code,expires:Date.now()+300000,attempts:0,verified:false}})},
+    verify:e=>{e.preventDefault();const r=this.state.authRecovery;if(!r||Date.now()>r.expires||r.attempts>=5){authGo('recover',{authError:'Срок действия кода истёк. Запросите новый.'});return}if(this.state.authCode!==r.code){this.setState({authRecovery:{...r,attempts:r.attempts+1},authError:'Неверный код.'});return}authGo('reset',{authRecovery:{...r,code:'',verified:true}})},
+    submitChange:e=>authRun(e,async()=>{if(!authNewOk())return;const next=this.state.authNew,old=this.state.authOld;if(!await demoPasswordMatches(old)){authFail('Текущий пароль неверен.');return}await demoPasswordSave(next);authGo('login',{authSignedIn:false,authMessage:'Пароль изменён. Войдите с новым паролем.'})}),
+    submitLogin:e=>authRun(e,async()=>{if(!await demoPasswordMatches(this.state.authLogin)){authFail('Неверный пароль.');return}authGo('home',{authSignedIn:true,authMessage:'Вход выполнен.'})}),
+    submitReset:e=>authRun(e,async()=>{const r=this.state.authRecovery;if(!r?.verified||Date.now()>r.expires){authGo('recover',{authError:'Срок действия кода истёк. Запросите новый.'});return}if(!authNewOk())return;await demoPasswordSave(this.state.authNew);authGo('login',{authSignedIn:false,authMessage:'Пароль восстановлен. Войдите с новым паролем.'})})
+  };
+
   const openReviewQueue = () => {
     this.setState({rvFilter:'followup',rvCategory:null});
     go('reviews')();
@@ -3012,9 +3142,11 @@ class Component extends DCLogic {
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',badge:reviewTodo,icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
   if(owner)navItems.push({id:'staff',name:'Сотрудники',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M18 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'});
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
+  navItems.push({id:'reports',name:'Отчёты',icon:'M3 3v18h18M7 17v-5h3v5zM12 17V8h3v9zM17 17V4h3v13z'});
+  navItems.push({id:'account',name:'Безопасность аккаунта',icon:'M12 3l8 3v6c0 4-3 7-8 9-5-2-8-5-8-9V6zM9 12l2 2 4-4'});
   navItems.push({id:'instructions',name:'Инструкции',icon:'M4 3h7l1 2 1-2h7v16h-7l-1 2-1-2H4zM12 5v16M7 8h2M15 8h2M7 12h2M15 12h2'});
   const nav=navItems.map(n=>({...n,go:go(n.id),current:s.screen===n.id?'page':'false',badge:n.badge||false,badgeShow:!!n.badge&&(s.navOpen||s.mobileNavOpen)}));
-  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники',instructions:'Инструкции'};
+  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники',instructions:'Инструкции',reports:'Отчёты',account:'Безопасность аккаунта'};
   const is={[s.screen]:!ownerScreen(s.screen)||owner};
   const openNew = () => this.setState({nb:this.newNb()});
   const openGuide = () => document.querySelector('.crm-mini-guide')?.showModal();
@@ -3714,7 +3846,7 @@ class Component extends DCLogic {
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew,
-   is,handbookTopics,handbookDialogOpen,handbookDialog,closeHandbook,
+   is,report,auth,handbookTopics,handbookDialogOpen,handbookDialog,closeHandbook,
    cancelHandbook:e=>{e.preventDefault();closeHandbook();},
    pressHandbookBackdrop:e=>{this.handbookBackdropPressed=isHandbookBackdrop(e);},
    clickHandbookBackdrop:e=>{const pressed=this.handbookBackdropPressed;this.handbookBackdropPressed=false;if(pressed&&isHandbookBackdrop(e))closeHandbook();},
