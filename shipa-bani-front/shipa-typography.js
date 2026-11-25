@@ -1,7 +1,7 @@
 /* Font-independent, horizontal dash marks for SHIPÁ copy and number ranges. */
 (function () {
   'use strict';
-  const DASH = /[\u2012-\u2015\u2212]|(?<!\S)-(?=\s|$)|(?<=\d)-(?=\d)|(?<=ВИДЕО)-(?=ОТЗЫВЫ)/gu;
+  const DASH = /[\u2012-\u2015\u2212]|(?<!\S)-(?=\s|$)|(?<=\d)-(?=\d)|(?<=ВИДЕО)-(?=ОТЗЫВЫ)|(?<=VIP)-(?=[А-Яа-яЁё])/gu;
   const hasDash = value => { DASH.lastIndex = 0; return DASH.test(value); };
   const style = document.createElement('style');
   style.textContent = '.shipa-text-dash{display:inline-block;inline-size:.32em;block-size:max(1px,.035em);vertical-align:.22em;background:currentColor;font-style:normal!important;transform:none!important}.shipa-text-dash--short{inline-size:.32em}';
