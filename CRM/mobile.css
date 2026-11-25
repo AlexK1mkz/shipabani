@@ -1,0 +1,318 @@
+/* Shared responsive layouts. Desktop cards keep their existing structure. */
+.crm-mobile-menu,.crm-mobile-nav-close,.crm-mobile-nav-backdrop,
+.crm-mobile-stage-select,.crm-mobile-panel-bar,.crm-mobile-new-close,
+.crm-mobile-label,.crm-mobile-calendar-hint,.crm-month-mobile-count{display:none}
+.crm-calendar-scroll,.crm-holidays-scroll{min-width:0;max-width:100%;overflow-x:auto}
+.crm-holiday-table{min-width:720px}
+.crm-mobile-icon{display:none}
+.crm-app,.crm-main{min-width:0}
+
+@media (max-width:1279px){
+  .crm-app{min-width:0!important;--crm-gutter:20px}
+  .crm-app-header .crm-header-date{display:none}
+  .crm-app-header .crm-header-search{width:min(280px,28vw)!important;min-width:0}
+  .crm-app-header h1{white-space:normal!important;line-height:1.2}
+  .crm-calendar-card{min-width:0}
+  .crm-day-row{min-width:1150px}
+  .crm-week-grid{min-width:1000px}
+  .crm-calendar-house{position:sticky;left:0;z-index:3;background:#fff}
+  .crm-mobile-calendar-hint{display:block;margin:0 0 10px;font-size:13px;color:#526271}
+  .crm-bookings-list{min-width:0;overflow-x:auto}
+  .crm-bookings-list-head,.crm-bookings-list-row{min-width:870px}
+  .crm-campaigns-view{grid-template-columns:minmax(0,1fr)!important}
+  .crm-campaigns-view>*{grid-column:1/-1!important;min-width:0}
+  .crm-campaigns-view [data-crm-view-motion="campaign-editor"]{grid-template-columns:minmax(0,1fr) minmax(200px,300px)!important}
+}
+
+@media (max-width:1024px){
+  .crm-app{height:100vh!important;height:100dvh!important;--crm-gutter:16px!important;width:100%;overflow:hidden!important}
+  .crm-main{width:100%;max-width:100vw}
+  .crm-navigation{position:fixed;inset:0 auto 0 0;width:min(320px,calc(100vw - 40px))!important;height:100%;z-index:35!important;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 120ms ease,visibility 0s 120ms!important;padding:12px 12px max(12px,env(safe-area-inset-bottom))!important;box-shadow:none}
+  .crm-navigation[data-mobile-open="true"]{visibility:visible;opacity:1;pointer-events:auto;transition:opacity 120ms ease,visibility 0s!important;box-shadow:8px 0 36px rgba(10,47,79,.16)}
+  .crm-navigation .crm-nav-mark{display:none!important}
+  .crm-navigation .crm-nav-expanded-content{visibility:visible!important;opacity:1!important}
+  .crm-navigation .crm-nav-pin{display:none}
+  .crm-navigation .crm-nav-brand{padding:0 4px;margin-bottom:8px}
+  .crm-navigation .crm-nav-wordmark{width:135px}
+  .crm-navigation .crm-nav-brand-label{font-size:18px}
+  .crm-navigation .crm-nav-links{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
+  .crm-navigation .crm-nav-item{min-height:48px}
+  .crm-mobile-nav-backdrop{display:block;position:fixed;inset:0;z-index:34;background:rgba(10,47,79,.42)}
+  .crm-mobile-icon{display:grid;place-items:center;flex:none;width:44px;height:44px;border:1px solid #D5E0E7;border-radius:11px;background:#fff;color:#0A2F4F}
+  .crm-mobile-nav-close{position:absolute;right:0;top:2px}
+  .crm-app .crm-app-header{height:auto!important;min-height:0!important;display:grid!important;grid-template-columns:44px minmax(0,1fr) auto;grid-template-areas:"menu title lang" "search search add";align-items:center;gap:8px!important;padding:10px var(--crm-gutter) 12px!important;background:#F6F3EE;border-bottom:1px solid rgba(10,47,79,.08)}
+  .crm-app .crm-app-header:not(:has(.crm-header-search)),.crm-app:has(.crm-staff) .crm-app-header{grid-template-areas:"menu title lang"}
+  .crm-mobile-menu{grid-area:menu}
+  .crm-app-header h1{grid-area:title;margin:0;min-width:0;font-size:clamp(17px,2.4vw,22px)!important;overflow-wrap:anywhere}
+  .crm-header-language{grid-area:lang;justify-self:end;gap:1px!important;padding:3px!important}
+  .crm-header-language button{padding:8px!important;min-width:32px;min-height:34px}
+  .crm-app .crm-app-header .crm-header-search{grid-area:search;min-width:0;width:auto!important;margin-left:0!important}
+  .crm-header-new-booking{grid-area:add;justify-content:center;height:44px!important;font-size:13px!important;padding:0 12px!important;gap:5px!important}
+  .crm-header-search input{font-size:16px!important;padding-left:34px!important;padding-right:8px!important}
+  .crm-header-search>svg{left:10px!important}
+  .crm-search-results{position:absolute!important;top:calc(100% + 6px)!important;left:0!important;right:auto!important;width:calc(100vw - 2 * var(--crm-gutter))!important;max-height:min(48dvh,360px);overflow:auto}
+  .crm-search-results button{display:grid!important;grid-template-columns:10px max-content minmax(0,1fr);height:auto!important;min-height:54px;gap:4px 8px!important;padding:8px!important;border-bottom:1px solid #E9EDF0;text-align:left}
+  .crm-search-results button>span:nth-child(4){grid-column:2/-1}
+  .crm-search-results button>span:nth-child(5){grid-column:2/-1;margin-left:0!important;overflow-wrap:anywhere}
+  [data-scroll-main]{padding:12px var(--crm-gutter) max(24px,env(safe-area-inset-bottom))!important;overflow-x:hidden!important;overscroll-behavior-y:contain}
+  [data-scroll-main]>section{min-width:0;max-width:100%;gap:12px!important}
+  [data-scroll-main]>section>*{min-width:0}
+  .crm-dashboard .crm-dashboard-feed,.crm-dashboard .crm-dashboard-side{grid-column:1/-1}
+  .crm-dashboard .crm-dashboard-tile,.crm-dashboard .crm-dashboard-tile-heading{min-width:0}
+  .crm-dashboard-feed,.crm-dashboard-side>div,.crm-calendar-card,.crm-rating-panel,.crm-review-list [data-crm-view-motion="reviews"]>div,.crm-campaigns-view>div[class],.crm-notifications-view>div,.tariff-side>div{padding:16px!important}
+  .crm-dashboard-side>div>div:first-child{gap:8px;flex-wrap:wrap}
+  .crm-dashboard-side [style*="display: flex; gap: 8px;"]{flex-wrap:wrap}
+  .crm-dashboard-side [style*="height: 36px"]{min-height:40px}
+  .crm-dashboard-side [style*="margin-left: auto; height: 36px"]{margin-left:0!important}
+  .crm-calendar-view>div:first-child{gap:8px!important}
+  .crm-calendar-view>div:first-child>span{flex:1 1 100%;white-space:normal!important;font-size:16px!important}
+  .crm-calendar-kpis{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important;margin:0!important}
+  .crm-calendar-kpis>div{padding:12px!important}
+  .crm-calendar-kpis>div>div:nth-child(2){font-size:24px!important;white-space:normal!important;overflow-wrap:anywhere}
+  .crm-calendar-kpis>div>div:nth-child(3){white-space:normal!important}
+  .crm-calendar-card{padding:12px!important}
+  .crm-calendar-house{width:118px!important;min-width:118px;padding-right:8px!important}
+  .crm-calendar-house>span:first-child{font-size:14px!important;letter-spacing:.02em!important;overflow-wrap:anywhere}
+  .crm-day-row{min-width:1180px}
+  .crm-week-grid{grid-template-columns:118px repeat(7,minmax(0,1fr))!important;min-width:1040px}
+  .crm-week-grid>:first-child{position:sticky;left:0;z-index:3;background:#fff}
+  .crm-week-grid button[draggable]{min-height:34px;height:auto!important;padding:6px 8px!important}
+  .crm-cal-key{margin:0;gap:8px 12px}
+  .crm-bookings-view{height:auto!important;min-height:100%}
+  .crm-board-tabs{flex-wrap:nowrap!important;overflow-x:auto;padding:2px 0 6px;gap:6px!important}
+  .crm-board-tabs>button{flex:0 0 auto;min-height:44px;font-size:13px!important}
+  .crm-board-tabs>button:last-child{margin-left:0!important}
+  .crm-booking-filter,.crm-picker,.crm-guest-export{min-height:42px}
+  .crm-kanban-period{gap:6px!important}
+  .crm-kanban-period-controls{flex:1 1 100%;gap:8px!important}
+  .crm-kanban-period-picker{min-width:0;flex:1}
+  .crm-kanban-dates{width:100%}
+  .crm-kanban-dates label{flex:1 1 130px;min-width:0;display:flex;flex-direction:column;align-items:stretch}
+  .crm-kanban-dates input{width:100%;min-width:0;min-height:42px}
+  .crm-kanban-dates button{flex:1 1 130px}
+  .crm-kanban-period .crm-kanban-history{min-height:32px;max-width:100%;overflow-wrap:anywhere}
+  .crm-kanban-legend{gap:5px 10px}
+  .crm-kanban-board{max-width:100%;min-width:0;flex:0 0 auto!important;overflow:auto!important}
+  .crm-notifications-view{grid-template-columns:minmax(0,1fr)!important}
+  .crm-notifications-view>*{grid-column:1/-1!important;min-width:0}
+  .crm-notifications-view>div>div{min-width:0}
+  .crm-campaigns-view>div{padding:16px!important}
+  .crm-campaigns-view>div:first-child{padding:0!important}
+  .crm-campaigns-view [data-crm-view-motion="campaign-editor"]{grid-template-columns:minmax(0,1fr)!important;gap:16px!important}
+  .crm-campaigns-view [data-crm-view-motion="campaign-audience"]{min-width:0;overflow-wrap:anywhere}
+  .crm-campaigns-view [data-crm-view-motion="campaign-editor"] [style*="display: flex; background: rgb(246, 243, 238)"]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px!important}
+  .crm-campaigns-view [data-crm-view-motion="campaign-editor"] [style*="display: flex; background: rgb(246, 243, 238)"] button{min-height:42px;white-space:normal!important}
+  .crm-campaigns-view [style*="align-items: baseline; justify-content: space-between"]{flex-wrap:wrap}
+  .crm-campaigns-view [style*="height: 28px; align-items: center"]{height:auto!important;min-height:28px}
+  .crm-campaigns-view [style*="grid-template-columns: 1fr 120px"]{grid-template-columns:minmax(0,1fr) minmax(80px,120px)!important}
+  .crm-notifications-view [style*="height: 56px"]{height:auto!important;min-height:56px;padding:8px 0;align-items:flex-start!important}
+  .crm-notifications-view [style*="height: 56px"]>button:nth-child(2){flex-wrap:wrap;gap:4px 8px!important;justify-content:flex-start;min-width:0;height:auto!important}
+  .crm-notifications-view [style*="height: 56px"]>button:nth-child(2)>span:first-child{flex:1 1 100%}
+  .crm-notifications-view [style*="height: 56px"]>button:nth-child(2)>span:nth-child(3){margin-left:0!important}
+  .crm-notifications-view [style*="padding: 0 0 20px 58px"]{padding:0 0 16px!important;grid-template-columns:minmax(0,1fr)!important}
+  .crm-notifications-view [style*="padding: 0 0 20px 58px"]>*{grid-column:1!important}
+  .crm-notifications-view [style*="height: 44px"]{height:auto!important;min-height:44px;padding:7px 0;flex-wrap:wrap}
+  .crm-guest-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .crm-guest-kpis>div{padding:12px!important;min-height:98px!important}
+  .crm-guest-kpis>div>div:nth-child(2){gap:4px!important;flex-wrap:wrap}
+  .crm-guest-kpis>div>div:nth-child(2)>span:first-child{font-size:30px!important}
+  .crm-guests-view>div:nth-child(2)>input{width:100%!important;min-width:0}
+  .crm-guest-export-group{margin-left:0;flex-wrap:wrap;max-width:100%;gap:8px}
+  .crm-review-list{min-width:0;grid-column:1/-1!important}
+  .crm-review-stats{grid-column:1/-1!important}
+  .crm-review-list [data-crm-view-motion="reviews"]>div>div:first-child{flex-wrap:wrap;gap:8px!important}
+  .crm-review-list [data-crm-view-motion="reviews"]>div>div:first-child>div{flex:1 1 200px;min-width:0;overflow-wrap:anywhere}
+  .crm-review-list [data-crm-view-motion="reviews"]>div>div:first-child>span:first-child{flex:none}
+  .crm-review-list textarea{min-width:0}
+  .crm-criterion-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .crm-criterion{padding:8px;gap:5px;min-width:0}
+  .crm-criterion-name{overflow-wrap:anywhere}
+  .crm-criterion-score{font-size:16px}
+  .tariff-grid{gap:12px!important}
+  .tariff-actions label{max-width:100%;min-width:0}
+  .tariff-card [style*="grid-template-columns: repeat(4, minmax(0, 1fr))"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .tariff-card [style*="align-items: baseline; justify-content: space-between"]{flex-wrap:wrap}
+  .tariff-matrix{min-width:680px}
+  .staff-intro{flex-wrap:wrap;gap:10px}
+  .staff-kpis{gap:8px}
+  .staff-kpi{min-width:0}
+}
+
+@media(max-width:900px){
+  .crm-app{--crm-gutter:12px!important}
+  .crm-dashboard .crm-dashboard-tile{grid-column:span 6!important;padding:12px;gap:7px}
+  .crm-dashboard-tile-heading{font-size:12px;gap:6px;align-items:flex-start}
+  .crm-dashboard-tile-icon{width:25px;height:25px;flex-basis:25px}
+  .crm-dashboard-tile-value{font-size:26px}
+  .crm-dashboard-tile-detail{font-size:12px;overflow-wrap:anywhere}
+  .crm-prep-booking{grid-template-columns:minmax(0,1fr) auto 10px;gap:6px}
+  .crm-prep-heading{gap:4px}
+  .crm-prep-house{font-size:15px}
+  .crm-prep-times{font-size:11px;white-space:normal}
+  .crm-birthday-open{gap:6px;padding:4px 0}
+  .crm-birthday-open .crm-birthday-chevron{display:none}
+  .crm-birthday-whatsapp{width:42px!important;height:42px!important}
+  .crm-month-grid>div:not(.crm-month-cell){padding:2px!important;justify-content:center;height:30px!important}
+  .crm-month-cell{padding:5px 2px!important;min-height:70px!important;gap:4px!important}
+  .crm-month-cell>div:first-child{justify-content:center;gap:0!important}
+  .crm-month-cell>div:first-child>span:not(:first-child),.crm-month-cell>button,.crm-month-cell>span:not(.crm-month-mobile-count){display:none!important}
+  .crm-month-mobile-count{display:block;text-align:center;font-size:12px;font-weight:600;color:#0A2F4F;border-radius:5px;background:#E7EFF4;padding:2px;margin-inline:2px}
+  .crm-dashboard-feed [style*="display: flex; gap: 8px;"]{flex-wrap:wrap}
+  .crm-dashboard-feed a,.crm-dashboard-feed button{max-width:100%}
+  .crm-notifications-view [style*="height: 56px"]>button:nth-child(2)>span:last-child{width:auto!important;margin-left:auto;white-space:normal}
+  .crm-notifications-view [style*="height: 56px"]>button:nth-child(2)>span:nth-child(2){flex:1 1 100%;overflow-wrap:anywhere}
+  .tariff-card [style*="display: flex; margin-top: 4px"] button{min-width:0;height:auto!important;min-height:40px;white-space:normal!important;padding:4px}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"]{min-width:0;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"]>*{min-width:0;max-width:100%;overflow-wrap:anywhere}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"] input{width:100%}
+  .crm-mobile-stage-select{display:block}
+  .crm-mobile-stage-select label{display:grid;gap:4px;font-size:13px;color:#526271;font-weight:600}
+  .crm-mobile-stage-select select{min-height:44px;font-size:16px}
+  .crm-kanban-board{display:block!important;overflow:visible!important;padding-bottom:0!important}
+  .crm-kanban-column{display:none!important;width:100%!important;min-height:120px!important;padding:10px!important}
+  .crm-kanban-column[data-mobile-active="true"]{display:flex!important}
+  .crm-kanban-column>div:first-child>div>span:nth-child(2){font-size:15px!important;white-space:normal!important}
+  .crm-kanban-card{padding:12px!important;cursor:pointer!important}
+  .crm-kanban-card>div:first-child>span:first-child{flex:none;width:34px!important;height:34px!important}
+  .crm-kanban-card>div:first-child>span:nth-child(2){min-width:0;flex:1;overflow-wrap:anywhere}
+  .crm-kanban-card>div:first-child>span:last-child{flex:none}
+  .crm-kanban-card>div:nth-child(3){flex-wrap:wrap}
+  .crm-bookings-list{background:transparent!important;padding:0!important;overflow:visible}
+  .crm-bookings-list-head,.crm-bookings-list-row{min-width:0}
+  .crm-bookings-list-head{display:flex!important;align-items:center;gap:8px;overflow-x:auto;border:0!important;height:auto!important;margin-bottom:8px}
+  .crm-bookings-list-head>span{display:none}
+  .crm-bookings-list-head button{flex:none;padding:8px 10px;min-height:40px;background:#fff;border:1px solid #D5E0E7;border-radius:9px;font-size:13px}
+  .crm-bookings-list-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;background:#fff;align-items:start!important;gap:9px 12px;min-height:0;height:auto!important;padding:14px!important;margin:0 0 8px;border-radius:14px!important;overflow-wrap:anywhere}
+  .crm-bookings-list-row>span{min-width:0}
+  .crm-bookings-list-row>span:first-child{grid-column:1;grid-row:1;color:#526271;font-size:12px}
+  .crm-bookings-list-row>span:nth-child(5){grid-column:2;grid-row:1;justify-content:flex-end}
+  .crm-bookings-list-row>span:nth-child(5)>span{text-align:center;max-width:100%}
+  .crm-list-guest{grid-column:1/-1;grid-row:2;font-size:16px;font-weight:600}
+  .crm-list-phone{display:block;font-size:13px;font-weight:400}
+  .crm-bookings-list-row>span:nth-child(3){font-size:14px!important;letter-spacing:.03em!important;align-self:end}
+  .crm-bookings-list-row>span:nth-child(7){font-weight:600!important;font-size:15px}
+  .crm-mobile-label{display:block;font-size:12px;font-weight:400;line-height:1.3;color:#526271;margin-bottom:3px;white-space:normal}
+  .crm-guests-table-card{background:transparent;padding:0!important}
+  .crm-guests-table-scroll,.crm-guests-table{overflow:visible;min-width:0}
+  .crm-guest-table-head{display:flex;gap:6px;overflow-x:auto;min-height:0;border:0;margin:0 0 8px;padding:0 0 5px}
+  .crm-guest-table-head>span{display:none}
+  .crm-guest-table-head>div{flex:none;background:#fff;border:1px solid #D5E0E7;border-radius:9px;padding:0 10px}
+  .crm-guest-table-head button{min-height:40px;white-space:nowrap;font-size:13px}
+  .crm-guest-table-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 12px;min-height:0;background:#fff;padding:14px;border:0;border-radius:14px;margin-bottom:8px;align-items:start}
+  .crm-guest-table-row .crm-guest-identity{grid-column:1/-1;border-bottom:1px solid #E9EDF0;padding-bottom:9px}
+  .crm-guest-name{font-size:16px!important;white-space:normal}
+  .crm-guest-table-row .crm-guest-table-cell,.crm-guest-table-row .crm-guest-phone{white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip;text-align:left}
+  .crm-guest-tags{max-height:none;overflow:visible}
+  .crm-guest-tags .crm-mobile-label{flex-basis:100%;margin:0}
+  .crm-guest-tier,.crm-guest-tag{white-space:normal;overflow-wrap:anywhere}
+  .crm-review-list [data-crm-view-motion="reviews"]>div>div:first-child>div{flex-basis:calc(100% - 56px)}
+  .crm-review-list [data-crm-view-motion="reviews"]>div>div:first-child>span:nth-last-child(2){margin-left:0!important}
+  .crm-review-actions a,.crm-review-actions button{min-height:44px}
+  .crm-details-panel,.crm-details-panel--paired,.crm-guest-panel.crm-details-panel--paired{animation:fadeIn 160ms ease-out;width:100%!important;max-width:100%;right:0!important;left:0!important;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+  .crm-mobile-panel-bar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-bottom:1px solid #E4E9ED;padding:8px 12px;flex:none}
+  .crm-mobile-panel-bar .crm-mobile-icon{height:40px;width:40px}
+  .crm-panel-desktop-close{display:none!important}
+  .crm-panel-heading{flex:none;padding:12px 12px 0!important;gap:10px!important;min-width:0}
+  .crm-panel-heading>div{min-width:0}
+  .crm-panel-heading>div:not(.crm-panel-tabs){flex-wrap:wrap}
+  .crm-booking-identity{gap:8px!important}
+  .crm-booking-identity .crm-stage-field{max-width:none;flex:1;min-width:0}
+  .crm-booking-identity>span:last-of-type{flex:1 1 100%}
+  .crm-booking-house>label{flex:1 1 100%;text-align:left!important}
+  .crm-booking-house>label select{width:100%;max-width:100%;margin-left:0!important}
+  .crm-booking-house>div:first-child{width:64px!important;height:54px!important}
+  .crm-booking-house>div:nth-child(2)>div:first-child{font-size:21px!important;overflow-wrap:anywhere}
+  .crm-booking-contact>span:first-child{flex:none}
+  .crm-booking-contact>button{flex:1 1 190px!important;overflow-wrap:anywhere}
+  .crm-booking-contact a{flex:1;min-width:48px;height:44px!important}
+  .crm-panel-tabs{flex:none;overflow-x:auto;gap:4px!important}
+  .crm-panel-tabs button{flex:0 0 auto;min-height:44px;padding:0 12px!important;white-space:nowrap}
+  .crm-booking-panel-body,.crm-guest-panel-body{flex:0 0 auto!important;overflow:visible!important;min-height:0;padding:14px 12px 24px!important}
+  .crm-booking-panel-body [style*="display: flex; gap: 6px;"],.crm-booking-panel-body [style*="display: flex; gap: 8px;"]{flex-wrap:wrap}
+  .crm-booking-panel-body [style*="grid-template-columns: repeat(3, 1fr)"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .crm-booking-panel-body [style*="grid-template-columns: repeat(3, 1fr)"]>div:last-child{grid-column:1/-1}
+  .crm-booking-panel-body [style*="font-size: 26px; line-height: 1.1"]{font-size:22px!important;overflow-wrap:anywhere}
+  .crm-booking-panel-body [style*="height: 48px"][style*="display: flex; align-items: center"]{height:auto!important;min-height:48px;flex-wrap:wrap;padding:10px!important}
+  .crm-booking-panel-body [style*="height: 44px; border-top"],.crm-booking-panel-body [style*="height: 44px; border-bottom"]{height:auto!important;min-height:44px;flex-wrap:wrap;gap:6px!important;padding:8px 0}
+  .crm-booking-panel-body [style*="width: 92px; flex: 0 0 auto"],.crm-guest-panel-body [style*="width: 112px; flex: 0 0 auto"]{width:auto!important;flex:0 0 100%!important}
+  .crm-booking-panel-body [style*="padding: 10px 0; border-top"],.crm-guest-panel-body [style*="padding: 10px 0; border-top"]{flex-wrap:wrap;gap:5px!important}
+  .crm-panel-event{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px!important;min-width:0}
+  .crm-panel-event>span:first-child{width:auto!important;grid-column:1;grid-row:1}
+  .crm-panel-event>span:nth-child(2){grid-column:1/-1;grid-row:2;min-width:0;overflow-wrap:anywhere}
+  .crm-panel-event>span:last-child{grid-column:2;grid-row:1;white-space:normal!important;text-align:right}
+  .crm-booking-service>button>span:nth-child(2),.crm-new-service>button>span:nth-child(2){min-width:0;overflow-wrap:anywhere}
+  .crm-booking-footer,.crm-reschedule-footer{position:sticky;bottom:0;z-index:3;flex-wrap:wrap;gap:6px!important;padding:8px 12px max(8px,env(safe-area-inset-bottom))!important;box-shadow:0 -3px 16px rgba(10,47,79,.05)}
+  .crm-booking-footer button,.crm-reschedule-footer-actions button{flex:1 1 130px;min-height:44px;height:auto!important;padding:8px 10px!important}
+  .crm-booking-footer>span{font-size:11px!important;flex-basis:100%}
+  .crm-guest-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .crm-guest-stats>div>div:last-child{white-space:normal!important;font-size:21px!important;overflow-wrap:anywhere}
+  .crm-guest-panel .crm-panel-heading>div:nth-child(2)>a,.crm-guest-panel .crm-panel-heading>div:nth-child(2)>button{flex:1 1 auto;min-height:44px;margin-left:0!important;justify-content:center}
+  .crm-guest-panel .crm-panel-heading>div:has([style*="max-width: 150px"]){flex-wrap:wrap}
+  .crm-guest-panel .crm-panel-heading [style*="max-width: 150px"]{max-width:none!important;text-align:left!important;flex-basis:100%}
+  .crm-guest-booking{display:grid!important;grid-template-columns:1fr 1fr;gap:6px 10px!important;padding:10px 0;min-width:0}
+  .crm-guest-booking>span{width:auto!important;min-width:0;white-space:normal!important;overflow-wrap:anywhere}
+  .crm-guest-booking>span:nth-child(3){grid-column:1/-1}
+  .crm-new-booking{inset:0!important;top:0!important;left:0!important;transform:none!important;width:100%!important;height:100%;max-height:100dvh!important;border-radius:0!important;grid-template-columns:minmax(0,1fr)!important;gap:16px!important;padding:12px 12px max(20px,env(safe-area-inset-bottom))!important;overflow:auto!important;overscroll-behavior:contain}
+  .crm-new-booking>div{min-width:0}
+  .crm-new-booking-title{position:sticky;top:-12px;z-index:4;background:#fff;display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 10px;border-bottom:1px solid #E4E9ED}
+  .crm-new-booking-title>span{margin-left:0!important;flex:1 1 100%;font-size:12px!important}
+  .crm-mobile-new-close{display:grid;margin-left:auto;width:40px;height:40px}
+  .crm-booking-summary{position:static;min-width:0;overflow-wrap:anywhere}
+  .crm-booking-date{grid-column:1/-1}
+  .crm-booking-calendar{position:static;width:100%;max-width:none;padding:8px;margin-top:6px;box-shadow:none}
+  .crm-booking-calendar-grid button{min-height:36px}
+  .crm-new-service,.crm-booking-service{flex-wrap:wrap;padding:8px!important;gap:6px!important}
+  .crm-new-service>button,.crm-booking-service>button{min-width:0;flex:1 1 100%!important;gap:8px!important}
+  .crm-new-service>span,.crm-booking-service>span{margin-left:auto;border:0!important}
+  .crm-new-service>span>button,.crm-booking-service>span>button{width:40px!important;height:40px!important}
+  .crm-reason-dialog,.crm-mini-guide,.crm-staff-dialog{padding:16px!important;max-height:calc(100dvh - 24px);overflow:auto}
+  .crm-staff .staff-intro p{max-width:100%}
+  .crm-staff .staff-kpis{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .staff-kpi{display:block;padding:9px!important}
+  .staff-kpi-mark{width:28px;height:28px;margin-bottom:5px}
+  .staff-kpi-data{font-size:12px;overflow-wrap:anywhere}
+  .staff-toolbar,.staff-side{padding:12px!important}
+  .staff-filter,.staff-filter select{width:100%}
+  .staff-fields input{flex:1 1 100%}
+  .staff-table [role="row"]{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .staff-table [role="row"]>*{min-width:0;overflow-wrap:anywhere}
+  .staff-person span:last-child{min-width:0}
+  .staff-phone{white-space:normal}
+  .staff-edit{min-height:44px}
+  .crm-toast{bottom:max(16px,env(safe-area-inset-bottom));width:max-content;max-width:calc(100vw - 24px)}
+  /* Keep the native date picker and other controls readable on iOS. */
+  .crm-app input:not([type="checkbox"]):not([type="radio"]),.crm-app select,.crm-app textarea{font-size:16px!important;min-width:0;max-width:100%}
+  .crm-app :is(label,fieldset){min-width:0;overflow-wrap:anywhere}
+  .crm-app input:not([type="checkbox"]):not([type="radio"]),.crm-app select{min-height:40px}
+  .crm-app [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .crm-app [style*="grid-template-columns: 1fr 1fr"]>*{min-width:0}
+}
+
+@media(max-width:480px){
+  .crm-app-header h1{font-size:18px!important}
+  .crm-header-new-booking{font-size:12px!important;padding:0 10px!important}
+  .crm-header-new-booking svg{width:16px;height:16px}
+  .crm-calendar-view>div:first-child>div:first-child{width:100%}
+  .crm-calendar-view>div:first-child>div:first-child button{flex:1;padding:0 10px!important;min-height:40px}
+  .crm-calendar-kpis>div>div:nth-child(2){font-size:22px!important}
+  .crm-campaigns-view [data-crm-view-motion="campaign-editor"] [style*="grid-template-columns: 1fr 120px"]{grid-template-columns:minmax(0,1fr)!important}
+  .crm-campaigns-view [style*="white-space: nowrap"]{white-space:normal!important}
+  .crm-staff .staff-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"]{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr) minmax(0,.8fr) minmax(0,.65fr)!important;gap:4px!important}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"] input{width:100%;padding-inline:4px!important}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"] span:has(>input){gap:2px!important}
+  .tariff-card [style*="grid-template-columns: 1.2fr 1fr 1fr 1fr"] span:has(>input)>span{width:8px!important;height:8px!important}
+  .tariff-card [style*="white-space: nowrap"]{white-space:normal!important}
+  .crm-review-list [data-crm-view-motion="reviews"]>div>div:first-child>div{flex-basis:calc(100% - 52px)}
+  .crm-new-booking [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:360px){
+  .crm-app{--crm-gutter:10px!important}
+  .crm-header-language button{padding:6px!important;min-width:28px}
+  .crm-app-header h1{font-size:16px!important}
+  .crm-dashboard-tile-heading{flex-direction:column;gap:4px}
+  .crm-criterion-list{grid-template-columns:1fr}
+  .crm-new-booking [style*="grid-template-columns: 1fr 1fr"],.crm-guest-panel-body [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:minmax(0,1fr)!important}
+  .crm-new-booking [style*="grid-template-columns: 1fr 1fr"]>*{grid-column:1!important}
+  .crm-new-booking [style*="grid-template-columns: 1fr 1fr"] .crm-booking-date{grid-column:1!important}
+}

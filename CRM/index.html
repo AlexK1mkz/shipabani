@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="../shipa-bani-front/review-store.js?v=1"></script>
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261125-kanban-range"></script>
+<script defer src="./shipa-ru-kz.js?v=20261125-mobile"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -423,12 +423,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   }
   @media(max-width:640px){.crm-app:has(.crm-staff){--crm-gutter:14px;}.crm-app:has(.crm-staff) .crm-app-header{gap:8px;}.crm-app:has(.crm-staff) .crm-app-header h1{font-size:18px;}.staff-intro{align-items:flex-start;flex-direction:column;}.staff-kpis{grid-template-columns:1fr;gap:6px;}.staff-kpi{padding:8px 12px;}}
 </style>
+<link rel="stylesheet" href="./mobile.css?v=20261125-5">
 </helmet>
 <div class="crm-app" data-screen-label="CRM" style="display:flex;height:100vh;background:#F6F3EE;color:#0A2F4F;font-size:14px;line-height:1.4;overflow:hidden;">
 
 <!-- Боковое меню -->
-<nav data-expanded="{{ navExpanded }}" onMouseEnter="{{ navEnter }}" onMouseLeave="{{ navLeave }}" style="width:{{ navW }};flex:0 0 auto;background:#fff;border-right:1px solid rgba(10,47,79,.08);display:flex;flex-direction:column;padding:16px 12px;gap:4px;transition:width 170ms ease-out;overflow:hidden;z-index:5;">
+<nav id="crm-navigation" class="crm-navigation" data-mobile-open="{{ mobileNavExpanded }}" data-expanded="{{ navExpanded }}" onMouseEnter="{{ navEnter }}" onMouseLeave="{{ navLeave }}" style="width:{{ navW }};flex:0 0 auto;background:#fff;border-right:1px solid rgba(10,47,79,.08);display:flex;flex-direction:column;padding:16px 12px;gap:4px;transition:width 170ms ease-out;overflow:hidden;z-index:5;">
   <div class="crm-nav-brand">
+    <button class="crm-mobile-nav-close crm-mobile-icon" type="button" onClick="{{ closeMobileNav }}" aria-label="Закрыть меню"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     <div class="crm-nav-full-brand crm-nav-expanded-content" aria-hidden="{{ navCollapsed }}">
       <img class="crm-nav-wordmark" src="../shipa-bani-front/brand/logo-h-navy.png" alt="SHIPÁ" width="782" height="231">
       <span class="crm-nav-brand-label">CRM</span>
@@ -456,10 +458,13 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   </div>
 </nav>
 
+<sc-if value="{{ mobileNavOpen }}"><button type="button" class="crm-mobile-nav-backdrop" onClick="{{ closeMobileNav }}" aria-label="Закрыть меню"></button></sc-if>
+
 <!-- Основная область -->
-<main style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;">
+<main class="crm-main" style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;">
   <header class="crm-app-header" style="height:72px;flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:0 var(--crm-gutter,32px);">
-<div role="group" aria-label="Язык / Тіл" style="display:flex;gap:3px;padding:4px;background:#f4eee8;border-radius:999px;flex-shrink:0;">
+<button class="crm-mobile-menu crm-mobile-icon" type="button" onClick="{{ toggleMobileNav }}" aria-label="Открыть меню" aria-controls="crm-navigation" aria-expanded="{{ mobileNavExpanded }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div class="crm-header-language" role="group" aria-label="Язык / Тіл" style="display:flex;gap:3px;padding:4px;background:#f4eee8;border-radius:999px;flex-shrink:0;">
 <button data-shipa-lang="RU" style="border-radius:999px;padding:8px 12px;font-size:12px;font-weight:600;">RU</button>
 <button data-shipa-lang="KZ" style="border-radius:999px;padding:8px 12px;font-size:12px;font-weight:600;">KZ</button>
 </div>
@@ -469,7 +474,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(10,47,79,.5)" stroke-width="1.5" stroke-linecap="round" style="position:absolute;left:14px;top:13px;"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
       <input value="{{ search }}" onChange="{{ setSearch }}" placeholder="Телефон, имя, № брони, дом · ⌘K" style="width:100%;height:44px;border-radius:12px;border:1px solid rgba(10,47,79,.08);background:#fff;padding:0 14px 0 42px;font-size:14px;outline:none;">
       <sc-if value="{{ hasSearch }}" hint-placeholder-val="{{ false }}">
-        <div style="position:absolute;top:52px;left:0;right:0;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(10,47,79,.12);padding:8px;z-index:30;animation:fadeIn 150ms ease-out;">
+        <div class="crm-search-results" style="position:absolute;top:52px;left:0;right:0;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(10,47,79,.12);padding:8px;z-index:30;animation:fadeIn 150ms ease-out;">
           <sc-for list="{{ searchRes }}" as="r" hint-placeholder-count="0">
             <button onClick="{{ r.open }}" style="display:flex;align-items:center;gap:12px;width:100%;height:48px;padding:0 12px;border-radius:12px;text-align:left;" style-hover="background:rgba(10,47,79,.06);">
               <span style="width:8px;height:8px;border-radius:999px;background:{{ r.color }};flex:0 0 auto;"></span>
@@ -602,7 +607,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <!-- ===== КАЛЕНДАРЬ ===== -->
   <sc-if value="{{ is.calendar }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Календарь домов" style="max-width:1440px;display:flex;flex-direction:column;gap:16px;">
+    <section class="crm-calendar-view" data-screen-label="Календарь домов" style="max-width:1440px;display:flex;flex-direction:column;gap:16px;">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <div style="display:flex;background:#fff;border-radius:12px;padding:4px;border:1px solid rgba(10,47,79,.08);">
           <button onClick="{{ calDayMode }}" style="height:36px;padding:0 16px;border-radius:9px;font-weight:500;background:{{ calSeg.day.bg }};color:{{ calSeg.day.fg }};">День</button>
@@ -628,7 +633,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </sc-if>
 
       <sc-if value="{{ calIsDay }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div class="crm-calendar-kpis" style="display:flex;gap:12px;margin-bottom:12px;">
           <sc-for list="{{ calSum }}" as="k" hint-placeholder-count="5">
             <div style="flex:1 1 0;background:#fff;border-radius:16px;padding:14px 18px;min-width:0;">
               <div style="font-size:12px;color:rgba(59,47,42,.7);">{{ k.l }}</div>
@@ -637,16 +642,18 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             </div>
           </sc-for>
         </div>
-        <div data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
-          <div style="display:flex;height:28px;">
-            <div style="width:168px;flex:0 0 auto;"></div>
+        <div class="crm-calendar-card crm-calendar-day" data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
+          <p class="crm-mobile-calendar-hint">Листайте расписание по горизонтали. Нажмите на бронь для управления.</p>
+          <div class="crm-calendar-scroll" role="region" aria-label="Расписание домов" tabindex="0">
+          <div class="crm-day-row" style="display:flex;height:28px;">
+            <div class="crm-calendar-house" style="width:168px;flex:0 0 auto;"></div>
             <div style="flex:1;display:flex;">
               <sc-for list="{{ hourLabels }}" as="h" hint-placeholder-count="16"><div style="flex:1;font-size:12px;color:rgba(59,47,42,.7);border-left:1px solid rgba(10,47,79,.08);padding-left:6px;">{{ h }}</div></sc-for>
             </div>
           </div>
           <sc-for list="{{ calRows }}" as="row" hint-placeholder-count="8">
-            <div style="display:flex;height:64px;border-top:1px solid rgba(10,47,79,.08);opacity:{{ row.opacity }};">
-              <div style="width:168px;flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;padding-right:12px;">
+            <div class="crm-day-row" style="display:flex;height:64px;border-top:1px solid rgba(10,47,79,.08);opacity:{{ row.opacity }};">
+              <div class="crm-calendar-house" style="width:168px;flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;padding-right:12px;">
                 <span style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:19px;letter-spacing:.06em;line-height:1;">{{ row.n }} {{ row.name }}</span>
                 <span style="font-size:12px;color:rgba(59,47,42,.7);margin-top:4px;">{{ row.cat }}</span>
               </div>
@@ -664,17 +671,19 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               </div>
             </div>
           </sc-for>
+          </div>
           <div style="margin-top:12px;font-size:13px;color:rgba(59,47,42,.7);">Клик по пустой ячейке — новая бронь. Перетащите бронь на другое время или дом — откроется перенос с проверкой занятости. Серые дома открываются позже.</div>
         </div>
       </sc-if>
 
       <sc-if value="{{ calIsWeek }}" hint-placeholder-val="{{ false }}">
-        <div data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
-          <div style="display:grid;grid-template-columns:168px repeat(7,minmax(0,1fr));">
+        <div class="crm-calendar-card crm-calendar-week" data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
+          <p class="crm-mobile-calendar-hint">Листайте расписание по горизонтали. Нажмите на бронь для управления.</p>
+          <div class="crm-calendar-scroll" role="region" aria-label="Расписание домов" tabindex="0"><div class="crm-week-grid" style="display:grid;grid-template-columns:168px repeat(7,minmax(0,1fr));">
             <div></div>
             <sc-for list="{{ weekDays }}" as="d" hint-placeholder-count="7"><button onClick="{{ d.go }}" style="height:44px;text-align:left;padding:0 8px;border-left:1px solid rgba(10,47,79,.08);font-size:13px;color:{{ d.color }};font-weight:{{ d.weight }};" style-hover="background:rgba(10,47,79,.04);">{{ d.label }}</button></sc-for>
             <sc-for list="{{ weekRows }}" as="row" hint-placeholder-count="8">
-              <div style="border-top:1px solid rgba(10,47,79,.08);padding:10px 12px 10px 0;display:flex;flex-direction:column;justify-content:center;opacity:{{ row.opacity }};"><span style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:19px;letter-spacing:.06em;line-height:1;">{{ row.n }} {{ row.name }}</span><span style="font-size:12px;color:rgba(59,47,42,.7);margin-top:4px;">{{ row.cat }}</span></div>
+              <div class="crm-calendar-house" style="border-top:1px solid rgba(10,47,79,.08);padding:10px 12px 10px 0;display:flex;flex-direction:column;justify-content:center;opacity:{{ row.opacity }};"><span style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:19px;letter-spacing:.06em;line-height:1;">{{ row.n }} {{ row.name }}</span><span style="font-size:12px;color:rgba(59,47,42,.7);margin-top:4px;">{{ row.cat }}</span></div>
               <sc-for list="{{ row.days }}" as="d" hint-placeholder-count="7">
                 <div onClick="{{ d.go }}" onDragOver="{{ allowDrop }}" onDrop="{{ d.drop }}" style="border-top:1px solid rgba(10,47,79,.08);border-left:1px solid rgba(10,47,79,.08);padding:6px;min-height:72px;display:flex;flex-direction:column;gap:4px;cursor:pointer;opacity:{{ row.opacity }};" style-hover="background:rgba(193,92,34,.04);">
                   <sc-for list="{{ d.items }}" as="b" hint-placeholder-count="0">
@@ -684,26 +693,28 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
               </sc-for>
             </sc-for>
           </div>
+          </div>
           <div style="margin-top:12px;font-size:13px;color:rgba(59,47,42,.7);">Перетащите бронь на другой день или дом — откроется перенос: время и цена пересчитаются, гостю уйдёт сообщение.</div>
         </div>
       </sc-if>
 
       <sc-if value="{{ calIsMonth }}" hint-placeholder-val="{{ false }}">
-        <div data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
+        <div class="crm-calendar-card crm-calendar-month" data-crm-view-motion="calendar" style="background:#fff;border-radius:20px;padding:16px 24px 24px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
             <select value="{{ calHouse }}" onChange="{{ setCalHouse }}" style="height:36px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;background:#fff;"><option value="all">Все дома</option><sc-for list="{{ houseOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select>
             <sc-for list="{{ monthStats }}" as="m" hint-placeholder-count="3"><span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ m.l }} <b style="color:#0A2F4F;">{{ m.v }}</b></span></sc-for>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid rgba(10,47,79,.08);border-left:1px solid rgba(10,47,79,.08);">
+          <div class="crm-month-grid" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid rgba(10,47,79,.08);border-left:1px solid rgba(10,47,79,.08);">
             <sc-for list="{{ monthHead }}" as="d" hint-placeholder-count="7"><div style="height:32px;display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:600;color:{{ d.color }};border-right:1px solid rgba(10,47,79,.08);border-bottom:1px solid rgba(10,47,79,.08);">{{ d.name }}</div></sc-for>
             <sc-for list="{{ monthCells }}" as="c" hint-placeholder-count="35">
-              <div onClick="{{ c.go }}" onDragOver="{{ allowDrop }}" onDrop="{{ c.drop }}" title="{{ c.title }}" style="min-height:128px;min-width:0;padding:8px;border-right:1px solid rgba(10,47,79,.08);border-bottom:1px solid rgba(10,47,79,.08);background:{{ c.bg }};opacity:{{ c.opacity }};cursor:pointer;display:flex;flex-direction:column;gap:4px;" style-hover="background:rgba(193,92,34,.05);">
+              <div class="crm-month-cell" onClick="{{ c.go }}" onDragOver="{{ allowDrop }}" onDrop="{{ c.drop }}" title="{{ c.title }}" style="min-height:128px;min-width:0;padding:8px;border-right:1px solid rgba(10,47,79,.08);border-bottom:1px solid rgba(10,47,79,.08);background:{{ c.bg }};opacity:{{ c.opacity }};cursor:pointer;display:flex;flex-direction:column;gap:4px;" style-hover="background:rgba(193,92,34,.05);">
                 <div style="display:flex;align-items:center;gap:6px;min-width:0;">
                   <span style="width:26px;height:26px;border-radius:999px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;background:{{ c.numBg }};color:{{ c.numFg }};">{{ c.num }}</span>
                   <span style="font-size:11px;color:#C15C22;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;">{{ c.hol }}</span>
                   <span style="margin-left:auto;font-size:11px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ c.rev }}</span>
                 </div>
                 <div title="{{ c.loadTitle }}" style="height:4px;border-radius:4px;background:rgba(10,47,79,.08);overflow:hidden;"><div style="height:100%;width:{{ c.load }};background:{{ c.loadColor }};border-radius:4px;"></div></div>
+                <sc-if value="{{ c.mobileCount }}"><span class="crm-month-mobile-count">{{ c.mobileCount }}</span></sc-if>
                 <sc-for list="{{ c.items }}" as="b" hint-placeholder-count="2">
                   <button onClick="{{ b.open }}" draggable="{{ b.dr }}" onDragStart="{{ b.drag }}" onDragEnd="{{ clearCalendarDrag }}" title="{{ b.title }}" style="height:20px;padding:0 6px;border-radius:5px;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.border }};font-size:11px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab;flex:0 0 auto;"><b>{{ b.time }}</b> {{ b.label }}</button>
                 </sc-for>
@@ -728,8 +739,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <!-- ===== БРОНИ: КАНБАН / СПИСОК ===== -->
   <sc-if value="{{ is.bookings }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Брони и продажи" style="display:flex;flex-direction:column;gap:12px;height:100%;">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <section class="crm-bookings-view" data-screen-label="Брони и продажи" style="display:flex;flex-direction:column;gap:12px;height:100%;">
+      <div class="crm-board-tabs" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <sc-for list="{{ boardTabs }}" as="t" hint-placeholder-count="3">
           <button onClick="{{ t.go }}" title="{{ t.title }}" style="height:40px;padding:0 14px;border-radius:12px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;white-space:nowrap;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};transition:background 150ms ease-out;">
             <sc-if value="{{ t.main }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"></path></svg></sc-if>
@@ -814,9 +825,12 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <span><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ icon.path }}"></path></svg>{{ icon.label }}</span>
           </sc-for>
         </div>
-        <div data-crm-view-motion="bookings" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;flex:1;min-height:0;align-items:flex-start;">
+        <div class="crm-mobile-stage-select">
+          <label>Стадия канбана<select class="tariff-input" aria-label="Стадия канбана" value="{{ mobileStage }}" onChange="{{ setMobileStage }}"><sc-for list="{{ columns }}" as="c"><option value="{{ c.id }}">{{ c.name }} · {{ c.count }}</option></sc-for></select></label>
+        </div>
+        <div class="crm-kanban-board" data-crm-view-motion="bookings" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;flex:1;min-height:0;align-items:flex-start;">
           <sc-for list="{{ columns }}" as="col" hint-placeholder-count="8">
-            <div onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="width:264px;flex:0 0 auto;background:{{ col.bg }};border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;border:{{ col.border }};box-shadow:{{ col.shadow }};">
+            <div class="crm-kanban-column" data-mobile-active="{{ col.mobileActive }}" onDragOver="{{ allowDrop }}" onDrop="{{ col.drop }}" style="width:264px;flex:0 0 auto;background:{{ col.bg }};border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;border:{{ col.border }};box-shadow:{{ col.shadow }};">
               <sc-if value="{{ !boardEdit }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;flex-direction:column;gap:2px;padding:6px 6px 8px;">
                   <div style="display:flex;align-items:center;gap:8px;">
@@ -857,7 +871,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                 </div>
               </sc-if>
               <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="2">
-                <div draggable="true" onDragStart="{{ c.drag }}" onDragEnd="{{ clearKanbanDrag }}" onClick="{{ c.open }}" style="background:#fff;border-radius:12px;padding:12px 14px;cursor:grab;border:1px solid rgba(10,47,79,.06);display:flex;flex-direction:column;gap:8px;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-2px);box-shadow:0 8px 24px rgba(10,47,79,.10);">
+                <div class="crm-kanban-card" draggable="true" onDragStart="{{ c.drag }}" onDragEnd="{{ clearKanbanDrag }}" onClick="{{ c.open }}" style="background:#fff;border-radius:12px;padding:12px 14px;cursor:grab;border:1px solid rgba(10,47,79,.06);display:flex;flex-direction:column;gap:8px;transition:transform 150ms ease-out,box-shadow 150ms ease-out;" style-hover="transform:translateY(-2px);box-shadow:0 8px 24px rgba(10,47,79,.10);">
                   <div style="display:flex;align-items:center;gap:8px;">
                     <span style="width:28px;height:28px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:14px;">{{ c.initial }}</span>
                     <span style="font-weight:600;">{{ c.guest }}</span>
@@ -891,23 +905,23 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </sc-if>
 
       <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
-        <div data-crm-view-motion="bookings" style="background:#fff;border-radius:20px;padding:8px 24px 16px;">
-          <div style="display:grid;grid-template-columns:72px 1fr 1.2fr 1fr 1fr 1fr 1fr 110px;height:44px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
+        <div class="crm-bookings-list" data-crm-view-motion="bookings" style="background:#fff;border-radius:20px;padding:8px 24px 16px;">
+          <div class="crm-bookings-list-head" style="display:grid;grid-template-columns:72px 1fr 1.2fr 1fr 1fr 1fr 1fr 110px;height:44px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
             <button onClick="{{ sortNum }}" style="text-align:left;font-weight:600;">№ {{ sortMark.num }}</button><span>Гость</span><span>Дом</span>
             <button onClick="{{ sortDate }}" style="text-align:left;font-weight:600;">Дата и время {{ sortMark.date }}</button>
             <span>Стадия</span><span>Оплата</span>
             <button onClick="{{ sortSum }}" style="text-align:left;font-weight:600;">Сумма {{ sortMark.sum }}</button><span>Источник</span>
           </div>
           <sc-for list="{{ listRows }}" as="r" hint-placeholder-count="8">
-            <button onClick="{{ r.open }}" style="display:grid;grid-template-columns:72px 1fr 1.2fr 1fr 1fr 1fr 1fr 110px;width:100%;height:44px;align-items:center;text-align:left;border-bottom:1px solid rgba(10,47,79,.06);font-size:13px;" style-hover="background:rgba(10,47,79,.04);">
+            <button class="crm-bookings-list-row" onClick="{{ r.open }}" style="display:grid;grid-template-columns:72px 1fr 1.2fr 1fr 1fr 1fr 1fr 110px;width:100%;height:44px;align-items:center;text-align:left;border-bottom:1px solid rgba(10,47,79,.06);font-size:13px;" style-hover="background:rgba(10,47,79,.04);">
               <span style="font-weight:600;">{{ r.num }}</span>
-              <span>{{ r.guest }}<span style="color:rgba(59,47,42,.6);"> · {{ r.phone }}</span></span>
+              <span class="crm-list-guest">{{ r.guest }}<span class="crm-list-phone" style="color:rgba(59,47,42,.6);"> · {{ r.phone }}</span></span>
               <span style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:16px;letter-spacing:.06em;">{{ r.house }}</span>
-              <span>{{ r.when }}</span>
+              <span><small class="crm-mobile-label">Дата и время</small>{{ r.when }}</span>
               <span style="display:flex;"><span style="padding:3px 10px;border-radius:999px;background:{{ r.pillBg }};color:{{ r.pillFg }};font-size:12px;font-weight:600;">{{ r.stage }}</span></span>
-              <span style="color:{{ r.payColor }};">{{ r.pay }}</span>
-              <span style="font-weight:500;">{{ r.sum }}</span>
-              <span style="color:rgba(59,47,42,.7);">{{ r.source }}</span>
+              <span style="color:{{ r.payColor }};"><small class="crm-mobile-label">Оплата</small>{{ r.pay }}</span>
+              <span style="font-weight:500;"><small class="crm-mobile-label">Сумма</small>{{ r.sum }}</span>
+              <span style="color:rgba(59,47,42,.7);"><small class="crm-mobile-label">Источник</small>{{ r.source }}</span>
             </button>
           </sc-for>
         </div>
@@ -1211,7 +1225,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   </sc-if>
 
   <sc-if value="{{ is.notif }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Уведомления" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
+    <section class="crm-notifications-view" data-screen-label="Уведомления" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
       <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;">
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Шаблоны по событиям</h2><span style="font-size:13px;color:rgba(59,47,42,.7);">WhatsApp Business API · резерв SMS</span></div>
         <sc-for list="{{ templates }}" as="t" hint-placeholder-count="6">
@@ -1255,8 +1269,8 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <!-- ===== ГОСТИ ===== -->
   <sc-if value="{{ is.clients }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Гости" style="display:flex;flex-direction:column;gap:16px;max-width:1440px;">
-      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;">
+    <section class="crm-guests-view" data-screen-label="Гости" style="display:flex;flex-direction:column;gap:16px;max-width:1440px;">
+      <div class="crm-guest-kpis" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;">
         <sc-for list="{{ clTiles }}" as="t" hint-placeholder-count="4">
           <div style="background:#fff;border-radius:20px;padding:20px 24px;min-height:112px;display:flex;flex-direction:column;">
             <div style="font-size:13px;color:rgba(59,47,42,.7);">{{ t.label }}</div>
@@ -1299,14 +1313,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
                     <div class="crm-guest-contact"><span class="crm-guest-phone" title="{{ r.phone }}">{{ r.phone }}</span></div>
                   </div>
                 </div>
-                <div class="crm-guest-table-cell" role="cell"><span class="crm-guest-tier" title="{{ r.tierTitle }}" style="background:{{ r.tierBg }};color:{{ r.tierFg }};">{{ r.tier }}</span></div>
-                <span class="crm-guest-table-cell" role="cell" style="color:{{ r.accColor }};">{{ r.acc }}</span>
-                <span class="crm-guest-table-cell" role="cell" style="font-weight:600;">{{ r.visits }}</span>
-                <span class="crm-guest-table-cell crm-guest-table-number" role="cell" title="{{ r.spent }}">{{ r.spent }}</span>
-                <span class="crm-guest-table-cell" role="cell" title="{{ r.last }}">{{ r.last }}</span>
-                <span class="crm-guest-table-cell" role="cell" title="{{ r.bday }}" style="color:{{ r.bdColor }};font-weight:{{ r.bdWeight }};">{{ r.bday }}</span>
-                <span class="crm-guest-table-cell" role="cell" style="color:{{ r.consentColor }};">{{ r.consent }}</span>
-                <div class="crm-guest-tags" role="cell" title="{{ r.tagsTitle }}"><sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="1"><span class="crm-guest-tag" title="{{ t }}">{{ t }}</span></sc-for></div>
+                <div class="crm-guest-table-cell" role="cell"><small class="crm-mobile-label">Лояльность</small><span class="crm-guest-tier" title="{{ r.tierTitle }}" style="background:{{ r.tierBg }};color:{{ r.tierFg }};">{{ r.tier }}</span></div>
+                <span class="crm-guest-table-cell" role="cell" style="color:{{ r.accColor }};"><small class="crm-mobile-label">Личный кабинет</small>{{ r.acc }}</span>
+                <span class="crm-guest-table-cell" role="cell" style="font-weight:600;"><small class="crm-mobile-label">Визитов</small>{{ r.visits }}</span>
+                <span class="crm-guest-table-cell crm-guest-table-number" role="cell" title="{{ r.spent }}"><small class="crm-mobile-label">Оплатил</small>{{ r.spent }}</span>
+                <span class="crm-guest-table-cell" role="cell" title="{{ r.last }}"><small class="crm-mobile-label">Последний визит</small>{{ r.last }}</span>
+                <span class="crm-guest-table-cell" role="cell" title="{{ r.bday }}" style="color:{{ r.bdColor }};font-weight:{{ r.bdWeight }};"><small class="crm-mobile-label">День рождения</small>{{ r.bday }}</span>
+                <span class="crm-guest-table-cell" role="cell" style="color:{{ r.consentColor }};"><small class="crm-mobile-label">Рассылка</small>{{ r.consent }}</span>
+                <div class="crm-guest-tags" role="cell" title="{{ r.tagsTitle }}"><small class="crm-mobile-label">Теги</small><sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="1"><span class="crm-guest-tag" title="{{ t }}">{{ t }}</span></sc-for></div>
               </div>
             </sc-for>
           </div>
@@ -1319,7 +1333,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
   <!-- ===== ПОЗДРАВЛЕНИЯ И РАССЫЛКИ ===== -->
   <sc-if value="{{ is.campaigns }}" hint-placeholder-val="{{ false }}">
-    <section data-screen-label="Поздравления и рассылки" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
+    <section class="crm-campaigns-view" data-screen-label="Поздравления и рассылки" style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;max-width:1440px;align-items:start;">
       <div style="grid-column:span 4;display:flex;flex-direction:column;gap:8px;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 4px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Рассылки</h2><button onClick="{{ addCmp }}" style="font-size:13px;font-weight:600;color:#C15C22;">+ Новая рассылка</button></div>
         <sc-for list="{{ cmpList }}" as="c" hint-placeholder-count="5">
@@ -1388,7 +1402,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
       <div style="grid-column:span 8;background:#fff;border-radius:20px;padding:24px;">
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;gap:12px;"><h2 style="font-size:17px;font-weight:600;margin:0;">Календарь праздников</h2><span style="font-size:13px;color:rgba(59,47,42,.7);flex:1;">даты для поздравлений и выходного тарифа</span><button onClick="{{ addHol }}" disabled="{{ readOnly }}" style="font-size:13px;font-weight:600;color:#C15C22;white-space:nowrap;">+ Своя дата</button></div>
-        <div style="display:grid;grid-template-columns:minmax(0,1.7fr) 150px 64px 92px 104px 110px 36px;gap:10px;height:40px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
+        <div class="crm-holidays-scroll" role="region" aria-label="Календарь праздников" tabindex="0"><div class="crm-holiday-table"><div style="display:grid;grid-template-columns:minmax(0,1.7fr) 150px 64px 92px 104px 110px 36px;gap:10px;height:40px;align-items:center;font-size:12px;color:rgba(59,47,42,.7);border-bottom:1px solid rgba(10,47,79,.08);">
           <span>Название</span><span>Дата</span><span>Дней</span><span>Каждый год</span><span>Выходной тариф</span><span>Ближайшая</span><span></span>
         </div>
         <sc-for list="{{ holRows }}" as="h" hint-placeholder-count="10">
@@ -1402,6 +1416,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <button onClick="{{ h.del }}" disabled="{{ readOnly }}" aria-label="Удалить дату" style="width:32px;height:32px;border-radius:10px;color:#B8432F;display:flex;align-items:center;justify-content:center;" style-hover="background:rgba(184,67,47,.08);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
           </div>
         </sc-for>
+        </div></div>
         <div style="margin-top:12px;font-size:12px;color:rgba(59,47,42,.7);">Праздничный тариф настраивается в разделе «Тарифы и правила». Этот календарь задаёт даты рассылок.</div>
       </div>
 
@@ -1446,8 +1461,9 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 <sc-if value="{{ hasOpen }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ closeDetails }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
   <aside data-screen-label="Карточка брони" class="{{ bookingPanelClass }}">
-    <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
-      <div style="display:flex;align-items:center;gap:12px;">
+    <div class="crm-mobile-panel-bar"><strong>Карточка брони</strong><button class="crm-mobile-icon" type="button" onClick="{{ closeCard }}" aria-label="Закрыть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <div class="crm-panel-heading" style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
+      <div class="crm-booking-identity" style="display:flex;align-items:center;gap:12px;">
         <span style="font-size:20px;font-weight:600;">{{ ob.num }}</span>
         <div class="crm-stage-field" style="color:{{ ob.pillFg }};">
           <select class="crm-stage-select crm-picker" aria-label="Статус брони" disabled="{{ rsOn }}" value="{{ ob.stage }}" onChange="{{ setStage }}" style="background-color:{{ ob.pillBg }};color:inherit;">
@@ -1456,9 +1472,9 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
         </div>
         <span style="font-size:12px;color:rgba(59,47,42,.7);">на стадии {{ ob.timer }}</span>
-        <button onClick="{{ closeCard }}" aria-label="Закрыть" style="margin-left:auto;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;" style-hover="background:rgba(10,47,79,.06);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        <button class="crm-panel-desktop-close" onClick="{{ closeCard }}" aria-label="Закрыть" style="margin-left:auto;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;" style-hover="background:rgba(10,47,79,.06);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       </div>
-      <div style="display:flex;gap:14px;align-items:center;">
+      <div class="crm-booking-house" style="display:flex;gap:14px;align-items:center;">
         <div style="width:88px;height:64px;border-radius:12px;overflow:hidden;background:#3B2F2A;flex:0 0 auto;"><sc-if value="{{ ob.hasHouse }}" hint-placeholder-val="{{ false }}"><img src="{{ ob.img }}" alt="" style="width:100%;height:100%;object-fit:cover;"></sc-if></div>
         <div style="flex:1;min-width:0;">
           <div style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:26px;letter-spacing:.08em;line-height:1;">{{ ob.house }}</div>
@@ -1472,14 +1488,14 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           </select>
         </label>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;background:#F6F3EE;border-radius:16px;padding:12px 14px;">
+      <div class="crm-booking-contact" style="display:flex;align-items:center;gap:12px;background:#F6F3EE;border-radius:16px;padding:12px 14px;">
         <span style="width:40px;height:40px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:18px;">{{ ob.initial }}</span>
         <button onClick="{{ ob.openClient }}" title="Открыть карточку гостя" style="flex:1;min-width:0;text-align:left;"><div style="font-weight:600;">{{ ob.guest }} <span style="font-weight:400;font-size:12px;color:rgba(59,47,42,.7);">· {{ ob.lang }} · {{ ob.visits }}</span></div><div style="font-size:13px;color:rgba(59,47,42,.7);">{{ ob.phone }} · {{ ob.tags }} · <span style="color:#C15C22;font-weight:500;">карточка гостя →</span></div></button>
         <a href="{{ ob.tel }}" title="Позвонить" style="width:40px;height:40px;border-radius:12px;border:1px solid rgba(10,47,79,.15);display:flex;align-items:center;justify-content:center;background:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></a>
         <a href="{{ ob.wa }}" target="_blank" rel="noopener" title="WhatsApp с текстом по стадии" style="width:40px;height:40px;border-radius:12px;border:1px solid rgba(10,47,79,.15);display:flex;align-items:center;justify-content:center;background:#fff;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
       </div>
       <sc-if value="{{ !rsOn }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(10,47,79,.08);">
+        <div class="crm-panel-tabs" style="display:flex;gap:4px;border-bottom:1px solid rgba(10,47,79,.08);">
           <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.go }}" style="height:40px;padding:0 14px;font-weight:600;font-size:14px;color:{{ t.fg }};border-bottom:2px solid {{ t.line }};margin-bottom:-1px;">{{ t.name }}</button></sc-for>
         </div>
       </sc-if>
@@ -1534,7 +1550,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <sc-for list="{{ ob.extras }}" as="x" hint-placeholder-count="4">
-              <div style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 8px 0 12px;border-radius:12px;border:1px solid rgba(10,47,79,.12);background:{{ x.bg }};opacity:{{ x.opacity }};">
+              <div class="crm-booking-service" style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 8px 0 12px;border-radius:12px;border:1px solid rgba(10,47,79,.12);background:{{ x.bg }};opacity:{{ x.opacity }};">
                 <button onClick="{{ x.toggle }}" disabled="{{ x.locked }}" style="flex:1;display:flex;align-items:center;gap:12px;min-height:44px;text-align:left;">
                   <span style="width:20px;height:20px;border-radius:6px;border:1.5px solid #0A2F4F;background:{{ x.boxBg }};display:flex;align-items:center;justify-content:center;flex:0 0 auto;"><sc-if value="{{ x.on }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span>
                   <span style="flex:1;">{{ x.name }}<sc-if value="{{ x.kind }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:11px;color:rgba(59,47,42,.6);">{{ x.kind }}</span></sc-if></span><span style="font-size:13px;color:rgba(59,47,42,.7);white-space:nowrap;">{{ x.price }}</span>
@@ -1629,7 +1645,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
             <button onClick="{{ addNote }}" style="height:44px;padding:0 16px;border-radius:12px;background:#0A2F4F;color:#fff;font-weight:600;">Добавить</button>
           </div>
           <sc-for list="{{ ob.events }}" as="e" hint-placeholder-count="5">
-            <div style="display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(10,47,79,.08);font-size:13px;">
+            <div class="crm-panel-event" style="display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(10,47,79,.08);font-size:13px;">
               <span style="width:92px;flex:0 0 auto;color:rgba(59,47,42,.7);">{{ e.at }}</span>
               <span style="flex:1;">{{ e.text }}<sc-if value="{{ e.reason }}" hint-placeholder-val="{{ false }}"><span data-shipa-no-translate> · {{ e.reason }}</span></sc-if></span>
               <span style="color:rgba(59,47,42,.7);white-space:nowrap;">{{ e.who }}</span>
@@ -1652,7 +1668,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       </footer>
     </sc-if>
     <sc-if value="{{ !rsOn }}" hint-placeholder-val="{{ true }}">
-      <div style="flex:0 0 auto;border-top:1px solid rgba(10,47,79,.08);padding:12px 24px;display:flex;gap:8px;align-items:center;background:#fff;">
+      <div class="crm-booking-footer" style="flex:0 0 auto;border-top:1px solid rgba(10,47,79,.08);padding:12px 24px;display:flex;gap:8px;align-items:center;background:#fff;">
         <button onClick="{{ primary.go }}" disabled="{{ primary.dis }}" style="height:44px;padding:0 18px;border-radius:12px;background:#C15C22;color:#fff;font-weight:600;opacity:{{ primary.opacity }};" style-hover="background:#A84D1B;">{{ primary.name }}</button>
         <button onClick="{{ cancelBooking }}" disabled="{{ cancelDisabled }}" style="opacity:{{ cancelOpacity }};height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Отменить бронь</button>
         <span style="margin-left:auto;font-size:12px;color:rgba(59,47,42,.7);">{{ ob.created }}</span>
@@ -1668,14 +1684,15 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
     <div onClick="{{ closeClient }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:40;animation:fadeIn 150ms ease-out;"></div>
   </sc-if>
   <aside data-screen-label="Карточка гостя" class="{{ guestPanelClass }}">
-    <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
+    <div class="crm-mobile-panel-bar"><strong>Карточка гостя</strong><button class="crm-mobile-icon" type="button" onClick="{{ closeClient }}" aria-label="Закрыть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <div class="crm-panel-heading" style="padding:20px 24px 0;display:flex;flex-direction:column;gap:14px;">
       <div style="display:flex;align-items:center;gap:14px;">
         <span style="width:52px;height:52px;border-radius:999px;background:#0A2F4F;color:#F9EFE3;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:24px;flex:0 0 auto;">{{ cv.initial }}</span>
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:20px;font-weight:600;">{{ cv.name }}</span><sc-for list="{{ cv.tagList }}" as="t" hint-placeholder-count="1"><span style="padding:2px 8px;border-radius:999px;background:rgba(193,92,34,.12);color:#A84D1B;font-size:12px;font-weight:600;">{{ t }}</span></sc-for></div>
           <div style="font-size:13px;color:rgba(59,47,42,.7);margin-top:2px;">{{ cv.phone }} · {{ cv.lang }} · пришёл: {{ cv.source }}</div>
         </div>
-        <button onClick="{{ closeClient }}" aria-label="Закрыть" style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;" style-hover="background:rgba(10,47,79,.06);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        <button class="crm-panel-desktop-close" onClick="{{ closeClient }}" aria-label="Закрыть" style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;" style-hover="background:rgba(10,47,79,.06);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       </div>
       <div style="display:flex;gap:8px;">
         <a href="{{ cv.tel }}" style="height:40px;padding:0 14px;border-radius:12px;border:1px solid rgba(10,47,79,.2);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;" style-hover="background:rgba(10,47,79,.06);">Позвонить</a>
@@ -1687,7 +1704,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:14px;">{{ cv.accTitle }}</div><div style="font-size:12px;color:rgba(59,47,42,.75);line-height:1.4;">{{ cv.accText }}</div></div>
         <sc-if value="{{ !cv.hasAcc }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cv.invite }}" style="height:36px;padding:0 12px;border-radius:10px;border:1px solid rgba(10,47,79,.2);font-size:12px;font-weight:600;white-space:nowrap;background:#fff;">Пригласить</button></sc-if>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
+      <div class="crm-guest-stats" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
         <sc-for list="{{ cv.stats }}" as="t" hint-placeholder-count="4"><div style="background:#F6F3EE;border-radius:14px;padding:10px 12px;min-width:0;"><div style="font-size:11px;color:rgba(59,47,42,.7);">{{ t.l }}</div><div style="font-family:Inter,system-ui,Arial,sans-serif;font-weight:600;font-size:22px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ t.v }}</div></div></sc-for>
       </div>
       <div style="display:flex;align-items:center;gap:12px;border:1px solid {{ cv.tierBd }};border-radius:16px;padding:12px 14px;">
@@ -1697,11 +1714,11 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
         <span style="font-size:12px;color:{{ cv.bdDiscColor }};text-align:right;max-width:150px;">{{ cv.bdDisc }}</span>
       </div>
       <div style="font-size:13px;color:rgba(59,47,42,.75);">Любимый дом: <b style="color:#0A2F4F;">{{ cv.fav }}</b> · средняя оценка: <b style="color:#0A2F4F;">{{ cv.rating }}</b> · {{ cv.upcoming }}</div>
-      <div style="display:flex;gap:4px;border-bottom:1px solid rgba(10,47,79,.08);">
+      <div class="crm-panel-tabs" style="display:flex;gap:4px;border-bottom:1px solid rgba(10,47,79,.08);">
         <sc-for list="{{ ctabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="height:40px;padding:0 14px;font-weight:600;font-size:14px;color:{{ t.fg }};border-bottom:2px solid {{ t.line }};margin-bottom:-1px;white-space:nowrap;">{{ t.name }}</button></sc-for>
       </div>
     </div>
-    <div style="flex:1;min-height:0;overflow:auto;padding:16px 24px 24px;">
+    <div class="crm-guest-panel-body" style="flex:1;min-height:0;overflow:auto;padding:16px 24px 24px;">
       <sc-if value="{{ ctab.profile }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:12px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -1735,7 +1752,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
       <sc-if value="{{ ctab.msgs }}" hint-placeholder-val="{{ false }}">
         <sc-if value="{{ cv.noMsgs }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 0;font-size:13px;color:rgba(59,47,42,.7);">Сообщений пока не было.</div></sc-if>
         <sc-for list="{{ cv.msgs }}" as="m" hint-placeholder-count="3">
-          <div style="display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(10,47,79,.08);font-size:13px;">
+          <div class="crm-panel-event" style="display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(10,47,79,.08);font-size:13px;">
             <span style="width:112px;flex:0 0 auto;color:rgba(59,47,42,.7);">{{ m.at }}</span>
             <span data-shipa-no-translate style="flex:1;">{{ m.text }}</span>
             <span style="color:{{ m.color }};font-weight:600;white-space:nowrap;">{{ m.st }}</span>
@@ -1751,7 +1768,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   <div onClick="{{ closeNew }}" style="position:fixed;inset:0;background:rgba(10,47,79,.18);z-index:50;animation:fadeIn 150ms ease-out;"></div>
   <div class="crm-new-booking" data-screen-label="Новая бронь" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;max-height:92vh;overflow:auto;background:#fff;border-radius:20px;z-index:51;box-shadow:0 24px 64px rgba(10,47,79,.12);padding:24px;display:grid;grid-template-columns:1fr 280px;gap:24px;">
     <div style="display:flex;flex-direction:column;gap:14px;">
-      <div style="display:flex;align-items:center;"><h2 style="font-size:20px;font-weight:600;margin:0;">Новая бронь</h2><span style="margin-left:12px;font-size:13px;color:rgba(59,47,42,.7);">цена считается движком сайта</span></div>
+      <div class="crm-new-booking-title" style="display:flex;align-items:center;"><h2 style="font-size:20px;font-weight:600;margin:0;">Новая бронь</h2><button class="crm-mobile-icon crm-mobile-new-close" type="button" onClick="{{ closeNew }}" aria-label="Закрыть"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button><span style="margin-left:12px;font-size:13px;color:rgba(59,47,42,.7);">цена считается движком сайта</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <label style="font-size:13px;color:#43566A;grid-column:span 2;">Телефон<input type="tel" autocomplete="tel" value="{{ nb.phone }}" onChange="{{ nbSet.phone }}" onPaste="{{ pasteNbPhone }}" placeholder="+7 7__ ___ __ __" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
         <label style="font-size:13px;color:#43566A;">Имя <span style="color:#C15C22;">*</span><input value="{{ nb.first }}" onChange="{{ nbSet.first }}" placeholder="Данил" style="display:block;width:100%;height:40px;margin-top:4px;border-radius:10px;border:1px solid rgba(10,47,79,.12);padding:0 10px;font-size:14px;"></label>
@@ -2398,7 +2415,7 @@ function crmViewMotion(s){
   }
 }
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',mobileStage:null,mobileNavOpen:false,kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -2659,6 +2676,7 @@ class Component extends DCLogic {
   window.addEventListener('hashchange',this._navigationChanged);
   this._kd=e=>{
   if(this.state.reasonDialog||e.target.closest?.('.crm-mini-guide'))return;
+  if(e.key==='Escape'&&this.state.mobileNavOpen){this.setState({mobileNavOpen:false});return;}
   if(e.key==='Escape'&&this.state.staffDraft)return;
   // Let the native status picker handle Escape without dismissing the booking card.
   if(e.key==='Escape'&&e.target.closest?.('.crm-picker'))return;
@@ -2798,7 +2816,7 @@ class Component extends DCLogic {
  }
 
  renderVals(){
-  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',staffDraft:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
+  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',staffDraft:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,mobileNavOpen:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=(num,{keepGuest=false,tab='compose'}={})=>()=>this.setState({openId:num,detailsLast:'booking',tab,search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
@@ -2813,7 +2831,7 @@ class Component extends DCLogic {
   if(owner)navItems.push({id:'staff',name:'Сотрудники',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M18 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'});
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
   navItems.push({id:'instructions',name:'Инструкции',icon:'M4 3h7l1 2 1-2h7v16h-7l-1 2-1-2H4zM12 5v16M7 8h2M15 8h2M7 12h2M15 12h2'});
-  const nav=navItems.map(n=>({...n,go:go(n.id),current:s.screen===n.id?'page':'false',badge:n.badge||false,badgeShow:!!n.badge&&s.navOpen}));
+  const nav=navItems.map(n=>({...n,go:go(n.id),current:s.screen===n.id?'page':'false',badge:n.badge||false,badgeShow:!!n.badge&&(s.navOpen||s.mobileNavOpen)}));
   const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники',instructions:'Инструкции'};
   const is={[s.screen]:!ownerScreen(s.screen)||owner};
   const openNew = () => this.setState({nb:this.newNb()});
@@ -2915,7 +2933,7 @@ class Component extends DCLogic {
   const actH=HOUSES.filter(h=>!h.soon&&(s.calHouse==='all'||h.id===s.calHouse));const monthCells=[];let mBooked=0,mCap=0,mCnt=0,mRev=0;
   for(let di=gStart;di<=gEnd;di++){const d=dateAt(di);const inM=d.getMonth()===mBase.getMonth();const bs=B.filter(b=>b.start!=null&&b.day===di&&b.house&&actH.some(h=>h.id===b.house)&&ST[b.stage]).sort((a,b)=>a.start-b.start);const visible=bs.filter(matchesStatus), counted=bs.filter(b=>ST[b.stage].type!=='fail');const mCfg=this.rules(di).cfg;const capDay=actH.length*(mCfg.close-mCfg.open);const hrs=counted.reduce((a,b)=>a+b.dur,0);const load=capDay?Math.min(1,hrs/capDay):0;const rev=counted.reduce((a,b)=>a+this.price(b).total,0);
    if(inM){mBooked+=hrs;mCap+=capDay;mCnt+=counted.length;mRev+=rev;}const hol=holOn(s.holidays,di);const bd=s.clients.filter(c=>c.birthday&&c.birthday.slice(5)===dkey(di).slice(5)).map(c=>c.name);const we=this.isWeekend(di);
-   monthCells.push({num:d.getDate(),hol:hol?hol.name:'',rev:owner&&rev?fmtK(rev)+' ₸':'',load:Math.round(load*100)+'%',loadColor:'#0A2F4F',loadTitle:`Загрузка ${Math.round(load*100)}% · ${hrs} ч из ${capDay}`,
+   monthCells.push({mobileCount:visible.length,num:d.getDate(),hol:hol?hol.name:'',rev:owner&&rev?fmtK(rev)+' ₸':'',load:Math.round(load*100)+'%',loadColor:'#0A2F4F',loadTitle:`Загрузка ${Math.round(load*100)}% · ${hrs} ч из ${capDay}`,
     items:visible.slice(0,3).map(b=>({...blockStyle(b),time:hh(b.start),label:`${H[b.house].name} · ${b.guest}`,title:`${b.num} · ${H[b.house].name} · ${hh(b.start)}–${hh(b.start+b.dur)} · ${b.guest}`,open:e=>{e.stopPropagation();open(b.num)();},dr:canDrag(b),drag:drag(b)})),
     more:Math.max(0,visible.length-3),bd:bd.join(', '),bg:di===0?'rgba(193,92,34,.06)':we?'rgba(10,47,79,.025)':'#fff',opacity:inM?(di<0?.62:1):.35,numBg:di===0?'#C15C22':'transparent',numFg:di===0?'#fff':we?'#0A2F4F':GR(.8),
     title:`${dlabel(di)}${hol?' · '+hol.name:''} · ${bs.length} брон. · клик — расписание дня`,go:()=>this.setState({calMode:'day',calDay:di}),
@@ -2968,6 +2986,7 @@ class Component extends DCLogic {
   const ocount=curB.cols.filter(c=>c.type==='open').length;
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
   const updCol=(id,patch)=>updB(x=>({...x,cols:x.cols.map(c=>c.id===id?{...c,...patch}:c)}));
+  const mobileStage=curB.cols.find(c=>c.id===s.mobileStage)?.id||curB.cols.find(c=>kanbanBookings.some(b=>b.stage===c.id))?.id||curB.cols[0]?.id;
   const columns=curB.cols.map((st,ci)=>{const shown=kanbanBookings.filter(b=>b.stage===st.id);const all=bCards.filter(b=>b.stage===st.id);const closed=st.type!=='open';const norm=+st.norm||0;
    const cards=shown.map(b=>{const pay=this.payInfo(b);const over=norm&&b.stageAt>norm;const h=H[b.house];return {num:b.num,assignee:bookingAssignee(b)||'Не назначен',guest:b.guest,initial:b.guest[0],line2:h?`${h.name} · ${b.start!=null?dlabel(b.day)+' '+hh(b.start)+'–'+hh(b.start+b.dur):b.wish||'время не выбрано'}`:b.wish||'дом не выбран',pay:pay.t,payBg:pay.bg,payFg:pay.c,sum:b.start!=null?fmt(this.price(b).total):(this.paid(b)?fmt(this.paid(b)):''),icons:KANBAN_ICONS.filter(icon=>icon.matches(b,h,cats)),source:b.source,timer:ago(b.stageAt),timerColor:over?'#B8432F':GR(.7),timerWeight:over?600:400,open:open(b.num),drag:e=>{this.drag=b.num;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',b.num);}};});
    const sum=shown.reduce((a,b)=>a+(b.start!=null?this.price(b).total:0),0);const prev=curB.cols[ci-1],next=curB.cols[ci+1];
@@ -2975,7 +2994,7 @@ class Component extends DCLogic {
    let delWhy='';if(st.sys)delWhy='Системная стадия: на неё завязаны календарь, оплаты и уведомления. Переименовать и перекрасить можно, удалить — нет.';else if(closed)delWhy='Итоговый столбец нужен для отчётов «успех / провал». Переименовать можно, удалить — нет.';else if(ocount<=1)delWhy='На доске должен остаться хотя бы один рабочий столбец.';
    const isDel=!!(s.colDel&&s.colDel.id===st.id);const moveOpts=curB.cols.filter(c=>c.id!==st.id).map(c=>({id:c.id,name:c.name}));
    const swap=dir=>()=>updB(x=>{const cols=[...x.cols];const i=cols.findIndex(c=>c.id===st.id);const j=i+dir;[cols[i],cols[j]]=[cols[j],cols[i]];return {...x,cols};});
-   return {name:st.name,editName:builtInName(st,BOARDS0.find(bd=>bd.id===curB.id)?.cols??[]),color:st.color,count:shown.length,sum:sum?fmt(sum):'',cards,empty:!cards.length,
+   return {id:st.id,mobileActive:String(st.id===mobileStage),name:st.name,editName:builtInName(st,BOARDS0.find(bd=>bd.id===curB.id)?.cols??[]),color:st.color,count:shown.length,sum:sum?fmt(sum):'',cards,empty:!cards.length,
     bg:st.hl?hexA(st.color,.09):closed?'rgba(59,47,42,.03)':'rgba(10,47,79,.04)',border:st.hl?`1px solid ${hexA(st.color,.35)}`:closed?`1px dashed ${GR(.2)}`:'1px solid transparent',shadow:st.hl?`inset 0 4px 0 ${st.color}`:'none',
     drop:e=>{e.preventDefault();const num=this.drag;this.drag=null;if(num)this.move(num,st.id,{kanban:true});},
     rename:e=>updCol(st.id,{name:e.target.value}),swatches:PALETTE.map(([c,n])=>({c,name:n,ring:st.color===c?`0 0 0 2px #fff,0 0 0 4px ${c}`:'none',pick:()=>updCol(st.id,{color:c})})),
@@ -2985,7 +3004,7 @@ class Component extends DCLogic {
     del:()=>{if(delWhy)return;if(all.length){const to=(curB.cols.slice(0,ci).reverse().find(c=>c.type==='open')||curB.cols.find(c=>c.type==='open'&&c.id!==st.id)).id;this.setState({colDel:{id:st.id,to}});return;}updB(x=>({...x,cols:x.cols.filter(c=>c.id!==st.id)}));this.toast(`Столбец «${st.name}» удалён`);},
     delAsk:isDel,delAskText:`В столбце ${all.length} ${all.length===1?'карточка':all.length<5?'карточки':'карточек'}. Куда перенести?`,delTo:isDel?s.colDel.to:'',moveOpts,setDelTo:e=>this.setState({colDel:{...s.colDel,to:e.target.value}}),cancelDel:()=>this.setState({colDel:null}),
     confirmDel:()=>{const to=s.colDel.to;const tn=ST[to].name;this.setState(S=>({bookings:S.bookings.map(b=>b.stage===st.id&&(b.board||'sales')===curB.id?this.log({...b,events:[...b.events],stage:to,stageAt:0},`Столбец «${st.name}» удалён → карточка в «${tn}»`):b),boards:S.boards.map(x=>x.id===curB.id?{...x,cols:x.cols.filter(c=>c.id!==st.id)}:x),colDel:null}));this.toast(`Столбец удалён · карточки в «${tn}»`);}};});
-  const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open'&&(s.view!=='kanban'||matchesPeriod(b))).length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false})};});
+  const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open'&&(s.view!=='kanban'||matchesPeriod(b))).length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false,mobileStage:null})};});
   const delWhyB=curB.main?'Основную доску удалить нельзя. Сначала сделайте основной другую доску.':curB.sys?'Доска броней связана с календарём, сайтом и оплатами — её нельзя удалить.':'';
   const curBoard={name:builtInName(curB,BOARDS0),main:!!curB.main,noDel:!!delWhyB,delWhy:delWhyB||'Удалить доску',delOpacity:delWhyB?.4:1,delCursor:delWhyB?'not-allowed':'pointer',hint:curB.main?'Основная доска открывается первой у всех сотрудников, удалить её нельзя. У столбцов меняются название, цвет, подсветка, норматив и порядок.':delWhyB||'Пустой столбец удаляется сразу, из непустого карточки сначала переносятся в выбранный столбец.'};
   const failOf=b=>{if((b.board||'sales')==='sales')return 'cancel';const bd=boards.find(x=>x.id===b.board);const f=bd&&bd.cols.find(c=>c.type==='fail');return f?f.id:'cancel';};
@@ -3486,8 +3505,8 @@ class Component extends DCLogic {
       draft,empty:!draft.trim()
     };
   }
-  const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen;
-  return {staff:owner?this.staffView():{},nav,navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>this.setState({navOpen:true}),navLeave:()=>{if(!pinned)this.setState({navOpen:false});},
+  const pinned=!!s.navPinned;const navOpen=pinned||s.navOpen||s.mobileNavOpen;
+  return {staff:owner?this.staffView():{},nav,mobileNavOpen:s.mobileNavOpen,mobileNavExpanded:String(s.mobileNavOpen),toggleMobileNav:()=>this.setState({mobileNavOpen:!s.mobileNavOpen}),closeMobileNav:()=>this.setState({mobileNavOpen:false}),navExpanded:String(navOpen),navCollapsed:String(!navOpen),navW:navOpen?'240px':'72px',navEnter:()=>{if(!window.matchMedia('(max-width:1024px)').matches)this.setState({navOpen:true});},navLeave:()=>{if(!pinned&&!window.matchMedia('(max-width:1024px)').matches)this.setState({navOpen:false});},
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew,
@@ -3496,7 +3515,7 @@ class Component extends DCLogic {
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
-   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),viewBookingHistory:()=>this.setState({view:'list',savedView:null,assigneeFilter:null,kanbanDraft:null}),goCalendar:go('calendar'),isKanban:s.view==='kanban',kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
+   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),viewBookingHistory:()=>this.setState({view:'list',savedView:null,assigneeFilter:null,kanbanDraft:null}),goCalendar:go('calendar'),isKanban:s.view==='kanban',mobileStage,setMobileStage:e=>this.setState({mobileStage:e.target.value}),kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
    setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${visibleBookings.length} ${pl(visibleBookings.length,'карточка','карточки','карточек')}`,kanbanPeriod,kanbanDateRange,olderBookingsCount,hasOlderBookings:olderBookingsCount>0,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,countLabel:reviewCountLabel(rvs.length),dist,cats:catAvg,
      hasCategory:!!s.rvCategory,clearCategory:()=>this.setState({rvCategory:null}),
@@ -3541,10 +3560,10 @@ class Component extends DCLogic {
    hasToast:!!s.toast,toast:s.toast,toastSuccess:s.toastTone==='success',
    toastClass:s.toastTone==='success'?'crm-toast crm-toast--success':'crm-toast',clearKanbanDrag:()=>{this.drag=null;},
    calMonthMode:()=>this.setState({calMode:'month'}),calIsMonth:s.calMode==='month',monthHead,monthCells,monthStats,calHouse:s.calHouse,setCalHouse:e=>this.setState({calHouse:e.target.value}),
-   boardTabs,addBoard:()=>{const id='b'+Date.now();const cols=newCols();for(const c of cols)ST[c.id]={...c,board:id};this.setState(S=>({boards:[...S.boards,{id,name:'Новая доска',cols}],board:id,boardEdit:true,colDel:null,view:'kanban'}));this.toast('Доска создана — задайте название и столбцы');},
+   boardTabs,addBoard:()=>{const id='b'+Date.now();const cols=newCols();for(const c of cols)ST[c.id]={...c,board:id};this.setState(S=>({boards:[...S.boards,{id,name:'Новая доска',cols}],board:id,boardEdit:true,colDel:null,view:'kanban',mobileStage:null}));this.toast('Доска создана — задайте название и столбцы');},
    boardEdit:s.boardEdit,toggleBoardEdit:()=>this.setState({boardEdit:!s.boardEdit,colDel:null,boardDelAsk:false,view:'kanban'}),boardEditLabel:s.boardEdit?'Идёт настройка':'Настроить доску',boardEditBg:s.boardEdit?'rgba(193,92,34,.1)':'#fff',boardEditFg:s.boardEdit?'#A84D1B':'#0A2F4F',boardEditBd:s.boardEdit?'rgba(193,92,34,.4)':'rgba(10,47,79,.15)',
    curBoard,renameBoard:e=>updB(x=>({...x,name:e.target.value})),makeMain:()=>{this.setState(S=>({boards:S.boards.map(x=>({...x,main:x.id===curB.id}))}));this.toast(`«${curB.name}» теперь основная доска`);},
-   addCol:()=>{const id='c'+Date.now();const nc={id,name:'Новый столбец',color:'#3B7EA1',type:'open',hl:false,norm:''};ST[id]={...nc,board:curB.id};updB(x=>{const cols=[...x.cols];const i=cols.findIndex(c=>c.type!=='open');if(i<0)cols.push(nc);else cols.splice(i,0,nc);return {...x,cols};});this.setState({boardEdit:true,view:'kanban'});},
+   addCol:()=>{const id='c'+Date.now();const nc={id,name:'Новый столбец',color:'#3B7EA1',type:'open',hl:false,norm:''};ST[id]={...nc,board:curB.id};updB(x=>{const cols=[...x.cols];const i=cols.findIndex(c=>c.type!=='open');if(i<0)cols.push(nc);else cols.splice(i,0,nc);return {...x,cols};});this.setState({boardEdit:true,view:'kanban',mobileStage:id});},
    askDelBoard:()=>{if(delWhyB)return;this.setState({boardDelAsk:true});},boardDelAsk:s.boardDelAsk,boardDelText:`Удалить доску «${curB.name}»? ${bCards.length?`${bCards.length} карт. перейдут на основную доску «${mainB.name}» в столбец «${mainB.cols[0].name}».`:'Карточек на доске нет.'}`,
    delBoard:()=>{const to=mainB.cols[0].id;this.setState(S=>({bookings:S.bookings.map(x=>(x.board||'sales')===curB.id?this.log({...x,events:[...x.events],board:mainB.id,stage:to,stageAt:0},`Доска «${curB.name}» удалена → карточка на доске «${mainB.name}»`):x),boards:S.boards.filter(x=>x.id!==curB.id),board:mainB.id,boardDelAsk:false,boardEdit:false}));this.toast(`Доска «${curB.name}» удалена`);},cancelDelBoard:()=>this.setState({boardDelAsk:false}),
    boardOpts,setBoardOf,rsOn,rsv,rsSet,rsvStarts:startOptions(rsRules),rsvDurs:durationOptions(rsRules),
