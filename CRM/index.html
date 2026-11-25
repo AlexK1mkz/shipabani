@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="../shipa-bani-front/review-store.js?v=1"></script>
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261125-mobile"></script>
+<script defer src="./shipa-ru-kz.js?v=20261125-lessons"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -24,7 +24,7 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes crmAppear{from{opacity:.84;translate:0 4px}to{opacity:1;translate:none}}
   [data-scroll-main] > section[data-screen-label],
-  .crm-new-booking,.crm-reason-dialog[open],.crm-mini-guide[open],.crm-staff-dialog[open],
+  .crm-new-booking,.crm-reason-dialog[open],.crm-mini-guide[open],.crm-staff-dialog[open],.crm-handbook-dialog[open],
   .crm-booking-calendar,.crm-cal-filter[open] .crm-cal-filter-menu{
     animation:crmAppear 160ms ease-out;
   }
@@ -139,19 +139,61 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-assignee-select{max-width:180px;min-height:36px;padding:0 8px;border:1px solid #CCD9E2;border-radius:10px;background:#fff;font-size:13px;color:#0A2F4F;}
   .crm-booking-assignee{display:flex;align-items:center;gap:5px;min-width:0;padding-top:6px;border-top:1px solid #E9EDF0;font-size:12px;color:#526271;}
   .crm-booking-assignee strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0A2F4F;}
-  .crm-handbook{max-width:1160px;container-type:inline-size;}
-  .crm-handbook-intro{padding:24px 26px;margin-bottom:16px;background:#EAF1F6;border:1px solid #D5E0E7;border-radius:18px;}
-  .crm-handbook h2{margin:0;font-size:24px;line-height:1.25;}
-  .crm-handbook-intro p{margin:8px 0 0;font-size:15px;color:#43566A;}
-  .crm-handbook-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
-  .crm-handbook-topic{display:flex;flex-direction:column;align-items:flex-start;padding:20px 22px;border:1px solid #E4E9ED;border-radius:16px;background:#fff;}
-  .crm-handbook-topic h3{margin:0;font-size:17px;line-height:1.3;}
-  .crm-handbook-topic ol{display:grid;gap:8px;margin:12px 0 18px;padding-left:22px;color:#43566A;font-size:14px;line-height:1.5;}
-  .crm-handbook-topic li::marker{color:#0A2F4F;font-weight:600;}
-  .crm-handbook-topic button{margin-top:auto;min-height:40px;text-align:left;}
-  @container (max-width:680px){
-    .crm-handbook-grid{grid-template-columns:1fr;}
-    .crm-handbook-intro,.crm-handbook-topic{padding:16px;}
+  .crm-handbook{max-width:1440px;container-type:inline-size;}
+  .crm-handbook-intro{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 26px;margin-bottom:16px;background:#EAF1F6;border:1px solid #D5E0E7;border-radius:18px;}
+  .crm-handbook-intro h2{margin:0;font-size:24px;line-height:1.25;}
+  .crm-handbook-intro p{margin:8px 0 0;font-size:14px;line-height:1.5;color:#526271;}
+  .crm-handbook-platform{display:inline-flex;align-items:center;gap:9px;flex:none;font-weight:600;font-size:13px;color:#43566A;}
+  .crm-handbook-youtube{width:26px;height:18px;display:grid;place-items:center;border-radius:5px;background:#C15C22;color:#fff;}
+  .crm-handbook-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+  .crm-handbook-topic{display:flex;flex-direction:column;min-width:0;border:1px solid #E1E7EB;border-radius:18px;overflow:hidden;background:#fff;transition:border-color 160ms ease,box-shadow 160ms ease;}
+  .crm-handbook-topic:hover{border-color:#C6D5DE;box-shadow:0 4px 18px rgba(10,47,79,.06);}
+  .crm-handbook-poster{position:relative;display:grid;place-items:center;aspect-ratio:16/9;min-height:120px;overflow:hidden;background:#EAF1F6;color:#0A2F4F;}
+  .crm-handbook-preview{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .crm-handbook-cover{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 80% 0%,#F7FAFB 0%,#E4EDF2 75%);}
+  .crm-handbook-cover-icon{position:absolute;right:8%;bottom:-20%;width:55%;height:125%;opacity:.09;}
+  .crm-handbook-number{position:absolute;left:14px;top:12px;z-index:1;font-size:12px;font-weight:600;letter-spacing:.08em;color:#526271;}
+  .crm-handbook-video-kind{position:absolute;left:12px;bottom:12px;z-index:1;display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;background:#fff;color:#43566A;font-size:11px;font-weight:600;}
+  .crm-handbook-play{z-index:1;width:56px;height:56px;display:grid;place-items:center;border-radius:50%;background:#0A2F4F;color:#fff;box-shadow:0 4px 12px rgba(10,47,79,.16);}
+  .crm-handbook-play svg{margin-left:2px;}
+  .crm-handbook-content{display:flex;flex-direction:column;flex:1;gap:8px;min-width:0;padding:18px;}
+  .crm-handbook-topic h3{margin:0;font-size:17px;line-height:1.35;overflow-wrap:anywhere;}
+  .crm-handbook-topic p{margin:0;color:#526271;font-size:13px;line-height:1.55;overflow-wrap:anywhere;}
+  .crm-handbook-actions{display:flex;gap:8px;margin-top:auto;padding-top:12px;}
+  .crm-handbook-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:1;min-height:42px;padding:9px 12px;border:1px solid #D5E0E7;border-radius:10px;background:#fff;color:#0A2F4F;font-size:13px;font-weight:600;text-align:center;line-height:1.35;transition:background-color 150ms ease,border-color 150ms ease;}
+  .crm-handbook-btn:hover{background:#EAF1F6;border-color:#C6D5DE;}
+  .crm-handbook-btn-primary{border-color:#0A2F4F;background:#0A2F4F;color:#fff;}
+  .crm-handbook-btn-primary:hover{border-color:#163F60;background:#163F60;}
+  .crm-handbook-dialog{width:min(640px,calc(100vw - 28px));max-height:calc(100vh - 28px);max-height:calc(100dvh - 28px);padding:0;border:1px solid #D5E0E7;border-radius:20px;background:#fff;color:#0A2F4F;overflow-y:auto;overscroll-behavior:contain;box-shadow:0 24px 64px rgba(10,47,79,.20);}
+  .crm-handbook-dialog::backdrop{background:rgba(10,47,79,.44);}
+  .crm-handbook-dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;gap:14px;justify-content:space-between;padding:22px 24px 18px;border-bottom:1px solid #E4E9ED;background:#fff;}
+  .crm-handbook-dialog-head h2{margin:6px 0 0;font-size:22px;line-height:1.3;overflow-wrap:anywhere;}
+  .crm-handbook-dialog-label{color:#526271;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+  .crm-handbook-dialog-close{flex:none;width:42px;height:42px;display:grid;place-items:center;background:#EDF3F7;border-radius:10px;}
+  .crm-handbook-dialog-close:hover{background:#DDE8EF;}
+  .crm-handbook-dialog-body{padding:20px 24px;}
+  .crm-handbook-dialog-body p{margin:0;color:#526271;line-height:1.55;font-size:14px;overflow-wrap:anywhere;}
+  .crm-handbook-steps{list-style:none;counter-reset:lesson-step;display:grid;gap:10px;padding:0;margin:18px 0 0;}
+  .crm-handbook-steps li{counter-increment:lesson-step;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:start;gap:10px;border:1px solid #E4E9ED;border-radius:12px;padding:12px;background:#F8FAFB;font-size:14px;line-height:1.55;overflow-wrap:anywhere;}
+  .crm-handbook-steps li::before{content:counter(lesson-step);width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#E6EEF3;color:#0A2F4F;font-weight:600;font-size:13px;}
+  .crm-handbook-dialog-foot{position:sticky;bottom:0;display:flex;gap:8px;justify-content:flex-end;padding:14px 24px max(14px,env(safe-area-inset-bottom));background:#fff;border-top:1px solid #E4E9ED;}
+  .crm-handbook-dialog-foot .crm-handbook-btn{flex:0 1 auto;min-height:44px;}
+  .crm-handbook-video-empty{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;min-height:180px;padding:24px 18px;background:#EAF1F6;border-radius:14px;text-align:center;}
+  .crm-handbook-video-empty .crm-handbook-play{margin-bottom:2px;}
+  @container (max-width:1060px){.crm-handbook-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @container (max-width:600px){
+    .crm-handbook-grid{grid-template-columns:minmax(0,1fr);gap:12px;}
+    .crm-handbook-intro{padding:16px;flex-wrap:wrap;gap:12px;}
+    .crm-handbook-intro h2{font-size:21px;}
+    .crm-handbook-content{padding:14px;}
+    .crm-handbook-btn{min-height:44px;}
+  }
+  @media(max-width:600px){
+    .crm-handbook-dialog-head{padding:16px 16px 14px;}
+    .crm-handbook-dialog-head h2{font-size:19px;}
+    .crm-handbook-dialog-body{padding:16px;}
+    .crm-handbook-dialog-foot{padding:12px 16px;flex-wrap:wrap;}
+    .crm-handbook-dialog-foot .crm-handbook-btn{flex:1 1 120px;}
   }
   .crm-review-alert{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 18px;border:1px solid #EFD6C4;border-radius:14px;background:#FFF8F2;}
   .crm-review-alert strong{display:block;}
@@ -1435,22 +1477,61 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   <sc-if value="{{ is.instructions }}" hint-placeholder-val="{{ false }}">
     <section class="crm-handbook" data-screen-label="Инструкции" aria-labelledby="crm-handbook-heading">
       <header class="crm-handbook-intro">
-        <h2 id="crm-handbook-heading">Руководство по CRM</h2>
-        <p>Пошаговые подсказки для сотрудников: от начала смены до выгрузки отчёта.</p>
+        <div><h2 id="crm-handbook-heading">Видеоинструкции</h2>
+          <p>Видеоуроки и пошаговые инструкции по работе с CRM.</p></div>
+        <span class="crm-handbook-platform"><span class="crm-handbook-youtube" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l12-7z"/></svg></span><span data-shipa-no-translate>YouTube</span></span>
       </header>
       <div class="crm-handbook-grid">
-        <sc-for list="{{ handbookTopics }}" as="topic" hint-placeholder-count="2">
+        <sc-for list="{{ handbookTopics }}" as="topic" hint-placeholder-count="3">
           <article class="crm-handbook-topic">
-            <h3>{{ topic.title }}</h3>
-            <ol>
-              <sc-for list="{{ topic.steps }}" as="step" hint-placeholder-count="2">
-                <li>{{ step.text }}</li>
-              </sc-for>
-            </ol>
-            <button type="button" class="crm-guest-export" onClick="{{ topic.open }}">{{ topic.action }}</button>
+            <div class="crm-handbook-poster">
+              <div class="crm-handbook-cover" aria-hidden="true">
+                <svg class="crm-handbook-cover-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="{{ topic.icon }}"/></svg>
+              </div>
+              <sc-if value="{{ topic.hasVideo }}"><img class="crm-handbook-preview" src="{{ topic.thumbnail }}" alt="" loading="lazy" referrerpolicy="no-referrer"></sc-if>
+              <sc-if value="{{ !topic.hasVideo }}"><span class="crm-handbook-number" data-shipa-no-translate>{{ topic.number }}</span></sc-if>
+              <span class="crm-handbook-play" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l12-7z"/></svg></span>
+              <span class="crm-handbook-video-kind">{{ topic.videoStatus }}</span>
+            </div>
+            <div class="crm-handbook-content">
+              <h3>{{ topic.title }}</h3>
+              <p>{{ topic.description }}</p>
+              <div class="crm-handbook-actions">
+                <button type="button" class="crm-handbook-btn crm-handbook-btn-primary" onClick="{{ topic.openVideo }}"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l12-7z"/></svg>Открыть</button>
+                <button type="button" class="crm-handbook-btn" aria-haspopup="dialog" onClick="{{ topic.details }}">Подробнее</button>
+              </div>
+            </div>
           </article>
         </sc-for>
       </div>
+      <sc-if value="{{ handbookDialogOpen }}">
+        <dialog class="crm-handbook-dialog" aria-labelledby="crm-handbook-dialog-title" onCancel="{{ cancelHandbook }}" onPointerDown="{{ pressHandbookBackdrop }}" onClick="{{ clickHandbookBackdrop }}">
+          <header class="crm-handbook-dialog-head">
+            <div><span class="crm-handbook-dialog-label">{{ handbookDialog.label }}</span><h2 id="crm-handbook-dialog-title">{{ handbookDialog.title }}</h2></div>
+            <button type="button" class="crm-handbook-dialog-close" onClick="{{ closeHandbook }}" aria-label="Закрыть" autofocus><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+          </header>
+          <div class="crm-handbook-dialog-body">
+            <sc-if value="{{ handbookDialog.video }}">
+              <div class="crm-handbook-video-empty">
+                <span class="crm-handbook-play" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l12-7z"/></svg></span>
+                <strong>Видео скоро появится</strong>
+                <p>Пока видеоролик не добавлен, воспользуйтесь пошаговой инструкцией.</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ !handbookDialog.video }}">
+              <p>{{ handbookDialog.description }}</p>
+              <ol class="crm-handbook-steps">
+                <sc-for list="{{ handbookDialog.steps }}" as="step" hint-placeholder-count="3"><li>{{ step.text }}</li></sc-for>
+              </ol>
+            </sc-if>
+          </div>
+          <footer class="crm-handbook-dialog-foot">
+            <button type="button" class="crm-handbook-btn" onClick="{{ closeHandbook }}">Закрыть</button>
+            <sc-if value="{{ handbookDialog.video }}"><button type="button" class="crm-handbook-btn crm-handbook-btn-primary" onClick="{{ handbookDialog.details }}">Подробнее</button></sc-if>
+            <sc-if value="{{ !handbookDialog.video }}"><button type="button" class="crm-handbook-btn crm-handbook-btn-primary" onClick="{{ handbookDialog.openSection }}">{{ handbookDialog.action }}</button></sc-if>
+          </footer>
+        </dialog>
+      </sc-if>
     </section>
   </sc-if>
 
@@ -2250,10 +2331,15 @@ const staffPhone=value=>{
   if(!raw.startsWith('+')&&/^[78]\d{10}$/.test(digits))return '+7'+digits.slice(1);
   return /^[1-9]\d{9,14}$/.test(digits)?'+'+digits:'';
 };
+// Fill videoId with the 11-character YouTube video ID when the training recording is published.
+const handbookVideoId=id=>typeof id==='string'&&/^[A-Za-z0-9_-]{11}$/.test(id)?id:'';
 const CRM_HANDBOOK = [
   {
     title: "Дашборд и начало смены",
     target: "today",
+    videoId: "",
+    description: "План смены, необработанные заявки и подготовка домов.",
+    icon: "M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z",
     action: "Открыть дашборд",
     steps: [
       "Откройте «Сегодня» и проверьте заезды, выезды и подготовку домов.",
@@ -2264,6 +2350,9 @@ const CRM_HANDBOOK = [
   {
     title: "Создание брони",
     target: "new",
+    videoId: "",
+    description: "Как создать бронь, подобрать время и рассчитать предоплату.",
+    icon: "M4 6h16v15H4zM8 3v6m8-6v6M4 11h16m-8 2v6m-3-3h6",
     action: "Открыть форму брони",
     steps: [
       "Нажмите «Новая бронь». Введите телефон, имя и фамилию гостя.",
@@ -2274,16 +2363,22 @@ const CRM_HANDBOOK = [
   {
     title: "Календарь и перенос брони",
     target: "calendar",
+    videoId: "",
+    description: "Расписание домов, свободные слоты и перенос визита.",
+    icon: "M3 6h18v15H3zM8 3v6m8-6v6M3 11h18m5 4h2m4 0h2m-8 3h2",
     action: "Открыть календарь",
     steps: [
       "Выберите «День», «Неделя» или «Месяц» и найдите нужную дату.",
       "В режиме «День» нажмите на бронь, чтобы открыть карточку, или на свободную ячейку, чтобы создать новую бронь.",
-      "Для переноса перетащите бронь на другой слот. Проверьте время, дом и доступность в окне переноса перед подтверждением.",
+      "Для переноса откройте карточку брони и нажмите «Перенести». На компьютере также можно перетащить бронь. Проверьте дату, дом и свободное время.",
     ],
   },
   {
     title: "Стадии и оплата брони",
     target: "bookings",
+    videoId: "",
+    description: "Управление стадиями, предоплатой и остатком по брони.",
+    icon: "M3 5h18v14H3zM3 10h18m-12 5h5m3 0h2",
     action: "Открыть брони",
     steps: [
       "Найдите бронь в канбане или списке и откройте карточку. Обновляйте стадию по мере работы с гостем.",
@@ -2294,6 +2389,9 @@ const CRM_HANDBOOK = [
   {
     title: "Карточка гостя",
     target: "clients",
+    videoId: "",
+    description: "Контакты, история визитов, дни рождения и настройки гостя.",
+    icon: "M3 4h18v16H3zM8 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM5 16a3 3 0 0 1 6 0m3-7h4m-4 4h4m-4 3h4",
     action: "Открыть гостей",
     steps: [
       "В разделе «Гости» найдите человека по имени или телефону. Нажмите на строку, чтобы открыть карточку.",
@@ -2303,6 +2401,9 @@ const CRM_HANDBOOK = [
   {
     title: "Поздравления и рассылки",
     target: "campaigns",
+    videoId: "",
+    description: "Настройка поздравлений, получателей и текстов рассылок.",
+    icon: "M3 7h18v14H3zM3 7l9 7 9-7M7 3h10",
     action: "Открыть рассылки",
     steps: [
       "Откройте нужную рассылку и проверьте повод, время отправки и список получателей.",
@@ -2312,6 +2413,9 @@ const CRM_HANDBOOK = [
   {
     title: "Работа с отзывами",
     target: "reviews",
+    videoId: "",
+    description: "Как обработать отзыв и отметить связь с гостем.",
+    icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z",
     action: "Открыть отзывы",
     steps: [
       "Откройте фильтр «Нужно связаться», чтобы увидеть отзывы, по которым гость ещё не получил обратную связь.",
@@ -2321,6 +2425,9 @@ const CRM_HANDBOOK = [
   {
     title: "Выгрузка в Excel",
     target: "export",
+    videoId: "",
+    description: "Выгрузка списков гостей и бронирований в Excel.",
+    icon: "M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8m-4-4v8",
     action: "Открыть подсказку по Excel",
     steps: [
       "В разделе «Гости» настройте поиск и фильтры, затем нажмите «Скачать Excel».",
@@ -2415,7 +2522,7 @@ function crmViewMotion(s){
   }
 }
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',mobileStage:null,mobileNavOpen:false,kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,handbookSelection:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',mobileStage:null,mobileNavOpen:false,kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -2442,7 +2549,7 @@ class Component extends DCLogic {
    this.navHash=crmHash({...s,...route});
    if(this.navHash!==hash)window.history.replaceState(window.history.state,'',this.navHash);
    const payment=route.openId===s.openId?s.pf:{sum:'',type:'Остаток',method:'Kaspi'};
-   this.setState({...route,calDropError:null,search:'',nb:null,rs:null,reasonDialog:null,staffDraft:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
+   this.setState({...route,calDropError:null,search:'',nb:null,rs:null,reasonDialog:null,staffDraft:null,handbookSelection:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,pf:payment},()=>{
      if(route.screen!==s.screen){
        const main=document.querySelector('[data-scroll-main]');
        if(main)main.scrollTop=0;
@@ -2472,6 +2579,10 @@ class Component extends DCLogic {
    this.updateViewMotion();
    if(this.state.reasonDialog){
      const dialog=document.querySelector('.crm-reason-dialog');
+     if(dialog&&!dialog.open)dialog.showModal();
+   }
+   if(this.state.screen==='instructions'&&this.state.handbookSelection){
+     const dialog=document.querySelector('.crm-handbook-dialog');
      if(dialog&&!dialog.open)dialog.showModal();
    }
    if(this.state.screen==='staff'&&this.state.role==='owner'&&this.state.staffDraft){
@@ -2675,7 +2786,7 @@ class Component extends DCLogic {
   window.addEventListener('popstate',this._navigationChanged);
   window.addEventListener('hashchange',this._navigationChanged);
   this._kd=e=>{
-  if(this.state.reasonDialog||e.target.closest?.('.crm-mini-guide'))return;
+  if(this.state.reasonDialog||e.target.closest?.('.crm-mini-guide,.crm-handbook-dialog'))return;
   if(e.key==='Escape'&&this.state.mobileNavOpen){this.setState({mobileNavOpen:false});return;}
   if(e.key==='Escape'&&this.state.staffDraft)return;
   // Let the native status picker handle Escape without dismissing the booking card.
@@ -2816,7 +2927,7 @@ class Component extends DCLogic {
  }
 
  renderVals(){
-  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',staffDraft:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,mobileNavOpen:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
+  const s=this.state;const todayRules=this.rules(0);const cfg=todayRules.cfg;const cats=todayRules.cats;const go=screen=>()=>{if(ownerScreen(screen)&&s.role!=='owner')return;this.setState({screen,search:'',staffDraft:null,handbookSelection:null,staffError:'',boardEdit:false,colDel:null,boardDelAsk:false,mobileNavOpen:false});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;};const owner=s.role==='owner';
   const boards=s.boards;for(const bd of boards)for(const c of bd.cols)ST[c.id]={...c,board:bd.id};const mainB=boards.find(x=>x.main)||boards[0];const curB=boards.find(x=>x.id===s.board)||mainB;
   const open=(num,{keepGuest=false,tab='compose'}={})=>()=>this.setState({openId:num,detailsLast:'booking',tab,search:'',rs:null,...(!keepGuest?{clientId:null}:{}),pf:{sum:'',type:'Остаток',method:'Kaspi'}});
   const B=s.bookings;const dd=s.dashDay||0;const isNowDay=dd===0;const todayB=B.filter(b=>b.day===dd&&b.start!=null);const openT=todayB.filter(b=>ST[b.stage].type==='open');
@@ -2836,12 +2947,32 @@ class Component extends DCLogic {
   const is={[s.screen]:!ownerScreen(s.screen)||owner};
   const openNew = () => this.setState({nb:this.newNb()});
   const openGuide = () => document.querySelector('.crm-mini-guide')?.showModal();
-  const handbookTopics = is.instructions ? CRM_HANDBOOK.map(topic => ({
-    title: topic.title,
-    action: topic.action,
-    steps: topic.steps.map(text => ({text})),
-    open: topic.target === 'new' ? openNew : topic.target === 'export' ? openGuide : go(topic.target),
-  })) : [];
+  const showHandbook=(target,video=false)=>this.setState({handbookSelection:{target,video}});
+  const closeHandbook=()=>{
+    const dialog=document.querySelector('.crm-handbook-dialog');
+    if(dialog?.open)dialog.close();
+    this.setState({handbookSelection:null});
+  };
+  const handbookTopics = is.instructions ? CRM_HANDBOOK.map((topic,index) => {
+    const videoId=handbookVideoId(topic.videoId);
+    const openSection=topic.target==='new'?openNew:topic.target==='export'?openGuide:go(topic.target);
+    return {
+      ...topic,number:String(index+1).padStart(2,'0'),steps:topic.steps.map(text=>({text})),
+      hasVideo:!!videoId,thumbnail:videoId?'https://i.ytimg.com/vi/'+videoId+'/hqdefault.jpg':'',
+      videoStatus:videoId?'Видеоурок':'Видео скоро',
+      openVideo:()=>videoId?window.open('https://www.youtube.com/watch?v='+videoId,'_blank','noopener,noreferrer'):showHandbook(topic.target,true),
+      details:()=>showHandbook(topic.target),
+      openSection:()=>{closeHandbook();openSection();},
+    };
+  }) : [];
+  const handbookTopic=handbookTopics.find(topic=>topic.target===s.handbookSelection?.target);
+  const handbookDialogOpen=!!handbookTopic;
+  const handbookDialog=handbookTopic?{...handbookTopic,video:!!s.handbookSelection.video,label:s.handbookSelection.video?'Видеоурок':'Пошаговая инструкция'}:{};
+  const isHandbookBackdrop=e=>{
+    if(e.target!==e.currentTarget)return false;
+    const r=e.currentTarget.getBoundingClientRect();
+    return e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;
+  };
   // поиск
   const q=s.search.trim().toLowerCase();const norm=x=>(x||'').toLowerCase().replace(/[\s()+-]/g,'');
   const searchRes=q?B.filter(b=>norm(b.guest).includes(norm(q))||norm(b.phone).includes(norm(q))||norm(b.num).includes(norm(q))||(H[b.house]&&norm(H[b.house].name).includes(norm(q)))).slice(0,6).map(b=>({num:b.num,guest:b.guest,phone:b.phone,meta:(H[b.house]?H[b.house].name+' · ':'')+ST[b.stage].name,color:ST[b.stage].color,open:open(b.num)})):[];
@@ -3510,7 +3641,11 @@ class Component extends DCLogic {
    togglePin:()=>{const v=!pinned;try{localStorage.setItem('shipa_crm_nav_pinned',v?'1':'0');}catch(e){}this.setState({navPinned:v,navOpen:v});},pinTitle:pinned?'Открепить панель':'Закрепить панель',pinPressed:String(pinned),
    roleInitial:owner?'С':'А',roleName:owner?'Сергей':'Айдана',roleLabel:owner?'Собственник':'Администратор',toggleRole:()=>this.setState(st=>({role:st.role==='owner'?'admin':'owner',screen:ownerScreen(st.screen)?'today':st.screen,tarDraft:null,tarError:'',staffDraft:null,staffError:''})),
    screenTitle:titles[s.screen],dashSeg:[[0,'Сегодня'],[1,'Завтра']].map(([v,n])=>({name:n,go:()=>this.setState({dashDay:v}),bg:dd===v?'#0A2F4F':'transparent',fg:dd===v?'#fff':'#0A2F4F'})),dashToCal:()=>{this.setState({screen:'calendar',calMode:'day',calDay:dd});const el=document.querySelector('[data-scroll-main]');if(el)el.scrollTop=0;},dashLabel:dlabel(dd)+(dd===0?' · сейчас '+nowText:''),dashMode:isNowDay?'в реальном времени':'подготовка к завтрашней смене',dashModeBg:isNowDay?'rgba(94,140,97,.15)':dd<0?'rgba(59,47,42,.08)':'rgba(217,164,65,.2)',dashModeFg:isNowDay?'#3F6B43':'#0A2F4F',feedEmpty:!feed.length,feedSub:`${dlabel(dd)} · 10:00 — 02:00 · заезды и выезды`,prepTitle:isNowDay?'Подготовка домов':'Подготовка домов · план',prepSub:isNowDay?`топить за ${this.rules(dd).cfg.prep} ч · готов за 20 мин`:'начать топить → заезд',noPrep:!prepList.length,todayLabel:`${dlabel(0)} · ${nowText} · Караганда`,search:s.search,setSearch:e=>this.setState({search:e.target.value}),hasSearch:!!q,searchRes,searchEmpty:!searchRes.length,openNew,
-   is,handbookTopics,tiles,feed,hasReviewTodo:reviewTodo>0,reviewTodo,openReviewQueue,nowText,pending,noPending:!pending.length,prepList,
+   is,handbookTopics,handbookDialogOpen,handbookDialog,closeHandbook,
+   cancelHandbook:e=>{e.preventDefault();closeHandbook();},
+   pressHandbookBackdrop:e=>{this.handbookBackdropPressed=isHandbookBackdrop(e);},
+   clickHandbookBackdrop:e=>{const pressed=this.handbookBackdropPressed;this.handbookBackdropPressed=false;if(pressed&&isHandbookBackdrop(e))closeHandbook();},
+   tiles,feed,hasReviewTodo:reviewTodo>0,reviewTodo,openReviewQueue,nowText,pending,noPending:!pending.length,prepList,
    calendarKey:CAL_STATUS.filter(o=>o.id!=='all'),calStatusLabel:CAL_STATUS.find(o=>o.id===s.calStatus).name,
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
