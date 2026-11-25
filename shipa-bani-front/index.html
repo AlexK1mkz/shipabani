@@ -1249,8 +1249,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
       <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.06em;line-height:1.05;margin:0 0 10px;text-wrap:balance;text-align:center;">{{ houseHeadingStart }}<span style="color:#C15C22;">{{ houseHeadingEnd }}</span></h2>
       <p style="margin:0 0 24px;font-size:var(--fs-lead);line-height:1.5;color:rgba(10,47,79,.75);text-align:center;">Гость выбирает атмосферу, а не номер.</p>
     </div>
-    <div id="car-houses" class="noscroll lane {{ gridCls }}" style="--kd:4;--kt:2.4;--km:1.2;--gc:4;">
-      <sc-for list="{{ houses }}" as="h" hint-placeholder-count="8">
+    <div id="car-houses" class="noscroll lane {{ gridCls }}" style="--kd:3;--kt:2.4;--km:1.2;--gc:3;">
+      <sc-for list="{{ houses }}" as="h" hint-placeholder-count="3">
         <article data-card="1" role="link" tabindex="0" aria-disabled="{{ h.soonAria }}" onPointerDownCapture="{{ tapDown }}" onClickCapture="{{ tapGuard }}" onKeyDown="{{ keyOpen }}" onClick="{{ h.open }}" style="{{ h.cardStyle }}">
           <div style="aspect-ratio:4/5;overflow:hidden;background:#3B2F2A;border-radius:20px;position:relative;">
             <div style="{{ h.bgStyle }}"></div>
@@ -1276,7 +1276,6 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
     <div style="display:flex;align-items:center;gap:6px;padding:20px 20px 0;">
       <button onClick="{{ goHouses }}" style="height:44px;font-weight:600;color:#C15C22;font-size:15px;margin-right:auto;letter-spacing:.02em;">Все дома →</button>
       <button onClick="{{ goHousesVip }}" style="height:40px;padding:0 16px;border:1px solid #0A2F4F;border-radius:999px;background:#F9EFE3;font-size:13px;font-weight:500;letter-spacing:.06em;">VIP</button>
-      <button onClick="{{ goHousesStd }}" style="height:40px;padding:0 16px;border:1px solid #0A2F4F;border-radius:999px;background:#F9EFE3;font-size:13px;font-weight:500;letter-spacing:.06em;">STANDARD</button>
     </div>
   </section>
 
@@ -4402,7 +4401,7 @@ const screen=s.screen;const wide=s.isWide;
     const openView=houseView.filter(h=>!h.soon);
     // Ленты (правила качества, п. 3.1): десктоп ≥1024 - сетка, если карточки помещаются (N ≤ K), иначе прокрутка по K; витринные - центрируются
     const lw=(s.vw||0)>=1024;const laneCls=(n,k)=>lw&&n<=k?'grid':'';
-    const houses=houseView.map(h=>({...h,cardStyle:'text-align:left;'+(h.soon?'cursor:default;':'')}));
+    const houses=houseView.filter(h=>h.tier==='VIP').map(h=>({...h,cardStyle:'text-align:left;'+(h.soon?'cursor:default;':'')}));
     const SHOW=this.heroShowMs(),FADE=this.reduced?300:Math.min(SHOW-200,Math.round((+(this.props.heroFadeSec??1)||1)*1000));const hn=s.heroN||0;const run=this.heroAuto&&!s.heroPaused;
     const heroSlides=HERO_SLIDES.map((sl,i)=>{const act=s.hero===i,prv=s.heroPrev===i;const kb=!this.reduced&&(act||prv);const nm=(act?hn:hn-1)%2?'kbA':'kbB';return {style:`position:absolute;inset:0;background:#0A2F4F url(${sl.img}) center 45%/cover no-repeat;opacity:${act?1:0};transition:opacity ${FADE}ms ease-in-out;${kb?`animation:${nm} ${SHOW}ms linear forwards;animation-play-state:${run||prv?'running':'paused'};`:''}`};});
     const heroDots=HERO_SLIDES.map((_,i)=>({go:()=>this.heroGo(i),label:`Кадр ${i+1} из ${HERO_SLIDES.length}`,aria:s.hero===i?'true':undefined,
@@ -5089,8 +5088,8 @@ const LANGS=['RU','KZ','EN'];
       keyOpen:e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click();}},
       progRowRef:this.progRowRef,progPrev:()=>progScroll(-1),progNext:()=>progScroll(1),
       videoRef:this.videoRef,scrollToVideo:()=>{const el=this.videoRef.current;if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});},
-      houseHeadingStart:s.lang==='KZ'?'СЕГІЗ ҮЙ ':'ВОСЕМЬ ДОМОВ ',
-      houseHeadingEnd:s.lang==='KZ'?'СЕГІЗ ТҮРЛІ КҮЙ':'ВОСЕМЬ СОСТОЯНИЙ',
+      houseHeadingStart:s.lang==='KZ'?'ҮШ VIP ҮЙ ':'ТРИ VIP-ДОМА ',
+      houseHeadingEnd:s.lang==='KZ'?'ҮШ ТҮРЛІ КҮЙ':'ТРИ СОСТОЯНИЯ',
       faqHeadingStart:s.lang==='KZ'?'ЖИІ ҚОЙЫЛАТЫН':'НАМ ЧАСТО ЗАДАЮТ ЭТИ',
       faqHeadingEnd:s.lang==='KZ'?'СҰРАҚТАР':'ВОПРОСЫ',
       houses,gridCls:lw?'grid':'',revCls:laneCls(HOME_REV.length,2),
@@ -5173,7 +5172,7 @@ const LANGS=['RU','KZ','EN'];
       addTableHint:s.lang==='KZ'?'Алдымен тағамдарды, содан кейін күн мен үйді таңдаңыз':'Сначала блюда, затем дата и дом',
       ...PAGE_COPY[s.lang],
       ...(s.lang==='EN'?{
-        houseHeadingStart:'EIGHT HOUSES ',houseHeadingEnd:'EIGHT STATES OF MIND',
+        houseHeadingStart:'THREE VIP HOUSES ',houseHeadingEnd:'THREE STATES OF MIND',
         faqHeadingStart:'FREQUENTLY ASKED',faqHeadingEnd:'QUESTIONS',
         requisiteAria:'Registered business details',
         requisiteBusinessName:'Sole proprietorship “Kor Food”',
