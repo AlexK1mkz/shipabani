@@ -660,7 +660,7 @@ test('the assignee on Kanban cards and the shared filter use the saved booking a
   assert.deepEqual(Array.from(ui.listRows, row => row.num), [booking.num]);
 });
 
-test('Kanban shows thirty calendar days and current bookings while the list retains history', () => {
+test('Kanban shows thirty calendar days and current bookings while history switches the list to all dates', () => {
   const storage = new Map();
   const { crm } = demo(storage);
   const scheduled = crm.state.bookings.find(b => b.stage === 'confirmed');
@@ -742,7 +742,8 @@ test('Kanban period presets and custom dates combine with the existing board fil
   crm.renderVals().viewBookingHistory();
   assert.equal(crm.renderVals().listRows.length,4);
   crm.renderVals().viewKanban();
-  assert.deepEqual(ids(),['past']);
+  assert.equal(ids().length,4);
+  assert.equal(control().value,'all');
 });
 
 test('bookings Excel exports the selected board, preset, assignee and list order', () => {
@@ -904,3 +905,25 @@ test('deactivating an employee overrides access and keeps the saved permission f
   restored.staffView().setFilter({ target: { value: 'active' } });
   assert.equal(restored.staffView().rows.find(item => item.id === employee.id).access, 'Открыт');
 });
+
+ test('Booking list shares period with Kanban and exports only the selected rows', () => {
+  const downloads=[];
+  const {crm}=demo(new Map(),()=>false,{ShipaGuestExport:{download:(...args)=>downloads.push(args)}});
+  const b=crm.state.bookings.find(b=>b.stage==='confirmed');
+  crm.setState({screen:'bookings',view:'list',bookings:[{...b,num:'old',day:-60,stage:'review',stageAt:59*1440},{...b,num:'recent',day:-3,stage:'review',stageAt:2*1440},{...b,num:'future',day:3,stageAt:1}]});
+  const ids=()=>Array.from(crm.renderVals().listRows,r=>r.num).sort();
+  assert.deepEqual(ids(),['future','recent']);
+  crm.renderVals().kanbanPeriod.select(event('custom'));
+  crm.renderVals().kanbanPeriod.setFrom(event('2026-10-13'));
+  crm.renderVals().kanbanPeriod.setTo(event('2026-10-13'));
+  crm.renderVals().kanbanPeriod.apply();
+  assert.deepEqual(ids(),['recent']);
+  crm.renderVals().exportBookings();
+  assert.deepEqual(Array.from(downloads[0][3],r=>r[0]),['recent']);
+  crm.renderVals().viewKanban();
+  assert.deepEqual(Array.from(crm.renderVals().columns.flatMap(c=>c.cards),c=>c.num),['recent']);
+  crm.renderVals().viewList();
+  assert.deepEqual(ids(),['recent']);
+  crm.renderVals().kanbanPeriod.select(event('all'));
+  assert.deepEqual(ids(),['future','old','recent']);
+ });
