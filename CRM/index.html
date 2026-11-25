@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="../shipa-bani-front/review-store.js?v=1"></script>
 <script src="./support.js"></script>
-<script defer src="./shipa-ru-kz.js?v=20261125-kanban-period"></script>
+<script defer src="./shipa-ru-kz.js?v=20261125-kanban-range"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -111,7 +111,15 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
   .crm-kanban-legend svg{color:#0A2F4F;flex:none;}
   .crm-kanban-period{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;color:#526271;font-size:13px;line-height:1.45;}
   .crm-kanban-period strong{color:#0A2F4F;font-weight:600;}
-  .crm-kanban-period button{min-height:28px;color:#0A2F4F;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;text-align:left;}
+  .crm-kanban-period .crm-kanban-history{min-height:36px;color:#0A2F4F;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;text-align:left;}
+  .crm-kanban-period-controls{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;min-width:0;flex:1;}
+  .crm-kanban-period-picker{position:relative;display:inline-flex;min-width:176px;max-width:100%;}
+  .crm-kanban-period-picker select{border-radius:10px;border-color:#CCD9E2;background:#fff;color:#0A2F4F;}
+  .crm-kanban-dates{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .crm-kanban-dates label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+  .crm-kanban-dates input{width:138px;max-width:100%;min-height:36px;padding:0 8px;background:#fff;border:1px solid #CCD9E2;border-radius:9px;font-size:13px;color:#0A2F4F;}
+  .crm-kanban-dates .crm-kanban-apply{background:#0A2F4F;color:#fff;border-color:#0A2F4F;}
+  .crm-kanban-period-error{width:100%;font-size:13px;color:#A03527;}
   .crm-cal-key{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin-top:-6px;padding:12px 16px;border:1px solid #E2E8ED;border-radius:12px;background:#fff;color:#526271;font-size:12px;}
   .crm-cal-key-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
   .crm-cal-drop-error{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1px solid #E7B4AB;border-radius:12px;background:#FBEAE7;color:#862D22;font-size:13px;line-height:1.4;}
@@ -779,8 +787,26 @@ a{color:#0A2F4F;text-decoration:none;}a:hover{color:#C15C22;}
 
       <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
         <div class="crm-kanban-period">
-          <span><strong>Последние 30 дней</strong> · {{ kanbanDateRange }} · будущие брони и гости в доме</span>
-          <button type="button" onClick="{{ viewBookingHistory }}">Вся история в списке<sc-if value="{{ hasOlderBookings }}"> · {{ olderBookingsCount }} в архиве</sc-if></button>
+          <div class="crm-kanban-period-controls">
+            <strong>Период</strong>
+            <span class="crm-kanban-period-picker">
+              <select class="crm-picker" aria-label="Период канбана" value="{{ kanbanPeriod.value }}" onChange="{{ kanbanPeriod.select }}">
+                <sc-for list="{{ kanbanPeriod.options }}" as="o"><option value="{{ o.id }}">{{ o.label }}</option></sc-for>
+              </select>
+              <svg class="crm-stage-chevron" aria-hidden="true" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"></path></svg>
+            </span>
+            <sc-if value="{{ kanbanPeriod.showCustom }}">
+              <div class="crm-kanban-dates">
+                <label>С даты <input type="date" aria-label="Дата начала периода" value="{{ kanbanPeriod.from }}" onInput="{{ kanbanPeriod.setFrom }}"></label>
+                <label>По дату <input type="date" aria-label="Дата окончания периода" value="{{ kanbanPeriod.to }}" onInput="{{ kanbanPeriod.setTo }}"></label>
+                <button type="button" class="crm-guest-export crm-kanban-apply" onClick="{{ kanbanPeriod.apply }}" disabled="{{ kanbanPeriod.cannotApply }}">Применить</button>
+                <sc-if value="{{ kanbanPeriod.editing }}"><button type="button" class="crm-guest-export" onClick="{{ kanbanPeriod.cancel }}">Отмена</button></sc-if>
+              </div>
+            </sc-if>
+            <span><sc-if value="{{ kanbanPeriod.editing }}">Показано: </sc-if>{{ kanbanDateRange }}<sc-if value="{{ kanbanPeriod.includeUpcoming }}"> · будущие брони и гости в доме</sc-if></span>
+            <sc-if value="{{ kanbanPeriod.error }}"><span class="crm-kanban-period-error" role="alert">{{ kanbanPeriod.error }}</span></sc-if>
+          </div>
+          <button class="crm-kanban-history" type="button" onClick="{{ viewBookingHistory }}">Вся история в списке<sc-if value="{{ hasOlderBookings }}"> · {{ olderBookingsCount }} вне периода</sc-if></button>
         </div>
         <div class="crm-kanban-legend" role="group" aria-labelledby="crm-kanban-legend-label">
           <strong id="crm-kanban-legend-label">Значки на карточках</strong>
@@ -1875,16 +1901,35 @@ const mins=(di,h,m=0)=>{const d=dateAt(di);d.setHours(h,m,0,0);return (NOW-d)/60
 const stamp=(di,h,m=0)=>{const d=dateAt(di);d.setHours(h,m);return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
 const NOW_MIN=NOW.getHours()*60+NOW.getMinutes();
 // 30 calendar days, including today, relative to the shared CRM demo date.
-const KANBAN_FIRST_DAY=1-30;
-function isKanbanCurrent(b){
+const KANBAN_PERIODS=[
+  {id:'7',label:'Последние 7 дней'},
+  {id:'14',label:'Последние 14 дней'},
+  {id:'30',label:'Последние 30 дней'},
+  {id:'90',label:'Последние 90 дней'},
+  {id:'all',label:'За всё время'},
+  {id:'custom',label:'Свой период'}
+];
+const DEFAULT_KANBAN_PERIOD={kind:'30'};
+function validKanbanRange(from,to){
+  return Number.isInteger(keyOff(from||''))&&Number.isInteger(keyOff(to||''))&&from<=to;
+}
+function kanbanBounds(period){
+  if(period.kind==='all')return null;
+  if(period.kind==='custom')return [keyOff(period.from),keyOff(period.to)];
+  return [1-Number(period.kind),0];
+}
+function isKanbanCurrent(b,period,bounds){
   const stage=ST[b.stage];
   if(!stage)return false;
-  const recentStage=Number.isFinite(b.stageAt)&&b.stageAt>=0&&b.stageAt<=mins(KANBAN_FIRST_DAY,0);
+  if(!bounds)return true;
+  const [first,last]=bounds;
+  const recentStage=Number.isFinite(b.stageAt)&&b.stageAt>=0&&b.stageAt<=mins(first,0)&&b.stageAt>mins(last+1,0);
   const scheduled=b.start!=null&&Number.isInteger(b.day);
-  const recentVisit=scheduled&&b.day>=KANBAN_FIRST_DAY&&b.day<=0;
+  const visitInRange=scheduled&&b.day>=first&&b.day<=last;
+  if(period.kind==='custom')return stage.type==='fail'||!scheduled?recentStage:visitInRange;
   if(stage.type==='fail')return recentStage;
-  if(stage.type!=='open'||b.stage==='done')return recentStage||recentVisit;
-  return recentStage||b.stage==='inhouse'||(scheduled&&b.day>=KANBAN_FIRST_DAY);
+  if(stage.type!=='open'||b.stage==='done')return recentStage||(visitInRange&&b.day<=0);
+  return recentStage||visitInRange||b.stage==='inhouse'||(scheduled&&b.day>last);
 }
 let SEQ=1054;
 function mk(o){const ev=o.ev||[];const b={kids:0,services:[],pays:[],events:ev,source:'сайт',lang:'RU',visits:0,consent:true,mode:'hours',owner:'Айдана',board:'sales',...o};
@@ -2284,6 +2329,11 @@ function crmHash(s){
     if(s.view==='list')params.set('view',s.view);
     if(s.savedView)params.set('filter',s.savedView);
     if(s.assigneeFilter!=null)params.set('responsible',s.assigneeFilter);
+    if(s.kanbanPeriod.kind!=='30')params.set('period',s.kanbanPeriod.kind);
+    if(s.kanbanPeriod.kind==='custom'){
+      params.set('from',s.kanbanPeriod.from);
+      params.set('to',s.kanbanPeriod.to);
+    }
   }
   if(s.screen==='campaigns'&&s.cmpSel!=='bday')params.set('campaign',s.cmpSel);
   if(s.screen==='tariffs'&&s.tarView)params.set('version',s.tarView);
@@ -2316,9 +2366,14 @@ function crmRoute(hash,s){
     Object.assign(route,{calDay:Number.isInteger(day)?day:0,calMode:pick('mode',['day','week','month'],'day'),
       calHouse:pick('house',HOUSES.filter(h=>!h.soon).map(h=>h.id),'all'),calStatus:pick('status',CAL_STATUS.map(o=>o.id),'all')});
   }
-  if(screen==='bookings')Object.assign(route,{board:pick('board',s.boards.map(b=>b.id),null),
-    view:pick('view',['kanban','list'],'kanban'),savedView:pick('filter',['today','unpaid','vip'],null),
-    assigneeFilter:pick('responsible',['',...bookingAssignees(s.bookings)],null)});
+  if(screen==='bookings'){
+    const kind=pick('period',KANBAN_PERIODS.map(p=>p.id),'30');
+    const from=params.get('from'),to=params.get('to');
+    const kanbanPeriod=kind==='custom'?(validKanbanRange(from,to)?{kind,from,to}:DEFAULT_KANBAN_PERIOD):{kind};
+    Object.assign(route,{board:pick('board',s.boards.map(b=>b.id),null),
+      view:pick('view',['kanban','list'],'kanban'),savedView:pick('filter',['today','unpaid','vip'],null),
+      assigneeFilter:pick('responsible',['',...bookingAssignees(s.bookings)],null),kanbanPeriod,kanbanDraft:null});
+  }
   if(screen==='campaigns')route.cmpSel=pick('campaign',s.campaigns.map(c=>c.id),s.campaigns[0]?.id??'bday');
   if(screen==='tariffs')route.tarView=pick('version',s.versions.map(v=>v.from),null);
   return route;
@@ -2329,7 +2384,7 @@ function crmViewMotion(s){
     case 'calendar':
       return {calendar:[s.calMode,s.calDay,s.calStatus,s.calMode==='month'?s.calHouse:null]};
     case 'bookings':
-      return {bookings:[s.view,s.board,s.savedView,s.assigneeFilter,s.view==='list'?s.sort.k:null,s.view==='list'?s.sort.d:null]};
+      return {bookings:[s.view,s.board,s.savedView,s.assigneeFilter,s.view==='kanban'?s.kanbanPeriod:null,s.view==='list'?s.sort.k:null,s.view==='list'?s.sort.d:null]};
     case 'clients':
       return {clients:[s.clFilter,s.clSort.k,s.clSort.d]};
     case 'campaigns': {
@@ -2343,7 +2398,7 @@ function crmViewMotion(s){
   }
 }
 class Component extends DCLogic {
- state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
+ state={screen:'today',dashDay:0,role:'admin',employees:STAFF_SEED,staffDraft:null,staffError:'',staffQuery:'',staffFilter:'all',navOpen:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),navPinned:(()=>{try{return localStorage.getItem('shipa_crm_nav_pinned')==='1';}catch(e){return false;}})(),bookings:DATA,reasonDialog:null,reasonDrafts:{},reviews:[],receivedReviews:window.ShipaReviews?.list() || [],templates:TEMPLATES,versions:[BASE_VERSION],tarView:null,tarDraft:null,tarError:'',view:'kanban',kanbanPeriod:DEFAULT_KANBAN_PERIOD,kanbanDraft:null,calMode:'day',calDay:0,openId:null,detailsLast:'booking',tab:'compose',pf:{sum:'',type:'Остаток',method:'Kaspi'},search:'',nb:null,note:'',rvFilter:'all',rvDraft:{},rvReplying:null,tplOpen:null,sort:{k:'date',d:1},savedView:null,assigneeFilter:null,calc:{house:'dyhanie',date:dkey(0),start:15,dur:4,guests:8,tub:false,services:[]},toast:'',toastTone:'info',holidays:HOLIDAYS0,boards:BOARDS0,board:null,boardEdit:false,colDel:null,boardDelAsk:false,rs:null,clients:CLIENTS0,clientId:null,ctab:'profile',clFilter:'all',clSearch:'',clSort:{k:'spent',d:-1},campaigns:CAMPAIGNS0,loyalty:LOY0,cmpSel:'bday',cmpLog:CMPLOG0,calHouse:'all',calStatus:'all',calDropError:null,...restoreDemo()};
  constructor(props){
   super(props);
   this.state.bookings=this.state.bookings.map(b=>b.quote?b:withQuote(b,BASE_VERSION));
@@ -2882,10 +2937,33 @@ class Component extends DCLogic {
   };
   const bCards=B.filter(b=>(b.board||'sales')===curB.id);
   let filtered=bCards.filter(b=>s.assigneeFilter==null||bookingAssignee(b)===s.assigneeFilter);if(s.savedView==='today')filtered=filtered.filter(b=>b.day===0);if(s.savedView==='unpaid')filtered=filtered.filter(b=>['new','contact','prepay'].includes(b.stage));if(s.savedView==='vip')filtered=filtered.filter(b=>H[b.house]&&cats[H[b.house].cat].tier==='VIP'&&b.day>=0&&this.isWeekend(b.day));
-  const kanbanBookings=filtered.filter(isKanbanCurrent);
+  const period=s.kanbanPeriod;
+  const bounds=kanbanBounds(period);
+  const matchesPeriod=b=>isKanbanCurrent(b,period,bounds);
+  const kanbanBookings=filtered.filter(matchesPeriod);
   const visibleBookings=s.view==='kanban'?kanbanBookings:filtered;
-  const olderBookingsCount=bCards.filter(b=>!isKanbanCurrent(b)).length;
-  const kanbanDateRange=[dateAt(KANBAN_FIRST_DAY),dateAt(0)].map(date=>date.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'})).join(' – ');
+  const olderBookingsCount=bCards.filter(b=>!matchesPeriod(b)).length;
+  const periodDates=(bounds||kanbanBounds(DEFAULT_KANBAN_PERIOD)).map(dkey);
+  const fullYear=periodDates[0].slice(0,4)!==periodDates[1].slice(0,4);
+  const kanbanDateRange=bounds?periodDates.map(date=>fullYear?ddmm(date):ddmm(date).slice(0,5)).join(' – '):'Все даты';
+  const customDates=s.kanbanDraft||{from:periodDates[0],to:periodDates[1]};
+  const validRange=validKanbanRange(customDates.from,customDates.to);
+  const kanbanPeriod={
+    options:KANBAN_PERIODS,value:s.kanbanDraft?'custom':period.kind,
+    showCustom:!!s.kanbanDraft||period.kind==='custom',editing:!!s.kanbanDraft,
+    includeUpcoming:period.kind!=='all'&&period.kind!=='custom',
+    ...customDates,cannotApply:!validRange,
+    error:validRange?'':'Укажите корректный период: дата начала не позже даты окончания.',
+    select:e=>{
+      const kind=e.target.value;
+      if(!KANBAN_PERIODS.some(p=>p.id===kind))return;
+      this.setState(kind==='custom'?{kanbanDraft:{from:periodDates[0],to:periodDates[1]}}:{kanbanPeriod:{kind},kanbanDraft:null});
+    },
+    setFrom:e=>this.setState({kanbanDraft:{...customDates,from:e.target.value}}),
+    setTo:e=>this.setState({kanbanDraft:{...customDates,to:e.target.value}}),
+    apply:()=>{if(validRange)this.setState({kanbanPeriod:{kind:'custom',...customDates},kanbanDraft:null});},
+    cancel:()=>this.setState({kanbanDraft:null}),
+  };
   const savedViews=(curB.id==='sales'?[{id:'today',name:'Мои на сегодня'},{id:'unpaid',name:'Ждут оплаты'},{id:'vip',name:'VIP на выходные'}]:[]).map(v=>({...v,pressed:String(s.savedView===v.id),go:()=>this.setState({savedView:s.savedView===v.id?null:v.id})}));
   const ocount=curB.cols.filter(c=>c.type==='open').length;
   const updB=fn=>this.setState(S=>({boards:S.boards.map(x=>x.id===curB.id?fn({...x,cols:x.cols.map(c=>({...c}))}):x)}));
@@ -2907,7 +2985,7 @@ class Component extends DCLogic {
     del:()=>{if(delWhy)return;if(all.length){const to=(curB.cols.slice(0,ci).reverse().find(c=>c.type==='open')||curB.cols.find(c=>c.type==='open'&&c.id!==st.id)).id;this.setState({colDel:{id:st.id,to}});return;}updB(x=>({...x,cols:x.cols.filter(c=>c.id!==st.id)}));this.toast(`Столбец «${st.name}» удалён`);},
     delAsk:isDel,delAskText:`В столбце ${all.length} ${all.length===1?'карточка':all.length<5?'карточки':'карточек'}. Куда перенести?`,delTo:isDel?s.colDel.to:'',moveOpts,setDelTo:e=>this.setState({colDel:{...s.colDel,to:e.target.value}}),cancelDel:()=>this.setState({colDel:null}),
     confirmDel:()=>{const to=s.colDel.to;const tn=ST[to].name;this.setState(S=>({bookings:S.bookings.map(b=>b.stage===st.id&&(b.board||'sales')===curB.id?this.log({...b,events:[...b.events],stage:to,stageAt:0},`Столбец «${st.name}» удалён → карточка в «${tn}»`):b),boards:S.boards.map(x=>x.id===curB.id?{...x,cols:x.cols.filter(c=>c.id!==st.id)}:x),colDel:null}));this.toast(`Столбец удалён · карточки в «${tn}»`);}};});
-  const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open'&&(s.view!=='kanban'||isKanbanCurrent(b))).length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false})};});
+  const boardTabs=boards.map(bd=>{const on=bd.id===curB.id;return {name:bd.name,main:!!bd.main,title:bd.main?'Основная доска — открывается первой':'',count:String(B.filter(b=>(b.board||'sales')===bd.id&&ST[b.stage]&&ST[b.stage].type==='open'&&(s.view!=='kanban'||matchesPeriod(b))).length),bg:on?'#0A2F4F':'#fff',fg:on?'#fff':'#0A2F4F',bd:on?'#0A2F4F':'rgba(10,47,79,.12)',go:()=>this.setState({board:bd.id,colDel:null,boardDelAsk:false})};});
   const delWhyB=curB.main?'Основную доску удалить нельзя. Сначала сделайте основной другую доску.':curB.sys?'Доска броней связана с календарём, сайтом и оплатами — её нельзя удалить.':'';
   const curBoard={name:builtInName(curB,BOARDS0),main:!!curB.main,noDel:!!delWhyB,delWhy:delWhyB||'Удалить доску',delOpacity:delWhyB?.4:1,delCursor:delWhyB?'not-allowed':'pointer',hint:curB.main?'Основная доска открывается первой у всех сотрудников, удалить её нельзя. У столбцов меняются название, цвет, подсветка, норматив и порядок.':delWhyB||'Пустой столбец удаляется сразу, из непустого карточки сначала переносятся в выбранный столбец.'};
   const failOf=b=>{if((b.board||'sales')==='sales')return 'cancel';const bd=boards.find(x=>x.id===b.board);const f=bd&&bd.cols.find(c=>c.type==='fail');return f?f.id:'cancel';};
@@ -3418,8 +3496,8 @@ class Component extends DCLogic {
    hasCalDropError:!!s.calDropError,calDropTarget:s.calDropError?.target,calDropMessage:s.calDropError?.message,
    clearCalDropError:()=>this.setState({calDropError:null}),clearCalendarDrag:()=>{this.dragB=null;},
    calSeg:{day:seg(s.calMode==='day'),week:seg(s.calMode==='week'),month:seg(s.calMode==='month')},calDayMode:()=>this.setState({calMode:'day'}),calWeekMode:()=>this.setState({calMode:'week'}),calPrev:s.calMode==='month'?monthShift(-1):()=>this.setState({calDay:s.calDay-(s.calMode==='day'?1:7)}),calNext:s.calMode==='month'?monthShift(1):()=>this.setState({calDay:s.calDay+(s.calMode==='day'?1:7)}),calToday:()=>this.setState({calDay:0}),calSum,calKey:dkey(s.calDay),calPick:e=>{const v=e.target.value;if(!v)return;const [y,m,d]=v.split('-').map(Number);this.setState({calDay:Math.round((new Date(y,m-1,d)-dateAt(0))/86400000)});},calTitle,legend,calIsDay:s.calMode==='day',calIsWeek:s.calMode==='week',hourLabels:hours.map(hh),calRows,nowLeft,weekDays,weekRows,
-   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),viewBookingHistory:()=>this.setState({view:'list',savedView:null,assigneeFilter:null}),goCalendar:go('calendar'),isKanban:s.view==='kanban',kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
-   setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${visibleBookings.length} ${pl(visibleBookings.length,'карточка','карточки','карточек')}`,kanbanDateRange,olderBookingsCount,hasOlderBookings:olderBookingsCount>0,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
+   viewSeg:{kanban:seg(s.view==='kanban'),list:seg(s.view==='list')},viewKanban:()=>this.setState({view:'kanban'}),viewList:()=>this.setState({view:'list'}),viewBookingHistory:()=>this.setState({view:'list',savedView:null,assigneeFilter:null,kanbanDraft:null}),goCalendar:go('calendar'),isKanban:s.view==='kanban',kanbanIcons:KANBAN_ICONS,isList:s.view==='list',savedViews,assigneeOptions,assigneeFilter:s.assigneeFilter??'*',assigneeActive:String(s.assigneeFilter!=null),
+   setAssigneeFilter:e=>this.setState({assigneeFilter:e.target.value==='*'?null:e.target.value}),setBookingAssignee,bookingsCount:`${visibleBookings.length} ${pl(visibleBookings.length,'карточка','карточки','карточек')}`,kanbanPeriod,kanbanDateRange,olderBookingsCount,hasOlderBookings:olderBookingsCount>0,columns,allowDrop:e=>e.preventDefault(),listRows,exportBookings,bookingExportEmpty:!sortedBookings.length,sortNum:setSort('num'),sortDate:setSort('date'),sortSum:setSort('sum'),sortMark:{num:sortIcon('num'),date:sortIcon('date'),sum:sortIcon('sum')},
    rv:{avg,countLabel:reviewCountLabel(rvs.length),dist,cats:catAvg,
      hasCategory:!!s.rvCategory,clearCategory:()=>this.setState({rvCategory:null}),
      listTitle:s.rvCategory || 'Отзывы гостей',resultLabel:reviewCountLabel(reviewsView.length)},
