@@ -8,6 +8,8 @@
 <script src="./shipa-typography.js?v=20261119-video-dash"></script>
 <script src="./review-store.js?v=1"></script>
 <script src="./support.js"></script>
+<script src="./phone-input.js?v=1"></script>
+<link rel="stylesheet" href="./phone-input.css?v=1">
 
 
 
@@ -2853,8 +2855,8 @@ body:has([data-shipa-rules="true"]) #bk-scroll {
         </div>
         <div>
           <label for="bk-phone" style="display:block;font-size:14px;font-weight:500;margin-bottom:6px;">Телефон <span style="color:#C15C22;">*</span></label>
-          <div style="position:relative;">
-            <input id="bk-phone" name="tel" maxLength="18" data-field="phone" data-err="{{ fbk.phoneAttr }}" value="{{ phoneShown }}" onChange="{{ fbk.setPhone }}" placeholder="+7 (___) ___-__-__" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fbk.phoneErr }}" style="{{ fbk.phoneStyle }}">
+          <div class="shipa-phone-field"><span class="shipa-phone-choice"><span class="shipa-phone-flag" aria-hidden="true">{{ phoneField.flag }}</span><span aria-hidden="true">{{ phoneField.code }}</span><span class="shipa-phone-arrow" aria-hidden="true">⌄</span><select aria-label="Код страны" value="{{ phoneField.country }}" onChange="{{ phoneField.setCountry }}"><sc-for list="{{ phoneField.options }}" as="country"><option value="{{ country.id }}">{{ country.label }}</option></sc-for></select></span>
+            <input id="bk-phone" name="tel" maxLength="32" data-field="phone" data-err="{{ fbk.phoneAttr }}" value="{{ phoneField.value }}" onChange="{{ phoneField.setPhone }}" onPaste="{{ phoneField.paste }}" placeholder="{{ phoneField.placeholder }}" type="tel" inputMode="tel" autoComplete="tel" aria-invalid="{{ fbk.phoneErr }}" style="{{ fbk.phoneStyle }}">
             <sc-if value="{{ phoneOk }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0A2F4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Номер введён" style="position:absolute;right:16px;top:50%;margin-top:-10px;pointer-events:none;animation:tickIn 200ms ease-out;"><path d="M4 10.5l4 4 8-9"/></svg></sc-if>
           </div>
           <sc-if value="{{ fbk.phoneErr }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#C15C22;">{{ fbk.phoneHint }}</div></sc-if>
@@ -3690,7 +3692,7 @@ const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}};
 // Accept Kazakhstan numbers in +7, 8 or local ten-digit notation; never reinterpret +1/+44 as +7.
 const bookingDisplay=view=>{const out={...view};const clean=v=>typeof v==='string'?v.replace(/\s*·\s*/g,' ').replace(/([\p{L}])\./gu,'$1'):v;for(const key of ['s3DateText','panelLine','successWhen','cLine1','calLine','dailyIn','dailyOut','searchDate','step2Title'])if(key in out)out[key]=clean(out[key]);if(out.card)out.card={...out.card,when:clean(out.card.when)};if(out.pay)out.pay={...out.pay,line:clean(out.pay.line)};return out;};
 const phoneDigits=v=>{const raw=String(v||'').trim();let d=raw.replace(/\D/g,'');if(raw.startsWith('+')){if(!raw.startsWith('+7'))return '';d=d.slice(1);}else if(d.length===11&&/^[78]/.test(d))d=d.slice(1);else if(d.startsWith('8')&&d.length<11)d=d.slice(1);return d.slice(0,10);};
-const phoneValid=v=>{const raw=String(v||'').trim();const digits=raw.replace(/\D/g,'');if(raw.startsWith('+')&&!raw.startsWith('+7'))return false;if(digits.length!==10&&!(digits.length===11&&/^[78]/.test(digits)))return false;return phoneDigits(raw).length===10;};
+const phoneValid=v=>{if(typeof window!=='undefined'&&window.ShipaPhone)return window.ShipaPhone.valid(v);const raw=String(v||'').trim();const digits=raw.replace(/\D/g,'');if(raw.startsWith('+')&&!raw.startsWith('+7'))return false;if(digits.length!==10&&!(digits.length===11&&/^[78]/.test(digits)))return false;return phoneDigits(raw).length===10;};
 // Shared email validator for email inputs (the current booking form only requests name and phone).
 const emailValid=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v||'').trim())&&String(v||'').trim().length<=254;
 const nameValid=v=>/^[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі][A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі\s'’\-]{1,79}$/.test(String(v||'').trim());
@@ -4339,7 +4341,7 @@ class Component extends DCLogic {
   fieldVals(scope,h,fs){
     const s=this.state;const fe=s.fe.scope===scope?s.fe:FE0;const anim=s.fe.n%2?'shakeA':'shakeB';
     const st=(err,pr)=>`width:100%;height:${h}px;border:1px solid ${err?BRICK:'rgba(59,47,42,.15)'};box-shadow:${err?'inset 0 0 0 1px '+BRICK:'none'};border-radius:14px;padding:0 ${pr}px 0 ${h>52?16:14}px;font-size:${fs}px;background:${err?'rgba(193,92,34,.06)':'rgba(255,255,255,.6)'};color:${NAVY};transition:border-color 150ms,background 150ms;${err?`animation:${anim} 300ms ease-out 1;`:''}`;
-    return {nameErr:fe.name,phoneErr:fe.phone,agreeErr:fe.agree,privacyErr:fe.privacy,nameAttr:fe.name?'1':'0',phoneAttr:fe.phone?'1':'0',nameHint:s.lang==='KZ'?'Атыңызды кемінде 2 әріппен жазыңыз':'Введите имя буквами (не менее 2 символов)',phoneHint:s.lang==='KZ'?'Нөмірді +7 (XXX) XXX-XX-XX форматында енгізіңіз':'Введите корректный номер в формате +7 (XXX) XXX-XX-XX',
+    return {nameErr:fe.name,phoneErr:fe.phone,agreeErr:fe.agree,privacyErr:fe.privacy,nameAttr:fe.name?'1':'0',phoneAttr:fe.phone?'1':'0',nameHint:s.lang==='KZ'?'Атыңызды кемінде 2 әріппен жазыңыз':'Введите имя буквами (не менее 2 символов)',phoneHint:s.lang==='KZ'?'Ел кодын таңдап, телефон нөмірін толық енгізіңіз':'Выберите код страны и введите полный номер телефона',
       nameStyle:st(fe.name,h>52?16:14),phoneStyle:st(fe.phone,46),
       setName:e=>this.setState({form:{...this.state.form,name:e.target.value},fe:{...this.state.fe,name:false}}),
       setPhone:e=>{const v=e.target.value;const cur=this.state;const old=phoneDigits(cur.form.phone);let d=phoneDigits(v);if(d===old&&v.length<phoneFmt(old).length)d=d.slice(0,-1);this.setState({form:{...cur.form,phone:phoneFmt(d)},fe:{...cur.fe,phone:false}});}};}
@@ -5056,7 +5058,7 @@ const LANGS=['RU','KZ','EN'];
       sheetBoxStyle:wide&&(s.sheet==='date'||s.sheet==='progs'||s.sheet==='review')?'position:fixed;top:0;right:0;bottom:0;z-index:var(--z-sheet);width:'+(s.sheet==='progs'?420:480)+'px;max-width:100vw;display:flex;flex-direction:column;background:#F9EFE3;padding-top:12px;animation:panelIn 280ms cubic-bezier(.2,.8,.2,1);':'position:fixed;left:0;right:0;bottom:0;z-index:var(--z-sheet);max-width:560px;margin:0 auto;max-height:86vh;display:flex;flex-direction:column;background:#F9EFE3;border-radius:24px 24px 0 0;animation:sheetUp 280ms cubic-bezier(.2,.8,.2,1);',
       sheetRef:this.sheetRef,sheetDown:e=>this.sheetDown(e),closeSheet:()=>this.setState({sheet:null}),
       openRules:e=>{if(e&&e.preventDefault){e.preventDefault();e.stopPropagation();}this.setState({sheet:'rules'});},
-      phoneShown:phoneFmt(phoneDigits(s.form.phone)),phoneOk:phoneValid(s.form.phone),
+      phoneField:window.ShipaPhone?.field(s.form.phone,s.form.country,(phone,country)=>this.setState(st=>({form:{...st.form,phone,country},fe:{...st.fe,phone:false}})),s.lang)||{},phoneShown:phoneFmt(phoneDigits(s.form.phone)),phoneOk:phoneValid(s.form.phone),
       bkFillMsg:!!(bk&&s.fe.scope==='bk'&&(s.fe.name||s.fe.phone||s.fe.agree||s.fe.privacy)),callFillMsg:s.fe.scope==='call'&&(s.fe.name||s.fe.phone),
       setAgree:e=>this.setState({form:{...this.state.form,agree:e.target.checked},fe:{...this.state.fe,agree:false}}),
       setPrivacy:e=>this.setState({form:{...this.state.form,privacy:e.target.checked},fe:{...this.state.fe,privacy:false}}),
