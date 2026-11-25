@@ -7,7 +7,7 @@
 <script src="./support.js"></script>
 <script src="../shipa-bani-front/phone-input.js?v=1"></script>
 <link rel="stylesheet" href="../shipa-bani-front/phone-input.css?v=1">
-<script defer src="./shipa-ru-kz.js?v=20261125-reports"></script>
+<script defer src="./shipa-ru-kz.js?v=20261125-staff-tabs"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
 </head>
 <body>
@@ -535,31 +535,68 @@ SOFTWARE.
   .staff-role h3{font-size:14px;}
   .staff-role p,.staff-demo{font-size:13px;line-height:1.45;}
   .staff-demo{padding:11px 12px;border-radius:10px;background:#F4F7F9;color:#536575;}
-  .crm-staff-dialog{width:min(520px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow:auto;border:0;border-radius:20px;padding:24px;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.25);}
+
+  .crm-app .crm-staff-dialog{width:min(640px,calc(100% - 28px));max-height:calc(100dvh - 32px);overflow:hidden;border:0;border-radius:22px;padding:0!important;background:#fff;color:#0A2F4F;box-shadow:0 18px 60px rgba(10,47,79,.25);}
+  .crm-staff-dialog[open]{display:flex;flex-direction:column}
   .crm-staff-dialog::backdrop{background:rgba(10,47,79,.48);}
-  .staff-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px;}
+  .staff-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 24px 14px;flex:none;}
   .staff-dialog-heading h2{margin:0;font-size:21px;font-weight:600;line-height:1.2;}
-  .staff-dialog-heading button{width:36px;height:36px;flex:none;border-radius:10px;background:#EDF3F6;font-size:22px;line-height:1;}
+  .staff-dialog-heading button{width:38px;height:38px;flex:none;border-radius:10px;background:#EDF3F6;font-size:22px;line-height:1;}
   .staff-dialog-heading button:hover{background:#E0EAF0;}
-  .crm-staff-dialog .staff-muted{color:#536575;margin:0;}
-  .staff-editor{display:grid;gap:12px;}
+  .staff-profile-banner{display:flex;gap:13px;align-items:center;margin:0 24px 16px;padding:14px;background:#F5F8FA;border:1px solid #E5EDF2;border-radius:14px;flex:none}
+  .staff-profile-avatar{width:48px;height:48px;flex:none;display:grid;place-items:center;background:#0A2F4F;color:#fff;border-radius:50%;font-size:20px;font-weight:600}
+  .staff-profile-info{flex:1;min-width:0;display:grid;gap:3px}
+  .staff-profile-info strong{font-size:16px;overflow-wrap:anywhere}
+  .staff-profile-info span{color:#526271;font-size:12px}
+  .staff-profile-status{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-weight:600;font-size:12px;max-width:100%;white-space:normal}
+  .staff-profile-status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+  .staff-profile-status.staff-active{background:#E8F4ED;color:#277044}
+  .staff-profile-status.staff-blocked{background:#F3F0EA;color:#90601D}
+  .staff-profile-status.staff-disabled{background:#FBECE8;color:#A73528}
+  .staff-tabs{display:flex;gap:4px;margin:0 24px;padding:4px;background:#F0F4F6;border-radius:12px;flex:none}
+  .staff-tabs button{flex:1 1 0;min-width:0;min-height:42px;border-radius:9px;font-size:13px;font-weight:600;padding:6px 8px;white-space:normal}
+  .staff-tabs button[aria-pressed=true]{background:#fff;color:#0A2F4F;box-shadow:0 1px 5px rgba(10,47,79,.1)}
+  .crm-staff-dialog .staff-muted{color:#536575;margin:0;font-size:13px;line-height:1.5}
+  .staff-editor{display:flex;flex-direction:column;flex:1;min-height:0;margin:0}
+  .staff-tab-body{display:grid;gap:14px;padding:20px 24px;overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1}
+  .staff-tab-body h3{margin:0;font-size:15px}
   .staff-name-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
-  @media(max-width:420px){.staff-name-fields{grid-template-columns:1fr;}}
-  .staff-editor label{display:grid;gap:5px;font-weight:600;}
+  .staff-editor label{display:grid;gap:6px;font-weight:600;}
   .staff-editor input,.staff-editor select{width:100%;font-size:14px;}
-  .staff-permissions{min-width:0;margin:3px 0 0;padding:5px 12px 8px;border:1px solid #DFE7EC;border-radius:12px;background:#F7F9FA;}
-  .staff-permissions legend{padding:0 5px;font-size:13px;font-weight:600;}
-  .staff-permission{display:grid;grid-template-columns:minmax(0,1fr) 36px;align-items:start;}
-  .staff-permission--deactivate{border-top:1px solid #DFE7EC;}
-  .staff-editor .staff-access{display:flex;align-items:center;gap:9px;min-height:46px;padding-block:5px;font-size:14px;line-height:1.35;}
-  .staff-access input{flex:none;width:18px;height:18px;margin:0;accent-color:#0A2F4F;}
-  .staff-help{grid-column:1/-1;grid-row:1;pointer-events:none;}
-  .staff-permission .staff-access{grid-column:1;grid-row:1;align-self:start;position:relative;}
-  .staff-help summary{pointer-events:auto;display:grid;place-items:center;width:36px;height:36px;margin:5px 0 5px auto;border:1px solid #D9E2E8;border-radius:50%;background:#fff;cursor:pointer;list-style:none;font-weight:600;}
-  .staff-help summary::-webkit-details-marker{display:none;}
-  .staff-help summary:hover,.staff-help[open] summary{background:#E6EEF4;}
-  .staff-help p{margin:0 0 8px;padding:9px 10px;border-radius:8px;pointer-events:auto;background:#EAF1F5;color:#314E66;font-size:13px;line-height:1.45;}
-  .staff-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #E8EDF0;}
+  .staff-editor .staff-control{min-height:44px}
+  .staff-role-summary{padding:12px 14px;border-radius:12px;background:#F4F7F9;color:#43566A;font-size:13px;line-height:1.5}
+  .staff-access-card{border:1px solid #E0E7ED;border-radius:14px;padding:0 14px;background:#fff}
+  .staff-access-row{display:flex!important;align-items:center;justify-content:space-between;gap:12px!important;padding:14px 0;cursor:pointer}
+  .staff-access-row+.staff-access-row{border-top:1px solid #E8EDF0}
+  .staff-access-copy{display:grid;gap:4px;min-width:0}
+  .staff-access-copy strong{font-size:14px;font-weight:600}
+  .staff-access-copy small{font-size:12px;font-weight:400;color:#526271;line-height:1.5}
+  .staff-editor .staff-toggle{appearance:none!important;display:block;position:relative;flex:0 0 44px;width:44px!important;height:25px!important;min-height:25px!important;border:0;border-radius:999px;background:#CCD6DD;cursor:pointer;transition:background .15s}
+  .staff-toggle::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;background:#fff;border-radius:50%;box-shadow:0 1px 3px #0002;transition:transform .15s}
+  .staff-toggle:checked{background:#43825A}
+  .staff-toggle:checked::after{transform:translateX(19px)}
+  .staff-toggle.staff-toggle-danger:checked{background:#B8432F}
+  .staff-toggle:disabled{opacity:.5;cursor:not-allowed}
+  .staff-protected{display:flex;align-items:flex-start;gap:9px;background:#F4F7F9;border-radius:10px;padding:12px;font-size:13px;line-height:1.45;color:#526271}
+  .staff-rights-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none}
+  .staff-rights-list li{display:flex;align-items:center;gap:8px;padding:9px 10px;background:#F5F8FA;border-radius:9px;font-size:13px;min-width:0}
+  .staff-rights-list svg{flex:none;color:#43825A}
+  .staff-security-metadata{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .staff-security-metadata>div{display:grid;gap:4px;padding:11px;background:#F5F8FA;border-radius:10px;font-size:13px}
+  .staff-security-metadata span{color:#526271;font-size:12px}
+  .staff-sec-action{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #E8EDF0}
+  .staff-sec-action>div{min-width:0;display:grid;gap:4px}
+  .staff-sec-action small{font-size:12px;color:#526271;line-height:1.45}
+  .staff-sec-action button{flex:none;min-height:38px;white-space:normal}
+  .staff-danger{color:#A03527;border-color:#E6C6BF}
+  .staff-sec-action button:disabled{opacity:.5;cursor:not-allowed}
+  .staff-security-confirm{display:grid;gap:10px;padding:12px;background:#FFF8EF;border:1px solid #E8D7C6;border-radius:12px;font-size:13px;line-height:1.45}
+  .staff-security-confirm>div{display:flex;gap:8px;flex-wrap:wrap}
+  .staff-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding:14px 24px;border-top:1px solid #E8EDF0;background:#fff;flex:none;}
+  .staff-actions button{min-height:44px}
+  .staff-error{padding:0 24px}
+  @media(max-width:600px){.crm-app .crm-staff-dialog{width:100%;max-width:100%;height:100dvh;max-height:100dvh!important;margin:0;border-radius:0;inset:0}.staff-dialog-heading{padding:15px 16px 12px}.staff-profile-banner{margin:0 16px 12px;padding:10px;flex-wrap:wrap}.staff-tabs{margin:0 16px;gap:2px}.staff-tabs button{font-size:12px;padding:4px}.staff-tab-body{padding:16px}.staff-actions{padding:12px 16px max(12px,env(safe-area-inset-bottom));}.staff-actions button{flex:1}.staff-sec-action{flex-wrap:wrap}.staff-sec-action button{width:100%}.staff-rights-list{grid-template-columns:1fr}.staff-security-metadata{grid-template-columns:1fr}}
+  @media(max-width:420px){.staff-name-fields{grid-template-columns:1fr;}}
   .staff-error{color:#A03527;font-size:13px;}
   @media(max-width:980px){.staff-layout{grid-template-columns:minmax(0,1fr);}}
   @container (max-width:540px){
@@ -1337,35 +1374,51 @@ SOFTWARE.
             <h2 id="crm-staff-dialog-title">{{ staff.heading }}</h2>
             <button type="button" onClick="{{ staff.cancel }}" aria-label="Закрыть">×</button>
           </header>
+          <div class="staff-profile-banner">
+            <span class="staff-profile-avatar">{{ staff.initial }}</span><div class="staff-profile-info"><strong>{{ staff.fullName }}</strong><span>{{ staff.roleName }}</span></div>
+            <span class="staff-profile-status {{ staff.statusClass }}">{{ staff.status }}</span>
+          </div>
+          <div class="staff-tabs" role="group" aria-label="Настройки сотрудника">
+            <button type="button" aria-pressed="{{ staff.mainTab }}" onClick="{{ staff.showMain }}">Основное</button>
+            <button type="button" aria-pressed="{{ staff.accessTab }}" onClick="{{ staff.showAccess }}">Доступ и права</button>
+            <sc-if value="{{ staff.isExisting }}"><button type="button" aria-pressed="{{ staff.securityTab }}" onClick="{{ staff.showSecurity }}">Безопасность</button></sc-if>
+          </div>
           <form class="staff-editor" onSubmit="{{ staff.save }}" novalidate>
+            <div class="staff-tab-body">
+              <sc-if value="{{ staff.mainTab }}">
             <div class="staff-name-fields">
               <label>Имя<input class="staff-control" type="text" maxlength="100" autocomplete="given-name" autofocus value="{{ staff.name }}" onChange="{{ staff.setName }}" required></label>
               <label>Фамилия<input class="staff-control" type="text" maxlength="100" autocomplete="family-name" value="{{ staff.surname }}" onChange="{{ staff.setSurname }}" required="{{ staff.requiresSurname }}"></label>
             </div>
             <label>Телефон для входа<span class="shipa-phone-field crm-phone-field" style="margin-top:4px"><span class="shipa-phone-choice"><span class="shipa-phone-flag" data-country="{{ staffPhoneField.country }}" aria-hidden="true"></span><span aria-hidden="true">{{ staffPhoneField.code }}</span><span class="shipa-phone-arrow" aria-hidden="true">⌄</span><select aria-label="Код страны" value="{{ staffPhoneField.country }}" onChange="{{ staffPhoneField.setCountry }}"><sc-for list="{{ staffPhoneField.options }}" as="country"><option value="{{ country.id }}">{{ country.label }}</option></sc-for></select></span><input class="staff-control" type="tel" aria-label="Телефон для входа" maxlength="32" autocomplete="tel-national" value="{{ staffPhoneField.value }}" onChange="{{ staffPhoneField.setPhone }}" onPaste="{{ staffPhoneField.paste }}" placeholder="{{ staffPhoneField.placeholder }}" required></span></label>
             <label>Роль<select class="staff-control" value="{{ staff.role }}" onChange="{{ staff.setRole }}" disabled="{{ staff.locked }}"><option value="admin">Администратор</option><option value="owner">Собственник</option></select></label>
-            <fieldset class="staff-permissions">
-              <legend>Настройки доступа</legend>
-              <div class="staff-permission">
-                <label class="staff-access"><input type="checkbox" checked="{{ staff.enabled }}" onChange="{{ staff.setEnabled }}" disabled="{{ staff.locked }}"><span>Разрешить доступ в админ-панель</span></label>
-                <details class="staff-help">
-                  <summary aria-label="Что даёт доступ в админ-панель?">?</summary>
-                  <p>Активный сотрудник может войти в админ-панель. Доступные разделы и действия определяет его роль.</p>
-                </details>
-              </div>
-              <sc-if value="{{ staff.isExisting }}" hint-placeholder-val="{{ false }}">
-                <div class="staff-permission staff-permission--deactivate">
-                  <label class="staff-access"><input type="checkbox" checked="{{ staff.deactivated }}" onChange="{{ staff.setDeactivated }}" disabled="{{ staff.locked }}"><span>Деактивировать аккаунт</span></label>
-                  <details class="staff-help">
-                    <summary aria-label="Что такое деактивация аккаунта?">?</summary>
-                    <p>Вход будет заблокирован, даже если доступ разрешён. Карточка сотрудника и его роль сохранятся. Чтобы снова активировать аккаунт, снимите галочку и сохраните изменения.</p>
-                  </details>
-                </div>
+
+                <div class="staff-role-summary">{{ staff.roleDescription }}</div>
               </sc-if>
-            </fieldset>
-            <sc-if value="{{ staff.locked }}"><p class="staff-muted">Роль, доступ и статус аккаунта текущего собственника защищены.</p></sc-if>
+              <sc-if value="{{ staff.accessTab }}">
+                <h3>Доступ к CRM</h3>
+                <div class="staff-access-card">
+                  <label class="staff-access-row"><span class="staff-access-copy"><strong>Разрешить доступ в админ-панель</strong><small>Сотрудник сможет входить в CRM в рамках назначенной роли.</small></span><input class="staff-toggle" type="checkbox" role="switch" checked="{{ staff.enabled }}" onChange="{{ staff.setEnabled }}" disabled="{{ staff.locked }}"></label>
+                  <sc-if value="{{ staff.isExisting }}"><label class="staff-access-row"><span class="staff-access-copy"><strong>Деактивировать аккаунт</strong><small>Вход будет заблокирован. История работы и назначенная роль сохранятся.</small></span><input class="staff-toggle staff-toggle-danger" type="checkbox" role="switch" checked="{{ staff.deactivated }}" onChange="{{ staff.setDeactivated }}" disabled="{{ staff.locked }}"></label></sc-if>
+                </div>
+                <sc-if value="{{ staff.locked }}"><div class="staff-protected"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/></svg>Роль, доступ и статус аккаунта текущего собственника защищены.</div></sc-if>
+                <h3>Разделы, доступные по роли</h3><p class="staff-muted">Права определяются ролью сотрудника и действуют только при открытом доступе.</p>
+                <ul class="staff-rights-list"><sc-for list="{{ staff.rights }}" as="right"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>{{ right.name }}</span></li></sc-for></ul>
+              </sc-if>
+              <sc-if value="{{ staff.securityTab }}">
+                <h3>Безопасность сотрудника</h3>
+                <div class="staff-role-summary">Деморежим. Реальные пароли, отправка ссылок и управление сессиями требуют серверной авторизации. Действия ниже фиксируются только в демоданных после сохранения.</div>
+                <div class="staff-security-metadata"><div><span>Последний вход</span><strong>Нет серверных данных</strong></div><div><span>Активные сессии</span><strong>Нет серверных данных</strong></div></div>
+                <sc-if value="{{ staff.locked }}"><div class="staff-protected">Для текущего собственника используйте раздел «Безопасность аккаунта».</div></sc-if>
+                <div class="staff-sec-action"><div><strong>Сброс пароля</strong><small>Отметить необходимость смены пароля при следующем входе.</small></div><button type="button" class="staff-secondary staff-danger" disabled="{{ staff.locked }}" onClick="{{ staff.askReset }}">Сбросить пароль</button></div>
+                <div class="staff-sec-action"><div><strong>Восстановление доступа</strong><small>Зафиксировать запрос на отправку ссылки восстановления.</small></div><button type="button" class="staff-secondary" disabled="{{ staff.locked }}" onClick="{{ staff.askRecovery }}">Отправить ссылку</button></div>
+                <div class="staff-sec-action"><div><strong>Активные сессии</strong><small>Зафиксировать запрос на завершение всех сессий сотрудника.</small></div><button type="button" class="staff-secondary staff-danger" disabled="{{ staff.locked }}" onClick="{{ staff.askSessions }}">Завершить сессии</button></div>
+                <sc-if value="{{ staff.hasSecurityConfirm }}"><div class="staff-security-confirm"><strong>{{ staff.securityConfirmText }}</strong><span>Это демонстрационное действие. Оно вступит в силу в демоданных после сохранения.</span><div><button type="button" class="staff-primary" onClick="{{ staff.confirmSecurity }}">Подтвердить</button><button type="button" class="staff-secondary" onClick="{{ staff.cancelSecurity }}">Отмена</button></div></div></sc-if>
+                <sc-if value="{{ staff.hasSecurityEvents }}"><h3>Журнал демонстрационных действий</h3><sc-for list="{{ staff.securityEvents }}" as="event"><div class="staff-role-summary">{{ event.label }} · {{ event.at }}</div></sc-for></sc-if>
+              </sc-if>
+            </div>
             <sc-if value="{{ staff.hasError }}"><p class="staff-error" role="alert">{{ staff.error }}</p></sc-if>
-            <div class="staff-actions"><button type="submit" class="staff-primary">{{ staff.saveLabel }}</button><button type="button" class="staff-secondary" onClick="{{ staff.cancel }}">Отмена</button></div>
+            <div class="staff-actions"><button type="button" class="staff-secondary" onClick="{{ staff.cancel }}">Отмена</button><button type="submit" class="staff-primary">{{ staff.saveLabel }}</button></div>
           </form>
         </dialog>
       </sc-if>
@@ -2780,7 +2833,7 @@ class Component extends DCLogic {
    if(this.state.role!=='owner')return;
    const employee=id==null?{id:null,name:'',surname:'',phone:'',role:'admin',enabled:false}:this.state.employees.find(x=>x.id===id);
    if(!employee)return;
-   this.setState({staffDraft:{...employee},staffError:''});
+   this.setState({staffDraft:{...employee,_tab:'main',_confirm:null},staffError:''});
  }
  closeStaffDialog(){
    const dialog=document.querySelector('.crm-staff-dialog');
@@ -2808,10 +2861,10 @@ class Component extends DCLogic {
    else if(!phone)error='Укажите корректный номер телефона.';
    else if(employees.some(x=>x.id!==draft.id&&x.phone===phone))error='Сотрудник с таким телефоном уже есть.';
    else if(!Object.hasOwn(STAFF_ROLES,draft.role))error='Выберите роль сотрудника.';
-   if(error){this.setState({staffError:error});return;}
+   if(error){this.setState({staffError:error,staffDraft:{...draft,_tab:'main'}});return;}
    const employee={id:previous?.id??'staff-'+(employees.length+1),name,surname,phone,
      role:locked?previous.role:draft.role,enabled:locked?previous.enabled:!!draft.enabled,
-     deactivated:locked?!!previous.deactivated:!!(previous&&draft.deactivated)};
+     deactivated:locked?!!previous.deactivated:!!(previous&&draft.deactivated),demoSecurity:locked?(previous?.demoSecurity||[]):(draft.demoSecurity||[])};
    this.closeStaffDialog();
    this.setState({employees:previous?employees.map(x=>x.id===employee.id?employee:x):[...employees,employee],
      staffDraft:null,staffError:'',...(!previous?{staffQuery:'',staffFilter:'all'}:{})});
@@ -2826,6 +2879,11 @@ class Component extends DCLogic {
      blocked:{access:'Закрыт',accessClass:'staff-blocked'},
      deactivated:{access:'Аккаунт деактивирован',accessClass:'staff-disabled'}
    };
+   const tab=draft?._tab||'main',status=draft?statuses[staffAccess(draft)]:statuses.blocked,locked=draft?.id===STAFF_OWNER;
+   const securityActions={reset:'Запрос на сброс пароля',recovery:'Запрос на отправку ссылки восстановления',sessions:'Запрос на завершение сессий'};
+   const askSecurity=kind=>()=>{if(this.state.role!=='owner'||!draft?.id||locked)return;this.setStaffDraft({_confirm:kind})};
+   const confirmSecurity=()=>{const d=this.state.staffDraft;if(this.state.role!=='owner'||!d?.id||d.id===STAFF_OWNER||!Object.hasOwn(securityActions,d._confirm))return;this.setStaffDraft({_confirm:null,demoSecurity:[{label:securityActions[d._confirm],at:dkey(0)+' · '+hh(NOW.getHours())},...(d.demoSecurity||[])].slice(0,15)})};
+   const rights=['Дашборд','Календарь домов','Брони и продажи','Гости','Поздравления и рассылки','Отзывы и обращения','Тарифы и правила','Отчёты','Инструкции','Безопасность аккаунта',...(draft?.role==='owner'?['Сотрудники','Уведомления']:[])].map(name=>({name}));
    const active=employees.filter(x=>staffAccess(x)==='active').length;
    const words=term.split(/\s+/);
    const rows=employees.map(x=>{
@@ -2837,7 +2895,13 @@ class Component extends DCLogic {
    return {total:employees.length,active,blocked:employees.length-active,rows,empty:!rows.length,query,filter,filterActive:String(filter!=='all'),
      setQuery:e=>this.setState({staffQuery:e.target.value}),setFilter:e=>this.setState({staffFilter:e.target.value}),
      add:()=>this.editStaff(null),editing:!!draft,isExisting:!!draft?.id,heading:draft?.id?'Редактирование сотрудника':'Новый сотрудник',
-     locked:draft?.id===STAFF_OWNER,name:draft?.name??'',surname:draft?.surname??'',
+     locked,mainTab:tab==='main',accessTab:tab==='access',securityTab:tab==='security'&&!!draft?.id,
+     showMain:()=>this.setStaffDraft({_tab:'main',_confirm:null}),showAccess:()=>this.setStaffDraft({_tab:'access',_confirm:null}),showSecurity:()=>{if(draft?.id)this.setStaffDraft({_tab:'security',_confirm:null})},
+     initial:(draft?.name||'С').slice(0,1).toUpperCase(),fullName:[draft?.name,draft?.surname].filter(Boolean).join(' ')||'Новый сотрудник',roleName:STAFF_ROLES[draft?.role||'admin'],status:status.access,statusClass:status.accessClass,
+     roleDescription:draft?.role==='owner'?'Управляет сотрудниками, тарифами и настройками. Видит выручку.':'Работает с бронями, гостями и оплатами. Просматривает тарифы.',
+     rights,askReset:askSecurity('reset'),askRecovery:askSecurity('recovery'),askSessions:askSecurity('sessions'),hasSecurityConfirm:!!draft?._confirm,securityConfirmText:securityActions[draft?._confirm]||'',confirmSecurity,cancelSecurity:()=>this.setStaffDraft({_confirm:null}),securityEvents:draft?.demoSecurity||[],hasSecurityEvents:!!draft?.demoSecurity?.length,
+     name:draft?.name??'',surname:draft?.surname??'',
+
      requiresSurname:staffRequiresSurname(employees.find(x=>x.id===draft?.id)),phone:draft?.phone??'',role:draft?.role??'admin',enabled:!!draft?.enabled,deactivated:!!draft?.deactivated,
      error,hasError:!!error,saveLabel:draft?.id?'Сохранить':'Добавить',save:e=>this.saveStaff(e),cancel:()=>this.dismissStaff(),
      setName:e=>this.setStaffDraft({name:e.target.value}),setSurname:e=>this.setStaffDraft({surname:e.target.value}),setPhone:e=>this.setStaffDraft({phone:e.target.value}),
