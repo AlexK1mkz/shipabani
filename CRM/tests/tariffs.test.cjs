@@ -660,6 +660,44 @@ test('the assignee on Kanban cards and the shared filter use the saved booking a
   assert.deepEqual(Array.from(ui.listRows, row => row.num), [booking.num]);
 });
 
+test('Kanban shows thirty calendar days and current bookings while the list retains history', () => {
+  const storage = new Map();
+  const { crm } = demo(storage);
+  const scheduled = crm.state.bookings.find(b => b.stage === 'confirmed');
+  const request = crm.state.bookings.find(b => b.stage === 'new' && b.start == null);
+  const cutoff = 29 * 1440 + 14 * 60 + 20; // midnight on the first included day in the demo
+  const records = [
+    { ...scheduled, num: 'recent-visit', day: -15, stage: 'review', stageAt: 14 * 1440 },
+    { ...scheduled, num: 'old-visit', day: -30, stage: 'review', stageAt: cutoff + 1 },
+    { ...scheduled, num: 'future', day: 60, stage: 'confirmed', stageAt: 60 * 1440 },
+    { ...scheduled, num: 'cancelled-future', day: 60, stage: 'cancel', stageAt: 60 * 1440 },
+    { ...scheduled, num: 'in-house', day: -31, stage: 'inhouse', stageAt: 31 * 1440 },
+    { ...request, num: 'recent-request', stageAt: cutoff },
+    { ...request, num: 'old-request', stageAt: cutoff + 1 },
+  ];
+  crm.setState({ screen: 'bookings', view: 'kanban', bookings: records });
+  let ui = crm.renderVals();
+  assert.deepEqual(Array.from(ui.columns.flatMap(c => c.cards), c => c.num).sort(),
+    ['future', 'in-house', 'recent-request', 'recent-visit']);
+  assert.equal(ui.bookingsCount, '4 карточки');
+  assert.equal(ui.olderBookingsCount, 3);
+  assert.equal(ui.kanbanDateRange, '17.09 – 16.10');
+  const reviewColumn = ui.columns.find(c => c.cards.some(card => card.num === 'recent-visit'));
+  assert.equal(reviewColumn.count, 1);
+  assert.equal(reviewColumn.sum, crm.price(records[0]).total.toLocaleString('ru-RU').replace(/\u00a0/g, ' ') + ' ₸');
+  ui.savedViews.find(v => v.id === 'unpaid').go();
+  ui = crm.renderVals();
+  assert.equal(ui.bookingsCount, '1 карточка');
+  assert.equal(ui.olderBookingsCount, 3);
+  ui.viewBookingHistory();
+  ui = crm.renderVals();
+  assert.equal(ui.bookingsCount, '7 карточек');
+  assert.equal(ui.listRows.length, 7);
+  assert.equal(crm.state.bookings.length, 7);
+  assert.equal(crm.state.savedView, null);
+  assert.equal(demo(storage).crm.state.bookings.length, 7);
+});
+
 test('bookings Excel exports the selected board, preset, assignee and list order', () => {
   const downloads = [];
   const { crm } = demo(new Map(), () => false, {
