@@ -31,6 +31,34 @@
 </script>
 <script defer src="./shipa-ru-kz.js?v=20261125-list-period"></script>
 <script defer src="./guest-export.js?v=20261115-bookings"></script>
+<script defer src="./menu-catalog.js?v=1"></script>
+<script defer src="./menu-editor.js?v=1"></script>
+<style id="crm-menu-styles">
+.km-shell{max-width:1280px;min-width:0}
+.km-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;border-radius:18px;background:#e8eff3;padding:22px 24px}
+.km-hero h2,.km-dialog-head h2{margin:0;font-size:22px;line-height:1.25}
+.km-hero p{margin:7px 0 0;color:#43566a}
+.km-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.km-btn{display:inline-flex;justify-content:center;align-items:center;min-height:40px;padding:8px 13px;border:1px solid #d2dfe8;border-radius:10px;background:white;color:#0a2f4f;font-size:13px;font-weight:600;text-align:center}
+.km-btn:hover{background:#edf3f6;color:#0a2f4f}.km-primary{background:#a74920;color:white;border-color:#a74920}.km-primary:hover{background:#8b3e1e;color:white}
+.km-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.km-stat{display:flex;align-items:center;gap:8px;text-align:left;background:white;border:1px solid #dde5eb;border-radius:14px;padding:13px 16px}.km-stat strong{font-size:20px;margin-left:auto}.km-stat[aria-pressed="true"]{border-color:#0a2f4f;background:#edf3f6}
+.km-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}.km-available{color:#256348}.km-stop{color:#9b481d}.km-hidden{color:#526273}
+.km-demo,.km-help{margin:10px 0;color:#536575;font-size:13px}.km-help:empty{display:none}
+.km-panel{background:white;border:1px solid #dde5eb;border-radius:16px;padding:14px}
+.km-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:12px}
+.km-control{min-width:0;max-width:100%;width:100%;min-height:40px;padding:8px 10px;border:1px solid #d2dfe8;border-radius:9px;background:#fff;color:#0a2f4f;font-size:14px}.km-toolbar .km-control{width:auto}.km-toolbar input{flex:1 1 210px}
+.km-row{display:grid;grid-template-columns:44px minmax(0,1fr) minmax(78px,auto) 96px auto;align-items:center;gap:12px;padding:9px 0;border-top:1px solid #e7edf1}
+.km-photo{width:44px;height:44px;position:relative;border-radius:10px;background:#e8eff3;display:grid;place-items:center;font-weight:700;overflow:hidden}.km-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.km-item{display:grid;gap:3px;overflow-wrap:anywhere}.km-item span{color:#536575;font-size:12px}.km-price{white-space:nowrap}
+.km-status{justify-self:start;border-radius:30px;background:#edf2f5;padding:4px 8px;font-size:12px;white-space:nowrap}.km-status.km-available{background:#e5f0e9}.km-status.km-stop{background:#f7e9dc}
+.km-empty{text-align:center;color:#536575;padding:24px 8px}
+.km-dialog{border:1px solid #d5e0e7;border-radius:18px;color:#0a2f4f;width:min(630px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;overflow:hidden;box-shadow:0 18px 60px #0a2f4f40}.km-dialog::backdrop{background:#0a2f4f66}
+.km-form{display:flex;flex-direction:column;max-height:calc(100dvh - 26px)}.km-dialog-head,.km-dialog-foot{display:flex;align-items:center;gap:8px;padding:14px 18px}.km-dialog-head{justify-content:space-between;border-bottom:1px solid #e7edf1}.km-dialog-foot{justify-content:flex-end;border-top:1px solid #e7edf1}
+.km-dialog-body{overflow:auto;padding:16px 18px}.km-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.km-field{display:grid;gap:4px;min-width:0;font-size:13px;font-weight:600}.km-wide{grid-column:1/-1}.km-error{color:#a13223}.km-translations{margin-top:14px}.km-translations summary{cursor:pointer;font-weight:600}.km-translations .km-fields{margin-top:12px}
+@media(max-width:720px){.km-hero{align-items:flex-start;flex-direction:column;padding:16px}.km-row{grid-template-columns:40px minmax(0,1fr) auto;gap:7px 9px}.km-photo{width:40px;height:40px}.km-row .km-status{grid-column:2}.km-row .km-btn{grid-column:3}.km-stat{padding:9px 7px;gap:4px;font-size:11px}.km-stat strong{font-size:14px}.km-stats{gap:5px}.km-toolbar .km-control{flex:1 1 135px}.km-toolbar input{flex-basis:100%}.km-panel{padding:10px}}
+@media(max-width:400px){.km-fields{grid-template-columns:1fr}.km-stat{flex-wrap:wrap}.km-stat strong{margin-left:0}.km-actions{gap:6px}}
+</style>
 </head>
 <body>
 <x-dc>
@@ -1337,6 +1365,10 @@ SOFTWARE.
   </sc-if>
 
   <!-- ===== СОТРУДНИКИ ===== -->
+  <sc-if value="{{ is.menu }}" hint-placeholder-val="{{ false }}">
+    <section class="km-shell" data-screen-label="Кухня"><div id="crm-menu-editor" data-shipa-no-translate="1"></div></section>
+  </sc-if>
+
   <sc-if value="{{ is.staff }}" hint-placeholder-val="{{ false }}">
     <section class="crm-staff" data-screen-label="Сотрудники">
       <div class="staff-intro">
@@ -2655,7 +2687,7 @@ const CRM_HANDBOOK = [
   },
 ];
 
-const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff','instructions','reports','account'];
+const CRM_SCREENS=['today','calendar','bookings','clients','campaigns','reviews','tariffs','notif','staff','instructions','reports','account','menu'];
 const ownerScreen=screen=>screen==='notif'||screen==='staff';
 function crmHash(s){
   const params=new URLSearchParams();
@@ -3229,11 +3261,12 @@ class Component extends DCLogic {
   const navItems=[{id:'today',name:'Дашборд',icon:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'},{id:'calendar',name:'Календарь домов',icon:'M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM16 2v4M8 2v4M3 10h18'},{id:'bookings',name:'Брони и продажи',icon:'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM8 7v7M12 7v4M16 7v9',badge:newCount},{id:'clients',name:'Гости',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'},{id:'campaigns',name:'Поздравления и рассылки',icon:'M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z'},{id:'reviews',name:'Отзывы и обращения',badge:reviewTodo,icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'},{id:'tariffs',name:'Тарифы и правила',icon:'M19 5 5 19M9 6.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'}];
   if(owner)navItems.push({id:'staff',name:'Сотрудники',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M18 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-4M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'});
   if(owner)navItems.push({id:'notif',name:'Уведомления',icon:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'});
+  navItems.push({id:'menu',name:'Кухня',icon:'M4 3v6a3 3 0 0 0 6 0V3M7 3v18M18 3c-2 2-3 4-3 7v3h4M19 3v18'});
   navItems.push({id:'reports',name:'Отчёты',icon:'M3 3v18h18M7 17v-5h3v5zM12 17V8h3v9zM17 17V4h3v13z'});
   navItems.push({id:'account',name:'Безопасность аккаунта',icon:'M12 3l8 3v6c0 4-3 7-8 9-5-2-8-5-8-9V6zM9 12l2 2 4-4'});
   navItems.push({id:'instructions',name:'Инструкции',icon:'M4 3h7l1 2 1-2h7v16h-7l-1 2-1-2H4zM12 5v16M7 8h2M15 8h2M7 12h2M15 12h2'});
   const nav=navItems.map(n=>({...n,go:go(n.id),current:s.screen===n.id?'page':'false',badge:n.badge||false,badgeShow:!!n.badge&&(s.navOpen||s.mobileNavOpen)}));
-  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники',instructions:'Инструкции',reports:'Отчёты',account:'Безопасность аккаунта'};
+  const titles={today:'Дашборд',calendar:'Календарь домов',bookings:'Брони и продажи',clients:'Гости',campaigns:'Поздравления и рассылки',reviews:'Отзывы',tariffs:'Тарифы и правила',notif:'Уведомления',staff:'Сотрудники',menu:'Кухня',instructions:'Инструкции',reports:'Отчёты',account:'Безопасность аккаунта'};
   const is={[s.screen]:!ownerScreen(s.screen)||owner};
   const openNew = () => this.setState({nb:this.newNb()});
   const openGuide = () => document.querySelector('.crm-mini-guide')?.showModal();
